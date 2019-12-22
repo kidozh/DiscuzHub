@@ -1,0 +1,134 @@
+package com.kidozh.discuzhub.activities;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.bbsURLUtils;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class bbsShowPortalActivity extends AppCompatActivity {
+    private static final String TAG = bbsShowPortalActivity.class.getSimpleName();
+
+    @BindView(R.id.bbs_portal_nav_view)
+    BottomNavigationView navView;
+    @BindView(R.id.bbs_portal_nav_host_fragment)
+    View portalNavHostFragment;
+
+    bbsInformation curBBS;
+    forumUserBriefInfo curUser;
+    forumUserBriefInfo userBriefInfo;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_bbs_show_portal);
+        ButterKnife.bind(this);
+        getIntentInfo();
+        configureBtmNavigation();
+        configureActionBar();
+    }
+
+    private void configureActionBar(){
+        if(getSupportActionBar() !=null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+
+        }
+    }
+
+    private void configureBtmNavigation(){
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+
+        if(curUser == null){
+            Log.d(TAG, "Current incognitive user "+curUser);
+            AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.navigation_home, R.id.navigation_dashboard)
+                    .build();
+            // clear cognitive state
+            navView.getMenu().clear();
+            navView.inflateMenu(R.menu.bottom_incognitive_nav_menu);
+            NavController navController = Navigation.findNavController(this, R.id.bbs_portal_nav_host_fragment);
+            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+            NavigationUI.setupWithNavController(navView, navController);
+        }
+        else {
+            Log.d(TAG,"Current user "+curUser.uid);
+            AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
+                    .build();
+            NavController navController = Navigation.findNavController(this, R.id.bbs_portal_nav_host_fragment);
+            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+            NavigationUI.setupWithNavController(navView, navController);
+        }
+
+
+    }
+
+    private void getIntentInfo(){
+        Intent intent = getIntent();
+        curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+        curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        if(curBBS == null){
+            finish();
+        }
+        else {
+            Log.d(TAG,"get bbs name "+curBBS.site_name);
+            bbsURLUtils.setBBS(curBBS);
+            //bbsURLUtils.setBaseUrl(curBBS.base_url);
+        }
+        if(getSupportActionBar()!=null){
+            getSupportActionBar().setTitle(curBBS.site_name);
+        }
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == android.R.id.home){
+            this.finish();
+            return false;
+        }
+
+        else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getIntentInfo();
+        if(curUser == null){
+            getMenuInflater().inflate(R.menu.menu_bbs_user_status, menu);
+        }
+        else {
+
+        }
+
+
+        return true;
+    }
+
+}

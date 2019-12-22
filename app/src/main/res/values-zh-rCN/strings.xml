@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Discuz Hub</string>
+    <string name="title_add_a_forum_by_url">根据网址添加一个论坛</string>
+    <string name="action_settings">设置</string>
+    <string name="add_a_forum_by_url_safe_client_check">使用安全的认证方式以保护HTTPS通信安全</string>
+    <string name="bbs_anonymous">匿名访问</string>
+    <string name="bbs_register_an_account">注册</string>
+    <string name="delete_forum_information">已经删除了此论坛的所有信息</string>
+    <string name="bbs_undo_delete">撤销</string>
+    <string name="network_failed">由于网络问题无法获得论坛信息</string>
+    <string name="parse_failed">无法解析服务器发来的信息</string>
+    <string name="add_a_forum_successfully">成功添加了一个论坛</string>
+    <string name="bbs_upgrade_to_https">升级到更安全的HTTPS协议</string>
+    <string name="bbs_input_a_base_url">论坛的基本URL（例如bbs.nwpu.edu.cn）</string>
+    <string name="bbs_qq_connect_ok">支持QQ互联</string>
+    <string name="preference_title_display">显示</string>
+
+    <string-array name="string_dark_mode_night_shift">
+        <item>日间模式</item>
+        <item>夜间模式</item>
+        <item>处于省电模式时使用夜间模式</item>
+        <item>跟随系统</item>
+    </string-array>
+    <string name="preference_title_display_mode">显示模式</string>
+    <string name="add_a_forum_help_text">基础URL往往指的是论坛的网址，但也可能因管理员设定发生变化。</string>
+    <string name="title_activity_global_settings">设置</string>
+    <string name="sync_header">同步</string>
+    <string name="protocol_http_setting">使用HTTP协议，这并不安全</string>
+    <string name="protocol_https_setting">使用安全的HTTPS协议</string>
+    <string name="global_default_bbs_setting">全局论坛默认设置</string>
+    <string name="preference_summary_off_use_safer_client">应用并不会检测通信过程中的安全，这有可能导致您的数据在通信时发生泄漏</string>
+    <string name="preference_summary_on_use_safer_client">应用将会保护HTTPS协议在传输过程中的安全</string>
+    <string name="preference_title_use_safer_client">使用安全的HTTPS认证方式</string>
+    <string name="action_bbs_user_status">用户状态</string>
+    <string name="bbs_more_thread_btn">更多帖子</string>
+    <string name="bbs_forum_post">发帖</string>
+    <string name="bbs_forum_thread">主题</string>
+    <string name="time_template_days_ago">%d天前%s</string>
+    <string name="time_template_today_time">今天 %s</string>
+    <string name="time_template_yesterday_time">昨天 %s</string>
+    <string name="bbs_forum_pinned">置顶</string>
+    <string name="preference_group_title_network">网络</string>
+    <string name="preference_title_data_save_mode">省流量模式</string>
+    <string name="preference_summary_off_data_save">图片和附件会在流量模式下下载，这可能导致您产生较多的移动运营商流量</string>
+    <string name="preference_summary_on_data_save">图片和附件在流量下不会自动下载，需要您手动点击</string>
+    <string name="bbs_register_account_notification">由于注册的API并未被官方提供，并且每个站点往往都有自己的注册要求。因此，本应用将会让浏览器带您注册账号。</string>
+    <string name="bbs_thread_publisher">帖主</string>
+    <string name="bbs_thread_comment">评论</string>
+    <string name="bbs_thread_say_something">说些什么吧</string>
+    <string name="bbs_thread_attachment">附件</string>
+    <string name="bbs_thread_attachment_template">附件%d</string>
+    <string name="bbs_require_comment">无评论</string>
+    <string name="bbs_comment_failed">无法评论本贴</string>
+    <string name="bbs_comment_successfully">成功发表评论</string>
+    <string name="bbs_commentting">评论中。。。</string>
+    <string name="bbs_require_login_to_comment">需要登陆</string>
+    <string name="bbs_information_empty">没有找到Discuz!的论坛，点击下方的浮动按钮就可以添加一个新的论坛了。</string>
+    <string name="data_is_process_notification">数据正在与数据库或者服务器交流中。</string>
+    <string name="data_cancel_task">取消这个交流</string>
+    <string name="data_put_in_background">后台运行</string>
+    <string name="task_is_cancelled">任务已取消</string>
+    <string name="data_is_processing">处理数据中</string>
+    <string name="updated_bbs_template">成功更新论坛 %s</string>
+    <string name="failed_to_update_bbs_template">更新 %s 失败</string>
+    <string name="display_order_1">置顶</string>
+    <string name="display_order_2">2级置顶</string>
+    <string name="display_order_3">3级置顶</string>
+    <string name="display_order_4">跨板块置顶</string>
+    <string name="display_order_n1">回收站</string>
+    <string name="display_order_n2">审核中</string>
+    <string name="display_order_n3">审核忽略</string>
+    <string name="display_order_n4">草稿</string>
+    <string name="date_just_now">刚刚</string>
+    <string name="date_hours_before">%s小时前</string>
+    <string name="date_minutes_before">%s分钟前</string>
+    <string name="save_images_text">保存</string>
+    <string name="show_picture">显示图片</string>
+    <string name="save_file_successfully_template">成功保存文件: %s</string>
+    <string name="failed_to_save_file">保存文件失败</string>
+    <string name="bbs_api_version">API版本</string>
+    <string name="bbs_charset">编码方式</string>
+    <string name="bbs_discuz_api">Discuz！版本</string>
+    <string name="bbs_discuz_plugin_version">Discuz！插件版本</string>
+    <string name="bbs_forum_member">成员</string>
+    <string name="bbs_add_time">添加时间</string>
+    <string name="bbs_allow_register">允许注册</string>
+    <string name="bbs_hide_register">不允许注册</string>
+    <string name="bbs_ucenter_url">UCenter 链接</string>
+    <string name="messages_header">信息</string>
+    <string name="signature_title">你的签名</string>
+    <string name="switch_bbs_sync_on_text">同步已打开，你可以获得该论坛的通知</string>
+    <string name="switch_bbs_sync_off_text">同步已关闭，你可能错过该论坛的通知</string>
+    <string name="bbs_basic_information">基本信息</string>
+    <string name="bbs_mobile_is_closed">Discuz!的移动API已经关闭</string>
+    <string name="bbs_user_banned">本论坛API拒绝来自您的访问</string>
+    <string name="bbs_read_access">阅读权限</string>
+    <string name="bbs_user_id">账号</string>
+    <string name="add_a_account">添加账号</string>
+    <string name="login_bbs_title">登录 %s</string>
+    <string name="bbs_password">密码</string>
+
+    <string-array name="entry_security_answer">
+        <item>安全提问 (未设置请忽略)</item>
+        <item>母亲的名字</item>
+        <item>父亲的名字</item>
+        <item>父亲出生的城市</item>
+        <item>您一位老师的名字</item>
+        <item>您个人计算机的型号</item>
+        <item>您最喜欢的餐馆名称</item>
+        <item>驾照号码后四位数字</item>
+    </string-array>
+    <string name="bbs_login">登录</string>
+    <string name="bbs_forget_password">忘记密码？</string>
+    <string name="use_unsecure_http_warn">使用了不安全的HTTP协议或者HTTPS客户端设置不安全，在传输数据时您的账号密码可能会泄漏给第三方。</string>
+    <string name="bbs_login_account_password_required">需要账号以及密码</string>
+    <string name="field_required">这个字段是必填的</string>
+    <string name="bbs_update_time">更新时间</string>
+    <string name="save_user_to_bbs_successfully_template">用户%s成功登录%s论坛</string>
+    <string name="user_password_not_correct">用户账号和密码不正确</string>
+    <string name="discuz_reply_message_template">[quote][size=2]%s 发表于 %s [/size]%s[/quote]</string>
+    <string name="bbs_tap_to_enter_title">帖子主题</string>
+    <string name="bbs_post_thread_message">帖子内容</string>
+    <string name="bbs_post_thread_subject_required">帖子需要有主题</string>
+    <string name="bbs_post_thread_message_required">帖子需要有内容</string>
+    <string name="bbs_post_thread_cannot_upload_picture">目前因为某些问题无法上传图片</string>
+    <string name="bbs_post_thread_choose_a_picture">为当前的帖子选择一张图片</string>
+    <string name="bbs_thread_uploading_files">上传文件中</string>
+    <string name="bbs_thread_uploading_picture">上传照片中</string>
+    <string name="bbs_thread_upload_files_successful">成功上传文件</string>
+    <string name="bbs_thread_upload_files_failed">上传文件失败</string>
+    <string name="bbs_post_thread">发帖</string>
+    <string name="bbs_send_a_thread">发帖</string>
+
+    <string name="bbs_font_h1">1号标题</string>
+    <string name="bbs_font_h2">2号标题</string>
+    <string name="bbs_font_h3">3号标题</string>
+    <string name="bbs_font_h4">4号标题</string>
+    <string name="bbs_font_h5">5号标题</string>
+    <string name="bbs_font_h6">6号标题</string>
+    <string name="bbs_font_h7">7号标题</string>
+    <string name="bbs_login_user_null">无法获得用户信息</string>
+    <string name="title_bbs_home">BBS主页</string>
+    <string name="title_dashboard">仪表盘</string>
+    <string name="title_home">主页</string>
+    <string name="title_notifications">通知</string>
+
+    <string-array name="preference_entries_use_browser_client">
+        <item>不使用</item>
+        <item>谷歌浏览器</item>
+        <item>火狐浏览器</item>
+        <item>Edge</item>
+    </string-array>
+    <string name="preference_title_use_browser_client">浏览器用户标识符</string>
+    <string name="bbs_no_thread_gotten">找不到更多啦</string>
+    <string name="bbs_notification_public_pm">公共消息</string>
+    <string name="bbs_notification_my_pm">我的消息</string>
+    <string name="bbs_notification_my_thread">我的帖子</string>
+    <string name="bbs_explore_thread">探索</string>
+    <string name="bbs_login_by_browser">在网页中登录</string>
+    <string name="bbs_login_in_web_finished">完成登录</string>
+    <string name="bbs_login_in_browser_notification">如果本论坛在登陆时有自己的认证方式（如验证码），请选择在“网页中登录”。</string>
+    <string name="bbs_login_in_webpage_alert">在网页中登录提醒</string>
+    <string name="bbs_login_in_webpage_content">请在登录界面之中完成登录操作，然后轻触“完成登录”以将用户录入应用之中。</string>
+    <string name="bbs_no_item_found">没有信息</string>
+</resources>

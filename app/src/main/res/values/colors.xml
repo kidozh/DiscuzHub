@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/colorPeterRiver</color>
+    <color name="colorPrimaryDark">@color/colorBelizahole</color>
+    <color name="colorAccent">@color/colorAlizarin</color>
+
+    <color name="colorAlizarin">#E74C3C</color>
+    <color name="colorPomegranate">#C0392B</color>
+    <color name="colorPumpkin">#D35400</color>
+    <color name="colorCarrot">#E67E22</color>
+    <color name="colorSunflower">#F1C40F</color>
+    <color name="colorOrange">#F39C12</color>
+    <color name="colorConcrete">#95A5A6</color>
+    <color name="colorSilver">#BDC3C7</color>
+    <color name="colorAsbestos">#7F8C8D</color>
+    <color name="colorCloud">#ECF0F1</color>
+    <color name="colorEmerland">#2ECC71</color>
+    <color name="colorNephritis">#27AE60</color>
+    <color name="colorTurquoise">#1ABC9C</color>
+    <color name="colorGreensea">#16A085</color>
+    <color name="colorPeterRiver">#3498DB</color>
+    <color name="colorBelizahole">#2980B9</color>
+    <color name="colorAmethyst">#9B59B6</color>
+    <color name="colorWisteria">#8E44AD</color>
+    <color name="colorWetasphalt">#34495E</color>
+    <color name="colorMidnightblue">#2C3E50</color>
+    <color name="colorPureWhite">#FFFFFF</color>
+    <color name="colorPureBlack">#000000</color>
+
+    <color name="colorTextDefault">@color/colorPureBlack</color>
+    <color name="colorBackgroundDefault">@color/colorPureWhite</color>
+
+    <color name="colorTextSecondaryDefault">@color/colorWetasphalt</color>
+    <color name="colorHighlight">@color/colorPeterRiver</color>
+    <color name="colorSafeStatus">@color/colorTurquoise</color>
+    <color name="colorUnSafeStatus">@color/colorAlizarin</color>
+    <color name="colorWarn">@color/colorCarrot</color>
+
+    <color name="black_overlay">#66000000</color>
+
+</resources>

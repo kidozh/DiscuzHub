@@ -1,0 +1,206 @@
+<resources>
+    <string name="app_name">Discuz Hub</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_add_a_forum_by_url">Add a forum by URL</string>
+    <string-array name="url_prefix">
+        <item>http://</item>
+        <item>https://</item>
+    </string-array>
+    <string name="add_a_forum_by_url_safe_client_check">Use safe client to ensure HTTPS integrity and migrate to HTTPS if possible</string>
+    <string name="bbs_anonymous">Incognito</string>
+    <string name="bbs_register_an_account">Register</string>
+    <string name="delete_forum_information">The forum is deleted</string>
+    <string name="bbs_undo_delete">undo</string>
+    <string name="network_failed">Failed to fetch the information due to network error</string>
+    <string name="parse_failed">Failed to parse the bbs information</string>
+    <string name="add_a_forum_successfully">Successfully added a forum to database</string>
+    <string name="bbs_upgrade_to_https">Upgrade to the safer HTTPS protocol</string>
+    <string name="bbs_input_a_base_url">Base URL of BBS</string>
+    <string name="title_activity_global_settings">Settings</string>
+
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="bbs_qq_connect_ok">Support QQ connect</string>
+    <string name="preference_title_display">Display</string>
+    <string name="preference_title_use_safer_client">Use safer HTTPS client</string>
+    <string name="preference_key_use_safer_client">preference_key_use_safer_client</string>
+    <string name="preference_summary_on_use_safer_client">A safe HTTPS client will protect your privacy and data\'s integrity.</string>
+    <string name="preference_summary_off_use_safer_client">The client will not authorize the integrity of networking and your data may leak in transition.</string>
+
+    <string-array name="string_dark_mode_night_shift">
+        <item>Light mode</item>
+        <item>Dark mode</item>
+        <item>Dark mode in battery saving one</item>
+        <item>Follow system</item>
+    </string-array>
+
+    <string name="preference_title_use_browser_client">Browser\'s user agent</string>
+    <string name="preference_key_use_browser_client">preference_key_use_browser_client</string>
+
+    <string-array name="preference_entries_use_browser_client">
+        <item>NONE</item>
+        <item>Google Chrome</item>
+        <item>FireFox</item>
+        <item>Edge</item>
+    </string-array>
+    <string name="preference_title_display_mode">Display mode</string>
+    <string name="preference_key_display_mode">preference_key_display_mode</string>
+    <string name="preference_default_display_mode">MODE_NIGHT_FOLLOW_SYSTEM</string>
+    <string name="add_a_forum_help_text">Base URL means the basic url where one forum may serve.</string>
+    <string name="protocol_http_setting">Set HTTP protocol and it\'s not safe</string>
+    <string name="protocol_https_setting">Set safer HTTPS protocol</string>
+    <string name="global_default_bbs_setting">Global BBS Defaults</string>
+    <string name="action_bbs_user_status">User status</string>
+    <string name="bbs_more_thread_btn">More Thread</string>
+    <string name="bbs_forum_thread">Thread</string>
+    <string name="bbs_forum_post">Post</string>
+    <string name="time_template_yesterday_time">Yesterday %s</string>
+    <string name="time_template_today_time">Today %s</string>
+    <string name="time_template_days_ago">%d days ago %s</string>
+    <string name="bbs_forum_pinned">Pinned</string>
+    <string name="preference_group_title_network">Network</string>
+    <string name="preference_title_data_save_mode">Data saver mode</string>
+    <string name="preference_summary_on_data_save">Image and attachments are not downloaded under mobile condition.</string>
+    <string name="preference_summary_off_data_save">Image and attachments will be downloaded automactically</string>
+    <string name="preference_key_data_save_mode">preference_key_data_save_mode</string>
+    <string name="bbs_register_account_notification">Since the register process is not provided by the official and many websites always have their own register method which may requires different information. The app avoids the imcompatibility and will guide you to the register website. You can register your account in broswer.</string>
+    <string name="bbs_thread_publisher">Author</string>
+    <string name="bbs_thread_comment">Comment</string>
+    <string name="bbs_thread_say_something">Say something</string>
+    <string name="bbs_thread_attachment">Attachment</string>
+    <string name="bbs_thread_attachment_template">Attachment #%d</string>
+    <string name="bbs_require_comment">No comment found</string>
+    <string name="bbs_comment_failed">Failed to comment</string>
+    <string name="bbs_comment_successfully">Comment successfully</string>
+    <string name="bbs_commentting">Commentting...</string>
+    <string name="bbs_require_login_to_comment">Login required</string>
+    <string name="bbs_forum_member">Member</string>
+    <string name="bbs_allow_register">Allow register</string>
+    <string name="bbs_information_empty">No Discuz! forum found in database. Add a forum by the float button below if you like.</string>
+    <string name="data_is_process_notification">The data is processing with database or the server.</string>
+    <string name="data_cancel_task">Cancel the task</string>
+    <string name="data_put_in_background">Background</string>
+    <string name="task_is_cancelled">Task is cancelled and no change is made.</string>
+    <string name="data_is_processing">Data is processing</string>
+    <string name="updated_bbs_template">Update %s successfully</string>
+    <string name="failed_to_update_bbs_template">Failed to update %s</string>
+    <string name="display_order_4">Pinned on all</string>
+    <string name="display_order_3"># 3 Pinned</string>
+    <string name="display_order_2"># 2 Pinned</string>
+    <string name="display_order_1">Pinned</string>
+    <string name="display_order_n1">Recycled</string>
+    <string name="display_order_n2">Reviewing</string>
+    <string name="display_order_n3">Reviewing Ignored</string>
+    <string name="display_order_n4">Draft</string>
+    <string name="date_just_now">Just now</string>
+    <string name="date_minutes_before">%s minutes before</string>
+    <string name="date_hours_before">%s hours before</string>
+
+    <string name="title_activity_show_image_fullscreen">showImageFullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="save_images_text">Save</string>
+    <string name="show_picture">Show picture</string>
+    <string name="save_file_successfully_template">Save file: %s successfully.</string>
+    <string name="failed_to_save_file">Failed to save file</string>
+    <string name="bbs_api_version">API version</string>
+    <string name="bbs_discuz_api">Discuz! version</string>
+    <string name="bbs_discuz_plugin_version">Plugin version</string>
+    <string name="bbs_charset">Charset</string>
+    <string name="bbs_ucenter_url">UCenter URL</string>
+    <string name="bbs_hide_register">Register is not allowed</string>
+    <string name="bbs_add_time">Add time</string>
+    <string name="switch_bbs_sync_on_text">Allow sync and notification can be received</string>
+    <string name="switch_bbs_sync_off_text">Sync is not opened and you may miss notification.</string>
+    <string name="bbs_basic_information">Basic information</string>
+    <string name="bbs_mobile_is_closed">Discuz! mobile API is closed.</string>
+    <string name="bbs_user_banned">You are banned to browse the API</string>
+    <string name="bbs_user_id">Account</string>
+    <string name="bbs_read_access">Read access</string>
+    <string name="add_a_account">New user</string>
+    <string name="title_activity_login_bbs">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="login_bbs_title">Login %s</string>
+    <string name="bbs_password">Password</string>
+
+    <string-array name="entry_security_answer">
+        <item>Security Answer (ignore if you do not set it)</item>
+        <item>Your mother\'s name</item>
+        <item>Your father\'s name</item>
+        <item>The city where your grandfather is born</item>
+        <item>One of your teachers\' names</item>
+        <item>The type of your personal computer</item>
+        <item>The name of your favorite restaurant</item>
+        <item>The last 4 digits of the driver license</item>
+    </string-array>
+    <string name="bbs_login">login</string>
+    <string name="bbs_forget_password">Forget password?</string>
+    <string name="use_unsecure_http_warn">The HTTP protocol or HTTPS client settings may not secure. Your account information may leak in submiting data.</string>
+    <string name="bbs_login_account_password_required">Account and password are required.</string>
+    <string name="field_required">The field is required</string>
+    <string name="bbs_update_time">Update time</string>
+    <string name="user_password_not_correct">Username or password is not correct.</string>
+    <string name="save_user_to_bbs_successfully_template">Login %s to %s successfully</string>
+    <string name="discuz_reply_message_template">[quote][size=2]%s publish at %s [/size]%s[/quote]</string>
+    <string name="bbs_tap_to_enter_title">Thread\'s subject</string>
+    <string name="bbs_post_thread_message">Messages</string>
+    <string name="bbs_post_thread_subject_required">Thread subject is required</string>
+    <string name="bbs_post_thread_message_required">Thread message is required</string>
+    <string name="bbs_post_thread_cannot_upload_picture">Can\'t upload pictures now for some reasons</string>
+    <string name="bbs_post_thread_choose_a_picture">Choose a picture for the thread</string>
+    <string name="bbs_thread_uploading_files">Uploading the file</string>
+    <string name="bbs_thread_uploading_picture">Uploading the picture</string>
+    <string name="bbs_thread_upload_files_successful">Upload the file successfully</string>
+    <string name="bbs_thread_upload_files_failed">Failed to upload the file</string>
+    <string name="bbs_post_thread">Post a thread</string>
+    <string name="bbs_send_a_thread">Send</string>
+    <string name="bbs_font_h1">Heading 1</string>
+    <string name="bbs_font_h2">Heading 2</string>
+    <string name="bbs_font_h3">Heading 3</string>
+    <string name="bbs_font_h4">Heading 4</string>
+    <string name="bbs_font_h5">Heading 5</string>
+    <string name="bbs_font_h6">Heading 6</string>
+    <string name="bbs_font_h7">Heading 7</string>
+    <string name="bbs_login_user_null">Can not fetch the user information and login failed</string>
+    <string name="title_activity_bbs_show_portal">bbsShowPortalActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_bbs_home">BBS home</string>
+    <string name="bbs_no_thread_gotten">Can not find more</string>
+    <string name="bbs_notification_public_pm">Public message</string>
+    <string name="bbs_notification_my_pm">My message</string>
+    <string name="bbs_notification_my_thread">My thread</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="bbs_explore_thread">Explore</string>
+    <string name="bbs_login_by_browser">Login in webpage</string>
+    <string name="bbs_login_in_web_finished">Login finished</string>
+    <string name="bbs_login_in_browser_notification">If the bbs has their own authentication in logining, please login in webpage.</string>
+    <string name="bbs_login_in_webpage_alert">Login in webpage notification</string>
+    <string name="bbs_login_in_webpage_content">Please finish all the login process in the webpage interface then press \"login finished\" to save the successful result to app.</string>
+    <string name="bbs_no_item_found">No item is found</string>
+
+
+</resources>

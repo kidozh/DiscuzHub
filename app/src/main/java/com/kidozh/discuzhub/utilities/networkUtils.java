@@ -1,0 +1,308 @@
+package com.kidozh.discuzhub.utilities;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
+import android.telephony.TelephonyManager;
+
+import androidx.annotation.NonNull;
+
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.X509ExtendedTrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+
+public class networkUtils {
+    private static String TAG = networkUtils.class.getSimpleName();
+    public final static int CONNECT_TIMEOUT =5;
+    public final static int READ_TIMEOUT=5;
+    public final static int WRITE_TIMEOUT=5;
+    private static String preferenceName = "use_safe_https_client";
+
+    public static OkHttpClient getPreferredClientWithCookieJar(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
+        Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
+        if(useSafeHttpClient){
+            return getSafeOkHttpClientWithCookieJar(context);
+        }
+        else {
+            return getUnsafeOkHttpClientWithCookieJar(context);
+        }
+    }
+
+    public static OkHttpClient getPreferredClient(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
+        Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
+        if(useSafeHttpClient){
+            return getSafeOkHttpClient();
+        }
+        else {
+            return getUnsafeOkHttpClient();
+        }
+    }
+
+    public static OkHttpClient getPreferredClient(Boolean useSafeHttpClient){
+        if(useSafeHttpClient){
+            return getSafeOkHttpClient();
+        }
+        else {
+            return getUnsafeOkHttpClient();
+        }
+    }
+
+    public static OkHttpClient getSafeOkHttpClient(){
+        OkHttpClient.Builder mBuilder = new OkHttpClient.Builder();
+        mBuilder.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)
+                .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
+        return mBuilder.build();
+    }
+
+    public static OkHttpClient getSafeOkHttpClientWithCookieJar(Context context){
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+        cookieJar.clearSession();
+        cookieJar.clear();
+        OkHttpClient.Builder mBuilder = new OkHttpClient.Builder().cookieJar(cookieJar);
+        mBuilder.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)
+                .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
+
+
+        return mBuilder.build();
+    }
+
+    public static OkHttpClient getPreferredClientWithCookieJarByUser(Context context, forumUserBriefInfo briefInfo){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
+        Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
+        if(briefInfo==null){
+            return getPreferredClient(context);
+        }
+        else {
+            if(useSafeHttpClient){
+                return getSafeOkHttpClientWithCookieJarByUser(context,briefInfo);
+            }
+            else {
+                return getUnSafeOkHttpClientWithCookieJarByUser(context,briefInfo);
+            }
+        }
+
+
+    }
+
+    public static void copySharedPrefence(SharedPreferences fromSp, SharedPreferences toSp){
+        SharedPreferences sp1 = toSp, sp = fromSp;
+        SharedPreferences.Editor ed = sp1.edit();
+        // SharedPreferences sp = Sp2; //The shared preferences to copy from
+        ed.clear(); // This clears the one we are copying to, but you don't necessarily need to do that.
+        //Cycle through all the entries in the sp
+        for(Map.Entry<String,?> entry : sp.getAll().entrySet()){
+            Object v = entry.getValue();
+            String key = entry.getKey();
+            //Now we just figure out what type it is, so we can copy it.
+            // Note that i am using Boolean and Integer instead of boolean and int.
+            // That's because the Entry class can only hold objects and int and boolean are primatives.
+            if(v instanceof Boolean)
+                // Also note that i have to cast the object to a Boolean
+                // and then use .booleanValue to get the boolean
+                ed.putBoolean(key, (Boolean) v);
+            else if(v instanceof Float)
+                ed.putFloat(key, (Float) v);
+            else if(v instanceof Integer)
+                ed.putInt(key, (Integer) v);
+            else if(v instanceof Long)
+                ed.putLong(key, (Long) v);
+            else if(v instanceof String)
+                ed.putString(key, ((String)v));
+        }
+        ed.commit(); //save it.
+    }
+
+    public static String getSharedPreferenceNameByUser(@NonNull forumUserBriefInfo briefInfo){
+        return "CookiePersistence_U"+briefInfo.getId();
+    }
+
+    public static OkHttpClient getSafeOkHttpClientWithCookieJarByUser(Context context, forumUserBriefInfo briefInfo){
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(),
+                        new SharedPrefsCookiePersistor(context.getSharedPreferences(getSharedPreferenceNameByUser(briefInfo),Context.MODE_PRIVATE))
+                );
+        OkHttpClient.Builder mBuilder = new OkHttpClient.Builder().cookieJar(cookieJar);
+        mBuilder
+                .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)
+                .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
+
+
+        return mBuilder.build();
+    }
+
+    public static OkHttpClient getUnSafeOkHttpClientWithCookieJarByUser(Context context, forumUserBriefInfo briefInfo){
+
+
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(),
+                        new SharedPrefsCookiePersistor(context.getSharedPreferences(getSharedPreferenceNameByUser(briefInfo),Context.MODE_PRIVATE))
+                );
+
+        OkHttpClient.Builder mBuilder = new OkHttpClient.Builder().cookieJar(cookieJar);
+        final X509TrustManager trustManager = new TrustAllCerts();
+        mBuilder.sslSocketFactory(TrustAllCerts.createSSLSocketFactory(), trustManager);
+        mBuilder.hostnameVerifier(new TrustAllHostnameVerifier());
+        mBuilder.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)
+                .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
+
+
+        return mBuilder.build();
+    }
+
+    // cleared cookie
+    public static void clearUserCookieInfo(Context context, forumUserBriefInfo briefInfo){
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(),
+                        new SharedPrefsCookiePersistor(context.getSharedPreferences("CookiePersistence_U"+briefInfo.getId(),Context.MODE_PRIVATE))
+                );
+        context.getSharedPreferences(getSharedPreferenceNameByUser(briefInfo),Context.MODE_PRIVATE).edit().clear().apply();
+        cookieJar.clear();
+        cookieJar.clearSession();
+
+    }
+
+    public static void clearUserCookieInfo(Context context){
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(),
+                        new SharedPrefsCookiePersistor(context.getSharedPreferences("CookiePersistence",Context.MODE_PRIVATE))
+                );
+        context.getSharedPreferences("CookiePersistence",Context.MODE_PRIVATE).edit().clear().apply();
+        cookieJar.clear();
+        cookieJar.clearSession();
+
+    }
+    // end cleared cookie
+
+
+    public static OkHttpClient getUnsafeOkHttpClient(){
+        OkHttpClient.Builder mBuilder = new OkHttpClient.Builder();
+        //mBuilder.sslSocketFactory(TrustAllCerts.createSSLSocketFactory());
+        final X509TrustManager trustManager = new TrustAllCerts();
+        mBuilder.sslSocketFactory(TrustAllCerts.createSSLSocketFactory(), trustManager);
+        mBuilder.hostnameVerifier(new TrustAllHostnameVerifier());
+        mBuilder.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)
+                .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
+        return mBuilder.build();
+    }
+
+    public static OkHttpClient getUnsafeOkHttpClientWithCookieJar(Context context){
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
+        cookieJar.clearSession();
+        cookieJar.clear();
+        OkHttpClient.Builder mBuilder = new OkHttpClient.Builder().cookieJar(cookieJar);
+        //mBuilder.sslSocketFactory(TrustAllCerts.createSSLSocketFactory());
+        final X509TrustManager trustManager = new TrustAllCerts();
+        mBuilder.sslSocketFactory(TrustAllCerts.createSSLSocketFactory(), trustManager);
+        mBuilder.hostnameVerifier(new TrustAllHostnameVerifier());
+        mBuilder.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)
+                .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
+
+
+        return mBuilder.build();
+    }
+
+    private static class CookiesManager implements CookieJar {
+        Context context;
+        CookiesManager(Context context){
+            this.context = context;
+        }
+
+        private final PersistentCookieStore cookieStore = new PersistentCookieStore(context);
+
+        @Override
+        public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+            if (cookies != null && cookies.size() > 0) {
+                for (Cookie item : cookies) {
+                    cookieStore.add(url, item);
+                }
+            }
+        }
+
+        @Override
+        public List<Cookie> loadForRequest(HttpUrl url) {
+            List<Cookie> cookies = cookieStore.get(url);
+            return cookies;
+        }
+    }
+
+    public final static int NETWORK_STATUS_NO_CONNECTION = 0;
+    public final static int NETWORK_STATUS_WIFI = 1;
+    public final static int NETWORK_STATUS_MOBILE_DATA = 2;
+
+
+    public static int getConnectedType(Context context) {
+        int netType = 0;
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        if (networkInfo == null) {
+            return NETWORK_STATUS_NO_CONNECTION;
+        }
+        int nType = networkInfo.getType();
+        if (nType == ConnectivityManager.TYPE_WIFI) {
+            //WIFI
+            netType = NETWORK_STATUS_WIFI;
+        } else if (nType == ConnectivityManager.TYPE_MOBILE) {
+            netType = NETWORK_STATUS_MOBILE_DATA;
+        }
+        return netType;
+    }
+
+    public static boolean isNetworkConnected(Context context) {
+        if (context != null) {
+            ConnectivityManager mConnectivityManager = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+            if (mNetworkInfo != null) {
+                return mNetworkInfo.isAvailable();
+            }
+        }
+        return false;
+    }
+
+    public static boolean canDownloadImageOrFile(Context context){
+        if(getConnectedType(context) == NETWORK_STATUS_WIFI){
+            return true;
+        }
+        else {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
+            Boolean isDataSaverMode = prefs.getBoolean(context.getString(R.string.preference_key_data_save_mode),true);
+            if(isDataSaverMode){
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+
+
+    }
+
+
+}

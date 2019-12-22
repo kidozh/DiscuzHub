@@ -1,0 +1,101 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <!-- set status bar-->
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+
+        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>
+        <item name="android:actionBarStyle">@style/LightActionBar</item>
+        <item name="actionBarStyle">@style/LightActionBar</item>
+        <!-- navigation bar -->
+        <item name="android:navigationBarColor">@color/colorBackgroundDefault</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:actionMenuTextColor">@color/colorTextDefault</item>
+
+
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+        <item name="actionMenuTextColor">@color/colorTextDefault</item>
+
+        <item name="cardViewStyle">@style/CardView.DayNight</item>
+
+
+    </style>
+
+    <style name="CardView.DayNight" parent="CardView.Light">
+        <!--        <item name="android:foreground">?android:attr/selectableItemBackground</item>-->
+        <!--        <item name="android:background">@color/cardview_light_background</item>-->
+        <item name="android:textColor">@color/colorTextDefault</item>
+    </style>
+
+    <style name="LightActionBar" parent="Theme.MaterialComponents.Light">
+        <item name="android:background">@color/colorBackgroundDefault</item>
+        <item name="background">@color/colorBackgroundDefault</item>
+        <item name="android:backgroundStacked">@color/colorBackgroundDefault</item>
+        <item name="android:titleTextStyle">@style/ActionBarTitle</item>
+        <item name="android:titleTextColor">@color/colorTextDefault</item>
+
+        <item name="titleTextStyle">@style/ActionBarTitle</item>
+        <item name="titleTextColor">@color/colorTextDefault</item>
+
+        <item name="android:displayOptions">showHome|useLogo|showTitle</item>
+        <item name="displayOptions">showHome|useLogo|showTitle</item>
+
+    </style>
+
+    <style name="ActionBarTitle" parent="Theme.MaterialComponents.Light">
+        <item name="android:textColor">@color/colorTextDefault</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:titleTextColor">@color/colorTextDefault</item>
+        <item name="android:textSize">20sp</item>
+
+    </style>
+
+    <style name="ActionBarTabText" parent="@style/Widget.AppCompat.ActionBar.TabText">
+        <item name="android:textColor">@color/colorTextDefault</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
+
+    <style name="primary_color_chip_style" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/chip_background_select_state</item>
+        <item name="chipStrokeColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <!--<item name="android:textColorHighlight">@color/colorCloud</item>-->
+        <!--<item name="chipSurfaceColor">@color/colorPeterRiver</item>-->
+        <item name="android:shadowColor">@color/colorPrimaryDark</item>
+        <item name="rippleColor">@color/colorPrimaryDark</item>
+        <item name="chipIconVisible">true</item>
+    </style>
+
+</resources>

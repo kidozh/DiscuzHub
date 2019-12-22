@@ -1,0 +1,89 @@
+<!--
+  ~ Copyright 2018 The app Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="@string/global_default_bbs_setting">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/preference_key_use_safer_client"
+            android:summaryOff="@string/preference_summary_off_use_safer_client"
+            android:summaryOn="@string/preference_summary_on_use_safer_client"
+            android:title="@string/preference_title_use_safer_client" />
+        <ListPreference
+            android:defaultValue="NONE"
+            android:entries="@array/preference_entries_use_browser_client"
+            android:entryValues="@array/browser_ua_list"
+            android:key="@string/preference_key_use_browser_client"
+            android:summary="%s"
+            android:title="@string/preference_title_use_browser_client" />
+
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preference_group_title_network">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/preference_key_data_save_mode"
+            android:summaryOff="@string/preference_summary_off_data_save"
+            android:summaryOn="@string/preference_summary_on_data_save"
+            android:title="@string/preference_title_data_save_mode" />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/messages_header">
+
+        <EditTextPreference
+            app:key="signature"
+            app:title="@string/signature_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="reply"
+            app:entries="@array/reply_entries"
+            app:entryValues="@array/reply_values"
+            app:key="reply"
+            app:title="@string/reply_title"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/sync_header">
+
+        <SwitchPreferenceCompat
+            app:key="sync"
+            app:title="@string/sync_title" />
+
+        <SwitchPreferenceCompat
+            app:dependency="sync"
+            app:key="attachment"
+            app:summaryOff="@string/attachment_summary_off"
+            app:summaryOn="@string/attachment_summary_on"
+            app:title="@string/attachment_title" />
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preference_title_display">
+
+        <ListPreference
+            android:defaultValue="@string/preference_default_display_mode"
+            android:entries="@array/string_dark_mode_night_shift"
+            android:entryValues="@array/dark_mode_night_shift"
+            android:key="@string/preference_key_display_mode"
+            android:summary="%s"
+            android:title="@string/preference_title_display_mode" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

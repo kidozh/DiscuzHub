@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.kidozh.discuzhub">
+
+    <dist:module dist:instant="true" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="20" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activities.bbsPrivateMessageDetailActivity"></activity>
+        <activity android:name=".activities.loginByWebViewActivity" />
+        <activity
+            android:name=".activities.bbsShowPortalActivity"
+            android:label="@string/title_activity_bbs_show_portal" />
+        <activity android:name=".activities.loginBBSActivity" />
+        <activity android:name=".activities.showImageFullscreenActivity" />
+        <activity android:name=".activities.bbsShowInformationActivity" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:label="@string/title_activity_global_settings" />
+        <activity android:name=".activities.bbsShowCategoryForumActivity" />
+        <activity android:name=".activities.bbsShowForumThreadActivity" />
+        <activity android:name=".activities.bbsShowThreadActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activities.bbsPostThreadActivity" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+    </application>
+
+</manifest>

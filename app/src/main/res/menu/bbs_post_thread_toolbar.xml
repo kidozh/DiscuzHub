@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+    <item
+        android:id="@+id/bbs_toolbar_send_item"
+        android:icon="@drawable/vector_drawable_post_a_thread"
+        android:title="@string/bbs_send_a_thread"
+        app:showAsAction="ifRoom" />
+</menu>

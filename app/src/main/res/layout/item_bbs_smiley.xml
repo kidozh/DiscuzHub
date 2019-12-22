@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/smiley"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:adjustViewBounds="true"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:padding="6dp"
+    android:scaleType="centerCrop"
+    tools:src="@tools:sample/avatars" />

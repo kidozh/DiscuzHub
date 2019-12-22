@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <Spinner
+        android:id="@+id/dialog_new_forum_url_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:entries="@array/url_prefix"
+        android:spinnerMode="dropdown"
+        app:layout_constraintBottom_toBottomOf="@+id/dialog_new_forum_url_editText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dialog_new_forum_url_editText" />
+
+    <EditText
+        android:id="@+id/dialog_new_forum_url_editText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="@string/bbs_input_a_base_url"
+        android:inputType="textPersonName"
+        android:singleLine="true"
+        android:textAlignment="viewStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/dialog_new_forum_url_spinner"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/dialog_new_forum_safe_client_checkBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="@string/add_a_forum_by_url_safe_client_check"
+        app:layout_constraintEnd_toEndOf="@+id/dialog_new_forum_url_editText"
+        app:layout_constraintStart_toStartOf="@+id/dialog_new_forum_url_spinner"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_new_forum_url_editText" />
+
+    <TextView
+        android:id="@+id/dialog_new_forum_warn_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/add_a_forum_help_text"
+        app:layout_constraintEnd_toEndOf="@+id/dialog_new_forum_safe_client_checkBox"
+        app:layout_constraintStart_toStartOf="@+id/dialog_new_forum_safe_client_checkBox"
+        app:layout_constraintTop_toBottomOf="@+id/dialog_new_forum_safe_client_checkBox" />
+</androidx.constraintlayout.widget.ConstraintLayout>

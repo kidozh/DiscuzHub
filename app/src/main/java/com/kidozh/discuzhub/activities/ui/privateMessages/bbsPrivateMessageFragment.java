@@ -1,0 +1,263 @@
+package com.kidozh.discuzhub.activities.ui.privateMessages;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.adapter.bbsPrivateMessageAdapter;
+import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.forumInfo;
+import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.bbsParseUtils;
+import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.networkUtils;
+
+import java.io.IOException;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link bbsPrivateMessageFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link bbsPrivateMessageFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class bbsPrivateMessageFragment extends Fragment {
+    private String TAG = bbsPrivateMessageFragment.class.getSimpleName();
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    private OnFragmentInteractionListener mListener;
+
+    public bbsPrivateMessageFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment bbsPrivateMessageFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static bbsPrivateMessageFragment newInstance(String param1, String param2) {
+        bbsPrivateMessageFragment fragment = new bbsPrivateMessageFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_bbs_private_message, container, false);
+    }
+
+    @BindView(R.id.fragment_private_message_recyclerview)
+    RecyclerView privateMessageRecyclerview;
+    @BindView(R.id.fragment_private_message_swipeRefreshLayout)
+    SwipeRefreshLayout privateMessageSwipeRefreshLayout;
+    @BindView(R.id.fragment_private_message_empty_view)
+    View privateMessageEmptyView;
+
+    private forumUserBriefInfo userBriefInfo;
+    bbsInformation bbsInfo;
+    forumInfo forum;
+    private OkHttpClient client = new OkHttpClient();
+    bbsPrivateMessageAdapter adapter;
+    private int globalPage = 1;
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this,view);
+        configureIntentData();
+        configureRecyclerview();
+        configureSwipeRefreshLayout();
+
+
+    }
+
+    private void configureRecyclerview(){
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        privateMessageRecyclerview.setLayoutManager(linearLayoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
+                linearLayoutManager.getOrientation());
+        privateMessageRecyclerview.addItemDecoration(dividerItemDecoration);
+        adapter = new bbsPrivateMessageAdapter(bbsInfo,userBriefInfo);
+        privateMessageRecyclerview.setAdapter(adapter);
+
+    }
+
+    private void configureIntentData(){
+        Intent intent = getActivity().getIntent();
+        forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+    }
+
+    void configureSwipeRefreshLayout(){
+        privateMessageSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                globalPage = 1;
+                getPrivateMessage(globalPage);
+            }
+        });
+        getPrivateMessage(globalPage);
+    }
+
+    void getPrivateMessage(int page){
+        privateMessageSwipeRefreshLayout.setRefreshing(true);
+        String apiStr = bbsURLUtils.getPrivatePMApiUrl(page);
+        Request request = new Request.Builder()
+                .url(apiStr)
+                .build();
+        Log.d(TAG,"get public message in page "+page);
+        Handler mHandler = new Handler(Looper.getMainLooper());
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG,"ERROR in recv api");
+                        privateMessageSwipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        privateMessageSwipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+                if(response.isSuccessful()&& response.body()!=null){
+                    String s = response.body().string();
+                    Log.d(TAG,"Getting PM "+s);
+                    List<bbsParseUtils.privateMessage> privateMessageList = bbsParseUtils.parsePrivateMessage(s);
+                    if(privateMessageList!=null){
+                        Log.d(TAG,"get public message "+privateMessageList.size());
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(page == 1){
+                                    adapter.setPrivateMessageList(privateMessageList);
+                                    if(privateMessageList.size()==0){
+                                        privateMessageEmptyView.setVisibility(View.VISIBLE);
+                                    }
+                                    else {
+                                        privateMessageEmptyView.setVisibility(View.GONE);
+                                    }
+                                }
+                                else {
+                                    adapter.addPrivateMessageList(privateMessageList);
+                                }
+                            }
+                        });
+
+                        globalPage += 1;
+                    }
+                    else {
+                        privateMessageEmptyView.setVisibility(View.VISIBLE);
+                    }
+
+                }
+            }
+        });
+    }
+
+
+
+
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+}

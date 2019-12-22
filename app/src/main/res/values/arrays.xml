@@ -1,0 +1,80 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="reply_entries">
+        <item>Reply</item>
+        <item>Reply to all</item>
+    </string-array>
+
+    <string-array name="reply_values">
+        <item>reply</item>
+        <item>reply_all</item>
+    </string-array>
+
+    <string-array name="dark_mode_night_shift">
+        <item>MODE_NIGHT_NO</item>
+        <item>MODE_NIGHT_YES</item>
+        <item>MODE_NIGHT_AUTO_BATTERY</item>
+        <item>MODE_NIGHT_FOLLOW_SYSTEM</item>
+    </string-array>
+
+    <string-array name="bbs_color_list">
+        <item>Black,#000000</item>
+        <item>Sienna,#A0522D</item>
+        <item>DarkOliveGreen,#556B2F</item>
+        <item>DarkGreen,#006400</item>
+        <item>DarkSlateBlue,#483D8B</item>
+        <item>Navy,#000080</item>
+        <item>Indigo,#4B0082</item>
+        <item>DarkSlateGray,#2F4F4F</item>
+        <item>DarkRed,#8B0000</item>
+        <item>DarkOrange,#FF8C00</item>
+        <item>Olive,#808000</item>
+        <item>Green,#008000</item>
+        <item>Teal,#008080</item>
+        <item>Blue,#0000FF</item>
+        <item>SlateGray,#708090</item>
+        <item>DimGray,#696969</item>
+        <item>Red,#FF0000</item>
+        <item>SandyBrown,#F4A460</item>
+        <item>YellowGreen,#ADFF2F</item>
+        <item>SeaGreen,#2E8B57</item>
+        <item>MediumTurquoise,#48D1CC</item>
+        <item>RoyalBlue,#4169E1</item>
+        <item>Purple,#9370DB</item>
+        <item>Gray,#D3D3D3</item>
+        <item>Magenta,#FF00FF</item>
+        <item>Orange,#FFA500</item>
+        <item>Yellow,#FFFF00</item>
+        <item>Lime,#00FF00</item>
+        <item>Cyan,#00FFFF</item>
+        <item>DeepSkyBlue,#00BFFF</item>
+        <item>DarkOrchid,#9932CC</item>
+        <item>Silver,#C0C0C0</item>
+        <item>Pink,#FFC0CB</item>
+        <item>Wheat,#F5DEB3</item>
+        <item>LemonChiffon,#FFFACD</item>
+        <item>PaleGreen,#98FB98</item>
+        <item>PaleTurquoise,#AFEEEE</item>
+        <item>LightBlue,#ADD8E6</item>
+        <item>Plum,#DDA0DD</item>
+        <item>undefined,#666666</item>
+    </string-array>
+
+    <string-array name="bbs_font_size">
+        <item>@string/bbs_font_h1</item>
+        <item>@string/bbs_font_h2</item>
+        <item>@string/bbs_font_h3</item>
+        <item>@string/bbs_font_h4</item>
+        <item>@string/bbs_font_h5</item>
+        <item>@string/bbs_font_h6</item>
+        <item>@string/bbs_font_h7</item>
+    </string-array>
+
+    <string-array name="browser_ua_list">
+        <item>NONE</item>
+        <item>Chrome</item>
+        <item>FireFox</item>
+        <item>Edge</item>
+    </string-array>
+
+</resources>

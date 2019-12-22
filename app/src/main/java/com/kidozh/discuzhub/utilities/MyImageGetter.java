@@ -1,0 +1,73 @@
+package com.kidozh.discuzhub.utilities;
+
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.text.Html;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.adapter.bbsForumThreadCommentAdapter;
+
+import java.io.InputStream;
+
+import okhttp3.OkHttpClient;
+
+public class MyImageGetter implements Html.ImageGetter {
+    private TextView textView;
+    private Context context;
+    private static String TAG = MyImageGetter.class.getSimpleName();
+    View rootView;
+
+    public MyImageGetter(Context context,TextView textView, View rootView){
+        this.textView = textView;
+        this.context = context;
+        this.rootView = rootView;
+    }
+
+    @Override
+    public Drawable getDrawable(String source) {
+        Log.d(TAG,"Get drawable "+source);
+        MyDrawableWrapper myDrawable = new MyDrawableWrapper();
+        Drawable drawable = context.getDrawable(R.drawable.vector_drawable_loading_image);
+        myDrawable.setDrawable(drawable);
+        OkHttpClient client = networkUtils.getPreferredClient(context);
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
+        Glide.get(context)
+                .getRegistry()
+                .replace(GlideUrl.class, InputStream.class,factory);
+        Log.d(TAG,"Load image from "+source);
+        if(networkUtils.canDownloadImageOrFile(context)){
+
+            Glide.with(context)
+                    .asBitmap()
+                    .load(source)
+                    .error(R.drawable.vector_drawable_image_failed)
+                    .placeholder(R.drawable.vector_drawable_loading_image)
+                    .into(new BitmapTarget(context,myDrawable,textView,rootView));
+        }
+        else {
+            Glide.with(context)
+                    .asBitmap()
+                    .load(source)
+                    .error(R.drawable.vector_drawable_image_download_wider_placeholder)
+                    .placeholder(R.drawable.vector_drawable_loading_image)
+                    .onlyRetrieveFromCache(true)
+                    .into(new BitmapTarget(context,myDrawable,textView,rootView));
+
+//            Glide.with(context)
+//                    .asBitmap()
+//                    .load(source)
+//                    .error(R.drawable.vector_drawable_image_crash)
+//                    .placeholder(R.drawable.vector_drawable_loading_image)
+//                    .onlyRetrieveFromCache(true)
+//                    .into(new BitmapTarget(context,myDrawable,textView));
+        }
+        return myDrawable;
+    }
+}
