@@ -641,7 +641,8 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
     private void configureToolbar(){
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle(getString(R.string.bbs_post_thread)+" - "+forumName);
+        getSupportActionBar().setTitle(getString(R.string.bbs_post_thread));
+        getSupportActionBar().setSubtitle(forumName);
 
 
     }

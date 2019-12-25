@@ -885,4 +885,35 @@ public class bbsParseUtils {
         }
     }
 
+    public static class noticeNumInfo{
+        public int push,pm,prompt,mypost;
+        public noticeNumInfo(String push,String pm, String prompt, String mypost){
+            this.push = Integer.parseInt(push);
+            this.pm = Integer.parseInt(pm);
+            this.prompt = Integer.parseInt(prompt);
+            this.mypost = Integer.parseInt(mypost);
+        }
+
+        public int getAllNoticeInfo(){
+            return push+pm+prompt+mypost;
+        }
+    }
+
+    public static noticeNumInfo parseNoticeInfo(String s){
+        try{
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject variables = jsonObject.getJSONObject("Variables");
+            JSONObject notice = variables.getJSONObject("notice");
+            String newpush = notice.getString("newpush");
+            String newpm = notice.getString("newpm");
+            String newprompt = notice.getString("newprompt");
+            String newmypost = notice.getString("newmypost");
+            return new noticeNumInfo(newpush,newpm,newprompt,newmypost);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

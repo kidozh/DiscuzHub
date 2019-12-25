@@ -2,6 +2,8 @@ package com.kidozh.discuzhub.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +18,9 @@ import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragm
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.networkUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -27,8 +31,15 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.io.IOException;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class bbsShowPortalActivity extends AppCompatActivity
         implements bbsPrivateMessageFragment.OnNewMessageChangeListener,
@@ -44,6 +55,7 @@ public class bbsShowPortalActivity extends AppCompatActivity
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
     forumUserBriefInfo userBriefInfo;
+    private OkHttpClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +65,7 @@ public class bbsShowPortalActivity extends AppCompatActivity
         getIntentInfo();
         configureBtmNavigation();
         configureActionBar();
+        getNotificationInfo();
     }
 
     private void configureActionBar(){
@@ -98,6 +111,7 @@ public class bbsShowPortalActivity extends AppCompatActivity
         curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
         if(curBBS == null){
             finish();
         }
@@ -109,8 +123,38 @@ public class bbsShowPortalActivity extends AppCompatActivity
         if(getSupportActionBar()!=null){
             getSupportActionBar().setTitle(curBBS.site_name);
         }
+    }
+
+    private void getNotificationInfo(){
+        Request request = new Request.Builder()
+                .url(bbsURLUtils.getLoginApiUrl())
+                .build();
+        Handler mHandler = new Handler(Looper.getMainLooper());
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()&& response.body()!=null){
+                    String s = response.body().string();
+                    bbsParseUtils.noticeNumInfo noticeInfo = bbsParseUtils.parseNoticeInfo(s);
+                    if(noticeInfo!=null){
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                setNewMessageNum(noticeInfo.getAllNoticeInfo());
+                            }
+                        });
+                    }
 
 
+
+                }
+            }
+        });
     }
 
     @Override

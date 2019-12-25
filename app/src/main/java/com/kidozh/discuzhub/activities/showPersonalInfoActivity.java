@@ -101,6 +101,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
     forumUserBriefInfo userBriefInfo;
     private String userId;
     OkHttpClient client;
+    String friendNum, threadNum, postsNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +113,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
 
         renderUserInfo();
         getUserInfo();
-        configureViewPager();
+
 
 
     }
@@ -226,6 +227,10 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
                                 }
                                 setIconAndTextView(regdate,personalInfoRegdateIcon,personalInfoRegdateTextview);
                                 setIconAndTextView(info.get("recentnote"),personalInfoRecentNoteIcon,personalInfoRecentNoteTextview);
+                                friendNum = info.get("friends");
+                                threadNum = info.get("threads");
+                                postsNum = info.get("posts");
+                                configureViewPager();
                             }
                         });
                     }
@@ -286,11 +291,11 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
         public CharSequence getPageTitle(int position) {
             switch (position){
                 case 0:
-                    return getString(R.string.bbs_user_friend);
+                    return getString(R.string.bbs_user_friend)+String.format(" (%s)",friendNum);
                 case 1:
-                    return getString(R.string.bbs_notification_my_pm);
+                    return getString(R.string.bbs_forum_thread)+String.format(" (%s)",threadNum);
                 case 2:
-                    return getString(R.string.bbs_notification_my_thread);
+                    return getString(R.string.bbs_forum_post)+String.format(" (%s)",postsNum);
                 default:
                     return "";
             }
