@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.activities.ui.notifications;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.badge.BadgeUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
@@ -26,7 +29,7 @@ import com.kidozh.discuzhub.activities.ui.userThreads.bbsMyThreadFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class NotificationsFragment extends Fragment {
+public class NotificationsFragment extends Fragment implements bbsPrivateMessageFragment.OnNewMessageChangeListener {
     private static final String TAG = NotificationsFragment.class.getSimpleName();
     @BindView(R.id.fragment_notifications_viewpager)
     ViewPager fragmentNotificationViewPager;
@@ -34,6 +37,14 @@ public class NotificationsFragment extends Fragment {
     TabLayout fragmentNotificationTabLayout;
 
     private NotificationsViewModel notificationsViewModel;
+    private int privateNewMessageNum = -1;
+
+    public NotificationsFragment(int privateMessage){
+        this.privateNewMessageNum = privateMessage;
+    }
+
+    public NotificationsFragment(){
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,12 +62,15 @@ public class NotificationsFragment extends Fragment {
         configureViewPager();
     }
 
+    @SuppressLint("RestrictedApi")
     void configureViewPager(){
         Log.d(TAG,"Configuring notification fragment");
         fragmentNotificationTabLayout.setupWithViewPager(fragmentNotificationViewPager);
         notificationViewPagerAdapter adapter  = new notificationViewPagerAdapter(getChildFragmentManager());
         fragmentNotificationViewPager.setAdapter(adapter);
     }
+
+
 
     public class notificationViewPagerAdapter extends FragmentStatePagerAdapter {
         notificationViewPagerAdapter(FragmentManager fragmentManager){
@@ -104,4 +118,41 @@ public class NotificationsFragment extends Fragment {
             return 3;
         }
     }
+
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    public void setNewMessageNum(int i) {
+        Log.d(TAG,"Set new message number "+i);
+        if(getContext()!=null){
+            BadgeDrawable badgeDrawable = BadgeDrawable.create(getContext());
+
+            try{
+                View privateMessageView = fragmentNotificationTabLayout.getTabAt(2).view;
+                badgeDrawable.setNumber(i);
+                BadgeUtils.attachBadgeDrawable(badgeDrawable, privateMessageView, null);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+
+
+    }
+
+    @SuppressLint("RestrictedApi")
+    public void setPrivateNewMessageNum(int privateNewMessageNum) {
+        this.privateNewMessageNum = privateNewMessageNum;
+        BadgeDrawable badgeDrawable = BadgeDrawable.create(getContext());
+        View privateMessageView = fragmentNotificationTabLayout.getTabAt(2).view;
+        badgeDrawable.setNumber(privateNewMessageNum);
+        BadgeUtils.attachBadgeDrawable(badgeDrawable, privateMessageView, null);
+    }
+
+    public interface onPrivateMessageChangeListener{
+        public void setPrivateMessageNum(int privateMessageNum);
+
+    }
+
 }

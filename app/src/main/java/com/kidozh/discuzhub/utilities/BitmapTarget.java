@@ -58,7 +58,7 @@ class BitmapTarget extends SimpleTarget<Bitmap> {
         super.onLoadFailed(errorDrawable);
         TextView tv = textView;
         // errorDrawable = context.getDrawable(R.drawable.vector_drawable_image_placeholder);
-        int width=errorDrawable.getIntrinsicWidth() ;
+        int width=errorDrawable.getIntrinsicWidth();
         int height=errorDrawable.getIntrinsicHeight();
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -66,6 +66,9 @@ class BitmapTarget extends SimpleTarget<Bitmap> {
         // int screenWidth = outMetrics.widthPixels - textView.getPaddingLeft() - textView.getPaddingRight();
         int screenWidth =  textView.getWidth() - textView.getPaddingLeft() - textView.getPaddingRight();
         double rescaleFactor = ((double) screenWidth) / width;
+        if(rescaleFactor <=0){
+            rescaleFactor = 1;
+        }
         int newHeight = (int) (height * rescaleFactor);
         myDrawable.setBounds(0,0,screenWidth,newHeight);
         errorDrawable.setBounds(0,0,screenWidth,newHeight);
@@ -95,10 +98,13 @@ class BitmapTarget extends SimpleTarget<Bitmap> {
 ////        DisplayMetrics outMetrics = new DisplayMetrics();
 ////        wm.getDefaultDisplay().getMetrics(outMetrics);
         // int screenWidth = outMetrics.widthPixels - textView.getPaddingLeft() - textView.getPaddingRight();
-        int screenWidth =  textView.getWidth() - textView.getPaddingLeft() - textView.getPaddingRight();
+        int screenWidth =  textView.getWidth();
         Log.d(TAG,"Screen width "+screenWidth+" image width "+width);
         if (screenWidth / width < 3){
             double rescaleFactor = ((double) screenWidth) / width;
+            if(rescaleFactor <=0){
+                rescaleFactor = 1;
+            }
             int newHeight = (int) (height * rescaleFactor);
             Log.d(TAG,"rescaleFactor "+rescaleFactor+" image new height "+newHeight);
             myDrawable.setBounds(0,0,screenWidth,newHeight);
@@ -124,9 +130,9 @@ class BitmapTarget extends SimpleTarget<Bitmap> {
                         textView.invalidateDrawable(myDrawable);
                         textView.setText(t, TextView.BufferType.SPANNABLE);
                         textView.invalidate();
-                        textView.requestLayout();
-                        rootView.invalidate();
-                        rootView.requestLayout();
+//                        textView.requestLayout();
+//                        rootView.invalidate();
+//                        rootView.requestLayout();
 
                     }
                 });

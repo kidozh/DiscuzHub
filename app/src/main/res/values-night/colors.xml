@@ -10,6 +10,7 @@
     <color name="colorBackgroundDefault">@color/colorPureBlack</color>
 
     <color name="colorTextSecondaryDefault">@color/colorCloud</color>
+    <color name="colorBackgroundSecondaryDefault">@color/colorWetasphalt</color>
     <color name="colorHighlight">@color/colorCloud</color>
     <color name="colorSafeStatus">@color/colorCloud</color>
 

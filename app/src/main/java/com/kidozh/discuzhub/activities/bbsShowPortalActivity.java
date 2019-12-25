@@ -7,8 +7,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.badge.BadgeUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ui.notifications.NotificationsFragment;
+import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -16,6 +20,8 @@ import com.kidozh.discuzhub.utilities.bbsURLUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -24,13 +30,16 @@ import androidx.navigation.ui.NavigationUI;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class bbsShowPortalActivity extends AppCompatActivity {
+public class bbsShowPortalActivity extends AppCompatActivity
+        implements bbsPrivateMessageFragment.OnNewMessageChangeListener,
+        NotificationsFragment.onPrivateMessageChangeListener{
     private static final String TAG = bbsShowPortalActivity.class.getSimpleName();
 
     @BindView(R.id.bbs_portal_nav_view)
     BottomNavigationView navView;
     @BindView(R.id.bbs_portal_nav_host_fragment)
     View portalNavHostFragment;
+    NotificationsFragment notificationsFragment;
 
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
@@ -79,6 +88,7 @@ public class bbsShowPortalActivity extends AppCompatActivity {
             NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
             NavigationUI.setupWithNavController(navView, navController);
         }
+        notificationsFragment = (NotificationsFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_notifications);
 
 
     }
@@ -131,4 +141,35 @@ public class bbsShowPortalActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void setNewMessageNum(int i) {
+
+        if(i == 0){
+            if(navView.getBadge(R.id.navigation_notifications)!=null){
+                navView.removeBadge(R.id.navigation_notifications);
+            }
+
+
+        }
+        else {
+            Log.d(TAG,"set notification num "+i);
+            BadgeDrawable badgeDrawable = navView.getOrCreateBadge(R.id.navigation_notifications);
+            badgeDrawable.setNumber(i);
+
+        }
+        if(notificationsFragment!=null){
+            notificationsFragment.setNewMessageNum(i);
+        }
+
+
+
+
+    }
+
+
+
+    @Override
+    public void setPrivateMessageNum(int privateMessageNum) {
+
+    }
 }

@@ -163,4 +163,11 @@
     <string name="bbs_login_in_webpage_alert">在网页中登录提醒</string>
     <string name="bbs_login_in_webpage_content">请在登录界面之中完成登录操作，然后轻触“完成登录”以将用户录入应用之中。</string>
     <string name="bbs_no_item_found">没有信息</string>
+    <string name="bbs_send_pm">发送</string>
+    <string name="bbs_pm_is_required">至少说些什么吧</string>
+    <string name="bbs_follow_user">关注</string>
+    <string name="bbs_bio_not_set">未设置个人签名</string>
+    <string name="bbs_user_friend">好友</string>
+    <string name="bbs_no_friend">该用户还没添加好友</string>
+    <string name="bbs_send_pm_in_profile">私信</string>
 </resources>

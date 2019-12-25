@@ -64,7 +64,6 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
         Glide.with(context)
-                .asBitmap()
                 .load(userInfo.avatarUrl)
                 .error(R.drawable.avatar_person_male)
                 .placeholder(R.drawable.avatar_person_male)

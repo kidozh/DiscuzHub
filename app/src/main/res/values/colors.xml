@@ -31,6 +31,7 @@
     <color name="colorBackgroundDefault">@color/colorPureWhite</color>
 
     <color name="colorTextSecondaryDefault">@color/colorWetasphalt</color>
+    <color name="colorBackgroundSecondaryDefault">@color/colorCloud</color>
     <color name="colorHighlight">@color/colorPeterRiver</color>
     <color name="colorSafeStatus">@color/colorTurquoise</color>
     <color name="colorUnSafeStatus">@color/colorAlizarin</color>

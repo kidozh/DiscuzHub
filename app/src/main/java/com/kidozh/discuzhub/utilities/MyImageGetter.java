@@ -23,11 +23,19 @@ public class MyImageGetter implements Html.ImageGetter {
     private Context context;
     private static String TAG = MyImageGetter.class.getSimpleName();
     View rootView;
+    Boolean isFileDownloadAllowed = false;
 
     public MyImageGetter(Context context,TextView textView, View rootView){
         this.textView = textView;
         this.context = context;
         this.rootView = rootView;
+    }
+
+    public MyImageGetter(Context context,TextView textView, View rootView, Boolean isFileAllowed){
+        this.textView = textView;
+        this.context = context;
+        this.rootView = rootView;
+        this.isFileDownloadAllowed = isFileAllowed;
     }
 
     @Override
@@ -42,7 +50,7 @@ public class MyImageGetter implements Html.ImageGetter {
                 .getRegistry()
                 .replace(GlideUrl.class, InputStream.class,factory);
         Log.d(TAG,"Load image from "+source);
-        if(networkUtils.canDownloadImageOrFile(context)){
+        if(networkUtils.canDownloadImageOrFile(context) || isFileDownloadAllowed){
 
             Glide.with(context)
                     .asBitmap()

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activities.showPersonalInfoActivity"
+    tools:showIn="@layout/activity_show_personal_info">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/show_personal_info_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/show_personal_info_username"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:layout_constraintBottom_toBottomOf="@+id/show_personal_info_focus_btn"
+                app:layout_constraintEnd_toStartOf="@+id/show_personal_info_focus_btn"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="@tools:sample/full_names" />
+
+            <Button
+                android:id="@+id/show_personal_info_message_btn"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:text="@string/bbs_send_pm"
+                app:icon="@drawable/vector_drawable_send_message"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/show_personal_info_focus_btn"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="@string/bbs_follow_user"
+                app:icon="@drawable/vector_drawable_plus"
+                app:layout_constraintBottom_toBottomOf="@+id/show_personal_info_message_btn"
+                app:layout_constraintEnd_toStartOf="@+id/show_personal_info_message_btn"
+                app:layout_constraintTop_toTopOf="@+id/show_personal_info_message_btn" />
+
+            <TextView
+                android:id="@+id/show_personal_info_bio_textview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:textAlignment="viewStart"
+                app:layout_constraintEnd_toEndOf="@+id/show_personal_info_message_btn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/show_personal_info_username"
+                tools:text="@tools:sample/lorem" />
+
+            <ImageView
+                android:id="@+id/show_personal_info_interest_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="@+id/show_personal_info_bio_textview"
+                app:layout_constraintTop_toBottomOf="@+id/show_personal_info_bio_textview"
+                app:srcCompat="@drawable/vector_drawable_attachment" />
+
+            <TextView
+                android:id="@+id/show_personal_info_interest_textView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:singleLine="true"
+                android:textAlignment="viewStart"
+                android:textColor="@color/colorPrimaryDark"
+                app:layout_constraintEnd_toEndOf="@+id/show_personal_info_bio_textview"
+                app:layout_constraintStart_toEndOf="@+id/show_personal_info_interest_icon"
+                app:layout_constraintTop_toTopOf="@+id/show_personal_info_interest_icon"
+                tools:text="@tools:sample/lorem" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.core.widget.NestedScrollView>

@@ -44,7 +44,7 @@ import okhttp3.Response;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link bbsPrivateMessageFragment.OnFragmentInteractionListener} interface
+ * {@link bbsPrivateMessageFragment.OnNewMessageChangeListener} interface
  * to handle interaction events.
  * Use the {@link bbsPrivateMessageFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -60,7 +60,7 @@ public class bbsPrivateMessageFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private OnNewMessageChangeListener mListener;
 
     public bbsPrivateMessageFragment() {
         // Required empty public constructor
@@ -114,6 +114,8 @@ public class bbsPrivateMessageFragment extends Fragment {
     bbsPrivateMessageAdapter adapter;
     private int globalPage = 1;
 
+    private int newMessageNum = 0;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -123,6 +125,14 @@ public class bbsPrivateMessageFragment extends Fragment {
         configureSwipeRefreshLayout();
 
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // need to resume it
+        globalPage = 1;
+        getPrivateMessage(globalPage);
     }
 
     private void configureRecyclerview(){
@@ -144,6 +154,8 @@ public class bbsPrivateMessageFragment extends Fragment {
         client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
     }
 
+
+
     void configureSwipeRefreshLayout(){
         privateMessageSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -161,7 +173,7 @@ public class bbsPrivateMessageFragment extends Fragment {
         Request request = new Request.Builder()
                 .url(apiStr)
                 .build();
-        Log.d(TAG,"get public message in page "+page);
+        Log.d(TAG,"get private message in page "+apiStr);
         Handler mHandler = new Handler(Looper.getMainLooper());
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -188,7 +200,17 @@ public class bbsPrivateMessageFragment extends Fragment {
                     String s = response.body().string();
                     Log.d(TAG,"Getting PM "+s);
                     List<bbsParseUtils.privateMessage> privateMessageList = bbsParseUtils.parsePrivateMessage(s);
+
                     if(privateMessageList!=null){
+                        newMessageNum = 0;
+                        for (int i=0;i<privateMessageList.size();i++){
+                            bbsParseUtils.privateMessage privateDetailMessage = privateMessageList.get(i);
+                            if(privateDetailMessage.isNew){
+                                newMessageNum += 1;
+                            }
+                        }
+                        setNewMessageNum(newMessageNum);
+
                         Log.d(TAG,"get public message "+privateMessageList.size());
                         mHandler.post(new Runnable() {
                             @Override
@@ -211,7 +233,13 @@ public class bbsPrivateMessageFragment extends Fragment {
                         globalPage += 1;
                     }
                     else {
-                        privateMessageEmptyView.setVisibility(View.VISIBLE);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                privateMessageEmptyView.setVisibility(View.VISIBLE);
+                            }
+                        });
+
                     }
 
                 }
@@ -223,21 +251,22 @@ public class bbsPrivateMessageFragment extends Fragment {
 
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void setNewMessageNum(int num) {
+        Log.d(TAG,"set message number "+num);
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.setNewMessageNum(num);
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        if (context instanceof OnNewMessageChangeListener) {
+            mListener = (OnNewMessageChangeListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -256,8 +285,8 @@ public class bbsPrivateMessageFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnNewMessageChangeListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void setNewMessageNum(int i);
     }
 }

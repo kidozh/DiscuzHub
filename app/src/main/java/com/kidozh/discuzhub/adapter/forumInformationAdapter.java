@@ -105,7 +105,6 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
         Glide.with(context)
-                .asBitmap()
                 .load(bbsURLUtils.getBBSLogoUrl())
                 .error(R.drawable.vector_drawable_bbs)
                 .placeholder(R.drawable.vector_drawable_bbs)

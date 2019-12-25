@@ -174,7 +174,7 @@ public class bbsShowThreadActivity extends AppCompatActivity {
         mRecyclerview.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerview.setLayoutManager(linearLayoutManager);
-        adapter = new bbsForumThreadCommentAdapter(this);
+        adapter = new bbsForumThreadCommentAdapter(this,bbsInfo,userBriefInfo);
         adapter.subject =subject;
         mRecyclerview.setAdapter(adapter);
         mRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {

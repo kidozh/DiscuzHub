@@ -69,6 +69,10 @@ public class bbsURLUtils {
         return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=small",uid);
     }
 
+    public static String getDefaultAvatarUrlByUid(String uid){
+        return UC_SERVER_URL+String.format("/avatar.php?uid=%s",uid);
+    }
+
     public static String getLoginUrl(){
         return BASE_URL + "/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1";
         //return "https://bbs.nwpu.edu.cn/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1";
@@ -181,8 +185,26 @@ public class bbsURLUtils {
         return BASE_URL+"/api/mobile/index.php?version=4&module=mypm&page="+page ;
     }
 
-    public static String getPrivatePMDetailApiUrlByPlid(int plid){
-        return BASE_URL + "/api/mobile/index.php?version=4&module=mypm&subop=view&plid="+plid;
+    public static String getPrivatePMDetailApiUrlByPlid(int plid,int page){
+        if(page==-1){
+            return BASE_URL + "/api/mobile/index.php?version=4&module=mypm&subop=view&plid="+plid;
+        }
+        else {
+            return BASE_URL + "/api/mobile/index.php?version=4&module=mypm&subop=view&plid="+plid+"&page="+page;
+        }
+
+    }
+
+    public static String getSendPMApiUrl(int plid,int pmid){
+        return BASE_URL+"/api/mobile/index.php?version=4&ac=pm&op=send&daterange=0&module=sendpm&plid="+plid+"&pmid="+pmid+"&handlekey=pmsend&pmsubmit=yes&inajax=1";
+    }
+
+    public static String getProfileApiUrlByUid(int uid){
+        return BASE_URL+"/api/mobile/index.php?version=4&module=profile&uid="+uid;
+    }
+
+    public static String getFriendApiUrlByUid(int uid){
+        return BASE_URL+"/api/mobile/index.php?version=4&module=friend&uid="+uid;
     }
 
 }

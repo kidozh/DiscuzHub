@@ -102,7 +102,6 @@ public class loginBBSActivity extends AppCompatActivity {
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
         Glide.with(this)
-                .asBitmap()
                 .load(bbsURLUtils.getBBSLogoUrl())
                 .error(R.drawable.vector_drawable_bbs)
                 .placeholder(R.drawable.vector_drawable_bbs)

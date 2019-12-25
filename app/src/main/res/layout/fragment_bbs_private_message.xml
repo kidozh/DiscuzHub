@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activities.ui.privateMessages.bbsPrivateMessageFragment">
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/fragment_private_message_swipeRefreshLayout"
         android:layout_width="match_parent"

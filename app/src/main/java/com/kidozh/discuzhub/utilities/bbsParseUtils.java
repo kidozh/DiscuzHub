@@ -645,13 +645,13 @@ public class bbsParseUtils {
                 JSONObject pm = (JSONObject) pmList.get(i);
                 privateMessage privateMessageInstance = new privateMessage(
                         Integer.parseInt(pm.getString("plid")),
-                        Boolean.parseBoolean(pm.getString("isnew")),
+                        !pm.getString("isnew").equals("0"),
                         pm.getString("subject"),
                         Integer.parseInt(pm.getString("touid")),
                         Integer.parseInt(pm.getString("pmid")),
-                        Integer.parseInt(pm.getString("msgfromid")),
-                        pm.getString("msgfrom"),
-                        pm.getString("message"),
+                        Integer.parseInt(pm.optString("msgfromid","0")),
+                        pm.optString("msgfrom",""),
+                        pm.optString("message",""),
                         pm.getString("tousername"),
                         pm.getString("vdateline")
                 );
@@ -739,7 +739,7 @@ public class bbsParseUtils {
         }
     }
 
-    public static List<privateDetailMessage> parsePrivateDetailMessage(String s){
+    public static List<privateDetailMessage> parsePrivateDetailMessage(String s, int recvId){
         try{
             List<privateDetailMessage> privateDetailMessageList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
@@ -751,18 +751,132 @@ public class bbsParseUtils {
                         Integer.parseInt(pm.getString("plid")),
                         pm.getString("subject"),
                         Integer.parseInt(pm.getString("pmid")),
-                        pm.getString("message"),
+                        pm.optString("message",""),
                         Integer.parseInt(pm.getString("touid")),
                         Integer.parseInt(pm.getString("msgfromid")),
                         pm.getString("msgfrom"),
                         pm.getString("vdateline"),
                         true
                 );
-                privateDetailMessageList.add(privateDetailMessage);
+
+                if(privateDetailMessage.msgFromId == recvId){
+                    privateDetailMessage.isMyself = true;
+                }
+                else {
+                    privateDetailMessage.isMyself = false;
+                }
+                if(privateDetailMessage.message.length()!=0){
+                    privateDetailMessageList.add(privateDetailMessage);
+                }
+
+
 
 
             }
             return privateDetailMessageList;
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static int parsePrivateDetailMessagePerPage(String s){
+        try{
+            List<privateDetailMessage> privateDetailMessageList = new ArrayList<>();
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject variables = jsonObject.getJSONObject("Variables");
+
+            return Integer.parseInt(variables.getString("perpage"));
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public static String parsePrivateDetailMessagePmid(String s){
+        try{
+            List<privateDetailMessage> privateDetailMessageList = new ArrayList<>();
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject variables = jsonObject.getJSONObject("Variables");
+
+            return variables.getString("pmid");
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static int parsePrivateDetailMessagePage(String s){
+        try{
+            List<privateDetailMessage> privateDetailMessageList = new ArrayList<>();
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject variables = jsonObject.getJSONObject("Variables");
+
+            return Integer.parseInt(variables.getString("page"));
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public static Map<String,String> parseUserProfile(String s){
+
+        try{
+            Map<String,String> info = new HashMap<>();
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject variables = jsonObject.getJSONObject("Variables");
+
+            JSONObject spaceInfo = variables.getJSONObject("space");
+            Iterator<String> sIterator = spaceInfo.keys();
+            while(sIterator.hasNext()){
+                String key = sIterator.next();
+                if(spaceInfo.get(key) instanceof String){
+                    String val = spaceInfo.getString(key);
+                    info.put(key,val);
+                }
+            }
+            return info;
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static class userFriend{
+        public int uid;
+        public String username;
+
+        public userFriend(int uid, String username) {
+            this.uid = uid;
+            this.username = username;
+        }
+    }
+
+    public static List<userFriend> parseUserFriendInfo(String s){
+        try{
+            List<userFriend> userFriendList = new ArrayList<>();
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject variables = jsonObject.getJSONObject("Variables");
+            JSONArray pmList = variables.getJSONArray("list");
+            for(int i=0;i<pmList.length();i++){
+                JSONObject pm = (JSONObject) pmList.get(i);
+                userFriend userFriend = new userFriend(
+                        Integer.parseInt(pm.getString("uid")),
+                        pm.getString("username")
+                );
+                userFriendList.add(userFriend);
+            }
+            return userFriendList;
 
         }
         catch (Exception e){

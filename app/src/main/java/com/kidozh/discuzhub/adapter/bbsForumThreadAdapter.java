@@ -24,6 +24,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsShowThreadActivity;
+import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.threadInfo;
@@ -176,7 +177,6 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
                 .priority(Priority.HIGH);
 
         Glide.with(mContext)
-                .asBitmap()
                 .load(source)
                 .apply(options)
                 .into(holder.mAvatarImageview);
@@ -208,6 +208,19 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
                 else {
                     intent.putExtra("FID",fid);
                 }
+
+                mContext.startActivity(intent);
+            }
+        });
+
+        holder.mAvatarImageview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, showPersonalInfoActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+
+                intent.putExtra("UID",threadInfo.authorId);
 
                 mContext.startActivity(intent);
             }

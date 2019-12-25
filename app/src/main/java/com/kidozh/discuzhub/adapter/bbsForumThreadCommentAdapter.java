@@ -42,7 +42,11 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
+import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
+import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.threadCommentInfo;
+import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
@@ -64,14 +68,17 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
     private Context mContext;
     public String subject;
     private OkHttpClient client = new OkHttpClient();
+    bbsInformation bbsInfo;
+    forumUserBriefInfo curUser;
 
     private AdapterView.OnItemClickListener listener;
 
 
 
 
-    public bbsForumThreadCommentAdapter(Context context){
-
+    public bbsForumThreadCommentAdapter(Context context,bbsInformation bbsInfo, forumUserBriefInfo curUser){
+        this.bbsInfo = bbsInfo;
+        this.curUser = curUser;
         this.mContext = context;
         client = networkUtils.getPreferredClient(context);
     }
@@ -143,10 +150,21 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                 ;
 
         Glide.with(mContext)
-                .asBitmap()
                 .load(source)
                 .apply(options)
                 .into(holder.mAvatarImageview);
+        holder.mAvatarImageview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, showPersonalInfoActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+
+                intent.putExtra("UID",threadInfo.authorId);
+
+                mContext.startActivity(intent);
+            }
+        });
 
         if(threadInfo.attachmentInfoList != null){
             bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter(mContext);

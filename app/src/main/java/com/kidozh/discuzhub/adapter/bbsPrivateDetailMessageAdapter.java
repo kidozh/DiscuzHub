@@ -1,6 +1,12 @@
 package com.kidozh.discuzhub.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,11 +14,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
+import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.MyImageGetter;
+import com.kidozh.discuzhub.utilities.MyTagHandler;
+import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
+import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.networkUtils;
 
+import java.io.InputStream;
 import java.util.List;
 
 import butterknife.BindView;
@@ -22,6 +43,31 @@ public class bbsPrivateDetailMessageAdapter extends RecyclerView.Adapter<bbsPriv
 
     List<bbsParseUtils.privateDetailMessage> privateDetailMessageList;
     Context context;
+    bbsInformation curBBS;
+    forumUserBriefInfo userBriefInfo;
+
+    public bbsPrivateDetailMessageAdapter(bbsInformation curBBS, forumUserBriefInfo userBriefInfo) {
+        this.curBBS = curBBS;
+        this.userBriefInfo = userBriefInfo;
+    }
+
+
+    public void setPrivateDetailMessageList(List<bbsParseUtils.privateDetailMessage> privateDetailMessageList){
+        this.privateDetailMessageList = privateDetailMessageList;
+        notifyDataSetChanged();
+    }
+
+    public void addPrivateDetailMessageList(List<bbsParseUtils.privateDetailMessage> privateDetailMessageList){
+        if(this.privateDetailMessageList == null){
+            this.privateDetailMessageList = privateDetailMessageList;
+        }
+        else {
+            privateDetailMessageList.addAll(this.privateDetailMessageList);
+            this.privateDetailMessageList = privateDetailMessageList;
+            //this.privateDetailMessageList.addAll(privateDetailMessageList);
+        }
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
@@ -37,6 +83,96 @@ public class bbsPrivateDetailMessageAdapter extends RecyclerView.Adapter<bbsPriv
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        bbsParseUtils.privateDetailMessage curPrivateDetailMessage = privateDetailMessageList.get(position);
+        MyTagHandler myTagHandler = new MyTagHandler(context,holder.privateMessageDetailMessage,holder.privateMessageDetailMessage);
+
+        Spanned sp = Html.fromHtml(curPrivateDetailMessage.message,
+                new MyImageGetter(context,holder.privateMessageDetailMessage,holder.privateMessageDetailMessage,true),
+                null);
+//        Spanned sp = Html.fromHtml(curPrivateDetailMessage.message,
+//                null,
+//                null);
+        SpannableString spannableString = new SpannableString(sp);
+
+        holder.privateMessageDetailMessage.setText(spannableString, TextView.BufferType.SPANNABLE);
+        holder.privateMessageDetailMessage.setMovementMethod(LinkMovementMethod.getInstance());
+        Spanned timeSp = Html.fromHtml(curPrivateDetailMessage.vDateline);
+
+        holder.privateMessageDetailTime.setText(new SpannableString(timeSp));
+
+
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(context));
+        Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(holder.constraintLayout);
+        if(curPrivateDetailMessage.isMyself){
+            constraintSet.setHorizontalBias(holder.privateMessageDetailMessage.getId(),1.0f);
+        }
+        else {
+
+            constraintSet.setHorizontalBias(holder.privateMessageDetailMessage.getId(),0.0f);
+        }
+        constraintSet.applyTo(holder.constraintLayout);
+
+        holder.privateMessageDetailSenderAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, showPersonalInfoActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+
+                intent.putExtra("UID", String.valueOf(curPrivateDetailMessage.msgFromId));
+
+                context.startActivity(intent);
+            }
+        });
+
+        holder.privateMessageDetailRecvAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, showPersonalInfoActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+
+                intent.putExtra("UID", String.valueOf(curPrivateDetailMessage.msgFromId));
+
+                context.startActivity(intent);
+            }
+        });
+
+
+        int avatar_num = position % 16;
+        int avatarResource = context.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",context.getPackageName());
+        if(curPrivateDetailMessage.isMyself){
+            Glide.with(context)
+                    .load(bbsURLUtils.getSmallAvatarUrlByUid(String.valueOf(curPrivateDetailMessage.msgFromId)))
+                    .centerInside()
+                    .placeholder(avatarResource)
+                    .error(avatarResource)
+                    .into(holder.privateMessageDetailRecvAvatar);
+            holder.privateMessageDetailMessage.setBackgroundColor(context.getColor(R.color.colorPrimary));
+            holder.privateMessageDetailMessage.setTextColor(context.getColor(R.color.colorPureWhite));
+
+            holder.privateMessageDetailSenderAvatar.setVisibility(View.INVISIBLE);
+            holder.privateMessageDetailRecvAvatar.setVisibility(View.VISIBLE);
+        }
+        else {
+            Glide.with(context)
+                    .load(bbsURLUtils.getSmallAvatarUrlByUid(String.valueOf(curPrivateDetailMessage.msgFromId)))
+                    .centerInside()
+                    .placeholder(avatarResource)
+                    .error(avatarResource)
+                    .into(holder.privateMessageDetailSenderAvatar);
+            holder.privateMessageDetailMessage.setTextColor(context.getColor(R.color.colorTextDefault));
+            holder.privateMessageDetailMessage.setBackgroundColor(context.getColor(R.color.colorBackgroundSecondaryDefault));
+            holder.privateMessageDetailSenderAvatar.setVisibility(View.VISIBLE);
+            holder.privateMessageDetailRecvAvatar.setVisibility(View.INVISIBLE);
+        }
+
+
+
+
 
     }
 
@@ -59,6 +195,8 @@ public class bbsPrivateDetailMessageAdapter extends RecyclerView.Adapter<bbsPriv
         ImageView privateMessageDetailRecvAvatar;
         @BindView(R.id.item_private_message_detail_sender_avatar)
         ImageView privateMessageDetailSenderAvatar;
+        @BindView(R.id.item_private_message_detail_constraint_layout)
+        ConstraintLayout constraintLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

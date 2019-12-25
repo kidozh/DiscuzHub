@@ -1,7 +1,13 @@
 package com.kidozh.discuzhub.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +21,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.badge.BadgeUtils;
+import com.itingchunyu.badgeview.BadgeTextView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsPrivateMessageDetailActivity;
+import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.threadInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
@@ -31,7 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class bbsPrivateMessageAdapter extends RecyclerView.Adapter<bbsPrivateMessageAdapter.ViewHolder> {
-
+    private static final String TAG = bbsPrivateMessageAdapter.class.getSimpleName();
     private List<bbsParseUtils.privateMessage> privateMessageList;
     private Context context;
 
@@ -66,11 +77,30 @@ public class bbsPrivateMessageAdapter extends RecyclerView.Adapter<bbsPrivateMes
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_private_message,parent,false));
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         bbsParseUtils.privateMessage privateM = privateMessageList.get(position);
         holder.privateMessageContent.setText(privateM.message);
-        holder.privateMessageRecvTime.setText(privateM.vdateLine);
+        Spanned timeSp = Html.fromHtml(privateM.vdateLine);
+        if(privateM.isNew){
+            Log.d(TAG,"THIS IS NEW PRIVATE MESSAGE "+privateM.message);
+
+            BadgeDrawable badgeDrawable = BadgeDrawable.create(context);
+            badgeDrawable.setNumber(1);
+            badgeDrawable.setVisible(true);
+
+            BadgeUtils.attachBadgeDrawable(badgeDrawable, holder.privateMessageAvatar, null);
+            holder.privateMessageUsername.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        }
+        else {
+            holder.privateMessageUsername.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+        }
+
+
+        holder.privateMessageRecvTime.setText(new SpannableString(timeSp));
+
+        //holder.privateMessageRecvTime.setText(privateM.vdateLine);
         holder.privateMessageUsername.setText(privateM.toUsername);
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(context));
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
@@ -80,7 +110,6 @@ public class bbsPrivateMessageAdapter extends RecyclerView.Adapter<bbsPrivateMes
         int avatarResource = context.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",context.getPackageName());
 
         Glide.with(context)
-                .asBitmap()
                 .load(bbsURLUtils.getSmallAvatarUrlByUid(String.valueOf(privateM.toUid)))
                 .centerInside()
                 .placeholder(avatarResource)
@@ -93,6 +122,19 @@ public class bbsPrivateMessageAdapter extends RecyclerView.Adapter<bbsPrivateMes
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_PRIVATE_MESSAGE_KEY,privateM);
+
+                context.startActivity(intent);
+            }
+        });
+
+        holder.privateMessageAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, showPersonalInfoActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+
+                intent.putExtra("UID", String.valueOf(privateM.toUid));
 
                 context.startActivity(intent);
             }
