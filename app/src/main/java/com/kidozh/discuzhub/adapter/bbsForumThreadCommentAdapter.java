@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.graphics.drawable.DrawableWrapper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -213,10 +214,13 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         }
     }
 
-    class MyDrawableWrapper extends BitmapDrawable {
+    class MyDrawableWrapper extends DrawableWrapper {
         private Drawable drawable;
-        MyDrawableWrapper() {
+
+        public MyDrawableWrapper(Drawable drawable) {
+            super(drawable);
         }
+
         @Override
         public void draw(Canvas canvas) {
             if (drawable != null)
@@ -239,8 +243,9 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
 
         @Override
         public Drawable getDrawable(String source) {
-            MyDrawableWrapper myDrawable = new MyDrawableWrapper();
+
             Drawable drawable = mContext.getDrawable(R.drawable.vector_drawable_loading_image);
+            MyDrawableWrapper myDrawable = new MyDrawableWrapper(drawable);
             myDrawable.setDrawable(drawable);
             client = networkUtils.getPreferredClient(mContext);
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
@@ -254,7 +259,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                         .load(source)
                         .error(R.drawable.vector_drawable_image_crash)
                         .placeholder(R.drawable.vector_drawable_loading_image)
-                        .into(new BitmapTarget(myDrawable,textView));
+                        .into(new drawableTarget(myDrawable,textView));
             }
             else {
                 Glide.with(mContext)
@@ -262,15 +267,15 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                         .error(R.drawable.vector_drawable_image_wider_placeholder)
                         .placeholder(R.drawable.vector_drawable_loading_image)
                         .onlyRetrieveFromCache(true)
-                        .into(new BitmapTarget(myDrawable,textView));
+                        .into(new drawableTarget(myDrawable,textView));
             }
             return myDrawable;
         }
     }
-    class BitmapTarget extends CustomTarget<Drawable> {
+    class drawableTarget extends CustomTarget<Drawable> {
         private final MyDrawableWrapper myDrawable;
         TextView textView;
-        public BitmapTarget(MyDrawableWrapper myDrawable,TextView textView) {
+        public drawableTarget(MyDrawableWrapper myDrawable,TextView textView) {
             this.myDrawable = myDrawable;
             this.textView = textView;
         }
@@ -373,8 +378,8 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                 Log.d(TAG,"You pressed image "+widget.toString()+" URL "+url);
                 client = networkUtils.getPreferredClient(mContext);
                 OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
-                MyDrawableWrapper myDrawable = new MyDrawableWrapper();
                 Drawable drawable = mContext.getDrawable(R.drawable.vector_drawable_loading_image);
+                MyDrawableWrapper myDrawable = new MyDrawableWrapper(drawable);
                 myDrawable.setDrawable(drawable);
                 Glide.get(mContext)
                         .getRegistry()
@@ -402,7 +407,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                                 return false;
                             }
                         })
-                        .into(new BitmapTarget(myDrawable,textView));
+                        .into(new drawableTarget(myDrawable,textView));
 
                 Glide.with(mContext)
                         .load(url)
@@ -417,7 +422,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                                         .load(url)
                                         .error(R.drawable.vector_drawable_image_failed)
                                         .placeholder(R.drawable.vector_drawable_loading_image)
-                                        .into(new BitmapTarget(myDrawable,textView));
+                                        .into(new drawableTarget(myDrawable,textView));
                                 return false;
                             }
 
@@ -431,7 +436,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                                 mContext.startActivity(intent);
                                 return true;
                             }
-                        }).into(new BitmapTarget(myDrawable,textView));
+                        }).into(new drawableTarget(myDrawable,textView));
             }
         }
     }  
