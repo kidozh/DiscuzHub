@@ -147,9 +147,8 @@
 
     <string-array name="preference_entries_use_browser_client">
         <item>不使用</item>
-        <item>谷歌浏览器</item>
-        <item>火狐浏览器</item>
-        <item>Edge</item>
+        <item>Android 默认</item>
+
     </string-array>
     <string name="preference_title_use_browser_client">浏览器用户标识符</string>
     <string name="bbs_no_thread_gotten">找不到更多啦</string>
@@ -159,7 +158,7 @@
     <string name="bbs_explore_thread">探索</string>
     <string name="bbs_login_by_browser">在网页中登录</string>
     <string name="bbs_login_in_web_finished">完成登录</string>
-    <string name="bbs_login_in_browser_notification">如果本论坛在登陆时有自己的认证方式（如验证码），请选择在“网页中登录”。</string>
+    <string name="bbs_login_in_browser_notification">如果本论坛在登陆时有自己的认证方式（如验证码），或者您需要使用第三方账号登录，请选择在“网页中登录”。</string>
     <string name="bbs_login_in_webpage_alert">在网页中登录提醒</string>
     <string name="bbs_login_in_webpage_content">请在登录界面之中完成登录操作，然后轻触“完成登录”以将用户录入应用之中。</string>
     <string name="bbs_no_item_found">没有信息</string>
@@ -170,4 +169,7 @@
     <string name="bbs_user_friend">好友</string>
     <string name="bbs_no_friend">该用户还没添加好友</string>
     <string name="bbs_send_pm_in_profile">私信</string>
+    <string name="preference_summary_use_browser_client_NONE">应用将不会指定访问标识。您的设备信息不会泄露但是某些服务器也会因此拒绝您的访问。</string>
+    <string name="preference_summary_use_browser_client_ANDROID">应用将会模拟正常的网页访问。发送给服务器的UA如下所示：</string>
+    <string name="bbs_notification_notification">消息</string>
 </resources>

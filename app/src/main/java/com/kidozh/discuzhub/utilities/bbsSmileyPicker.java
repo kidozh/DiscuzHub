@@ -2,6 +2,9 @@ package com.kidozh.discuzhub.utilities;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +21,17 @@ import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.bbsSmileyAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by free2 on 16-7-19.
@@ -28,35 +40,77 @@ import java.util.List;
  */
 
 public class bbsSmileyPicker extends PopupWindow {
-
+    private static final String TAG = bbsSmileyPicker.class.getSimpleName();
     private Context mContext;
     private OnItemClickListener listener;
     private bbsSmileyAdapter adapter;
-    private List<Pair<String, String>> smileys = new ArrayList<>();
+    private List<bbsParseUtils.smileyInfo> allSmileyInfos = new ArrayList<>();
+    private int smileyCateNum = 0;
 
-    private static final int SMILEY_TB = 1;
-    private static final int SMILEY_JGZ = 2;
-    private static final int SMILEY_ACN = 3;
 
-    private int smileyType = SMILEY_TB;
+    private OkHttpClient client;
+
+    @BindView(R.id.bbs_smiley_tab)
+    TabLayout tab;
+    @BindView(R.id.bbs_smiley_recyclerView)
+    RecyclerView recyclerView;
 
 
     public bbsSmileyPicker(Context context) {
         super(context);
         mContext = context;
+        configureClient();
         init();
+        getSmileyInfo();
+    }
+
+    private void configureClient(){
+        client = networkUtils.getPreferredClientWithCookieJar(mContext);
+    }
+
+    private void getSmileyInfo(){
+        Request request = new Request.Builder()
+                .url(bbsURLUtils.getSmileyApiUrl())
+                .build();
+        Handler mHandler = new Handler(Looper.getMainLooper());
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()&& response.body()!=null){
+                    String s = response.body().string();
+                    List<bbsParseUtils.smileyInfo> smileyInfoList = bbsParseUtils.parseSmileyInfo(s);
+                    int cateNum = bbsParseUtils.parseSmileyCateNum(s);
+                    smileyCateNum = cateNum;
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            allSmileyInfos = smileyInfoList;
+                            // update the UI
+                            adapter.setSmileyInfos(smileyInfoList);
+                            // interface with tab
+                            for(int i=0;i<cateNum;i++){
+                                tab.addTab(tab.newTab().setText(String.valueOf(i+1)));
+                            }
+
+                        }
+                    });
+
+
+                }
+            }
+        });
     }
 
 
     private void init() {
         View v = LayoutInflater.from(mContext).inflate(R.layout.popupwindow_smiley_view, null);
-        TabLayout tab = v.findViewById(R.id.bbs_smiley_tab);
-        RecyclerView recyclerView = v.findViewById(R.id.bbs_smiley_recyclerView);
+        ButterKnife.bind(this,v);
 
-        getSmileys();
-        tab.addTab(tab.newTab().setText("贴吧"));
-        tab.addTab(tab.newTab().setText("金馆长"));
-        tab.addTab(tab.newTab().setText("AC娘"));
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 7, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -64,7 +118,7 @@ public class bbsSmileyPicker extends PopupWindow {
             ImageView img = (ImageView) v1;
             smileyClick(img.getDrawable(), position);
             dismiss();
-        }, smileys);
+        });
 
         tab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -93,21 +147,10 @@ public class bbsSmileyPicker extends PopupWindow {
 
 
     private void changeSmiley(int position) {
-        switch (position) {
-            case 0:
-                smileyType = SMILEY_TB;
-                break;
-            case 1:
-                smileyType = SMILEY_JGZ;
-                break;
-            case 2:
-                smileyType = SMILEY_ACN;
-                break;
-            default:
-                throw new IndexOutOfBoundsException("unknown index: " + position);
-        }
-        getSmileys();
-        adapter.notifyDataSetChanged();
+
+        //getSmileys();
+        setSmileyinCate(position);
+        //adapter.notifyDataSetChanged();
     }
 
 
@@ -119,32 +162,29 @@ public class bbsSmileyPicker extends PopupWindow {
         void itemClick(String str, Drawable a);
     }
 
-    private void getSmileys() {
-//        smileys.clear();
-//        String smileyDir = "file:///android_asset/smiley/";
-//        int stringId = R.array.smiley_tieba;
-//        if (smileyType == SMILEY_TB) {
-//            stringId = R.array.smiley_tieba;
-//        } else if (smileyType == SMILEY_JGZ) {
-//            stringId = R.array.smiley_jgz;
-//        } else if (smileyType == SMILEY_ACN) {
-//            stringId = R.array.smiley_acn;
-//        }
-//        String[] smileyArray = mContext.getResources().getStringArray(stringId);
-//        for (String aSmileyArray : smileyArray) {
-//            String path = smileyDir + aSmileyArray.split(",")[0];
-//            String name = aSmileyArray.split(",")[1];
-//            //Log.e("TAG", "" + name);
-//            smileys.add(new Pair<>(path, name));
-//        }
+    private void setSmileyinCate(int position){
+        int cateNum = position;
+        List<bbsParseUtils.smileyInfo> cateSmileyInfo = new ArrayList<>();
+        for(int i=0;i<allSmileyInfos.size();i++){
+            bbsParseUtils.smileyInfo smileyInfo = allSmileyInfos.get(i);
+            if(smileyInfo.category == position){
+                cateSmileyInfo.add(smileyInfo);
+            }
+        }
+        adapter.setSmileyInfos(cateSmileyInfo);
     }
 
     private void smileyClick(Drawable d, int position) {
-        if (position > smileys.size()) {
+
+        if (position > adapter.getSmileyInfos().size()) {
             return;
         }
 
-        String name = smileys.get(position).second;
+
+        String name = adapter.getSmileyInfos().get(position).code;
+        Log.d(TAG,"get name "+name);
+
+        //String name = smileys.get(position).second;
 
         if (listener != null) {
             listener.itemClick(name, d);

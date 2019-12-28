@@ -72,9 +72,7 @@
 
     <string-array name="browser_ua_list">
         <item>NONE</item>
-        <item>Chrome</item>
-        <item>FireFox</item>
-        <item>Edge</item>
+        <item>ANDROID</item>
     </string-array>
 
 </resources>

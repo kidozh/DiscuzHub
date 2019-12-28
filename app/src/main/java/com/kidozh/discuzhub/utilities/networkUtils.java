@@ -6,6 +6,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 
@@ -16,6 +19,7 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +30,10 @@ import javax.net.ssl.X509TrustManager;
 import okhttp3.Cookie;
 import okhttp3.CookieJar;
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class networkUtils {
     private static String TAG = networkUtils.class.getSimpleName();
@@ -50,28 +57,28 @@ public class networkUtils {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
         Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
         if(useSafeHttpClient){
-            return getSafeOkHttpClient();
+            return getSafeOkHttpClient(context);
         }
         else {
-            return getUnsafeOkHttpClient();
+            return getUnsafeOkHttpClient(context);
         }
     }
 
-    public static OkHttpClient getPreferredClient(Boolean useSafeHttpClient){
+    public static OkHttpClient getPreferredClient(Context context,Boolean useSafeHttpClient){
         if(useSafeHttpClient){
-            return getSafeOkHttpClient();
+            return getSafeOkHttpClient(context);
         }
         else {
-            return getUnsafeOkHttpClient();
+            return getUnsafeOkHttpClient(context);
         }
     }
 
-    public static OkHttpClient getSafeOkHttpClient(){
+    public static OkHttpClient getSafeOkHttpClient(Context context){
         OkHttpClient.Builder mBuilder = new OkHttpClient.Builder();
         mBuilder.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)
                 .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
-        return mBuilder.build();
+        return addUserAgent(context,mBuilder);
     }
 
     public static OkHttpClient getSafeOkHttpClientWithCookieJar(Context context){
@@ -138,6 +145,42 @@ public class networkUtils {
         return "CookiePersistence_U"+briefInfo.getId();
     }
 
+    public static OkHttpClient addUserAgent(Context context,OkHttpClient.Builder mBuilder){
+        // get preference
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
+        String uaString = prefs.getString(context.getString(R.string.preference_key_use_browser_client),"NONE");
+        switch (uaString){
+            case "NONE":{
+                return mBuilder.build();
+            }
+            case "ANDROID":{
+                String useragent = new WebView(context).getSettings().getUserAgentString();
+                Log.d(TAG,"UA "+useragent);
+                mBuilder.addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request original = chain.request();
+
+                        Request request = original.newBuilder()
+                                .header("User-Agent", useragent)
+                                .header("Accept", "application/vnd.yourapi.v1.full+json")
+                                .method(original.method(), original.body())
+                                .build();
+
+                        return chain.proceed(request);
+                    }
+                });
+
+                return mBuilder.build();
+            }
+            default:{
+                return mBuilder.build();
+            }
+        }
+
+
+    }
+
     public static OkHttpClient getSafeOkHttpClientWithCookieJarByUser(Context context, forumUserBriefInfo briefInfo){
         ClearableCookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(),
@@ -145,12 +188,12 @@ public class networkUtils {
                 );
         OkHttpClient.Builder mBuilder = new OkHttpClient.Builder().cookieJar(cookieJar);
         mBuilder
+
                 .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)
                 .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
 
-
-        return mBuilder.build();
+        return addUserAgent(context,mBuilder);
     }
 
     public static OkHttpClient getUnSafeOkHttpClientWithCookieJarByUser(Context context, forumUserBriefInfo briefInfo){
@@ -170,7 +213,7 @@ public class networkUtils {
                 .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
 
 
-        return mBuilder.build();
+        return addUserAgent(context,mBuilder);
     }
 
     // cleared cookie
@@ -198,7 +241,7 @@ public class networkUtils {
     // end cleared cookie
 
 
-    public static OkHttpClient getUnsafeOkHttpClient(){
+    public static OkHttpClient getUnsafeOkHttpClient(Context context){
         OkHttpClient.Builder mBuilder = new OkHttpClient.Builder();
         //mBuilder.sslSocketFactory(TrustAllCerts.createSSLSocketFactory());
         final X509TrustManager trustManager = new TrustAllCerts();
@@ -207,7 +250,7 @@ public class networkUtils {
         mBuilder.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)
                 .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
-        return mBuilder.build();
+        return addUserAgent(context,mBuilder);
     }
 
     public static OkHttpClient getUnsafeOkHttpClientWithCookieJar(Context context){
@@ -225,7 +268,25 @@ public class networkUtils {
                 .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
 
 
-        return mBuilder.build();
+        return addUserAgent(context,mBuilder);
+    }
+
+    public static class UserAgentInterceptor implements Interceptor {
+
+        private final String userAgent;
+
+        public UserAgentInterceptor(String userAgent) {
+            this.userAgent = userAgent;
+        }
+
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request originalRequest = chain.request();
+            Request requestWithUserAgent = originalRequest.newBuilder()
+                    .header("User-Agent", userAgent)
+                    .build();
+            return chain.proceed(requestWithUserAgent);
+        }
     }
 
     private static class CookiesManager implements CookieJar {

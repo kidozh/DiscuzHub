@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".activities.ui.userThreads.bbsMyThreadFragment">
+    tools:context=".activities.ui.bbsNotification.bbsNotificationFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/fragment_my_thread_swipeRefreshLayout"
+        android:id="@+id/fragment_bbs_notification_swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -22,20 +22,20 @@
             android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/fragment_my_thread_recyclerview"
+                android:id="@+id/fragment_bbs_notification_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                tools:itemCount="3"
-                tools:listitem="@layout/item_bbs_notification_detail">
+                tools:itemCount="1"
+                tools:listitem="@layout/item_bbs_forum_thread">
 
             </androidx.recyclerview.widget.RecyclerView>
 
             <include
-                android:id="@+id/fragment_my_thread_empty_view"
+                android:id="@+id/fragment_bbs_notification_empty_view"
                 layout="@layout/content_empty_information"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 

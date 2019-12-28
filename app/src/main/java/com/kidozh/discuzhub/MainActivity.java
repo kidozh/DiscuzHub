@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
     private void queryForumInfo(String base_url, Boolean useSafeClient){
         bbsURLUtils.setBaseUrl(base_url);
         String query_url = bbsURLUtils.getBBSForumInformationUrl();
-        OkHttpClient client = networkUtils.getPreferredClient(useSafeClient);
+        OkHttpClient client = networkUtils.getPreferredClient(this,useSafeClient);
         Request request = new Request.Builder().url(query_url).build();
         Call call = client.newCall(request);
         Handler mHandler = new Handler(Looper.getMainLooper());

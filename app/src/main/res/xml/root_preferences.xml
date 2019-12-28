@@ -28,7 +28,7 @@
         <ListPreference
             android:defaultValue="NONE"
             android:entries="@array/preference_entries_use_browser_client"
-            android:entryValues="@array/browser_ua_list"
+            android:entryValues="@array/preference_entry_values_use_browser_client"
             android:key="@string/preference_key_use_browser_client"
             android:summary="%s"
             android:title="@string/preference_title_use_browser_client" />

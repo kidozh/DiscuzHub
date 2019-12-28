@@ -1,6 +1,8 @@
 package com.kidozh.discuzhub.utilities;
 
 import android.content.Intent;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -913,6 +915,175 @@ public class bbsParseUtils {
         catch (Exception e){
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static class notificationDetailInfo{
+        public int id,uid;
+        public String type;
+        public Boolean isNew;
+        public int authorId;
+        public String author,note;
+        public Date date;
+        public int fromId;
+        public String fromIdType;
+        public int from_num;
+        public Map<String,String> noteVariables;
+
+        public notificationDetailInfo(int id, int uid, String type, Boolean isNew, int authorId, String author, String note, Date date, int fromId, String fromIdType, int from_num, Map<String, String> noteVariables) {
+            this.id = id;
+            this.uid = uid;
+            this.type = type;
+            this.isNew = isNew;
+            this.authorId = authorId;
+            this.author = author;
+            this.note = note;
+            this.date = date;
+            this.fromId = fromId;
+            this.fromIdType = fromIdType;
+            this.from_num = from_num;
+            this.noteVariables = noteVariables;
+        }
+    }
+
+    public static Map<String,String> parseNotificationVariable(JSONObject noteVar){
+
+        try{
+            Map<String,String> info = new HashMap<>();
+
+            JSONObject spaceInfo = noteVar.getJSONObject("notevar");
+            Iterator<String> sIterator = spaceInfo.keys();
+            while(sIterator.hasNext()){
+                String key = sIterator.next();
+                if(spaceInfo.get(key) instanceof String){
+                    String val = spaceInfo.getString(key);
+                    info.put(key,val);
+                }
+            }
+            return info;
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<notificationDetailInfo> parseNotificationDetailInfo(String s){
+        try{
+            List<notificationDetailInfo> notificationDetailInfoList = new ArrayList<>();
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject variables = jsonObject.getJSONObject("Variables");
+            JSONArray noticeList = variables.getJSONArray("list");
+            for(int i=0;i<noticeList.length();i++){
+                JSONObject notice = noticeList.getJSONObject(i);
+                String publishAtStringTimestamp = notice.getString("dateline");
+                Date publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp)*1000);
+                notificationDetailInfo notificationDetail = new notificationDetailInfo(
+                        Integer.parseInt(notice.getString("id")),
+                        Integer.parseInt(notice.getString("uid")),
+                        notice.getString("type"),
+                        !notice.getString("new").equals("0"),
+                        Integer.parseInt(notice.getString("authorid")),
+                        notice.optString("author",""),
+                        notice.getString("note"),
+                        publishAt,
+                        Integer.parseInt(notice.getString("from_id")),
+                        notice.getString("from_idtype"),
+                        Integer.parseInt(notice.getString("from_num")),
+                        parseNotificationVariable(notice)
+
+                );
+                notificationDetailInfoList.add(notificationDetail);
+
+            }
+            return notificationDetailInfoList;
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static class smileyInfo implements Parcelable {
+        public String code,imageRelativePath;
+        public int category;
+
+        public smileyInfo(String code, String imageRelativePath, int category) {
+            this.code = code;
+            this.imageRelativePath = imageRelativePath;
+            this.category = category;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(code);
+            dest.writeString(imageRelativePath);
+            dest.writeInt(category);
+        }
+
+        public static final Creator<smileyInfo> CREATOR = new Creator<smileyInfo>() {
+            @Override
+            public smileyInfo createFromParcel(Parcel source) {
+                String code = source.readString();
+                String imageRelativePath = source.readString();
+                int category = source.readInt();
+
+                return new smileyInfo(code,imageRelativePath,category);
+            }
+
+            @Override
+            public smileyInfo[] newArray(int size) {
+                return new smileyInfo[size];
+            }
+        };
+    }
+
+    public static List<smileyInfo> parseSmileyInfo(String s){
+        try{
+            List<smileyInfo> smileyInfoList = new ArrayList<>();
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject variables = jsonObject.getJSONObject("Variables");
+            JSONArray smileyCateList = variables.getJSONArray("smilies");
+            for(int i=0;i<smileyCateList.length();i++){
+                JSONArray smileyCates = smileyCateList.getJSONArray(i);
+                for(int j=0;j<smileyCates.length();j++){
+                    JSONObject smiley = smileyCates.getJSONObject(j);
+                    smileyInfoList.add(new smileyInfo(
+                            smiley.getString("code"),
+                            smiley.getString("image"),
+                            i
+                    ));
+                }
+            }
+            return smileyInfoList;
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static int parseSmileyCateNum(String s){
+        try{
+            List<smileyInfo> smileyInfoList = new ArrayList<>();
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject variables = jsonObject.getJSONObject("Variables");
+            JSONArray smileyCateList = variables.getJSONArray("smilies");
+            return smileyCateList.length();
+
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return 0;
         }
     }
 

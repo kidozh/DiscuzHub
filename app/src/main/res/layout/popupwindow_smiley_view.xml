@@ -10,7 +10,8 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/bbs_smiley_tab"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:tabMode="scrollable" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bbs_smiley_recyclerView"

@@ -12,6 +12,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -95,6 +96,8 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
     TabLayout personInfoTabLayout;
     @BindView(R.id.show_personal_info_viewpager)
     ViewPager personInfoViewPager;
+    @BindView(R.id.show_personal_info_message_btn)
+    Button personalInfoPMBtn;
 
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
@@ -102,6 +105,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
     private String userId;
     OkHttpClient client;
     String friendNum, threadNum, postsNum;
+    String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,13 +117,13 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
 
         renderUserInfo();
         getUserInfo();
-
+        configurePMBtn();
 
 
     }
 
     void renderUserInfo(){
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(curBBS.useSafeClient));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(this,curBBS.useSafeClient));
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
         Glide.with(this)
@@ -128,6 +132,24 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
                 .placeholder(R.drawable.vector_drawable_bbs)
                 .centerInside()
                 .into(personalInfoAvatar);
+    }
+
+    void configurePMBtn(){
+        personalInfoPMBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bbsParseUtils.privateMessage privateM = new bbsParseUtils.privateMessage(Integer.parseInt(userId),
+                        false,"",Integer.parseInt(userId),1,1,
+                        username,"",username,""
+                );
+                Intent intent = new Intent(getApplicationContext(), bbsPrivateMessageDetailActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(bbsConstUtils.PASS_PRIVATE_MESSAGE_KEY,privateM);
+
+                startActivity(intent);
+            }
+        });
     }
 
     void configureActionBar(){
@@ -214,6 +236,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
 
 
                                 personalInfoUsername.setText(info.get("username"));
+                                username = info.get("username");
                                 personalInfoInterestTextView.setText(info.get("interest"));
                                 setIconAndTextView(info.get("interest"),personalInfoInterestIcon,personalInfoInterestTextView);
                                 setIconAndTextView(

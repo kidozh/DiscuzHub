@@ -22,6 +22,7 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ui.bbsNotification.bbsNotificationFragment;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
 import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment;
 import com.kidozh.discuzhub.activities.ui.userThreads.bbsMyThreadFragment;
@@ -87,10 +88,12 @@ public class NotificationsFragment extends Fragment implements bbsPrivateMessage
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    return new bbsPublicMessageFragment();
+                    return new bbsNotificationFragment();
                 case 1:
-                    return new bbsPrivateMessageFragment();
+                    return new bbsPublicMessageFragment();
                 case 2:
+                    return new bbsPrivateMessageFragment();
+                case 3:
                     return new bbsMyThreadFragment();
             }
             return new bbsPublicMessageFragment();
@@ -103,10 +106,12 @@ public class NotificationsFragment extends Fragment implements bbsPrivateMessage
         public CharSequence getPageTitle(int position) {
             switch (position){
                 case 0:
-                    return getString(R.string.bbs_notification_public_pm);
+                    return getString(R.string.bbs_notification_notification);
                 case 1:
-                    return getString(R.string.bbs_notification_my_pm);
+                    return getString(R.string.bbs_notification_public_pm);
                 case 2:
+                    return getString(R.string.bbs_notification_my_pm);
+                case 3:
                     return getString(R.string.bbs_notification_my_thread);
                     default:
                         return "";
@@ -115,7 +120,7 @@ public class NotificationsFragment extends Fragment implements bbsPrivateMessage
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
     }
 

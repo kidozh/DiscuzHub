@@ -1,12 +1,15 @@
 package com.kidozh.discuzhub.activities;
 
+import android.content.SharedPreferences;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -68,6 +71,29 @@ public class SettingsActivity extends AppCompatActivity {
                     return false;
                 }
             });
+
+            findPreference(getString(R.string.preference_key_use_browser_client)).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    String stringValue = newValue.toString();
+                    switch (stringValue){
+                        case "NONE":{
+                            preference.setSummary(R.string.preference_summary_use_browser_client_NONE);
+                            return true;
+                        }
+                        case "ANDROID":{
+                            String useragent = new WebView(getContext()).getSettings().getUserAgentString();
+                            preference.setSummary(getString(R.string.preference_summary_use_browser_client_ANDROID)
+                                    +"\n"+String.format("\"%s\"",useragent));
+                            return true;
+                        }
+                        default:
+                            preference.setSummary("%s");
+                            return true;
+                    }
+                }
+            });
+
         }
 
 

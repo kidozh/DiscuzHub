@@ -169,9 +169,7 @@ public class bbsURLUtils {
         return uri.toString();
     }
 
-    public static String getSmileyUrl() {
-        return BASE_URL + "/api/mobile/index.php?version=4&module=smiley";
-    }
+
 
     public static String getHotThreadUrl(int page){
         return BASE_URL+"/api/mobile/index.php?version=4&module=hotthread&page="+page ;
@@ -185,12 +183,12 @@ public class bbsURLUtils {
         return BASE_URL+"/api/mobile/index.php?version=4&module=mypm&page="+page ;
     }
 
-    public static String getPrivatePMDetailApiUrlByPlid(int plid,int page){
+    public static String getPrivatePMDetailApiUrlByTouid(int toUid,int page){
         if(page==-1){
-            return BASE_URL + "/api/mobile/index.php?version=4&module=mypm&subop=view&plid="+plid;
+            return BASE_URL + "/api/mobile/index.php?version=4&module=mypm&subop=view&touid="+toUid;
         }
         else {
-            return BASE_URL + "/api/mobile/index.php?version=4&module=mypm&subop=view&plid="+plid+"&page="+page;
+            return BASE_URL + "/api/mobile/index.php?version=4&module=mypm&subop=view&touid="+toUid+"&page="+page;
         }
 
     }
@@ -205,6 +203,18 @@ public class bbsURLUtils {
 
     public static String getFriendApiUrlByUid(int uid){
         return BASE_URL+"/api/mobile/index.php?version=4&module=friend&uid="+uid;
+    }
+
+    public static String getNotificationListApiUrl(int page){
+        return BASE_URL+"/api/mobile/index.php?version=4&module=mynotelist&page="+page;
+    }
+
+    public static String getSmileyApiUrl() {
+        return BASE_URL + "/api/mobile/index.php?version=4&module=smiley";
+    }
+
+    public static String getSmileyImageUrl(String path) {
+        return BASE_URL + "/static/image/smiley/"+path;
     }
 
 }

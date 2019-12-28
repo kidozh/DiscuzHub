@@ -1,33 +1,48 @@
 package com.kidozh.discuzhub.activities;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
 import com.kidozh.discuzhub.adapter.bbsPrivateDetailMessageAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.threadCommentInfo;
+import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
+import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
-import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -40,7 +55,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class bbsPrivateMessageDetailActivity extends AppCompatActivity {
+public class bbsPrivateMessageDetailActivity extends AppCompatActivity implements SmileyFragment.OnSmileyPressedInteraction {
 
     private static final String TAG = bbsPrivateMessageDetailActivity.class.getSimpleName();
 
@@ -52,6 +67,15 @@ public class bbsPrivateMessageDetailActivity extends AppCompatActivity {
     EditText privateMessageCommentEditText;
     @BindView(R.id.bbs_private_message_comment_button)
     Button privateMessageCommentButton;
+    @BindView(R.id.bbs_private_message_comment_emoij)
+    ImageView mCommentEmoijBtn;
+
+    @BindView(R.id.bbs_private_message_comment_smiley_constraintLayout)
+    ConstraintLayout mCommentSmileyConstraintLayout;
+    @BindView(R.id.bbs_private_message_comment_smiley_tabLayout)
+    TabLayout mCommentSmileyTabLayout;
+    @BindView(R.id.bbs_private_message_comment_smiley_viewPager)
+    ViewPager mCommentSmileyViewPager;
 
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
@@ -64,6 +88,13 @@ public class bbsPrivateMessageDetailActivity extends AppCompatActivity {
     String formHash;
     String pmid;
 
+    List<bbsParseUtils.smileyInfo> allSmileyInfos;
+    int smileyCateNum;
+
+
+    private bbsSmileyPicker smileyPicker;
+    private EmotionInputHandler handler;
+
 
 
     @Override
@@ -73,10 +104,22 @@ public class bbsPrivateMessageDetailActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         getIntentInfo();
         configureActionBar();
+        configureSmileyLayout();
         configureRecyclerview();
         configureSwipeLayout();
         getPageInfo(globalPage);
         configureSendBtn();
+    }
+
+    private void configureSmileyLayout(){
+        handler = new EmotionInputHandler(privateMessageCommentEditText, (enable, s) -> {
+
+        });
+
+        smileyPicker = new bbsSmileyPicker(this);
+        smileyPicker.setListener((str,a)->{
+            handler.insertSmiley(str,a);
+        });
     }
 
     private void configureSwipeLayout(){
@@ -121,12 +164,153 @@ public class bbsPrivateMessageDetailActivity extends AppCompatActivity {
                 }
             }
         });
+
+        mCommentEmoijBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mCommentSmileyConstraintLayout.getVisibility() == View.GONE){
+                    // smiley picker not visible
+                    mCommentEmoijBtn.setImageDrawable(getDrawable(R.drawable.vector_drawable_keyboard_24px));
+
+                    privateMessageCommentEditText.clearFocus();
+                    // close keyboard
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if(imm !=null){
+                        imm.hideSoftInputFromWindow(privateMessageCommentEditText.getWindowToken(),0);
+                    }
+                    mCommentSmileyConstraintLayout.setVisibility(View.VISIBLE);
+
+                    // tab layout binding...
+                    getSmileyInfo();
+                }
+                else {
+                    mCommentSmileyConstraintLayout.setVisibility(View.GONE);
+                    mCommentEmoijBtn.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp));
+                }
+
+
+            }
+        });
+
+        privateMessageCommentEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus && mCommentSmileyConstraintLayout.getVisibility() == View.VISIBLE){
+                    mCommentSmileyConstraintLayout.setVisibility(View.GONE);
+                    mCommentEmoijBtn.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp));
+                }
+            }
+        });
     }
+
+    private void getSmileyInfo(){
+        Request request = new Request.Builder()
+                .url(bbsURLUtils.getSmileyApiUrl())
+                .build();
+        Handler mHandler = new Handler(Looper.getMainLooper());
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toasty.error(getApplicationContext(),getString(R.string.network_failed),Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()&& response.body()!=null){
+                    String s = response.body().string();
+                    List<bbsParseUtils.smileyInfo> smileyInfoList = bbsParseUtils.parseSmileyInfo(s);
+                    int cateNum = bbsParseUtils.parseSmileyCateNum(s);
+                    smileyCateNum = cateNum;
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            allSmileyInfos = smileyInfoList;
+                            // update the UI
+                            // viewpager
+                            //adapter.setSmileyInfos(smileyInfoList);
+                            // interface with tab
+                            for(int i=0;i<cateNum;i++){
+                                mCommentSmileyTabLayout.removeAllTabs();
+                                mCommentSmileyTabLayout.addTab(
+                                        mCommentSmileyTabLayout.newTab().setText(String.valueOf(i+1))
+                                );
+
+                            }
+                            // bind tablayout and viewpager
+                            mCommentSmileyTabLayout.setupWithViewPager(mCommentSmileyViewPager);
+                            smileyViewPagerAdapter adapter = new smileyViewPagerAdapter(getSupportFragmentManager(),
+                                    FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+                            adapter.setCateNum(cateNum);
+                            mCommentSmileyViewPager.setAdapter(adapter);
+
+                        }
+                    });
+
+
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onSmileyPress(String str, Drawable a) {
+        // remove \ and /
+        String decodeStr = str.replace("/","")
+                .replace("\\","");
+        handler.insertSmiley(decodeStr,a);
+
+        Log.d(TAG,"Press string "+decodeStr);
+    }
+
+    public class smileyViewPagerAdapter extends FragmentStatePagerAdapter{
+        int cateNum = 0;
+
+        public smileyViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
+            super(fm, behavior);
+        }
+
+        public void setCateNum(int cateNum) {
+            this.cateNum = cateNum;
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return String.valueOf(position+1);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            List<bbsParseUtils.smileyInfo> cateSmileyInfo = new ArrayList<>();
+            for(int i=0;i<allSmileyInfos.size();i++){
+                bbsParseUtils.smileyInfo smileyInfo = allSmileyInfos.get(i);
+                if(smileyInfo.category == position){
+                    cateSmileyInfo.add(smileyInfo);
+                }
+            }
+
+            return SmileyFragment.newInstance(cateSmileyInfo);
+
+        }
+
+        @Override
+        public int getCount() {
+            return cateNum;
+        }
+    }
+
+
 
 
     private void getPageInfo(int page){
         privateMessageDetailSwipeRefreshLayout.setRefreshing(true);
-        String apiStr = bbsURLUtils.getPrivatePMDetailApiUrlByPlid(privateMessageInfo.plid,page);
+        String apiStr = bbsURLUtils.getPrivatePMDetailApiUrlByTouid(privateMessageInfo.toUid,page);
         Request request = new Request.Builder()
                 .url(apiStr)
                 .build();
@@ -170,11 +354,11 @@ public class bbsPrivateMessageDetailActivity extends AppCompatActivity {
                             public void run() {
                                 if(page == -1){
                                     adapter.setPrivateDetailMessageList(privateDetailMessages);
-                                    privateMessageDetailRecyclerview.scrollToPosition(privateDetailMessages.size()-1);
+                                    //privateMessageDetailRecyclerview.scrollToPosition(privateDetailMessages.size()-1);
                                 }
                                 else {
                                     adapter.addPrivateDetailMessageList(privateDetailMessages);
-                                    privateMessageDetailRecyclerview.scrollToPosition(privateDetailMessages.size()-1);
+                                    //privateMessageDetailRecyclerview.scrollToPosition(privateDetailMessages.size()-1);
                                 }
                             }
                         });

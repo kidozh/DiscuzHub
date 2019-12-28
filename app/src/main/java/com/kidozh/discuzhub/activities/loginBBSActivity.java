@@ -98,7 +98,7 @@ public class loginBBSActivity extends AppCompatActivity {
     void setInformation(){
         bbsTitle.setText(curBBS.site_name);
         bbsBaseUrl.setText(curBBS.base_url);
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(curBBS.useSafeClient));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(this,curBBS.useSafeClient));
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
         Glide.with(this)
