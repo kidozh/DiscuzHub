@@ -37,6 +37,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
@@ -250,7 +251,6 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
             if(networkUtils.canDownloadImageOrFile(mContext)){
 
                 Glide.with(mContext)
-                        .asBitmap()
                         .load(source)
                         .error(R.drawable.vector_drawable_image_crash)
                         .placeholder(R.drawable.vector_drawable_loading_image)
@@ -258,9 +258,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
             }
             else {
                 Glide.with(mContext)
-                        .asBitmap()
                         .load(source)
-
                         .error(R.drawable.vector_drawable_image_wider_placeholder)
                         .placeholder(R.drawable.vector_drawable_loading_image)
                         .onlyRetrieveFromCache(true)
@@ -269,7 +267,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
             return myDrawable;
         }
     }
-    class BitmapTarget extends SimpleTarget<Bitmap> {
+    class BitmapTarget extends CustomTarget<Drawable> {
         private final MyDrawableWrapper myDrawable;
         TextView textView;
         public BitmapTarget(MyDrawableWrapper myDrawable,TextView textView) {
@@ -295,8 +293,8 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         }
 
         @Override
-        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-            Drawable drawable = new BitmapDrawable(mContext.getResources(), resource);
+        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+            Drawable drawable = resource;
             //获取原图大小
             int width=drawable.getIntrinsicWidth() ;
             int height=drawable.getIntrinsicHeight();
@@ -324,6 +322,11 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
             TextView tv = textView;
             tv.setText(tv.getText());
             tv.invalidate();
+        }
+
+        @Override
+        public void onLoadCleared(@Nullable Drawable placeholder) {
+
         }
     }
 
@@ -378,13 +381,12 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                         .replace(GlideUrl.class,InputStream.class,factory);
 
                 Glide.with(mContext)
-                        .asBitmap()
                         .load(url)
                         .placeholder(R.drawable.vector_drawable_image_wider_placeholder)
                         .error(R.drawable.vector_drawable_image_crash)
-                        .listener(new RequestListener<Bitmap>() {
+                        .listener(new RequestListener<Drawable>() {
                             @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                 Log.d(TAG,"Failed to load image");
                                 notifyDataSetChanged();
 
@@ -392,7 +394,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                             }
 
                             @Override
-                            public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
 //                              // call to redraw the picture
                                 Log.d(TAG,"Resource is ready");
                                 notifyDataSetChanged();
@@ -403,17 +405,15 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                         .into(new BitmapTarget(myDrawable,textView));
 
                 Glide.with(mContext)
-                        .asBitmap()
                         .load(url)
                         .onlyRetrieveFromCache(true)
                         .error(R.drawable.vector_drawable_image_failed)
                         .placeholder(R.drawable.vector_drawable_loading_image)
-                        .listener(new RequestListener<Bitmap>() {
+                        .listener(new RequestListener<Drawable>() {
                             @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                 Log.d(TAG,"The resource is not loaded...");
                                 Glide.with(context)
-                                        .asBitmap()
                                         .load(url)
                                         .error(R.drawable.vector_drawable_image_failed)
                                         .placeholder(R.drawable.vector_drawable_loading_image)
@@ -422,7 +422,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                             }
 
                             @Override
-                            public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                 Log.d(TAG,"The resource is loaded and ready to open in external activity...");
                                 Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
                                 intent.putExtra("URL",url);

@@ -155,7 +155,7 @@ public class networkUtils {
             }
             case "ANDROID":{
                 String useragent = new WebView(context).getSettings().getUserAgentString();
-                Log.d(TAG,"UA "+useragent);
+                // Log.d(TAG,"UA "+useragent);
                 mBuilder.addInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {

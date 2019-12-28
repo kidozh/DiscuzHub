@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-
     <item
         android:id="@+id/bbs_toolbar_send_item"
-        android:icon="@drawable/vector_drawable_post_a_thread"
+        android:icon="@drawable/vector_drawable_send_24px_solid"
         android:title="@string/bbs_send_a_thread"
         app:showAsAction="ifRoom" />
 </menu>

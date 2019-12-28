@@ -262,6 +262,7 @@ public class bbsPrivateMessageDetailActivity extends AppCompatActivity implement
         // remove \ and /
         String decodeStr = str.replace("/","")
                 .replace("\\","");
+
         handler.insertSmiley(decodeStr,a);
 
         Log.d(TAG,"Press string "+decodeStr);

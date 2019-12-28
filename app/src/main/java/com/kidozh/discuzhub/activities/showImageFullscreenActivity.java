@@ -91,7 +91,6 @@ public class showImageFullscreenActivity extends AppCompatActivity {
         Intent intent = getIntent();
         url = intent.getStringExtra("URL");
         Glide.with(this)
-                .asBitmap()
                 .load(url)
                 .error(R.drawable.vector_drawable_image_failed)
                 .centerInside()

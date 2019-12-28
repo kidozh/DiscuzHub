@@ -47,7 +47,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:padding="8dp"
-        android:src="@drawable/ic_format_color_text_white_24dp"
+        android:src="@drawable/vector_drawable_color_lens_24px_solid"
         android:visibility="visible" />
 
     <ImageView

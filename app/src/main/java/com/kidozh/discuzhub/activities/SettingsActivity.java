@@ -21,6 +21,8 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.kidozh.discuzhub.R;
 
+import java.util.List;
+
 public class SettingsActivity extends AppCompatActivity {
 
     @Override
@@ -72,27 +74,29 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
-            findPreference(getString(R.string.preference_key_use_browser_client)).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    String stringValue = newValue.toString();
-                    switch (stringValue){
-                        case "NONE":{
-                            preference.setSummary(R.string.preference_summary_use_browser_client_NONE);
-                            return true;
+
+            ListPreference uaPreference = (ListPreference) findPreference(getString(R.string.preference_key_use_browser_client));
+            if(uaPreference!=null){
+                uaPreference.setSummaryProvider(new Preference.SummaryProvider() {
+                    @Override
+                    public CharSequence provideSummary(Preference preference) {
+                        String value = uaPreference.getValue();
+                        switch (value){
+                            case "NONE":{
+
+                                return getString(R.string.preference_summary_use_browser_client_NONE);
+                            }
+                            case "ANDROID":{
+                                String useragent = new WebView(getContext()).getSettings().getUserAgentString();
+                                return getString(R.string.preference_summary_use_browser_client_ANDROID)
+                                        +"\n"+String.format("\"%s\"",useragent);
+                            }
+                            default:
+                                return "%s";
                         }
-                        case "ANDROID":{
-                            String useragent = new WebView(getContext()).getSettings().getUserAgentString();
-                            preference.setSummary(getString(R.string.preference_summary_use_browser_client_ANDROID)
-                                    +"\n"+String.format("\"%s\"",useragent));
-                            return true;
-                        }
-                        default:
-                            preference.setSummary("%s");
-                            return true;
                     }
-                }
-            });
+                });
+            }
 
         }
 

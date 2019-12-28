@@ -52,29 +52,22 @@ public class MyImageGetter implements Html.ImageGetter {
         Log.d(TAG,"Load image from "+source);
         if(networkUtils.canDownloadImageOrFile(context) || isFileDownloadAllowed){
 
+
             Glide.with(context)
-                    .asBitmap()
                     .load(source)
                     .error(R.drawable.vector_drawable_image_failed)
                     .placeholder(R.drawable.vector_drawable_loading_image)
-                    .into(new BitmapTarget(context,myDrawable,textView,rootView));
+                    .into(new GlideImageTarget(context,myDrawable,textView,rootView));
+
         }
         else {
             Glide.with(context)
-                    .asBitmap()
                     .load(source)
                     .error(R.drawable.vector_drawable_image_download_wider_placeholder)
                     .placeholder(R.drawable.vector_drawable_loading_image)
                     .onlyRetrieveFromCache(true)
-                    .into(new BitmapTarget(context,myDrawable,textView,rootView));
+                    .into(new GlideImageTarget(context,myDrawable,textView,rootView));
 
-//            Glide.with(context)
-//                    .asBitmap()
-//                    .load(source)
-//                    .error(R.drawable.vector_drawable_image_crash)
-//                    .placeholder(R.drawable.vector_drawable_loading_image)
-//                    .onlyRetrieveFromCache(true)
-//                    .into(new BitmapTarget(context,myDrawable,textView));
         }
         return myDrawable;
     }

@@ -47,7 +47,7 @@
         <item>Follow system</item>
     </string-array>
 
-    <string name="preference_title_use_browser_client">Browser\'s user agent</string>
+    <string name="preference_title_use_browser_client">Client\'s user agent</string>
     <string name="preference_key_use_browser_client">preference_key_use_browser_client</string>
 
     <string-array name="preference_entries_use_browser_client">
@@ -302,7 +302,7 @@
     <string name="bbs_no_friend">No friend is made in the bbs and consider adding one?</string>
     <string name="bbs_send_pm_in_profile">PM</string>
     <string name="preference_summary_use_browser_client_NONE">The app will not use user agent to identify the client. Device\'s information will not leak and some servers may block your unusual request.</string>
-    <string name="preference_summary_use_browser_client_ANDROID">The app will simulate the browsing action just like browsing websites and the ua we sent is given below:</string>
+    <string name="preference_summary_use_browser_client_ANDROID">The app will simulate the browsing websites and the User-Agent(UA) we sent is given below:</string>
     <string name="bbs_notification_notification">Notification</string>
 
 

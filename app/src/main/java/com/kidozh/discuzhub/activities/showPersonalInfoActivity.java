@@ -98,6 +98,8 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
     ViewPager personInfoViewPager;
     @BindView(R.id.show_personal_info_message_btn)
     Button personalInfoPMBtn;
+    @BindView(R.id.show_personal_info_focus_btn)
+    Button personalInfoFollowBtn;
 
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
@@ -114,6 +116,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
         ButterKnife.bind(this);
         getIntentInfo();
         configureActionBar();
+        renderFollowAndPMBtn();
 
         renderUserInfo();
         getUserInfo();
@@ -132,6 +135,13 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
                 .placeholder(R.drawable.vector_drawable_bbs)
                 .centerInside()
                 .into(personalInfoAvatar);
+    }
+
+    void renderFollowAndPMBtn(){
+        if(curUser ==null){
+            personalInfoPMBtn.setVisibility(View.GONE);
+            personalInfoFollowBtn.setVisibility(View.GONE);
+        }
     }
 
     void configurePMBtn(){

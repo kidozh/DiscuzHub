@@ -275,7 +275,9 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
         myColorPicker = new bbsColorPicker(this);
         smileyPicker = new bbsSmileyPicker(this);
         smileyPicker.setListener((str,a)->{
-            handler.insertSmiley(str,a);
+            String decodeStr = str.replace("/","")
+                    .replace("\\","");
+            handler.insertSmiley(decodeStr,a);
         });
         Spinner setSize = findViewById(R.id.action_text_size);
         setSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

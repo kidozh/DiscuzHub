@@ -150,7 +150,7 @@
         <item>Android 默认</item>
 
     </string-array>
-    <string name="preference_title_use_browser_client">浏览器用户标识符</string>
+    <string name="preference_title_use_browser_client">客户端用户标识符</string>
     <string name="bbs_no_thread_gotten">找不到更多啦</string>
     <string name="bbs_notification_public_pm">公共消息</string>
     <string name="bbs_notification_my_pm">我的消息</string>
@@ -169,7 +169,7 @@
     <string name="bbs_user_friend">好友</string>
     <string name="bbs_no_friend">该用户还没添加好友</string>
     <string name="bbs_send_pm_in_profile">私信</string>
-    <string name="preference_summary_use_browser_client_NONE">应用将不会指定访问标识。您的设备信息不会泄露但是某些服务器也会因此拒绝您的访问。</string>
+    <string name="preference_summary_use_browser_client_NONE">应用将不会指定访问标识。您的设备信息不会泄露，但是某些服务器也会因防止爬虫拒绝您的访问。</string>
     <string name="preference_summary_use_browser_client_ANDROID">应用将会模拟正常的网页访问。发送给服务器的UA如下所示：</string>
     <string name="bbs_notification_notification">消息</string>
 </resources>

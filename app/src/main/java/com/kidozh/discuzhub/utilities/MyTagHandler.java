@@ -88,22 +88,20 @@ public class MyTagHandler implements Html.TagHandler {
             MyDrawableWrapper myDrawable = new MyDrawableWrapper();
 
             Glide.with(context)
-                    .asBitmap()
                     .load(url)
                     .error(R.drawable.vector_drawable_image_failed)
                     .placeholder(R.drawable.vector_drawable_loading_image)
-                    .into(new BitmapTarget(context,myDrawable,textView,rootView));
+                    .into(new GlideImageTarget(context,myDrawable,textView,rootView));
 
 
             Glide.with(mContext)
-                    .asBitmap()
                     .load(url)
                     .onlyRetrieveFromCache(true)
                     .error(R.drawable.vector_drawable_image_failed)
                     .placeholder(R.drawable.vector_drawable_loading_image)
-                    .listener(new RequestListener<Bitmap>() {
+                    .listener(new RequestListener<Drawable>() {
                         @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                             Log.d(TAG,"The resource is not loaded...");
                             Handler mainHandler = new Handler(context.getMainLooper());
 
@@ -111,11 +109,10 @@ public class MyTagHandler implements Html.TagHandler {
                                 @Override
                                 public void run() {
                                     Glide.with(context)
-                                            .asBitmap()
                                             .load(url)
                                             .error(R.drawable.vector_drawable_image_failed)
                                             .placeholder(R.drawable.vector_drawable_loading_image)
-                                            .into(new BitmapTarget(context,myDrawable,textView,rootView));
+                                            .into(new GlideImageTarget(context,myDrawable,textView,rootView));
                                 }
                             };
                             mainHandler.post(myRunnable);
@@ -124,7 +121,7 @@ public class MyTagHandler implements Html.TagHandler {
                         }
 
                         @Override
-                        public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                             Log.d(TAG,"The resource is loaded and ready to open in external activity...");
                             Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
                             intent.putExtra("URL",url);
@@ -133,7 +130,7 @@ public class MyTagHandler implements Html.TagHandler {
                             mContext.startActivity(intent);
                             return false;
                         }
-                    }).into(new BitmapTarget(context,myDrawable,textView,rootView));
+                    }).into(new GlideImageTarget(context,myDrawable,textView,rootView));
 
 
 
