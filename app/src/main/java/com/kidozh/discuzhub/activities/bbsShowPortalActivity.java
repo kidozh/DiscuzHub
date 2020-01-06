@@ -122,6 +122,8 @@ public class bbsShowPortalActivity extends AppCompatActivity
         }
         if(getSupportActionBar()!=null){
             getSupportActionBar().setTitle(curBBS.site_name);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
