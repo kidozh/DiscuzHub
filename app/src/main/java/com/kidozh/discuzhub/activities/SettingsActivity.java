@@ -108,7 +108,7 @@ public class SettingsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:{
-                finish();
+                finishAfterTransition();
                 return false;
             }
         }

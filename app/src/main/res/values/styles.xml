@@ -30,6 +30,19 @@
 
         <item name="cardViewStyle">@style/CardView.DayNight</item>
 
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions">true</item>
+
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition">@transition/activity_transition_fade</item>
+        <item name="android:windowExitTransition">@transition/activity_transition_fade</item>
+
+<!--        &lt;!&ndash; specify shared element transitions &ndash;&gt;-->
+<!--        <item name="android:windowSharedElementEnterTransition">-->
+<!--            @transition/change_image_transform</item>-->
+<!--        <item name="android:windowSharedElementExitTransition">-->
+<!--            @transition/change_image_transform</item>-->
+
 
     </style>
 

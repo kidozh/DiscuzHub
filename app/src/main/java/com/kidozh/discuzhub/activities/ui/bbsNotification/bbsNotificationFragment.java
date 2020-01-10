@@ -80,6 +80,7 @@ public class bbsNotificationFragment extends Fragment {
     bbsNotificationAdapter adapter;
     private int globalPage = 1;
     private Boolean hasLoadAll = false;
+    private String noticeType;
 
     /**
      * Use this factory method to create a new instance of
@@ -88,9 +89,10 @@ public class bbsNotificationFragment extends Fragment {
      * @return A new instance of fragment bbsNotificationFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static bbsNotificationFragment newInstance() {
+    public static bbsNotificationFragment newInstance(String noticeType) {
         bbsNotificationFragment fragment = new bbsNotificationFragment();
         Bundle args = new Bundle();
+        args.putString("NOTICE_TYPE",noticeType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -99,6 +101,7 @@ public class bbsNotificationFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            noticeType = getArguments().getString("NOTICE_TYPE");
 //            mParam1 = getArguments().getString(ARG_PARAM1);
 //            mParam2 = getArguments().getString(ARG_PARAM2);
         }
@@ -178,8 +181,21 @@ public class bbsNotificationFragment extends Fragment {
             return;
         }
         bbsNotificationSwipeRefreshLayout.setRefreshing(true);
+        String apiString = "";
+        if(noticeType.equals("SYSTEM")){
+            apiString = bbsURLUtils.getPromptNotificationListApiUrl(page);
+        }
+        else if(noticeType.equals("NOTICE")){
+            apiString = bbsURLUtils.getNotificationListApiUrl(page);
+        }
+        else {
+            apiString = bbsURLUtils.getNotificationListApiUrl(page);
+        }
+
+        Log.d(TAG,"get notice type "+noticeType);
+
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getNotificationListApiUrl(page))
+                .url(apiString)
                 .build();
         Log.d(TAG,"get notification url "+request.url().toString());
         Handler mHandler = new Handler(Looper.getMainLooper());

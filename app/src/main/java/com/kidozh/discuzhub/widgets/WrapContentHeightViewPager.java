@@ -2,11 +2,15 @@ package com.kidozh.discuzhub.widgets;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
 import androidx.viewpager.widget.ViewPager;
+
+import com.bumptech.glide.load.engine.Resource;
+import com.kidozh.discuzhub.R;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,14 +38,14 @@ public class WrapContentHeightViewPager extends ViewPager {
             int h = child.getMeasuredHeight();
             int id = child.getId();
             if(setIds.contains(id)){
-                continue;
+                //continue;
             }
             else {
                 setIds.add(id);
             }
             height += h;
 
-            Log.d(TAG,"name "+child.getId()+" height "+h+" index "+i+"/"+getChildCount());
+            Log.d(TAG,"id "+child.getId()+ " " +" height "+h+" index "+i+"/"+getChildCount());
             //if(h > height) height = h;
         }
 

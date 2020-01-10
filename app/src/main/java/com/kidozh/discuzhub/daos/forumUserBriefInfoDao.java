@@ -1,6 +1,7 @@
 package com.kidozh.discuzhub.daos;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -17,6 +18,9 @@ public interface forumUserBriefInfoDao {
 
     @Query("SELECT * FROM forumUserBriefInfo WHERE belongedBBSID=:bbs_id")
     LiveData<List<forumUserBriefInfo>> getAllUserByBBSID(int bbs_id);
+
+    @Query("SELECT * FROM forumUserBriefInfo")
+    LiveData<List<forumUserBriefInfo>> getAllUser();
 
     @Query("DELETE FROM forumUserBriefInfo WHERE belongedBBSID=:bbs_id")
     void deleteAllUserByBBSID(int bbs_id);

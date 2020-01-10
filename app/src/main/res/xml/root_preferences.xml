@@ -21,6 +21,7 @@
 
         <CheckBoxPreference
             android:defaultValue="true"
+            android:icon="@drawable/vector_drawable_security_24px"
             android:key="@string/preference_key_use_safer_client"
             android:summaryOff="@string/preference_summary_off_use_safer_client"
             android:summaryOn="@string/preference_summary_on_use_safer_client"
@@ -29,6 +30,7 @@
             android:defaultValue="NONE"
             android:entries="@array/preference_entries_use_browser_client"
             android:entryValues="@array/preference_entry_values_use_browser_client"
+            android:icon="@drawable/vector_drawable_fingerprint_24px"
             android:key="@string/preference_key_use_browser_client"
             android:summary="%s"
             android:title="@string/preference_title_use_browser_client" />
@@ -39,6 +41,7 @@
 
         <CheckBoxPreference
             android:defaultValue="true"
+            android:icon="@drawable/vector_drawable_eco_24px"
             android:key="@string/preference_key_data_save_mode"
             android:summaryOff="@string/preference_summary_off_data_save"
             android:summaryOn="@string/preference_summary_on_data_save"
@@ -47,28 +50,50 @@
     <PreferenceCategory app:title="@string/messages_header">
 
         <EditTextPreference
+            android:icon="@drawable/vector_drawable_attachment"
             app:key="signature"
             app:title="@string/signature_title"
             app:useSimpleSummaryProvider="true" />
 
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
+<!--        <ListPreference-->
+<!--            app:defaultValue="reply"-->
+<!--            app:entries="@array/reply_entries"-->
+<!--            app:entryValues="@array/reply_values"-->
+<!--            app:key="reply"-->
+<!--            app:title="@string/reply_title"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
 
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/sync_header">
 
         <SwitchPreferenceCompat
+            android:icon="@drawable/vector_drawable_sync_24px"
+            app:icon="@drawable/vector_drawable_sync_24px"
             app:key="sync"
             app:title="@string/sync_title" />
 
+        <ListPreference
+            android:defaultValue="30min"
+            android:entries="@array/preference_entries_sync_time"
+            android:entryValues="@array/preference_entry_values_sync_time"
+            android:icon="@drawable/vector_drawable_update_24px"
+            android:key="@string/preference_key_sync_time"
+            android:summary="%s"
+            android:title="@string/preference_title_sync_time"
+            app:dependency="sync" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:icon="@drawable/vector_drawable_snooze_24px"
+            android:key="@string/preference_key_sync_at_night"
+            android:summaryOff="@string/preference_summary_off_sync_at_night"
+            android:summaryOn="@string/preference_summary_on_sync_at_night"
+            android:title="@string/preference_title_sync_at_night"
+            app:dependency="sync" />
         <SwitchPreferenceCompat
+            android:icon="@drawable/vector_drawable_attachment"
             app:dependency="sync"
+            app:icon="@drawable/vector_drawable_attachment"
             app:key="attachment"
             app:summaryOff="@string/attachment_summary_off"
             app:summaryOn="@string/attachment_summary_on"
@@ -81,6 +106,7 @@
             android:defaultValue="@string/preference_default_display_mode"
             android:entries="@array/string_dark_mode_night_shift"
             android:entryValues="@array/dark_mode_night_shift"
+            android:icon="@drawable/vector_drawable_style_24px"
             android:key="@string/preference_key_display_mode"
             android:summary="%s"
             android:title="@string/preference_title_display_mode" />

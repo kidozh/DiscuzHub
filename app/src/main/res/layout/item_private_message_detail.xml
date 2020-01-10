@@ -22,6 +22,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:transitionName="user_info_avatar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_private_message_detail_time"
         tools:srcCompat="@tools:sample/avatars"

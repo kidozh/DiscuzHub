@@ -969,6 +969,21 @@ public class bbsParseUtils {
         }
     }
 
+    public static int parseNotificationCount(String s){
+        try{
+            List<privateDetailMessage> privateDetailMessageList = new ArrayList<>();
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject variables = jsonObject.getJSONObject("Variables");
+
+            return Integer.parseInt(variables.getString("count"));
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
     public static List<notificationDetailInfo> parseNotificationDetailInfo(String s){
         try{
             List<notificationDetailInfo> notificationDetailInfoList = new ArrayList<>();

@@ -28,10 +28,9 @@
     <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
+    <string name="sync_title">Sync bbs information periodically</string>
     <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming messages</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="bbs_qq_connect_ok">Support QQ connect</string>
     <string name="preference_title_display">Display</string>
@@ -304,6 +303,36 @@
     <string name="preference_summary_use_browser_client_NONE">The app will not use user agent to identify the client. Device\'s information will not leak and some servers may block your unusual request.</string>
     <string name="preference_summary_use_browser_client_ANDROID">The app will simulate the browsing websites and the User-Agent(UA) we sent is given below:</string>
     <string name="bbs_notification_notification">Notification</string>
+    <string name="app_about">About</string>
+    <string name="app_about_fork_on_github">Fork on Github</string>
+
+    <string name="preference_title_sync_time">Sync time</string>
+    <string name="preference_key_sync_time">preference_key_sync_time</string>
+
+    <string-array name="preference_entries_sync_time">
+        <item>15 min</item>
+        <item>30 min</item>
+        <item>1 hour</item>
+        <item>2 hours</item>
+        <item>5 hours</item>
+    </string-array>
+    <string-array name="preference_entry_values_sync_time">
+        <item>15min</item>
+        <item>30min</item>
+        <item>1h</item>
+        <item>2h</item>
+        <item>5h</item>
+    </string-array>
+
+    <string name="preference_title_sync_at_night">Don\'t disturb at night</string>
+    <string name="preference_key_sync_at_night">preference_key_sync_at_night</string>
+    <string name="preference_summary_on_sync_at_night">The app will not sync information with server from 11.00 PM to 08.00 AM</string>
+    <string name="preference_summary_off_sync_at_night">The app will sync with server at night and may disturb you.</string>
+    <string name="bbs_user_list_recyclerview_header">User List</string>
+    <string name="bbs_no_register_user_found">No user found in the bbs</string>
+    <string name="bbs_delete_user_info_template">Delete user : %s</string>
+    <string name="bbs_privacy_protect_alert">Due to privacy protection, the page is not shown in detail.</string>
+    <string name="bbs_notification_system">System</string>
 
 
 </resources>

@@ -26,6 +26,7 @@
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:transitionName="user_info_avatar"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/avatar_person_male"
@@ -169,6 +170,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="8dp"
+                android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@+id/bbs_thread_read_perm_number"
                 app:layout_constraintTop_toTopOf="@+id/bbs_thread_view_textview"
                 app:srcCompat="@drawable/vector_drawable_price_tag" />
@@ -188,6 +190,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:textSize="12sp"
+                android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@+id/bbs_thread_price_image"
                 app:layout_constraintTop_toTopOf="@+id/bbs_thread_reply_image"
                 tools:text="@tools:sample/us_zipcodes" />
@@ -198,6 +201,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:textSize="12sp"
+                android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@+id/bbs_thread_attachment_image"
                 app:layout_constraintTop_toTopOf="@+id/bbs_thread_reply_image"
                 tools:text="@tools:sample/us_zipcodes" />

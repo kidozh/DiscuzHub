@@ -24,17 +24,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.Lifecycle;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.notifications.NotificationsFragment;
+import com.kidozh.discuzhub.activities.ui.privacyProtect.privacyProtectFragment;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
 import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment;
 import com.kidozh.discuzhub.activities.ui.userFriend.userFriendFragment;
@@ -51,6 +57,8 @@ import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -175,7 +183,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userId = intent.getStringExtra("UID");
         if(curBBS == null){
-            finish();
+            finishAfterTransition();
         }
         else {
             Log.d(TAG,"get bbs name "+curBBS.site_name);
@@ -283,9 +291,18 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
 
     void configureViewPager(){
         Log.d(TAG,"Configuring friend fragment");
+        List<String> tabTitles = new ArrayList<>();
+
         personInfoTabLayout.setupWithViewPager(personInfoViewPager);
-        personalInfoViewPagerAdapter adapter  = new personalInfoViewPagerAdapter(getSupportFragmentManager());
+        personalInfoViewPagerAdapter adapter  = new personalInfoViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         personInfoViewPager.setAdapter(adapter);
+        tabTitles.add(getString(R.string.bbs_user_friend)+String.format(" (%s)",friendNum));
+        tabTitles.add(getString(R.string.bbs_forum_thread)+String.format(" (%s)",threadNum));
+        tabTitles.add(getString(R.string.bbs_forum_post)+String.format(" (%s)",postsNum));
+//        new TabLayoutMediator(personInfoTabLayout,personInfoViewPager,(
+//                (tab, position) -> tab.setText(tabTitles.get(position)))
+//        ).attach();
+
     }
 
     @Override
@@ -293,10 +310,15 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
 
     }
 
+    @Override
+    public void onRenderSuccessfully() {
+        Log.d(TAG,"Redraw view pager");
+        personInfoViewPager.invalidate();
+        personInfoViewPager.requestLayout();
+    }
+
+
     public class personalInfoViewPagerAdapter extends FragmentStatePagerAdapter {
-        personalInfoViewPagerAdapter(FragmentManager fragmentManager){
-            super(fragmentManager);
-        }
 
 
         public personalInfoViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
@@ -310,13 +332,11 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
                 case 0:
                     return userFriendFragment.newInstance(userId);
                 case 1:
-                    return userFriendFragment.newInstance(userId);
+                    return privacyProtectFragment.newInstance("","");
                 case 2:
-                    return userFriendFragment.newInstance(userId);
+                    return privacyProtectFragment.newInstance("","");
             }
-            return new userFriendFragment();
-
-
+            return userFriendFragment.newInstance(userId);
         }
 
         @Nullable
@@ -345,7 +365,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
         switch (item.getItemId()) {
             case android.R.id.home:{
                 //返回键的id
-                this.finish();
+                this.finishAfterTransition();
                 return false;
             }
             default:

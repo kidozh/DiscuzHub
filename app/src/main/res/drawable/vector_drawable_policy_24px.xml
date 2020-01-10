@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:viewportWidth="24"
+    android:viewportHeight="24" android:width="24dp" android:height="24dp">
+    <group android:name="Bounding_Box">
+        <path android:fillColor="#00000000" android:pathData="M 0,0 L 24,0 L 24,24 L 0,24 z" />
+        <path android:fillColor="#00000000" android:pathData="M 0,0 L 24,0 L 24,24 L 0,24 z" />
+    </group>
+    <group android:name="Flat">
+        <group android:name="ui_x5F_spec_x5F_header_copy_2" />
+        <group>
+            <path android:fillColor="?attr/colorControlNormal"
+                android:pathData="M21 6.3c0-0.79-0.47-1.51-1.19-1.83l-7-3.11c-0.52-0.23-1.11-0.23-1.62 0l-7 3.11C3.47 4.79 3 5.51 3 6.3V11 c0 5.55 3.84 10.74 9 12c2.3-0.56 4.33-1.9 5.88-3.71l-3.12-3.12c-1.94 1.29-4.58 1.07-6.29-0.64c-1.95-1.95-1.95-5.12 0-7.07 c1.95-1.95 5.12-1.95 7.07 0c1.71 1.71 1.92 4.35 0.64 6.29l2.9 2.9C20.29 15.69 21 13.38 21 11V6.3z" />
+            <path android:fillColor="?attr/colorControlNormal"
+                android:pathData="M 9,12 a 3,3 0 0 1 6,0 a 3,3 0 0 1 -6,0 z" />
+        </group>
+    </group>
+</vector>

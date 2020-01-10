@@ -736,7 +736,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
             String message = bbsParseUtils.parsePostThreadInfo(s);
             if(bbsParseUtils.isPostThreadSuccessful(s)){
                 Toasty.success(getApplicationContext(),message,Toast.LENGTH_LONG).show();
-                finish();
+                finishAfterTransition();
             }
             else {
                 Toasty.error(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
@@ -751,7 +751,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
         switch (item.getItemId()) {
             case android.R.id.home:{
                 //返回键的id
-                this.finish();
+                this.finishAfterTransition();
                 return false;
             }
             case R.id.bbs_toolbar_send_item:{

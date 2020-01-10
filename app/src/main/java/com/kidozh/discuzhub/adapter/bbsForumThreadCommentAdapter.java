@@ -1,11 +1,14 @@
 package com.kidozh.discuzhub.adapter;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableString;
@@ -163,8 +166,12 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
 
                 intent.putExtra("UID",threadInfo.authorId);
+                ActivityOptions options = ActivityOptions
+                        .makeSceneTransitionAnimation((Activity) mContext, holder.mAvatarImageview, "user_info_avatar");
 
-                mContext.startActivity(intent);
+                Bundle bundle = options.toBundle();
+
+                mContext.startActivity(intent,bundle);
             }
         });
 

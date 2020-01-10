@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -96,6 +97,8 @@ public class userFriendFragment extends Fragment {
     ImageView userFriendImageView;
     @BindView(R.id.user_friend_no_item_textview)
     TextView noFriendTextView;
+    @BindView(R.id.user_friend_swipe_refreshLayout)
+    SwipeRefreshLayout userFriendSwipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -111,6 +114,8 @@ public class userFriendFragment extends Fragment {
     forumInfo forum;
     private OkHttpClient client = new OkHttpClient();
     bbsUserFriendAdapter adapter;
+    private int globalPage = 1;
+    private Boolean hasLoadAll = false;
 
 
     @Override
@@ -118,7 +123,7 @@ public class userFriendFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         configureIntentData();
         configureRecyclerview();
-        getFriendInfo();
+        configureSwipeRefreshLayout();
 
     }
 
@@ -139,11 +144,50 @@ public class userFriendFragment extends Fragment {
         adapter = new bbsUserFriendAdapter(null,bbsInfo,userBriefInfo);
         userFriendRecyclerview.setAdapter(adapter);
 
+        userFriendRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(isScrollAtEnd()){
+                    getFriendInfo(globalPage);
 
+                }
+            }
+
+            public boolean isScrollAtEnd(){
+
+                if (userFriendRecyclerview.computeVerticalScrollExtent() + userFriendRecyclerview.computeVerticalScrollOffset()
+                        >= userFriendRecyclerview.computeVerticalScrollRange()){
+                    return true;
+                }
+                else {
+                    return false;
+                }
+
+            }
+        });
     }
 
-    private void getFriendInfo(){
-        String apiStr = bbsURLUtils.getFriendApiUrlByUid(Integer.valueOf(uid));
+    private void configureSwipeRefreshLayout(){
+        userFriendSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                globalPage = 1;
+                hasLoadAll = false;
+                getFriendInfo(globalPage);
+            }
+        });
+        getFriendInfo(globalPage);
+    }
+
+    private void getFriendInfo(int page){
+        if(hasLoadAll){
+            userFriendSwipeRefreshLayout.setRefreshing(false);
+            return;
+        }
+        userFriendSwipeRefreshLayout.setRefreshing(true);
+        Log.d(TAG,"friend id "+uid+" page number "+page);
+        String apiStr = bbsURLUtils.getFriendApiUrlByUid(Integer.valueOf(uid),page);
         Request request = new Request.Builder()
                 .url(apiStr)
                 .build();
@@ -172,13 +216,34 @@ public class userFriendFragment extends Fragment {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                adapter.setUserFriendList(userFriendList);
+                                userFriendSwipeRefreshLayout.setRefreshing(false);
                                 if(userFriendList.size()==0){
                                     noFriendTextView.setVisibility(View.VISIBLE);
                                     userFriendImageView.setVisibility(View.VISIBLE);
                                 }
+
+                                if(page == 1){
+                                    adapter.setUserFriendList(userFriendList);
+                                }
+                                else {
+                                    adapter.addUserFriendList(userFriendList);
+                                }
+                                int count = bbsParseUtils.parseNotificationCount(s);
+                                if(count > adapter.getUserFriendList().size()){
+                                    hasLoadAll = false;
+                                    globalPage += 1;
+                                }
+                                else {
+                                    hasLoadAll = true;
+                                }
+                                mListener.onRenderSuccessfully();
                             }
                         });
+
+
+                        Log.d(TAG,"Has load all "+hasLoadAll+" global page "+globalPage);
+
+
 
                     }
                     else {
@@ -243,5 +308,6 @@ public class userFriendFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+        void onRenderSuccessfully();
     }
 }

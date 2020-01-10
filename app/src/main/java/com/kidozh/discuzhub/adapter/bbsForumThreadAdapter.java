@@ -1,10 +1,14 @@
 package com.kidozh.discuzhub.adapter;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -181,8 +185,40 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
                 .apply(options)
                 .into(holder.mAvatarImageview);
         // set short reply
-        holder.mRecommendationNumber.setText(numberFormatUtils.getShortNumberText(threadInfo.recommendNum));
-        holder.mReadPerm.setText(numberFormatUtils.getShortNumberText(threadInfo.readperm));
+        if(threadInfo.recommendNum !=0){
+            holder.mRecommendationNumber.setVisibility(View.VISIBLE);
+            holder.mRecommendationNumber.setText(numberFormatUtils.getShortNumberText(threadInfo.recommendNum));
+            holder.mRecommendationIcon.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.mRecommendationNumber.setVisibility(View.GONE);
+            holder.mRecommendationIcon.setVisibility(View.GONE);
+        }
+
+        if(threadInfo.readperm.equals("0")){
+            holder.mReadPerm.setVisibility(View.GONE);
+            holder.mReadPermIcon.setVisibility(View.GONE);
+        }
+        else {
+            holder.mReadPermIcon.setVisibility(View.VISIBLE);
+            holder.mReadPerm.setVisibility(View.VISIBLE);
+            holder.mReadPerm.setText(numberFormatUtils.getShortNumberText(threadInfo.readperm));
+        }
+
+        if(threadInfo.attachment == 0){
+            holder.mAttachmentIcon.setVisibility(View.GONE);
+        }
+        else {
+            holder.mAttachmentIcon.setVisibility(View.VISIBLE);
+            if(threadInfo.attachment == 1){
+                holder.mAttachmentIcon.setImageDrawable(mContext.getDrawable(R.drawable.vector_drawable_attachment));
+            }
+            else {
+                holder.mAttachmentIcon.setImageDrawable(mContext.getDrawable(R.drawable.vector_drawable_image_24px));
+            }
+        }
+
+
         holder.mAttachmentNumber.setText(numberFormatUtils.getShortNumberText(threadInfo.attachment));
         if(threadInfo.shortReplyInfoList!=null && threadInfo.shortReplyInfoList.size()>0){
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
@@ -222,7 +258,16 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
 
                 intent.putExtra("UID",threadInfo.authorId);
 
-                mContext.startActivity(intent);
+//                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+//                        mContext, Pair.create(holder.mAvatarImageview, "user_info_avatar")
+//                );
+
+                ActivityOptions options = ActivityOptions
+                        .makeSceneTransitionAnimation((Activity) mContext, holder.mAvatarImageview, "user_info_avatar");
+
+                Bundle bundle = options.toBundle();
+
+                mContext.startActivity(intent,bundle);
             }
         });
 
@@ -260,10 +305,16 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
         CardView mCardview;
         @BindView(R.id.bbs_thread_short_reply_recyclerview)
         RecyclerView mReplyRecyclerview;
+        @BindView(R.id.bbs_thread_recommend_image)
+        ImageView mRecommendationIcon;
         @BindView(R.id.bbs_thread_recommend_number)
         TextView mRecommendationNumber;
+        @BindView(R.id.bbs_thread_read_perm_image)
+        ImageView mReadPermIcon;
         @BindView(R.id.bbs_thread_read_perm_number)
         TextView mReadPerm;
+        @BindView(R.id.bbs_thread_attachment_image)
+        ImageView mAttachmentIcon;
         @BindView(R.id.bbs_thread_attachment_number)
         TextView mAttachmentNumber;
         public bbsForumThreadViewHolder(@NonNull View itemView) {

@@ -172,4 +172,28 @@
     <string name="preference_summary_use_browser_client_NONE">应用将不会指定访问标识。您的设备信息不会泄露，但是某些服务器也会因防止爬虫拒绝您的访问。</string>
     <string name="preference_summary_use_browser_client_ANDROID">应用将会模拟正常的网页访问。发送给服务器的UA如下所示：</string>
     <string name="bbs_notification_notification">消息</string>
+    <string name="app_about">关于</string>
+    <string name="app_about_fork_on_github">在Github上查看项目</string>
+
+    <string name="preference_title_sync_time">同步间隔</string>
+
+    <string-array name="preference_entries_sync_time">
+        <item>15分钟</item>
+        <item>30分钟</item>
+        <item>1小时</item>
+        <item>2小时</item>
+        <item>5小时</item>
+    </string-array>
+    <string name="attachment_title">自动下载附件</string>
+    <string name="attachment_summary_off">仅当显式指定后才下载附件</string>
+    <string name="attachment_summary_on">自动下载附件</string>
+    <string name="sync_title">自动同步论坛信息</string>
+    <string name="preference_title_sync_at_night">夜晚免打扰</string>
+    <string name="preference_summary_off_sync_at_night">应用将会在夜间与服务器同步消息并可能打扰到你。</string>
+    <string name="preference_summary_on_sync_at_night">应用在晚11点至早8点内不会同步消息</string>
+    <string name="bbs_user_list_recyclerview_header">用户列表</string>
+    <string name="bbs_no_register_user_found">在本论坛下没有登录的用户</string>
+    <string name="bbs_delete_user_info_template">删除用户 - %s</string>
+    <string name="bbs_privacy_protect_alert">此内容由于隐私设置不予显示</string>
+    <string name="bbs_notification_system">系统推送</string>
 </resources>

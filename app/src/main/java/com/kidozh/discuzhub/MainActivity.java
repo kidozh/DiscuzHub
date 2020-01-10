@@ -448,8 +448,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        configureRecyclerview();
-        bindForumData();
+        //configureRecyclerview();
+        //bindForumData();
     }
 
     private void configureFab(){
@@ -498,6 +498,7 @@ public class MainActivity extends AppCompatActivity {
         forumInformationListLiveData.observe(this, new Observer<List<bbsInformation>>() {
             @Override
             public void onChanged(List<bbsInformation> bbsInformations) {
+                Log.d(TAG,"bbs information changed!");
                 adapter.setBbsInformationList(bbsInformations);
                 ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new forumSwipeToDeleteCallback(adapter));
                 itemTouchHelper.attachToRecyclerView(mForumInfoRecyclerview);

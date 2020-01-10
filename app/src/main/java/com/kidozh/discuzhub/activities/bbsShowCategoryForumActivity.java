@@ -105,7 +105,7 @@ public class bbsShowCategoryForumActivity extends AppCompatActivity {
         curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         if(curBBS == null){
-            finish();
+            finishAfterTransition();
         }
         else {
             Log.d(TAG,"get bbs name "+curBBS.site_name);
@@ -224,7 +224,7 @@ public class bbsShowCategoryForumActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == android.R.id.home){
-            this.finish();
+            this.finishAfterTransition();
             return false;
         }
 

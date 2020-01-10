@@ -88,12 +88,14 @@ public class NotificationsFragment extends Fragment implements bbsPrivateMessage
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    return new bbsNotificationFragment();
-                case 1:
-                    return new bbsPublicMessageFragment();
-                case 2:
                     return new bbsPrivateMessageFragment();
+                case 1:
+                    return bbsNotificationFragment.newInstance("NOTICE");
+                case 2:
+                    return bbsNotificationFragment.newInstance("SYSTEM");
                 case 3:
+                    return new bbsPublicMessageFragment();
+                case 4:
                     return new bbsMyThreadFragment();
             }
             return new bbsPublicMessageFragment();
@@ -106,12 +108,14 @@ public class NotificationsFragment extends Fragment implements bbsPrivateMessage
         public CharSequence getPageTitle(int position) {
             switch (position){
                 case 0:
-                    return getString(R.string.bbs_notification_notification);
-                case 1:
-                    return getString(R.string.bbs_notification_public_pm);
-                case 2:
                     return getString(R.string.bbs_notification_my_pm);
+                case 1:
+                    return getString(R.string.bbs_notification_notification);
+                case 2:
+                    return getString(R.string.bbs_notification_system);
                 case 3:
+                    return getString(R.string.bbs_notification_public_pm);
+                case 4:
                     return getString(R.string.bbs_notification_my_thread);
                     default:
                         return "";
@@ -120,7 +124,7 @@ public class NotificationsFragment extends Fragment implements bbsPrivateMessage
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
     }
 

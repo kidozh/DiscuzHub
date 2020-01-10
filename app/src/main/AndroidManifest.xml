@@ -32,7 +32,7 @@
             android:label="@string/title_activity_bbs_show_portal" />
         <activity android:name=".activities.loginBBSActivity" />
         <activity android:name=".activities.showImageFullscreenActivity" />
-        <activity android:name=".activities.bbsShowInformationActivity" />
+        <activity android:name=".activities.ui.bbsDetailedInformation.bbsShowInformationActivity" />
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_global_settings" />

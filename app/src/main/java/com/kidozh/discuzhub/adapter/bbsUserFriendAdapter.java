@@ -2,6 +2,7 @@ package com.kidozh.discuzhub.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import butterknife.ButterKnife;
 import static com.kidozh.discuzhub.utilities.networkUtils.getPreferredClient;
 
 public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdapter.ViewHolder> {
+    private final static String TAG = bbsUserFriendAdapter.class.getSimpleName();
     private List<bbsParseUtils.userFriend> userFriendList;
     Context context;
     bbsInformation bbsInfo;
@@ -44,8 +46,23 @@ public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdap
         this.curUser = curUser;
     }
 
+    public List<bbsParseUtils.userFriend> getUserFriendList() {
+        return userFriendList;
+    }
+
     public void setUserFriendList(List<bbsParseUtils.userFriend> userFriendList){
         this.userFriendList = userFriendList;
+        notifyDataSetChanged();
+    }
+
+    public void addUserFriendList(List<bbsParseUtils.userFriend> userFriendList){
+        if(this.userFriendList == null){
+            this.userFriendList = userFriendList;
+        }
+        else {
+            this.userFriendList.addAll(userFriendList);
+        }
+
         notifyDataSetChanged();
     }
 
@@ -80,6 +97,7 @@ public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdap
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG,"click friend cardview");
                 Intent intent = new Intent(context, showPersonalInfoActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);

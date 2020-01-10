@@ -2,11 +2,9 @@ package com.kidozh.discuzhub.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,8 +16,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.bbsShowCategoryForumActivity;
-import com.kidozh.discuzhub.activities.bbsShowInformationActivity;
 import com.kidozh.discuzhub.activities.bbsShowPortalActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -39,14 +35,22 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
     private bbsInformation bbsInfo;
     Context context;
 
-    forumUsersAdapter(Context context, bbsInformation bbsInformation){
+    public List<forumUserBriefInfo> getUserList() {
+        return userList;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public forumUsersAdapter(Context context, bbsInformation bbsInformation){
         this.bbsInfo = bbsInformation;
         this.context = context;
     }
 
     public void setUserList(List<forumUserBriefInfo> userList){
         this.userList = userList;
-        notifyDataSetChanged();
+        this.notifyDataSetChanged();
     }
 
     @NonNull

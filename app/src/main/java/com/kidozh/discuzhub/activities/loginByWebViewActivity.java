@@ -259,7 +259,7 @@ public class loginByWebViewActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            insertedId = forumUserBriefInfoDatabase.getDatabase(getApplicationContext())
+            insertedId = forumUserBriefInfoDatabase.getInstance(getApplicationContext())
                     .getforumUserBriefInfoDao().insert(userBriefInfo);
 
             return null;
@@ -291,7 +291,7 @@ public class loginByWebViewActivity extends AppCompatActivity {
 //            );
             //networkUtils.clearUserCookieInfo(context);
 
-            finish();
+            finishAfterTransition();
         }
     }
 
@@ -311,7 +311,7 @@ public class loginByWebViewActivity extends AppCompatActivity {
 
         switch (id){
             case android.R.id.home:
-                finish();
+                finishAfterTransition();
                 return false;
             case R.id.action_login_in_web_finished:
                 // do secondary authentication

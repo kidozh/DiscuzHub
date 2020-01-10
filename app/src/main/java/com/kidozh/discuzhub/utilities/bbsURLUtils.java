@@ -201,8 +201,8 @@ public class bbsURLUtils {
         return BASE_URL+"/api/mobile/index.php?version=4&module=profile&uid="+uid;
     }
 
-    public static String getFriendApiUrlByUid(int uid){
-        return BASE_URL+"/api/mobile/index.php?version=4&module=friend&uid="+uid;
+    public static String getFriendApiUrlByUid(int uid,int page){
+        return BASE_URL+"/api/mobile/index.php?version=4&module=friend&uid="+uid+"&page="+page;
     }
 
     public static String getNotificationListApiUrl(int page){
@@ -215,6 +215,10 @@ public class bbsURLUtils {
 
     public static String getSmileyImageUrl(String path) {
         return BASE_URL + "/static/image/smiley/"+path;
+    }
+
+    public static String getPromptNotificationListApiUrl(int page){
+        return BASE_URL + "/api/mobile/index.php?version=4&module=mynotelist&view=system&page="+page;
     }
 
 }

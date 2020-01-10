@@ -240,10 +240,12 @@ public class loginBBSActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         // showing error information
+                        Toasty.error(getApplicationContext(),getString(R.string.network_failed),Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -319,7 +321,7 @@ public class loginBBSActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            insertedId = forumUserBriefInfoDatabase.getDatabase(getApplicationContext())
+            insertedId = forumUserBriefInfoDatabase.getInstance(getApplicationContext())
                     .getforumUserBriefInfoDao().insert(userBriefInfo);
             return null;
         }
@@ -340,7 +342,7 @@ public class loginBBSActivity extends AppCompatActivity {
                     context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE)
             );
 
-            finish();
+            finishAfterTransition();
         }
     }
 
@@ -362,7 +364,7 @@ public class loginBBSActivity extends AppCompatActivity {
         curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         if(curBBS == null){
-            finish();
+            finishAfterTransition();
         }
         else {
             Log.d(TAG,"get bbs name "+curBBS.site_name);
@@ -379,7 +381,7 @@ public class loginBBSActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == android.R.id.home){
-            this.finish();
+            this.finishAfterTransition();
             return false;
         }
 

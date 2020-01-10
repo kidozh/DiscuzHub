@@ -1,12 +1,14 @@
 package com.kidozh.discuzhub.adapter;
 
 
-import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +17,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,8 +32,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.MainActivity;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.bbsShowCategoryForumActivity;
-import com.kidozh.discuzhub.activities.bbsShowInformationActivity;
+import com.kidozh.discuzhub.activities.ui.bbsDetailedInformation.bbsShowInformationActivity;
 import com.kidozh.discuzhub.activities.bbsShowPortalActivity;
 import com.kidozh.discuzhub.activities.loginBBSActivity;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
@@ -135,14 +135,17 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
 
         // render forum user info
         LiveData<List<forumUserBriefInfo>> bbsUserInfoLiveDatas = forumUserBriefInfoDatabase
-                .getDatabase(context)
+                .getInstance(context)
                 .getforumUserBriefInfoDao()
                 .getAllUserByBBSID(forumInfo.getId());
         adapter.setUserList(bbsUserInfoLiveDatas.getValue());
-        Log.d(TAG,"Find exsiting user "+bbsUserInfoLiveDatas.getValue());
+        Log.d(TAG,"Find exsiting user "+bbsUserInfoLiveDatas.getValue() + " id "+forumInfo.getId());
         bbsUserInfoLiveDatas.observe(activity, new Observer<List<forumUserBriefInfo>>() {
             @Override
             public void onChanged(List<forumUserBriefInfo> forumUserBriefInfos) {
+                if(forumUserBriefInfos!=null){
+                    Log.d(TAG,"Find exsiting user "+forumUserBriefInfos.size() + " id "+forumInfo.getId());
+                }
                 adapter.setUserList(forumUserBriefInfos);
             }
         });
@@ -150,10 +153,26 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
         holder.forumInfoCardview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(activity, bbsShowInformationActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,forumInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
-                activity.startActivity(intent);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity,
+                        Pair.create(holder.forumAvatar, "bbs_info_avatar"),
+                        Pair.create(holder.forumName, "bbs_info_name"),
+                        Pair.create(holder.forumPostNumber, "bbs_info_post_number"),
+                        Pair.create(holder.forumMemberNumber, "bbs_info_member_number"),
+                        Pair.create(holder.forumSiteId, "bbs_info_siteid"),
+                        Pair.create(holder.addAnAccountBtn, "bbs_info_add_account"),
+                        Pair.create(holder.forumUserRecyclerview,"bbs_info_user_list")
+
+                        //Pair.create(holder.forumPostIcon,"bbs_info_post_number_tag"),
+                        //Pair.create(holder.forumMemberIcon,"bbs_info_member_number_tag")
+                );
+
+                Bundle bundle = options.toBundle();
+
+                activity.startActivity(intent,bundle);
             }
         });
         holder.enterAsAnonymous.setOnClickListener(new View.OnClickListener() {
@@ -174,7 +193,15 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
                 Intent intent = new Intent(context, loginBBSActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,forumInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
-                context.startActivity(intent);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity,
+                        Pair.create(holder.forumName, "bbs_info_name"),
+                        Pair.create(holder.forumAvatar, "bbs_info_avatar"),
+                        Pair.create(holder.forumHost,"bbs_info_bbs_url")
+
+                );
+
+                Bundle bundle = options.toBundle();
+                context.startActivity(intent,bundle);
             }
         });
 
@@ -293,8 +320,12 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
         TextView forumSiteId;
         @BindView(R.id.item_forum_information_post_number)
         TextView forumPostNumber;
+        @BindView(R.id.item_forum_information_posts_icon)
+        ImageView forumPostIcon;
         @BindView(R.id.item_forum_information_member_number)
         TextView forumMemberNumber;
+        @BindView(R.id.item_forum_information_member_icon)
+        ImageView forumMemberIcon;
         @BindView(R.id.item_forum_information_user_recyclerview)
         RecyclerView forumUserRecyclerview;
         @BindView(R.id.item_forum_information_integrity)
@@ -311,6 +342,7 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
         CardView forumInfoCardview;
         @BindView(R.id.item_forum_information_add_an_account_btn)
         Button addAnAccountBtn;
+
 
 
 

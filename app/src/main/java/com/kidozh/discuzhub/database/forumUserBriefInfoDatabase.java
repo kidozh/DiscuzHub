@@ -23,7 +23,7 @@ public abstract class forumUserBriefInfoDatabase extends RoomDatabase {
         return instance;
     }
 
-    public static forumUserBriefInfoDatabase getDatabase(final Context context){
+    private static forumUserBriefInfoDatabase getDatabase(final Context context){
         return Room.databaseBuilder(context,forumUserBriefInfoDatabase.class,DB_NAME)
                 .build();
     }

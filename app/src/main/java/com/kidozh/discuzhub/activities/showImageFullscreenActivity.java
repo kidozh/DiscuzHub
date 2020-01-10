@@ -107,7 +107,7 @@ public class showImageFullscreenActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:   //返回键的id
-                this.finish();
+                this.finishAfterTransition();
                 return false;
             default:
                 return super.onOptionsItemSelected(item);
