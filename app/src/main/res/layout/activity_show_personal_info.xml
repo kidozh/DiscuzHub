@@ -161,12 +161,31 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginEnd="16dp"
                         android:singleLine="true"
                         android:textAlignment="viewStart"
-                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/show_personal_info_regdate_icon"
                         app:layout_constraintTop_toTopOf="@+id/show_personal_info_regdate_icon"
+                        tools:text="@tools:sample/date/ddmmyy" />
+
+                    <ImageView
+                        android:id="@+id/show_personal_info_last_activity_icon"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintStart_toEndOf="@+id/show_personal_info_regdate_textView"
+                        app:layout_constraintTop_toTopOf="@+id/show_personal_info_regdate_textView"
+                        app:srcCompat="@drawable/vector_drawable_update_24px" />
+
+                    <TextView
+                        android:id="@+id/show_personal_info_last_activity_time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:textAlignment="viewStart"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/show_personal_info_last_activity_icon"
+                        app:layout_constraintTop_toTopOf="@+id/show_personal_info_last_activity_icon"
                         tools:text="@tools:sample/date/ddmmyy" />
 
                     <ImageView
@@ -188,7 +207,29 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/show_personal_info_recent_note_icon"
                         app:layout_constraintTop_toTopOf="@+id/show_personal_info_recent_note_icon"
-                        tools:text="@tools:sample/date/day_of_week" />
+                        tools:text="@tools:sample/full_names" />
+
+                    <ImageView
+                        android:id="@+id/show_personal_info_group_icon"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_recent_note_textView"
+                        app:srcCompat="@drawable/vector_drawable_account_box_24px" />
+
+                    <TextView
+                        android:id="@+id/show_personal_info_group_info"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:textAlignment="viewStart"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/show_personal_info_group_icon"
+                        app:layout_constraintTop_toTopOf="@+id/show_personal_info_group_icon"
+                        tools:text="@tools:sample/full_names" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

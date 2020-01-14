@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,6 +47,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.bbsShowThreadActivity;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
 import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -77,6 +79,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
     forumUserBriefInfo curUser;
 
     private AdapterView.OnItemClickListener listener;
+    private onAdapterReply replyListener;
 
 
 
@@ -101,6 +104,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         int layoutIdForListItem = R.layout.item_bbs_thread_comment_detail;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
+        replyListener = (onAdapterReply) context;
 
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
         return new bbsForumThreadCommentViewHolder(view);
@@ -175,6 +179,13 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
             }
         });
 
+        holder.mReplyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                replyListener.replyToSomeOne(position);
+            }
+        });
+
         if(threadInfo.attachmentInfoList != null){
             bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter(mContext);
             attachmentAdapter.attachmentInfoList = threadInfo.attachmentInfoList;
@@ -215,6 +226,8 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         ImageView mAvatarImageview;
         @BindView(R.id.bbs_thread_attachment_recyclerview)
         RecyclerView mRecyclerview;
+        @BindView(R.id.bbs_thread_reply_button)
+        Button mReplyBtn;
         public bbsForumThreadCommentViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
@@ -448,6 +461,9 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         }
     }  
 
+    public interface onAdapterReply{
+        public void replyToSomeOne(int position);
+    }
     
 
 }

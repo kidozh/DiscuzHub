@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item
+        android:id="@+id/bbs_post_thread_toolbar_save_draft"
+        android:icon="@drawable/vector_drawable_save_24px"
+        android:title="@string/bbs_send_a_thread"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/bbs_toolbar_send_item"

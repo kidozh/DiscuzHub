@@ -65,7 +65,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFragment.OnSmileyPressedInteraction {
+public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFragment.OnSmileyPressedInteraction,
+        bbsForumThreadCommentAdapter.onAdapterReply {
     private final static String TAG = bbsShowThreadActivity.class.getSimpleName();
     @BindView(R.id.bbs_thread_detail_recyclerview)
     RecyclerView mRecyclerview;
@@ -298,6 +299,31 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         handler.insertSmiley(decodeStr,a);
 
         Log.d(TAG,"Press string "+decodeStr);
+    }
+
+    @Override
+    public void replyToSomeOne(int position) {
+        threadCommentInfo threadCommentInfo = adapter.threadInfoList.get(position);
+        selectedThreadComment = threadCommentInfo;
+        mThreadReplyBadge.setText(threadCommentInfo.author);
+        mThreadReplyBadge.setVisibility(View.VISIBLE);
+        mCommentEditText.setHint(String.format("@%s",threadCommentInfo.author));
+        String decodeString = threadCommentInfo.message;
+
+        Spanned sp = Html.fromHtml(decodeString);
+
+        mThreadReplyContent.setText(sp, TextView.BufferType.SPANNABLE);
+        mThreadReplyContent.setVisibility(View.VISIBLE);
+        mThreadReplyBadge.setOnCloseIconClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                mThreadReplyBadge.setVisibility(View.GONE);
+                mThreadReplyContent.setVisibility(View.GONE);
+                mCommentEditText.setHint(R.string.bbs_thread_say_something);
+                selectedThreadComment = null;
+            }
+        });
     }
 
     public class smileyViewPagerAdapter extends FragmentStatePagerAdapter{

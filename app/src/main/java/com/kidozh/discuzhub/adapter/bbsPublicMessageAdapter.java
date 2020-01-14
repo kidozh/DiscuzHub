@@ -62,7 +62,7 @@ public class bbsPublicMessageAdapter extends RecyclerView.Adapter<bbsPublicMessa
         holder.publicMessageContent.setText(curPublicMessage.message);
         holder.publicMessageUsername.setText(R.string.bbs_notification_public_pm);
         holder.publicMessageRecvTime.setText(timeDisplayUtils.getLocalePastTimeString(context,curPublicMessage.publishAt));
-        holder.publicMessageAvatar.setImageDrawable(context.getDrawable(R.drawable.vector_drawable_info_circle));
+        holder.publicMessageAvatar.setImageDrawable(context.getDrawable(R.drawable.vector_drawable_info_24px_outline));
     }
 
     @Override

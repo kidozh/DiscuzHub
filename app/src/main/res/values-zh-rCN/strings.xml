@@ -153,7 +153,7 @@
     <string name="preference_title_use_browser_client">客户端用户标识符</string>
     <string name="bbs_no_thread_gotten">找不到更多啦</string>
     <string name="bbs_notification_public_pm">公共消息</string>
-    <string name="bbs_notification_my_pm">我的消息</string>
+    <string name="bbs_notification_my_pm">私信</string>
     <string name="bbs_notification_my_thread">我的帖子</string>
     <string name="bbs_explore_thread">探索</string>
     <string name="bbs_login_by_browser">在网页中登录</string>
@@ -169,9 +169,9 @@
     <string name="bbs_user_friend">好友</string>
     <string name="bbs_no_friend">该用户还没添加好友</string>
     <string name="bbs_send_pm_in_profile">私信</string>
-    <string name="preference_summary_use_browser_client_NONE">应用将不会指定访问标识。您的设备信息不会泄露，但是某些服务器也会因防止爬虫拒绝您的访问。</string>
+    <string name="preference_summary_use_browser_client_NONE">应用会使用默认OKHTTP的标识符。您的设备信息不会泄露，但是某些服务器也会因防爬虫拒绝您的访问。</string>
     <string name="preference_summary_use_browser_client_ANDROID">应用将会模拟正常的网页访问。发送给服务器的UA如下所示：</string>
-    <string name="bbs_notification_notification">消息</string>
+    <string name="bbs_notification_notification">通知</string>
     <string name="app_about">关于</string>
     <string name="app_about_fork_on_github">在Github上查看项目</string>
 
@@ -193,7 +193,17 @@
     <string name="preference_summary_on_sync_at_night">应用在晚11点至早8点内不会同步消息</string>
     <string name="bbs_user_list_recyclerview_header">用户列表</string>
     <string name="bbs_no_register_user_found">在本论坛下没有登录的用户</string>
-    <string name="bbs_delete_user_info_template">删除用户 - %s</string>
+    <string name="bbs_delete_user_info_template">从论坛(%2$s)中删除用户(%1$s)</string>
     <string name="bbs_privacy_protect_alert">此内容由于隐私设置不予显示</string>
-    <string name="bbs_notification_system">系统推送</string>
+    <string name="bbs_notification_system">系统通知</string>
+    <string name="welcome">欢迎！</string>
+    <string name="bbs_personal_info_credit_with_title_template">%1$s (积分: %2$s)</string>
+    <string name="not_known">未知</string>
+    <string name="bbs_post_reply">回复</string>
+    <string name="preference_summary_off_send_post_backup">应用不会备份你发的帖子</string>
+    <string name="preference_summary_on_send_post_backup">应用将会在你发贴时备份帖子</string>
+    <string name="preference_title_send_post_backup">发送时备份内容</string>
+    <string name="preference_summary_on_auto_post_backup">应用将会自动备份你发的帖子</string>
+    <string name="preference_title_auto_post_backup">自动发帖备份</string>
+    <string name="preference_summary_off_auto_post_backup">仅当点击草稿图标时，你发的帖子才会存到草稿箱</string>
 </resources>

@@ -854,6 +854,32 @@ public class bbsParseUtils {
         }
     }
 
+    public static Map<String,String> parseUserGroupInfo(String s){
+
+        try{
+            Map<String,String> info = new HashMap<>();
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject variables = jsonObject.getJSONObject("Variables");
+
+            JSONObject spaceInfo = variables.getJSONObject("space");
+            JSONObject groupInfo = spaceInfo.getJSONObject("group");
+            Iterator<String> sIterator = groupInfo.keys();
+            while(sIterator.hasNext()){
+                String key = sIterator.next();
+                if(groupInfo.get(key) instanceof String){
+                    String val = groupInfo.getString(key);
+                    info.put(key,val);
+                }
+            }
+            return info;
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static class userFriend{
         public int uid;
         public String username;

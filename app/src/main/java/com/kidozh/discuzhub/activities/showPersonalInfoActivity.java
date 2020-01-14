@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,10 +55,12 @@ import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -108,6 +111,12 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
     Button personalInfoPMBtn;
     @BindView(R.id.show_personal_info_focus_btn)
     Button personalInfoFollowBtn;
+    @BindView(R.id.show_personal_info_group_icon)
+    ImageView personalInfoGroupIcon;
+    @BindView(R.id.show_personal_info_group_info)
+    TextView personalInfoGroupInfo;
+    @BindView(R.id.show_personal_info_last_activity_time)
+    TextView personalInfoLastActivityTime;
 
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
@@ -212,6 +221,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
         Request request = new Request.Builder()
                 .url(apiStr)
                 .build();
+        Activity curActivity = this;
         Handler mHandler = new Handler(Looper.getMainLooper());
         showPersonalInfoProgressbar.setVisibility(View.VISIBLE);
         showPersonalInfoLayout.setVisibility(View.GONE);
@@ -266,12 +276,39 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
                                 if(regdate!=null){
                                     regdate = regdate.replace("\n","");
                                 }
+                                String lastTimeString = info.get("lastactivitydb");
+                                if(lastTimeString !=null){
+                                    Date lastActivity = new Date(Long.parseLong(lastTimeString)*1000);
+                                    personalInfoLastActivityTime.setText(timeDisplayUtils.getLocalePastTimeString(curActivity,lastActivity));
+                                }
+                                else {
+                                    personalInfoLastActivityTime.setText(R.string.not_known);
+                                }
+
+
                                 setIconAndTextView(regdate,personalInfoRegdateIcon,personalInfoRegdateTextview);
                                 setIconAndTextView(info.get("recentnote"),personalInfoRecentNoteIcon,personalInfoRecentNoteTextview);
                                 friendNum = info.get("friends");
                                 threadNum = info.get("threads");
                                 postsNum = info.get("posts");
                                 configureViewPager();
+                                String userCredit = info.get("credits");
+                                Map<String,String> userGroupInfo = bbsParseUtils.parseUserGroupInfo(s);
+                                if(userGroupInfo!=null){
+                                    String type = userGroupInfo.get("type");
+                                    if(type.equals("special")){
+                                        personalInfoGroupIcon.setImageDrawable(getDrawable(R.drawable.vector_drawable_verified_user_24px));
+                                    }
+                                    else {
+                                        personalInfoGroupIcon.setImageDrawable(getDrawable(R.drawable.vector_drawable_account_box_24px));
+                                    }
+
+                                    String groupTitle = userGroupInfo.get("grouptitle");
+                                    String groupInfoText = getString(R.string.bbs_personal_info_credit_with_title_template,groupTitle,userCredit);
+                                    Spanned styledText = Html.fromHtml(groupInfoText);
+                                    personalInfoGroupInfo.setText(styledText, TextView.BufferType.SPANNABLE);
+
+                                }
                             }
                         });
                     }

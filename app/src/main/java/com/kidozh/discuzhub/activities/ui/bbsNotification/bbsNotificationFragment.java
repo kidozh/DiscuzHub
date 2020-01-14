@@ -170,6 +170,7 @@ public class bbsNotificationFragment extends Fragment {
             @Override
             public void onRefresh() {
                 globalPage = 1;
+                hasLoadAll = false;
                 getBBSNotificationByPage(globalPage);
             }
         });
@@ -177,6 +178,7 @@ public class bbsNotificationFragment extends Fragment {
     }
 
     void getBBSNotificationByPage(int page){
+
         if(hasLoadAll){
             return;
         }

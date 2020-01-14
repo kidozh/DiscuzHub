@@ -92,7 +92,7 @@ public class bbsNotificationAdapter extends RecyclerView.Adapter<bbsNotification
                     .into(holder.bbsNotificationImageview);
         }
         else {
-            holder.bbsNotificationImageview.setImageDrawable(context.getDrawable(R.drawable.vector_drawable_info_circle));
+            holder.bbsNotificationImageview.setImageDrawable(context.getDrawable(R.drawable.vector_drawable_info_24px_outline));
         }
         holder.bbsNotificationPublishTime.setText(timeDisplayUtils.getLocalePastTimeString(context,notificationDetailInfo.date));
         Spanned sp = Html.fromHtml(notificationDetailInfo.note);

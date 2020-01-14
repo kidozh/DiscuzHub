@@ -343,8 +343,7 @@ public class bbsShowInformationActivity extends AppCompatActivity implements for
         Log.d(TAG,"SHOW REMOVED POS "+position);
         new removeBBSUserTask(userBriefInfo,this).execute();
         View view = findViewById(R.id.show_bbs_information_coordinatorLayout);
-        String deleteUserTemplate = getString(R.string.bbs_delete_user_info_template);
-        Snackbar snackbar = Snackbar.make(view, String.format(deleteUserTemplate,userBriefInfo.username),
+        Snackbar snackbar = Snackbar.make(view, getString(R.string.bbs_delete_user_info_template,userBriefInfo.username,bbsInfo.site_name),
                 Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.bbs_undo_delete, new View.OnClickListener(){
 

@@ -191,7 +191,7 @@
     <string name="title_bbs_home">BBS home</string>
     <string name="bbs_no_thread_gotten">Can not find more</string>
     <string name="bbs_notification_public_pm">Public message</string>
-    <string name="bbs_notification_my_pm">My message</string>
+    <string name="bbs_notification_my_pm">PM</string>
     <string name="bbs_notification_my_thread">My thread</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -300,7 +300,7 @@
     <string name="bbs_user_friend">Friends</string>
     <string name="bbs_no_friend">No friend is made in the bbs and consider adding one?</string>
     <string name="bbs_send_pm_in_profile">PM</string>
-    <string name="preference_summary_use_browser_client_NONE">The app will not use user agent to identify the client. Device\'s information will not leak and some servers may block your unusual request.</string>
+    <string name="preference_summary_use_browser_client_NONE">The app will use OKHTTP user agent to identify the client. Device\'s information will not leak and some servers may block your unusual request.</string>
     <string name="preference_summary_use_browser_client_ANDROID">The app will simulate the browsing websites and the User-Agent(UA) we sent is given below:</string>
     <string name="bbs_notification_notification">Notification</string>
     <string name="app_about">About</string>
@@ -330,9 +330,22 @@
     <string name="preference_summary_off_sync_at_night">The app will sync with server at night and may disturb you.</string>
     <string name="bbs_user_list_recyclerview_header">User List</string>
     <string name="bbs_no_register_user_found">No user found in the bbs</string>
-    <string name="bbs_delete_user_info_template">Delete user : %s</string>
+    <string name="bbs_delete_user_info_template">"Delete user (%1$s) from bbs (%2$s) "</string>
     <string name="bbs_privacy_protect_alert">Due to privacy protection, the page is not shown in detail.</string>
     <string name="bbs_notification_system">System</string>
+    <string name="bbs_personal_info_credit_with_title_template">%1$s (credits: %2$s)</string>
+    <string name="not_known">Not known</string>
+    <string name="bbs_post_reply">Reply</string>
+
+    <string name="preference_title_send_post_backup">Post backup</string>
+    <string name="preference_key_send_post_backup">preference_key_send_post_backup</string>
+    <string name="preference_summary_on_send_post_backup">The app will backup your post in local draft box while posting a thread.</string>
+    <string name="preference_summary_off_send_post_backup">Your post will not backup while posting a thread.</string>
+
+    <string name="preference_title_auto_post_backup">Auto backup</string>
+    <string name="preference_key_auto_post_backup">preference_key_auto_post_backup</string>
+    <string name="preference_summary_on_auto_post_backup">The app will automatically backup your thread.</string>
+    <string name="preference_summary_off_auto_post_backup">You need to press draft icon to save your thread.</string>
 
 
 </resources>

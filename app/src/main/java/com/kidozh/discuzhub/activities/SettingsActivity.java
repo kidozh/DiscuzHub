@@ -20,8 +20,11 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.util.List;
+
+import okhttp3.OkHttpClient;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -83,7 +86,6 @@ public class SettingsActivity extends AppCompatActivity {
                         String value = uaPreference.getValue();
                         switch (value){
                             case "NONE":{
-
                                 return getString(R.string.preference_summary_use_browser_client_NONE);
                             }
                             case "ANDROID":{
