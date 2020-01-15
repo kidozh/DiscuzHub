@@ -722,6 +722,26 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
             case android.R.id.home:   //返回键的id
                 this.finishAfterTransition();
                 return false;
+            case R.id.bbs_forum_nav_personal_center:{
+                Intent intent = new Intent(this, showPersonalInfoActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra("UID",String.valueOf(userBriefInfo.uid));
+                startActivity(intent);
+                return true;
+            }
+            case R.id.bbs_settings:{
+                Intent intent = new Intent(this,SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            case R.id.bbs_forum_nav_draft_box:{
+                Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                startActivity(intent,null);
+                return true;
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -735,7 +755,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
             getMenuInflater().inflate(R.menu.menu_bbs_user_status, menu);
         }
         else {
-
+            getMenuInflater().inflate(R.menu.bbs_forum_nav_menu,menu);
         }
 
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bbs_forum_nav_draft_box"
+        android:icon="@drawable/vector_drawable_drafts_24px"
+        android:title="@string/bbs_draft_box"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/bbs_forum_nav_personal_center"
+        android:icon="@drawable/vector_drawable_account_box_24px"
+        android:title="@string/bbs_personal_center"
+        app:showAsAction="never|withText" />
+    <item
+        android:id="@+id/bbs_forum_nav_show_in_webview"
+        android:title="@string/bbs_show_in_internal_browser"
+        app:showAsAction="never|withText" />
+    <item
+        android:id="@+id/bbs_forum_nav_show_in_external_browser"
+        android:icon="@drawable/vector_drawable_open_in_browser_24px"
+        android:title="@string/bbs_show_in_external_browser"
+        app:showAsAction="never|withText" />
+    <item
+        android:id="@+id/bbs_settings"
+        android:title="@string/action_settings" />
+</menu>

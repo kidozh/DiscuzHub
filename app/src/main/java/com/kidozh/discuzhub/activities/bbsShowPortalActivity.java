@@ -15,6 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.notifications.NotificationsFragment;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
+import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -26,6 +27,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -162,13 +165,35 @@ public class bbsShowPortalActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == android.R.id.home){
-            this.finishAfterTransition();
-            return false;
-        }
+        switch (id){
+            case android.R.id.home:{
+                this.finishAfterTransition();
+                return false;
+            }
+            case R.id.bbs_forum_nav_personal_center:{
+                Intent intent = new Intent(this, showPersonalInfoActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                intent.putExtra("UID",String.valueOf(curUser.uid));
+                startActivity(intent);
+                return true;
+            }
+            case R.id.bbs_settings:{
+                Intent intent = new Intent(this,SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            case R.id.bbs_forum_nav_draft_box:{
+                Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                startActivity(intent);
+                return true;
+            }
 
-        else {
-            return super.onOptionsItemSelected(item);
+            default:{
+                return super.onOptionsItemSelected(item);
+            }
         }
     }
 
@@ -180,11 +205,24 @@ public class bbsShowPortalActivity extends AppCompatActivity
             getMenuInflater().inflate(R.menu.menu_bbs_user_status, menu);
         }
         else {
-
+            getMenuInflater().inflate(R.menu.bbs_forum_nav_menu,menu);
         }
 
 
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        LiveData<Integer> draftNumberLiveData = bbsThreadDraftDatabase.getInstance(this).getbbsThreadDraftDao().getAllDraftsCount(curBBS.getId());
+        draftNumberLiveData.observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+
+            }
+        });
+        return super.onPrepareOptionsMenu(menu);
+
     }
 
     @Override

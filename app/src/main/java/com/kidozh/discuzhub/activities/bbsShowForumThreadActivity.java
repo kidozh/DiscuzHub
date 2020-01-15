@@ -129,7 +129,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
     }
 
     private void configurePostThreadBtn(){
-        Context context = getApplicationContext();
+        Context context = this;
         if(userBriefInfo == null){
             fab.setVisibility(View.GONE);
         }
@@ -140,7 +140,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                 if(returned_res_json != null){
                     forumUserBriefInfo forumUserBriefInfo = bbsParseUtils.parseBreifUserInfo(returned_res_json);
                     if(forumUserBriefInfo!=null && forumUserBriefInfo.isValid()){
-                        Intent intent = new Intent(getApplicationContext(),bbsPostThreadActivity.class);
+                        Intent intent = new Intent(context,bbsPostThreadActivity.class);
                         intent.putExtra("fid",fid);
                         intent.putExtra("fid_name",forum.name);
                         intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
@@ -151,7 +151,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                     else {
-                        Toasty.info(context,getApplicationContext().getString(R.string.bbs_require_login_to_comment), Toast.LENGTH_LONG).show();
+                        Toasty.info(context,context.getString(R.string.bbs_require_login_to_comment), Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(context, loginBBSActivity.class);
                         intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                         intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
@@ -325,6 +325,26 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
             case android.R.id.home:   //返回键的id
                 this.finishAfterTransition();
                 return false;
+            case R.id.bbs_forum_nav_personal_center:{
+                Intent intent = new Intent(this, showPersonalInfoActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra("UID",String.valueOf(userBriefInfo.uid));
+                startActivity(intent);
+                return true;
+            }
+            case R.id.bbs_forum_nav_draft_box:{
+                Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                startActivity(intent,null);
+                return true;
+            }
+            case R.id.bbs_settings:{
+                Intent intent = new Intent(this,SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -338,7 +358,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
             getMenuInflater().inflate(R.menu.menu_bbs_user_status, menu);
         }
         else {
-
+            getMenuInflater().inflate(R.menu.bbs_forum_nav_menu,menu);
         }
 
 

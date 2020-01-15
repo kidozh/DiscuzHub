@@ -223,14 +223,15 @@ public class bbsShowCategoryForumActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == android.R.id.home){
-            this.finishAfterTransition();
-            return false;
+        switch (id){
+            case android.R.id.home :{
+                this.finishAfterTransition();
+                return false;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
-        else {
-            return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override
@@ -241,7 +242,7 @@ public class bbsShowCategoryForumActivity extends AppCompatActivity {
             getMenuInflater().inflate(R.menu.menu_bbs_user_status, menu);
         }
         else {
-
+            getMenuInflater().inflate(R.menu.bbs_forum_nav_menu,menu);
         }
 
 

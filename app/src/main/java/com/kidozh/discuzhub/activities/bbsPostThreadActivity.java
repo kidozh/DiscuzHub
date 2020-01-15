@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -15,9 +16,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,13 +31,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.daos.bbsThreadDraftDao;
+import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
 import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
@@ -50,12 +57,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -85,6 +94,10 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
     @BindView(R.id.bbs_post_thread_editor_bar)
     View bbsPostThreadEditorBarInclude;
+    @BindView(R.id.bbs_post_thread_backup_icon)
+    ImageView bbsPostThreadBackupIcon;
+    @BindView(R.id.bbs_post_thread_backup_info_textview)
+    TextView bbsPostThreadBackupInfo;
 
     private String fid, forumApiString,forumName, uploadHash, formHash;
     private ProgressDialog uploadDialog;
@@ -97,6 +110,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
     forumInfo forum;
     private bbsColorPicker myColorPicker;
     private bbsSmileyPicker smileyPicker;
+    private bbsThreadDraft threadDraft;
 
 
     @Override
@@ -109,11 +123,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
         editBar = (LinearLayout) bbsPostThreadEditorBarInclude;
 
-        // recv intent fid
-        Intent intent = getIntent();
-        fid = intent.getStringExtra("fid");
-        forumName = intent.getStringExtra("fid_name");
-        forumApiString = intent.getStringExtra("api_result");
+
         configureToolbar();
         bbsPersonInfo = bbsParseUtils.parseBreifUserInfo(forumApiString);
         // parse api result
@@ -129,6 +139,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
         configureEditBar();
         configureInputHandler();
         configureEditTools();
+        configureSyncDraft();
 
 
 
@@ -139,6 +150,24 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
         forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        // check if it comes from draft box
+        threadDraft = (bbsThreadDraft) intent.getSerializableExtra(bbsConstUtils.PASS_THREAD_DRAFT_KEY);
+        if(threadDraft!=null){
+            bbsThreadSubjectEditText.setText(threadDraft.subject);
+            bbsThreadMessageEditText.setText(threadDraft.content);
+            if(mCategorySpinner.getSelectedItem()!=null){
+                mCategorySpinner.setSelection(Integer.parseInt(threadDraft.typeid));
+            }
+            forumApiString = threadDraft.apiString;
+
+        }
+
+        fid = intent.getStringExtra("fid");
+        forumName = intent.getStringExtra("fid_name");
+        if(forumApiString==null){
+            forumApiString = intent.getStringExtra("api_result");
+        }
+
     }
 
     private void configureClient(){
@@ -269,6 +298,129 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
                 break;
         }
 
+    }
+
+    private void configureSyncDraft(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this) ;
+        Boolean autoPostBackup = prefs.getBoolean(getString(R.string.preference_key_auto_post_backup),true);
+
+
+
+        // create an initial backup
+        if(threadDraft == null){
+            if(mCategorySpinner.getSelectedItem()!=null){
+
+                threadDraft = new bbsThreadDraft(bbsThreadSubjectEditText.getText().toString(),
+                        bbsThreadMessageEditText.getText().toString(),
+                        new Date(),
+                        bbsInfo.getId(),
+                        fid,
+                        forumName,
+                        String.valueOf(mCategorySpinner.getSelectedItemPosition()),
+                        mCategorySpinner.getSelectedItem().toString(),
+                        forumApiString
+                );
+            }
+            else {
+                threadDraft = new bbsThreadDraft(bbsThreadSubjectEditText.getText().toString(),
+                        bbsThreadMessageEditText.getText().toString(),
+                        new Date(),
+                        bbsInfo.getId(),
+                        fid,
+                        forumName,
+                        "0",
+                        "",
+                        forumApiString
+                );
+            }
+        }
+
+
+        Activity activity = this;
+
+
+        if(autoPostBackup){
+            bbsPostThreadBackupInfo.setText(R.string.bbs_thread_auto_backup_start);
+            bbsThreadMessageEditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    threadDraft.subject = bbsThreadSubjectEditText.getText().toString();
+                    threadDraft.content = bbsThreadMessageEditText.getText().toString();
+                    threadDraft.lastUpdateAt = new Date();
+
+                    if(mCategorySpinner.getSelectedItem()!=null){
+                        threadDraft.typeid = String.valueOf(mCategorySpinner.getSelectedItemPosition());
+                        threadDraft.typeName = mCategorySpinner.getSelectedItem().toString();
+                    }
+
+                    // update or add one
+                    if(TextUtils.isEmpty(bbsThreadSubjectEditText.getText().toString().trim())
+                            && TextUtils.isEmpty(bbsThreadMessageEditText.getText().toString().trim())){
+
+                    }
+                    else {
+                        new addThreadDraftTask(activity,threadDraft).execute();
+                    }
+
+
+                }
+            });
+        }
+        else {
+            bbsPostThreadBackupInfo.setVisibility(View.GONE);
+            bbsPostThreadBackupIcon.setVisibility(View.GONE);
+        }
+    }
+
+
+    public class addThreadDraftTask extends AsyncTask<Void, Void, Void> {
+        private bbsThreadDraft insertThreadDraft;
+        private Context context;
+        private Boolean saveThenFinish = false;
+        public addThreadDraftTask(Context context,bbsThreadDraft threadDraft ){
+            this.insertThreadDraft = threadDraft;
+            this.context = context;
+        }
+        public addThreadDraftTask(Context context,bbsThreadDraft threadDraft,Boolean saveThenFinish){
+            this.insertThreadDraft = threadDraft;
+            this.context = context;
+            this.saveThenFinish = saveThenFinish;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            long inserted = bbsThreadDraftDatabase
+                    .getInstance(context)
+                    .getbbsThreadDraftDao().insert(insertThreadDraft);
+            insertThreadDraft.setId( (int) inserted);
+            Log.d(TAG, "add forum into database"+insertThreadDraft.subject+insertThreadDraft.getId());
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            threadDraft = insertThreadDraft;
+            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
+            bbsPostThreadBackupInfo.setText(getString(R.string.bbs_thread_auto_backup_updated_time_template,
+                    df.format(threadDraft.lastUpdateAt)
+            ));
+            if(saveThenFinish){
+                Toasty.success(context,getString(R.string.bbs_thread_auto_backup_updated_time_template,
+                        df.format(threadDraft.lastUpdateAt)),Toast.LENGTH_SHORT).show();
+                finishAfterTransition();
+            }
+        }
     }
 
     private void configureEditTools(){
@@ -662,7 +814,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
     }
 
     private Boolean checkIfThreadCanBePosted(){
-        if(TextUtils.isEmpty(bbsThreadSubjectEditText.getText().toString().trim())){
+        if(uploadHash == null ||TextUtils.isEmpty(bbsThreadSubjectEditText.getText().toString().trim())){
             return false;
         }
         else {
@@ -731,15 +883,25 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            // auto backup ?
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()) ;
+            Boolean autoPostBackup = prefs.getBoolean(getString(R.string.preference_key_send_post_backup),true);
+            if(autoPostBackup){
+                new addThreadDraftTask(getApplicationContext(),threadDraft).execute();
+            }
 
             Log.d(TAG,"get post information"+s);
             String message = bbsParseUtils.parsePostThreadInfo(s);
+            if(message == null){
+                message = getString(R.string.not_known);
+            }
             if(bbsParseUtils.isPostThreadSuccessful(s)){
                 Toasty.success(getApplicationContext(),message,Toast.LENGTH_LONG).show();
                 finishAfterTransition();
             }
             else {
                 Toasty.error(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+                new addThreadDraftTask(getApplicationContext(),threadDraft).execute();
             }
 
 
@@ -764,6 +926,10 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
                 }
                 Log.d(TAG,"You press send item");
+            }
+            case R.id.bbs_post_thread_toolbar_save_draft:{
+                addThreadDraftTask task = new addThreadDraftTask(this,threadDraft,true);
+                task.execute();
             }
             default:
                 return super.onOptionsItemSelected(item);

@@ -15,7 +15,6 @@
         app:cardCornerRadius="4dp"
         app:cardElevation="8dp"
         app:cardPreventCornerOverlap="true"
-        app:contentPadding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

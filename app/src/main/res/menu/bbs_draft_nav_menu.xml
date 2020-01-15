@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bbs_draft_nav_menu_sort"
+        android:icon="@drawable/vector_drawable_sort_24px"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/bbs_draft_nav_menu_swipe_delte"
+        android:icon="@drawable/vector_drawable_delete_sweep_24px"
+        android:title="@string/bbs_swipe_delete"
+        app:showAsAction="ifRoom" />
+</menu>

@@ -49,6 +49,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_subject_editText" />
 
+        <ImageView
+            android:id="@+id/bbs_post_thread_backup_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_editor_bar"
+            app:srcCompat="@drawable/vector_drawable_update_24px" />
+
+        <TextView
+            android:id="@+id/bbs_post_thread_backup_info_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:singleLine="true"
+            android:textAlignment="viewStart"
+            app:layout_constraintBottom_toBottomOf="@+id/bbs_post_thread_backup_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/bbs_post_thread_backup_icon"
+            app:layout_constraintTop_toTopOf="@+id/bbs_post_thread_backup_icon"
+            tools:text="@tools:sample/lorem" />
+
         <EditText
             android:id="@+id/bbs_post_thread_message"
             android:layout_width="0dp"
@@ -64,7 +87,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.6"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_editor_bar" />
+            app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_backup_icon" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

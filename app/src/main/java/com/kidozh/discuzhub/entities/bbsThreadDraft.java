@@ -14,7 +14,7 @@ public class bbsThreadDraft implements Serializable {
     public String subject,content;
     public Date lastUpdateAt;
     public int belongBBSId;
-    public String fid,forumName,typeid,typeName;
+    public String fid,forumName,typeid,typeName,apiString;
 
     public int getId() {
         return id;
@@ -24,7 +24,7 @@ public class bbsThreadDraft implements Serializable {
         this.id = id;
     }
 
-    public bbsThreadDraft(String subject, String content, Date lastUpdateAt, int belongBBSId, String fid, String forumName, String typeid, String typeName) {
+    public bbsThreadDraft(String subject, String content, Date lastUpdateAt, int belongBBSId, String fid, String forumName, String typeid, String typeName, String apiString) {
         this.subject = subject;
         this.content = content;
         this.lastUpdateAt = lastUpdateAt;
@@ -33,5 +33,6 @@ public class bbsThreadDraft implements Serializable {
         this.forumName = forumName;
         this.typeid = typeid;
         this.typeName = typeName;
+        this.apiString = apiString;
     }
 }

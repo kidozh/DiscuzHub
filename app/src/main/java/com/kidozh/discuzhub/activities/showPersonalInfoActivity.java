@@ -203,6 +203,10 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
             getSupportActionBar().setTitle(curBBS.site_name);
         }
         client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
+        if(userId.equals(String.valueOf(userBriefInfo.uid))){
+            personalInfoFollowBtn.setVisibility(View.GONE);
+            personalInfoPMBtn.setVisibility(View.GONE);
+        }
 
     }
 
@@ -248,6 +252,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
                                 showPersonalInfoProgressbar.setVisibility(View.GONE);
                                 showPersonalInfoLayout.setVisibility(View.VISIBLE);
                                 getSupportActionBar().setTitle(info.get("username"));
+
                                 String sightml = info.get("sightml");
                                 if(sightml!=null && sightml.length()>0){
                                     MyTagHandler myTagHandler = new MyTagHandler(getApplication(),personalInfoBioTextView,personalInfoBioTextView);

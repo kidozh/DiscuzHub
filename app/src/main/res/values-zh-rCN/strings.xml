@@ -206,4 +206,19 @@
     <string name="preference_summary_on_auto_post_backup">应用将会自动备份你发的帖子</string>
     <string name="preference_title_auto_post_backup">自动发帖备份</string>
     <string name="preference_summary_off_auto_post_backup">仅当点击草稿图标时，你发的帖子才会存到草稿箱</string>
+    <string name="bbs_draft_box">草稿箱</string>
+    <string name="bbs_personal_center">个人信息</string>
+    <string name="bbs_show_in_external_browser">在外部浏览器浏览</string>
+    <string name="bbs_show_in_internal_browser">在应用内浏览器浏览</string>
+    <string name="bbs_display_dark_mode">深色模式</string>
+    <string name="bbs_display_daylight_mode">浅色模式</string>
+    <string name="bbs_thread_auto_backup_start">自动备份已经开启</string>
+    <string name="bbs_thread_auto_backup_updated_time_template">在 %1$s帖子内容已经备份至草稿箱</string>
+    <string name="bbs_thread_draft_empty">草稿箱里面空空如也~</string>
+    <string name="bbs_not_set">未设置</string>
+    <string name="bbs_delete_draft">从%2$s的草稿箱中删除稿件(%1$s)</string>
+    <string name="bbs_delete_all_draft">删除所有文稿</string>
+    <string name="bbs_delete_all_drafts_alert">在论坛(%1$s)下所有的文稿都会被删除. 请注意这个操作无法撤销，文稿数据清空后也不会被保留。</string>
+    <string name="bbs_delete_all_drafts_count_down">请等待(%1$d秒)</string>
+    <string name="bbs_swipe_delete">删除所有</string>
 </resources>

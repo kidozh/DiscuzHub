@@ -5,4 +5,5 @@ public class bbsConstUtils {
     public static String PASS_BBS_ENTITY_KEY = "PASS_BBS_ENTITY_KEY";
     public static String PASS_BBS_USER_KEY = "PASS_BBS_USER_KEY";
     public static String PASS_PRIVATE_MESSAGE_KEY = "PASS_PRIVATE_MESSAGE_KEY";
+    public static String PASS_THREAD_DRAFT_KEY = "PASS_THREAD_DRAFT_KEY";
 }

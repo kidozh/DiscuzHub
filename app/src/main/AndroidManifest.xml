@@ -21,10 +21,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activities.bbsShowThreadDraftActivity"></activity>
         <activity
             android:name=".activities.showPersonalInfoActivity"
-            android:label="@string/title_activity_show_personal_info"
-            />
+            android:label="@string/title_activity_show_personal_info" />
         <activity android:name=".activities.bbsPrivateMessageDetailActivity" />
         <activity android:name=".activities.loginByWebViewActivity" />
         <activity

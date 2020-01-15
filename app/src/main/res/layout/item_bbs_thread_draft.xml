@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/bbs_thread_draft_cardview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/bbs_thread_draft_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimary"
+                android:paddingStart="4dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="4dp"
+                android:paddingBottom="2dp"
+                android:textColor="@color/colorPureWhite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@tools:sample/cities" />
+
+            <TextView
+                android:id="@+id/bbs_thread_draft_subject"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:textAlignment="viewStart"
+                android:textColor="@color/colorTextDefault"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/bbs_thread_draft_type"
+                app:layout_constraintTop_toTopOf="@+id/bbs_thread_draft_type"
+                tools:text="@tools:sample/full_names" />
+
+            <TextView
+                android:id="@+id/bbs_thread_draft_message"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textAlignment="viewStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_thread_draft_subject"
+                tools:text="@tools:sample/lorem" />
+
+            <ImageView
+                android:id="@+id/bbs_thread_draft_update_time_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/bbs_thread_draft_message"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_thread_draft_message"
+                app:srcCompat="@drawable/vector_drawable_update_24px" />
+
+            <TextView
+                android:id="@+id/bbs_thread_draft_update_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/bbs_thread_draft_update_time_icon"
+                app:layout_constraintStart_toEndOf="@+id/bbs_thread_draft_update_time_icon"
+                app:layout_constraintTop_toTopOf="@+id/bbs_thread_draft_update_time_icon"
+                tools:text="@tools:sample/date/ddmmyy" />
+
+            <ImageView
+                android:id="@+id/bbs_thread_draft_forum_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toEndOf="@+id/bbs_thread_draft_update_time"
+                app:layout_constraintTop_toTopOf="@+id/bbs_thread_draft_update_time_icon"
+                app:srcCompat="@drawable/vector_drawable_add_comment_24px" />
+
+            <TextView
+                android:id="@+id/bbs_thread_draft_forum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/bbs_thread_draft_forum_icon"
+                app:layout_constraintStart_toEndOf="@+id/bbs_thread_draft_forum_icon"
+                app:layout_constraintTop_toTopOf="@+id/bbs_thread_draft_forum_icon"
+                tools:text="@tools:sample/last_names" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

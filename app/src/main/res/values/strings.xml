@@ -346,6 +346,21 @@
     <string name="preference_key_auto_post_backup">preference_key_auto_post_backup</string>
     <string name="preference_summary_on_auto_post_backup">The app will automatically backup your thread.</string>
     <string name="preference_summary_off_auto_post_backup">You need to press draft icon to save your thread.</string>
+    <string name="bbs_draft_box">Draft box</string>
+    <string name="bbs_personal_center">Personal Information</string>
+    <string name="bbs_show_in_external_browser">Show in external broswer</string>
+    <string name="bbs_show_in_internal_browser">Show in APP\'s webview</string>
+    <string name="bbs_display_dark_mode">Dark mode</string>
+    <string name="bbs_display_daylight_mode">Daylight mode</string>
+    <string name="bbs_thread_auto_backup_start">Auto backup is opened</string>
+    <string name="bbs_thread_auto_backup_updated_time_template">The thread is backup at %1$s</string>
+    <string name="bbs_thread_draft_empty">Draft box is empty.</string>
+    <string name="bbs_not_set">NOT SET</string>
+    <string name="bbs_delete_draft">Delete draft(%1$s) from %2$s</string>
+    <string name="bbs_swipe_delete">Delete All</string>
+    <string name="bbs_delete_all_draft">Delete all drafts</string>
+    <string name="bbs_delete_all_drafts_alert">You will delete all the drafts under bbs(%1$s). The operation can\'t rollback and all your infomation will loss.</string>
+    <string name="bbs_delete_all_drafts_count_down">Wait (%1$d s)</string>
 
 
 </resources>

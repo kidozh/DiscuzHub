@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -18,11 +19,14 @@ public interface bbsThreadDraftDao {
     @Query("SELECT * FROM bbsThreadDraft")
     LiveData<List<bbsThreadDraft>> getAllThreadDraft();
 
+    @Query("SELECT * FROM bbsThreadDraft WHERE belongBBSId=:bbsid ORDER BY lastUpdateAt DESC")
+    LiveData<List<bbsThreadDraft>> getAllThreadDraftByBBSId(int bbsid);
+
     @Insert
     void insert(bbsThreadDraft... bbsThreadDrafts);
 
-    @Insert
-    void insert(bbsThreadDraft bbsThreadDraft);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insert(bbsThreadDraft bbsThreadDraft);
 
     @Update
     void update(bbsThreadDraft... bbsThreadDrafts);
@@ -33,6 +37,9 @@ public interface bbsThreadDraftDao {
     @Delete
     void delete(bbsThreadDraft bbsThreadDraft);
 
-    @Query("DELETE FROM bbsThreadDraft")
-    void deleteAllForumInformation();
+    @Query("DELETE FROM bbsThreadDraft WHERE belongBBSId=:bbsid")
+    void deleteAllForumInformation(int bbsid);
+
+    @Query("SELECT COUNT(id) FROM bbsThreadDraft WHERE belongBBSId =:bbsid")
+    LiveData<Integer> getAllDraftsCount(int bbsid);
 }
