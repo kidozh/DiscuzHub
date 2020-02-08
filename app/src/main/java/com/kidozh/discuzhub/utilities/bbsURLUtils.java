@@ -221,4 +221,8 @@ public class bbsURLUtils {
         return BASE_URL + "/api/mobile/index.php?version=4&module=mynotelist&view=system&page="+page;
     }
 
+    public static String getSeccodeApiUrl(int idhash){
+        return BASE_URL + "http://192.168.0.119/api/mobile/index.php?version=4&module=seccodehtml&sechash="+idhash;
+    }
+
 }

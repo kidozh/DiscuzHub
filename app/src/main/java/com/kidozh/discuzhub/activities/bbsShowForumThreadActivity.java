@@ -115,6 +115,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
         forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        bbsURLUtils.setBBS(bbsInfo);
     }
 
     private void configureSwipeRefreshLayout(){

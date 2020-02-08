@@ -203,7 +203,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
             getSupportActionBar().setTitle(curBBS.site_name);
         }
         client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
-        if(userId.equals(String.valueOf(userBriefInfo.uid))){
+        if(userId !=null && userBriefInfo!=null && userId.equals(String.valueOf(userBriefInfo.uid))){
             personalInfoFollowBtn.setVisibility(View.GONE);
             personalInfoPMBtn.setVisibility(View.GONE);
         }

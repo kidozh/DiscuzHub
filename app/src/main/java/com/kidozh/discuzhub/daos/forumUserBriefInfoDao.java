@@ -20,10 +20,19 @@ public interface forumUserBriefInfoDao {
     LiveData<List<forumUserBriefInfo>> getAllUserByBBSID(int bbs_id);
 
     @Query("SELECT * FROM forumUserBriefInfo")
-    LiveData<List<forumUserBriefInfo>> getAllUser();
+    LiveData<List<forumUserBriefInfo>> getAllUserLiveData();
+
+    @Query("SELECT * FROM forumUserBriefInfo")
+    List<forumUserBriefInfo> getAllUser();
 
     @Query("DELETE FROM forumUserBriefInfo WHERE belongedBBSID=:bbs_id")
     void deleteAllUserByBBSID(int bbs_id);
+
+    @Query("SELECT * FROM forumUserBriefInfo WHERE id=:id")
+    LiveData<forumUserBriefInfo> getUserLiveDataById(int id);
+
+    @Query("SELECT * FROM forumUserBriefInfo WHERE id=:id")
+    forumUserBriefInfo getUserById(int id);
 
     @Insert
     void insert(forumUserBriefInfo... forumUserBriefInfos);

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -113,6 +115,24 @@ public class networkUtils {
 
     }
 
+    public static OkHttpClient getPreferredClientWithCookieJarByUserWithDefaultHeader(Context context, forumUserBriefInfo briefInfo){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
+        Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
+        if(briefInfo==null){
+            return getPreferredClient(context);
+        }
+        else {
+            if(useSafeHttpClient){
+                return getSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(context,briefInfo);
+            }
+            else {
+                return getUnSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(context,briefInfo);
+            }
+        }
+
+
+    }
+
     public static void copySharedPrefence(SharedPreferences fromSp, SharedPreferences toSp){
         SharedPreferences sp1 = toSp, sp = fromSp;
         SharedPreferences.Editor ed = sp1.edit();
@@ -154,7 +174,70 @@ public class networkUtils {
                 return mBuilder.build();
             }
             case "ANDROID":{
-                String useragent = new WebView(context).getSettings().getUserAgentString();
+
+                try{
+                    String useragent = new WebView(context).getSettings().getUserAgentString();
+                    // Log.d(TAG,"UA "+useragent);
+                    mBuilder.addInterceptor(new Interceptor() {
+                        @Override
+                        public Response intercept(Chain chain) throws IOException {
+                            Request original = chain.request();
+
+                            Request request = original.newBuilder()
+                                    .header("User-Agent", useragent)
+                                    .header("Accept", "application/vnd.yourapi.v1.full+json")
+                                    .method(original.method(), original.body())
+                                    .build();
+
+                            return chain.proceed(request);
+                        }
+                    });
+
+                    return mBuilder.build();
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                    String useragent = "Mozilla/5.0 (Linux; U; Android 2.3.7; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1";
+                    // Log.d(TAG,"UA "+useragent);
+                    mBuilder.addInterceptor(new Interceptor() {
+                        @Override
+                        public Response intercept(Chain chain) throws IOException {
+                            Request original = chain.request();
+
+                            Request request = original.newBuilder()
+                                    .header("User-Agent", useragent)
+                                    .header("Accept", "application/vnd.yourapi.v1.full+json")
+                                    .method(original.method(), original.body())
+                                    .build();
+
+                            return chain.proceed(request);
+                        }
+                    });
+
+                    return mBuilder.build();
+                }
+
+
+
+            }
+            default:{
+                return mBuilder.build();
+            }
+        }
+
+
+    }
+
+    public static OkHttpClient addUserAgentWithDefaultAndroidHeader(Context context,OkHttpClient.Builder mBuilder){
+        // get preference
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
+        String uaString = prefs.getString(context.getString(R.string.preference_key_use_browser_client),"NONE");
+        switch (uaString){
+            case "NONE":{
+                return mBuilder.build();
+            }
+            case "ANDROID":{
+                String useragent = "Mozilla/5.0 (Linux; U; Android 2.3.7; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1";
                 // Log.d(TAG,"UA "+useragent);
                 mBuilder.addInterceptor(new Interceptor() {
                     @Override
@@ -214,6 +297,42 @@ public class networkUtils {
 
 
         return addUserAgent(context,mBuilder);
+    }
+
+    // default header
+    public static OkHttpClient getSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(Context context, forumUserBriefInfo briefInfo){
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(),
+                        new SharedPrefsCookiePersistor(context.getSharedPreferences(getSharedPreferenceNameByUser(briefInfo),Context.MODE_PRIVATE))
+                );
+        OkHttpClient.Builder mBuilder = new OkHttpClient.Builder().cookieJar(cookieJar);
+        mBuilder
+
+                .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)
+                .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
+
+        return addUserAgentWithDefaultAndroidHeader(context,mBuilder);
+    }
+
+    public static OkHttpClient getUnSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(Context context, forumUserBriefInfo briefInfo){
+
+
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(),
+                        new SharedPrefsCookiePersistor(context.getSharedPreferences(getSharedPreferenceNameByUser(briefInfo),Context.MODE_PRIVATE))
+                );
+
+        OkHttpClient.Builder mBuilder = new OkHttpClient.Builder().cookieJar(cookieJar);
+        final X509TrustManager trustManager = new TrustAllCerts();
+        mBuilder.sslSocketFactory(TrustAllCerts.createSSLSocketFactory(), trustManager);
+        mBuilder.hostnameVerifier(new TrustAllHostnameVerifier());
+        mBuilder.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)
+                .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
+
+
+        return addUserAgentWithDefaultAndroidHeader(context,mBuilder);
     }
 
     // cleared cookie

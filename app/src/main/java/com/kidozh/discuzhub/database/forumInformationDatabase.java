@@ -36,7 +36,7 @@ public abstract class forumInformationDatabase extends RoomDatabase {
         return instance;
     }
 
-    public static forumInformationDatabase getDatabase(final Context context){
+    private static forumInformationDatabase getDatabase(final Context context){
         return Room.databaseBuilder(context,forumInformationDatabase.class,DB_NAME)
                 .addMigrations(MIGRATION_1_2)
                 .build();

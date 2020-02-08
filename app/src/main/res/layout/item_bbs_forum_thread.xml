@@ -23,13 +23,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
+            <cn.gavinliu.android.lib.shapedimageview.ShapedImageView
                 android:id="@+id/bbs_thread_avatar_imageView"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:transitionName="user_info_avatar"
+                app:shape_mode="circle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/avatar_person_male"

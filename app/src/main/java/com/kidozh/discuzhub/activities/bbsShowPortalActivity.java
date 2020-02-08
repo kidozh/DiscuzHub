@@ -115,6 +115,7 @@ public class bbsShowPortalActivity extends AppCompatActivity
         curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
+        bbsURLUtils.setBBS(curBBS);
         if(curBBS == null){
             finishAfterTransition();
         }

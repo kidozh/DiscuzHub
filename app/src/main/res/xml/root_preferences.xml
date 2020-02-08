@@ -19,7 +19,7 @@
 
     <PreferenceCategory android:title="@string/global_default_bbs_setting">
 
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:icon="@drawable/vector_drawable_security_24px"
             android:key="@string/preference_key_use_safer_client"
@@ -39,7 +39,7 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preference_group_title_network">
 
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:icon="@drawable/vector_drawable_eco_24px"
             android:key="@string/preference_key_data_save_mode"
@@ -77,23 +77,17 @@
             app:title="@string/preference_title_auto_post_backup"
             app:useSimpleSummaryProvider="true" />
 
-        <!--        <ListPreference-->
-<!--            app:defaultValue="reply"-->
-<!--            app:entries="@array/reply_entries"-->
-<!--            app:entryValues="@array/reply_values"-->
-<!--            app:key="reply"-->
-<!--            app:title="@string/reply_title"-->
-<!--            app:useSimpleSummaryProvider="true" />-->
-
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/sync_header">
 
-        <SwitchPreferenceCompat
+        <SwitchPreference
+            android:defaultValue="true"
             android:icon="@drawable/vector_drawable_sync_24px"
+            android:key="@string/preference_key_sync_information"
             app:icon="@drawable/vector_drawable_sync_24px"
-            app:key="sync"
-            app:title="@string/sync_title" />
+            app:key="@string/preference_key_sync_information"
+            android:title="@string/sync_title" />
 
         <ListPreference
             android:defaultValue="30min"
@@ -103,18 +97,26 @@
             android:key="@string/preference_key_sync_time"
             android:summary="%s"
             android:title="@string/preference_title_sync_time"
-            app:dependency="sync" />
+            app:dependency="@string/preference_key_sync_information" />
         <SwitchPreference
             android:defaultValue="true"
             android:icon="@drawable/vector_drawable_snooze_24px"
-            android:key="@string/preference_key_sync_at_night"
+            android:key="@string/preference_key_dont_distrub_at_night"
             android:summaryOff="@string/preference_summary_off_sync_at_night"
             android:summaryOn="@string/preference_summary_on_sync_at_night"
             android:title="@string/preference_title_sync_at_night"
-            app:dependency="sync" />
+            app:dependency="@string/preference_key_sync_information" />
+        <MultiSelectListPreference
+            android:defaultValue="@array/preference_entry_values_recv_notification_situation"
+            android:entries="@array/preference_entry_recv_notification_situation"
+            android:entryValues="@array/preference_entry_values_recv_notification_situation"
+            android:icon="@drawable/vector_drawable_confirmation_number_24px"
+            android:key="@string/preference_key_recv_notification_situation"
+            android:title="@string/preference_title_recv_notification_situation"
+            app:dependency="@string/preference_key_sync_information" />
         <SwitchPreferenceCompat
             android:icon="@drawable/vector_drawable_attachment"
-            app:dependency="sync"
+            app:dependency="@string/preference_key_sync_information"
             app:icon="@drawable/vector_drawable_attachment"
             app:key="attachment"
             app:summaryOff="@string/attachment_summary_off"

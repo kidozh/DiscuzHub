@@ -14,14 +14,21 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.bbsShowThreadDraftActivity"></activity>
+
+
+        <activity
+            android:name=".activities.appWelcomeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_app_welcome"
+            android:theme="@style/FullscreenTheme" />
+        <activity android:name=".activities.bbsShowThreadDraftActivity" />
         <activity
             android:name=".activities.showPersonalInfoActivity"
             android:label="@string/title_activity_show_personal_info" />
@@ -39,14 +46,19 @@
         <activity android:name=".activities.bbsShowCategoryForumActivity" />
         <activity android:name=".activities.bbsShowForumThreadActivity" />
         <activity android:name=".activities.bbsShowThreadActivity" />
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name">
+        <activity android:name=".activities.SplashScreenActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name">
+
         </activity>
         <activity android:name=".activities.bbsPostThreadActivity" />
 

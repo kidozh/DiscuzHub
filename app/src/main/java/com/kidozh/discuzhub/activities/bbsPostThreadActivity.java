@@ -152,6 +152,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         // check if it comes from draft box
         threadDraft = (bbsThreadDraft) intent.getSerializableExtra(bbsConstUtils.PASS_THREAD_DRAFT_KEY);
+        bbsURLUtils.setBBS(bbsInfo);
         if(threadDraft!=null){
             bbsThreadSubjectEditText.setText(threadDraft.subject);
             bbsThreadMessageEditText.setText(threadDraft.content);

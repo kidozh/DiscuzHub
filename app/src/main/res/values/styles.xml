@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
@@ -18,7 +18,7 @@
         <!-- navigation bar -->
         <item name="android:navigationBarColor">@color/colorBackgroundDefault</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
         <item name="android:actionMenuTextColor">@color/colorTextDefault</item>
 
 
@@ -37,11 +37,11 @@
         <item name="android:windowEnterTransition">@transition/activity_transition_fade</item>
         <item name="android:windowExitTransition">@transition/activity_transition_fade</item>
 
-<!--        &lt;!&ndash; specify shared element transitions &ndash;&gt;-->
-<!--        <item name="android:windowSharedElementEnterTransition">-->
-<!--            @transition/change_image_transform</item>-->
-<!--        <item name="android:windowSharedElementExitTransition">-->
-<!--            @transition/change_image_transform</item>-->
+        <!--        &lt;!&ndash; specify shared element transitions &ndash;&gt;-->
+        <!--        <item name="android:windowSharedElementEnterTransition">-->
+        <!--            @transition/change_image_transform</item>-->
+        <!--        <item name="android:windowSharedElementExitTransition">-->
+        <!--            @transition/change_image_transform</item>-->
 
 
     </style>
@@ -99,6 +99,8 @@
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
     </style>
+
+
 
     <style name="primary_color_chip_style" parent="@style/Widget.MaterialComponents.Chip.Choice">
         <item name="chipBackgroundColor">@color/chip_background_select_state</item>

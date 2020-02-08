@@ -29,6 +29,7 @@
 
     <!-- Sync Preferences -->
     <string name="sync_title">Sync bbs information periodically</string>
+    <string name="preference_key_sync_information">preference_key_sync_information</string>
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming messages</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
@@ -100,8 +101,8 @@
     <string name="updated_bbs_template">Update %s successfully</string>
     <string name="failed_to_update_bbs_template">Failed to update %s</string>
     <string name="display_order_4">Pinned on all</string>
-    <string name="display_order_3"># 3 Pinned</string>
-    <string name="display_order_2"># 2 Pinned</string>
+    <string name="display_order_3">Globally Pinned</string>
+    <string name="display_order_2">Category Pinned</string>
     <string name="display_order_1">Pinned</string>
     <string name="display_order_n1">Recycled</string>
     <string name="display_order_n2">Reviewing</string>
@@ -325,7 +326,7 @@
     </string-array>
 
     <string name="preference_title_sync_at_night">Don\'t disturb at night</string>
-    <string name="preference_key_sync_at_night">preference_key_sync_at_night</string>
+    <string name="preference_key_dont_distrub_at_night">preference_key_dont_distrub_at_night</string>
     <string name="preference_summary_on_sync_at_night">The app will not sync information with server from 11.00 PM to 08.00 AM</string>
     <string name="preference_summary_off_sync_at_night">The app will sync with server at night and may disturb you.</string>
     <string name="bbs_user_list_recyclerview_header">User List</string>
@@ -361,6 +362,60 @@
     <string name="bbs_delete_all_draft">Delete all drafts</string>
     <string name="bbs_delete_all_drafts_alert">You will delete all the drafts under bbs(%1$s). The operation can\'t rollback and all your infomation will loss.</string>
     <string name="bbs_delete_all_drafts_count_down">Wait (%1$d s)</string>
+    <string name="notification_name_update_bbs_info_progress">Update bbs information</string>
+    <string name="notification_description_update_bbs_info">This indicates bbs\'s information update.</string>
+
+    <string name="title_activity_app_welcome">appWelcomeActivity</string>
+    <string name="bbs_updating_information">Sync bbs\'s information</string>
+    <string name="bbs_updating_bbs_information_description">Updating</string>
+    <string name="bbs_updating_complete">Updating bbs completed</string>
+    <string name="action_register_notification_channel">Register notification channel</string>
+    <string name="action_configure_dark_mode">Configure dark mode</string>
+    <string name="action_init">App is initiliazing</string>
+    <string name="action_ready_to_enter_main">Ready to enter main page</string>
+
+    <string name="notification_name_user_group_update">BBS\'s user updates</string>
+    <string name="notification_description_user_group_update">It will notify your account\'s updates in bbs</string>
+    <string name="bbs_notification_update_template">%2$s has %3$s</string>
+    <plurals name="bbs_newpush_num">
+        <item quantity="one">%d push</item>
+        <item quantity="other">%d pushes</item>
+
+    </plurals>
+    <plurals name="bbs_newpm_num">
+        <item quantity="one">%d private message</item>
+        <item quantity="other">%d private messages</item>
+    </plurals>
+
+    <plurals name="bbs_newprompt_num">
+        <item quantity="one">%d prompt</item>
+        <item quantity="other">%d prompts</item>
+    </plurals>
+    <plurals name="bbs_newmypost_num">
+        <item quantity="one">%d post updat</item>
+        <item quantity="other">%d post updats</item>
+    </plurals>
+    <string name="bbs_updates_templates">Updates in %1$s</string>
+    <string name="bbs_update_none_template">No %2$s\'s update in %1$s...</string>
+    <string name="action_register_work_template">Register %1$s work</string>
+    <string name="action_register_work">register work</string>
+    <string name="bbs_notification_failed_to_parse_api">Failed to fetch the %2$s\'s information in %1$s</string>
+    <string name="bbs_notification_failed">Failed to update %1$s</string>
+
+    <string name="preference_title_recv_notification_situation">Notification situation</string>
+    <string name="preference_key_recv_notification_situation">preference_key_recv_notification_situation</string>
+
+    <string-array name="preference_entry_recv_notification_situation">
+        <item>New information</item>
+        <item>Nothing new</item>
+        <item>Network failure</item>
+    </string-array>
+
+    <string-array name="preference_entry_values_recv_notification_situation">
+        <item>new_info</item>
+        <item>nothing</item>
+        <item>failure</item>
+    </string-array>
 
 
 </resources>

@@ -46,6 +46,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.gavinliu.android.lib.shapedimageview.ShapedImageView;
 
 
 public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAdapter.bbsForumThreadViewHolder> {
@@ -300,7 +301,7 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
         @BindView(R.id.bbs_thread_type)
         TextView mThreadType;
         @BindView(R.id.bbs_thread_avatar_imageView)
-        ImageView mAvatarImageview;
+        ShapedImageView mAvatarImageview;
         @BindView(R.id.bbs_thread_cardview)
         CardView mCardview;
         @BindView(R.id.bbs_thread_short_reply_recyclerview)

@@ -17,6 +17,12 @@ public interface forumInformationDao {
     @Query("SELECT * FROM bbsInformation")
     LiveData<List<bbsInformation>> getAllForumInformations();
 
+    @Query("SELECT * FROM bbsInformation WHERE id=:id")
+    LiveData<bbsInformation> getForumInformationLiveDataById(int id);
+
+    @Query("SELECT * FROM bbsInformation WHERE id=:id")
+    bbsInformation getForumInformationById(int id);
+
     @Insert
     void insert(bbsInformation... bbsInformations);
 

@@ -25,6 +25,13 @@ public abstract class forumUserBriefInfoDatabase extends RoomDatabase {
 
     private static forumUserBriefInfoDatabase getDatabase(final Context context){
         return Room.databaseBuilder(context,forumUserBriefInfoDatabase.class,DB_NAME)
+
+                .build();
+    }
+
+    public static forumUserBriefInfoDatabase getSyncDatabase(final Context context){
+        return Room.databaseBuilder(context,forumUserBriefInfoDatabase.class,DB_NAME)
+                .allowMainThreadQueries()
                 .build();
     }
 

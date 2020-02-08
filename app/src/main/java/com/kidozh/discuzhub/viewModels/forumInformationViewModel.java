@@ -17,7 +17,7 @@ public class forumInformationViewModel extends AndroidViewModel {
 
     forumInformationViewModel(Application application){
         super(application);
-        forumInformationDatabase database = forumInformationDatabase.getDatabase(this.getApplication());
+        forumInformationDatabase database = forumInformationDatabase.getInstance(this.getApplication());
         allForumInformation = database.getForumInformationDao().getAllForumInformations();
     }
 

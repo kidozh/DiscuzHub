@@ -64,8 +64,8 @@
     <string name="updated_bbs_template">成功更新论坛 %s</string>
     <string name="failed_to_update_bbs_template">更新 %s 失败</string>
     <string name="display_order_1">置顶</string>
-    <string name="display_order_2">2级置顶</string>
-    <string name="display_order_3">3级置顶</string>
+    <string name="display_order_2">分类置顶</string>
+    <string name="display_order_3">全局置顶</string>
     <string name="display_order_4">跨板块置顶</string>
     <string name="display_order_n1">回收站</string>
     <string name="display_order_n2">审核中</string>
@@ -221,4 +221,41 @@
     <string name="bbs_delete_all_drafts_alert">在论坛(%1$s)下所有的文稿都会被删除. 请注意这个操作无法撤销，文稿数据清空后也不会被保留。</string>
     <string name="bbs_delete_all_drafts_count_down">请等待(%1$d秒)</string>
     <string name="bbs_swipe_delete">删除所有</string>
+    <string name="notification_name_update_bbs_info_progress">更新论坛信息</string>
+    <string name="notification_description_update_bbs_info">这个频道将会更新论坛的信息并获得相关推送</string>
+    <string name="bbs_updating_information">论坛信息同步</string>
+    <string name="bbs_updating_bbs_information_description">获取信息中</string>
+    <string name="bbs_updating_complete">已经完成论坛消息的更新</string>
+    <string name="action_configure_dark_mode">配置深色模式</string>
+    <string name="action_init">应用正在初始化中</string>
+    <string name="action_register_notification_channel">正在注册通知频道</string>
+    <string name="action_ready_to_enter_main">进入主页面已经准备就绪</string>
+    <string name="notification_name_user_group_update">论坛用户的推送和通知</string>
+    <string name="notification_description_user_group_update">这个频道会通知您账号的推送和通知</string>
+    <string name="bbs_notification_update_template">账号%2$s有更新:%3$s</string>
+    <plurals name="bbs_newmypost_num">
+        <item quantity="other">%1$d个帖子更新</item>
+    </plurals>
+    <plurals name="bbs_newpm_num">
+        <item quantity="other">%1$d条私信</item>
+    </plurals>
+    <plurals name="bbs_newprompt_num">
+        <item quantity="other">%1$d条系统消息</item>
+    </plurals>
+    <plurals name="bbs_newpush_num">
+        <item quantity="other">%1$d条推送</item>
+    </plurals>
+    <string name="bbs_updates_templates">论坛\"%1$s\"的更新</string>
+    <string name="bbs_update_none_template">\"%2$s\"用户啥事都没有</string>
+    <string name="action_register_work_template">正在注册%1$s工作</string>
+    <string name="action_register_work">注册工作中</string>
+    <string name="bbs_notification_failed_to_parse_api">由于网络或者服务器拒绝，无法获得用户%2$s的信息</string>
+    <string name="bbs_notification_failed">无法更新论坛“%1$s”的信息</string>
+    <string name="preference_title_recv_notification_situation">通知情景</string>
+    <string-array name="preference_entry_recv_notification_situation">
+        <item>收到新消息时通知</item>
+        <item>无消息时通知</item>
+        <item>解析失败时通知</item>
+    </string-array>
+
 </resources>

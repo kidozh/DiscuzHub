@@ -32,8 +32,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    def material_version = '1.2.0-alpha02'
+    def material_version = '1.2.0-alpha04'
     implementation "com.google.android.material:material:$material_version"
     api "com.google.android.material:material:$material_version"
 
@@ -43,26 +44,26 @@ dependencies {
 
     implementation 'androidx.preference:preference:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.2.0-alpha03'
+    implementation 'com.google.android.material:material:1.2.0-alpha04'
     implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
-    implementation 'androidx.navigation:navigation-fragment:2.1.0'
-    implementation 'androidx.navigation:navigation-ui:2.1.0'
-    testImplementation 'junit:junit:4.12'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.navigation:navigation-fragment:2.2.0'
+    implementation 'androidx.navigation:navigation-ui:2.2.0'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    def glide_version = '4.10.0'
+    def glide_version = '4.11.0'
 
     implementation "com.github.bumptech.glide:glide:$glide_version"
     implementation "com.github.bumptech.glide:okhttp3-integration:$glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
 
-    def butter_knife_version = '10.2.0'
+    def butter_knife_version = '10.2.1'
     implementation "com.jakewharton:butterknife:$butter_knife_version"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butter_knife_version"
 
-    def lifecycle_version = '2.1.0'
+    def lifecycle_version = '2.2.0'
     // ViewModel and LiveData
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     def room_version = '2.2.3'
@@ -70,7 +71,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
     //Activity
-    implementation "androidx.activity:activity:1.1.0-rc03"
+    implementation 'androidx.activity:activity:1.1.0'
 
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
     implementation 'org.jsoup:jsoup:1.12.1'
@@ -78,5 +79,17 @@ dependencies {
 
     implementation 'com.itingchunyu.badgeview:badgeview:1.0.5'
     implementation 'androidx.mediarouter:mediarouter:1.1.0'
+
+    implementation 'cn.gavinliu:ShapedImageView:0.8.7'
+
+    def work_version = "2.3.0"
+
+    // (Java only)
+    implementation "androidx.work:work-runtime:$work_version"
+
+    implementation "com.alibaba:fastjson:1.1.71.android"
+
+    implementation 'cn.gavinliu:ShapedImageView:0.8.7'
+
 
 }
