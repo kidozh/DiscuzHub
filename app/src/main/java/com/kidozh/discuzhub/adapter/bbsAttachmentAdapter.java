@@ -1,8 +1,13 @@
 package com.kidozh.discuzhub.adapter;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,11 +40,14 @@ import com.kidozh.discuzhub.utilities.networkUtils;
 
 
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
+import es.dmoral.toasty.Toasty;
 
 
 public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdapter.bbsAttachmentViewHolder> {
@@ -84,18 +93,17 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
 
 
         Glide.with(mContext)
-                .asBitmap()
                 .load(source)
                 .apply(options)
                 .centerInside()
-                .listener(new RequestListener<Bitmap>() {
+                .listener(new RequestListener<Drawable>() {
                     @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                         holder.mAttachmentImageview.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -115,12 +123,9 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
 
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull bbsAttachmentViewHolder holder, int position) {
+    private void renderPicture(bbsAttachmentViewHolder holder, int position){
         threadCommentInfo.attachmentInfo attachmentInfo = attachmentInfoList.get(position);
-        holder.mAttachmentBadge.setText(String.format(mContext.getString(R.string.bbs_thread_attachment_template),position+1));
-        holder.mAttachmentTitle.setText(attachmentInfo.filename);
-        Log.d(TAG,"Cur attachment position : "+position+" filename "+attachmentInfo.filename);
+
         if(networkUtils.canDownloadImageOrFile(mContext)){
             loadImageWithGlideInNetwork(holder,attachmentInfo);
         }
@@ -190,6 +195,66 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
 
 
         }
+    }
+
+
+
+    @Override
+    public void onBindViewHolder(@NonNull bbsAttachmentViewHolder holder, int position) {
+        threadCommentInfo.attachmentInfo attachmentInfo = attachmentInfoList.get(position);
+
+        Log.d(TAG,"Cur attachment position : "+position+" filename "+attachmentInfo.filename);
+        String[] fileNameSegement = attachmentInfo.filename.split("\\.");
+        String fileSuffix = "";
+        if(fileNameSegement.length >0){
+            fileSuffix = fileNameSegement[fileNameSegement.length-1];
+        }
+        else {
+            fileSuffix = "";
+        }
+
+        Set<String> commonPictureSuffixSet = new HashSet<String>(
+                Arrays.asList("gif","jpg","png","bmp")
+        );
+        fileSuffix = fileSuffix.toLowerCase();
+        holder.mAttachmentBadge.setText(mContext.getString(R.string.bbs_thread_attachment_template,position+1,fileSuffix.toUpperCase()));
+        holder.mAttachmentTitle.setText(attachmentInfo.filename);
+        if(commonPictureSuffixSet.contains(fileSuffix)){
+            renderPicture(holder,position);
+        }
+        else {
+            String source;
+
+            if(attachmentInfo.urlPrefix.startsWith("http:")||attachmentInfo.urlPrefix.startsWith("https:")){
+                source = attachmentInfo.urlPrefix + attachmentInfo.relativeUrl;
+            }
+            else {
+                // add a base url
+                source = bbsURLUtils.getBaseUrl()+"/"+ attachmentInfo.urlPrefix + attachmentInfo.relativeUrl;
+            }
+            holder.mAttachmentImageview.setImageDrawable(mContext.getDrawable(R.drawable.vector_drawable_attach_file_placeholder_24px));
+            holder.mAttachmentImageview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DownloadManager.Request request = new DownloadManager.Request(Uri.parse(source));
+                    request.setDestinationInExternalFilesDir(mContext,Environment.DIRECTORY_DOWNLOADS,attachmentInfo.filename);
+                    //request.setDestinationInExternalFilesDir(,mContext.getExternalFilesDir(null),attachmentInfo.filename);
+                    DownloadManager downloadManager= (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
+                    request.setTitle(mContext.getString(R.string.bbs_downloading_file_template,attachmentInfo.filename));
+                    request.setDescription(attachmentInfo.filename);
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                    if(downloadManager!=null){
+                        downloadManager.enqueue(request);
+                        Toasty.success(mContext,mContext.getString(R.string.bbs_downloading_attachment), Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Toasty.error(mContext,mContext.getString(R.string.bbs_downloading_attachment_failed), Toast.LENGTH_LONG).show();
+                    }
+
+                }
+            });
+        }
+
 
     }
 

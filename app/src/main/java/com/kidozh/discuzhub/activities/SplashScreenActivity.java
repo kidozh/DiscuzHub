@@ -61,6 +61,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         Constraints constraints = new Constraints.Builder()
                 .setRequiresBatteryNotLow(true)
+                .setRequiresDeviceIdle(true)
                 .build();
         // update frequency
         // extracting all user...

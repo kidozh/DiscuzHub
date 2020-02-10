@@ -121,7 +121,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <LinearLayout
-                    android:id="@+id/linearLayout4"
+                    android:id="@+id/bbs_forum_info_linearLayout"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:minHeight="1px"
@@ -129,6 +129,13 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/bbs_forum_info_cardview">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/bbs_forum_thread_type_chipgroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:selectionRequired="false"
+                        app:singleSelection="true" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/bbs_forum_thread_recyclerview"
@@ -148,7 +155,7 @@
                     android:textColor="@color/colorCloud"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
+                    app:layout_constraintTop_toBottomOf="@+id/bbs_forum_info_linearLayout" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 

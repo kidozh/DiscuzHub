@@ -1,14 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".activities.ui.bbsPollFragment.bbsPollFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/bbs_poll_chip_group"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/bbs_poll_expire_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/vector_drawable_access_time_24px"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bbs_poll_chip_group" />
+
+    <TextView
+        android:id="@+id/bbs_poll_expire_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bbs_poll_expire_icon"
+        app:layout_constraintStart_toEndOf="@+id/bbs_poll_expire_icon"
+        app:layout_constraintTop_toTopOf="@+id/bbs_poll_expire_icon"
+        tools:text="@tools:sample/date/hhmm" />
+
+    <ImageView
+        android:id="@+id/bbs_poll_voter_number_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/vector_drawable_how_to_vote_24px"
+        app:layout_constraintStart_toEndOf="@+id/bbs_poll_expire_time"
+        app:layout_constraintTop_toTopOf="@+id/bbs_poll_expire_icon" />
+
+    <TextView
+        android:id="@+id/bbs_poll_voter_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/bbs_poll_voter_number_icon"
+        app:layout_constraintTop_toTopOf="@+id/bbs_poll_expire_time"
+        tools:text="@string/mr_controller_volume_slider" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bbs_poll_option_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bbs_poll_expire_icon"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_poll_option">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/bbs_poll_vote_btn"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/bbs_poll_option_recyclerview"
+        app:layout_constraintStart_toStartOf="@+id/bbs_poll_option_recyclerview"
+        app:layout_constraintTop_toBottomOf="@+id/bbs_poll_option_recyclerview"
+        tools:text="@tools:sample/cities" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -84,7 +84,7 @@
     <string name="bbs_thread_comment">Comment</string>
     <string name="bbs_thread_say_something">Say something</string>
     <string name="bbs_thread_attachment">Attachment</string>
-    <string name="bbs_thread_attachment_template">Attachment #%d</string>
+    <string name="bbs_thread_attachment_template">Attachment #%1$d [%2$s]</string>
     <string name="bbs_require_comment">No comment found</string>
     <string name="bbs_comment_failed">Failed to comment</string>
     <string name="bbs_comment_successfully">Comment successfully</string>
@@ -198,7 +198,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="bbs_explore_thread">Explore</string>
-    <string name="bbs_login_by_browser">Login in webpage</string>
+    <string name="bbs_login_by_browser">Login in webpage (XSS risk)</string>
     <string name="bbs_login_in_web_finished">Login finished</string>
     <string name="bbs_login_in_browser_notification">If the bbs has their own authentication in logining or you want to use 3rd-party login method, please login in webpage.</string>
     <string name="bbs_login_in_webpage_alert">Login in webpage notification</string>
@@ -416,6 +416,41 @@
         <item>nothing</item>
         <item>failure</item>
     </string-array>
+    <string name="date_right_away">right away</string>
+    <string name="date_in_minutes">In %1$d mins</string>
+    <string name="date_in_hours">In %1$d hours</string>
+    <string name="date_tomorrow_time_template">Tomorrow %1$s</string>
+    <string name="date_in_days">In %1$d days %2$s</string>
+    <string name="poll_multiple_choices">Multiple choices</string>
+    <string name="poll_single_choice">Single choice</string>
+    <string name="poll_expire_at">Expire at %1$s</string>
+    <plurals name="poll_voter_number">
+        <item quantity="zero">no voter</item>
+        <item quantity="one">%d voter</item>
+        <item quantity="other">%d voters</item>
+    </plurals>
+    <string name="poll_can_vote">can vote</string>
+    <string name="poll_cannot_vote">cannot vote</string>
+    <string name="poll_visible_after_vote">Result visibile after voting</string>
+    <string name="poll_vote_progress">Vote (%1$d/%2$d)</string>
+    <string name="poll_vote_percent_templates">%1$.2f  (%2$s)</string>
+    <string name="poll_vote">vote</string>
+    <string name="bbs_post_copy_content">Copy</string>
+    <string name="bbs_post_copy_to_clipboard_successfully">The %1$s\'s post has been copied to clipboard.</string>
+    <string name="bbs_post_copy_clipboard_manager_null">Can not get clipboard manager services</string>
+    <string name="bbs_downloading_attachment">Download attachment and you can see it in notification bar</string>
+    <string name="bbs_downloading_attachment_failed">Can not download the attachment due to the null of download manager services</string>
+    <string name="bbs_downloading_file_template">Downloading %1$s</string>
+    <string name="bbs_post_only_see_him">Focus</string>
+    <string name="bbs_post_see_all">See all</string>
+    <string name="bbs_thread_status_only_post_listed">Only show $1%s\'s posts</string>
+    <string name="bbs_thread_status_ascend">Sort by ascending time</string>
+    <string name="bbs_thread_status_descend">Sort by descending time</string>
+    <string name="bbs_thread_filter_poll">Poll</string>
+    <string name="bbs_thread_filter_newest">New</string>
+    <string name="bbs_thread_filter_heat">Heats</string>
+    <string name="bbs_thread_filter_hottest">Hottest posts</string>
+    <string name="bbs_thread_filter_digest">Digest</string>
 
 
 </resources>

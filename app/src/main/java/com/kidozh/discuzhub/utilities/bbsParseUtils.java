@@ -5,7 +5,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.forumCategorySection;
 import com.kidozh.discuzhub.entities.forumInfo;
@@ -281,9 +284,9 @@ public class bbsParseUtils {
                 String pid = attachmentObj.getString("pid");
                 String uid = attachmentObj.getString("uid");
                 String filename = attachmentObj.getString("filename");
-                if (!(filename.endsWith("png")||filename.endsWith("jpg")||filename.endsWith("gif"))){
-                    continue;
-                }
+//                if (!(filename.endsWith("png")||filename.endsWith("jpg")||filename.endsWith("gif"))){
+//                    continue;
+//                }
                 String relativeUrl = attachmentObj.getString("attachment");
                 String prefixUrl = attachmentObj.getString("url");
                 String publishAtStr = attachmentObj.getString("dbdateline");
@@ -1125,6 +1128,51 @@ public class bbsParseUtils {
         catch (Exception e){
             e.printStackTrace();
             return 0;
+        }
+    }
+
+
+
+    public static bbsPollInfo parsePollInfo(String s){
+                try{
+                    ObjectMapper mapper = new ObjectMapper();
+
+                    List<smileyInfo> smileyInfoList = new ArrayList<>();
+                    JSONObject jsonObject = new JSONObject(s);
+                    JSONObject variables = jsonObject.getJSONObject("Variables");
+                    JSONObject pollInfo = variables.getJSONObject("special_poll");
+                    return mapper.readValue(pollInfo.toString(),bbsPollInfo.class);
+
+
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static class returnMessage{
+        @JsonProperty("messageval")
+        public String value;
+        @JsonProperty("messagestr")
+        public String string;
+    }
+
+    public static returnMessage parseReturnMessage(String s){
+        try{
+            ObjectMapper mapper = new ObjectMapper();
+
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject messageObj = jsonObject.getJSONObject("Message");
+            return mapper.readValue(messageObj.toString(),returnMessage.class);
+
+
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
         }
     }
 

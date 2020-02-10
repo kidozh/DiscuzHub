@@ -49,7 +49,7 @@
     <string name="bbs_thread_comment">评论</string>
     <string name="bbs_thread_say_something">说些什么吧</string>
     <string name="bbs_thread_attachment">附件</string>
-    <string name="bbs_thread_attachment_template">附件%d</string>
+    <string name="bbs_thread_attachment_template">附件%1$d [%2$s]</string>
     <string name="bbs_require_comment">无评论</string>
     <string name="bbs_comment_failed">无法评论本贴</string>
     <string name="bbs_comment_successfully">成功发表评论</string>
@@ -156,7 +156,7 @@
     <string name="bbs_notification_my_pm">私信</string>
     <string name="bbs_notification_my_thread">我的帖子</string>
     <string name="bbs_explore_thread">探索</string>
-    <string name="bbs_login_by_browser">在网页中登录</string>
+    <string name="bbs_login_by_browser">在网页中登录（XSS风险）</string>
     <string name="bbs_login_in_web_finished">完成登录</string>
     <string name="bbs_login_in_browser_notification">如果本论坛在登陆时有自己的认证方式（如验证码），或者您需要使用第三方账号登录，请选择在“网页中登录”。</string>
     <string name="bbs_login_in_webpage_alert">在网页中登录提醒</string>
@@ -257,5 +257,40 @@
         <item>无消息时通知</item>
         <item>解析失败时通知</item>
     </string-array>
+    <string name="date_right_away">马上</string>
+    <string name="date_in_minutes">%1$d分钟后</string>
+    <string name="date_in_hours">%1$d小时后</string>
+    <string name="date_in_days">%1$d天后 %2$s</string>
+    <string name="poll_multiple_choices">多选</string>
+    <string name="poll_single_choice">单选</string>
+    <string name="poll_expire_at">于%1$s过期</string>
+    <plurals name="poll_voter_number">
+        <item quantity="zero">无人投票</item>
+        <item quantity="one">一位投票者</item>
+        <item quantity="other">%d位投票者</item>
+    </plurals>
+    <string name="poll_can_vote">能够投票</string>
+    <string name="poll_cannot_vote">无法投票</string>
+    <string name="poll_visible_after_vote">选后结果可见</string>
+    <string name="poll_vote_progress">投票 (%1$d/%2$d)</string>
+    <string name="poll_vote_percent_templates">%1$.2f (%2$s)</string>
+    <string name="poll_vote">投票</string>
+    <string name="date_tomorrow_time_template">明天 %1$s</string>
+    <string name="bbs_post_copy_to_clipboard_successfully">%1$s的帖子已经复制到剪贴板上了</string>
+    <string name="bbs_post_copy_clipboard_manager_null">无法获得剪贴板相关服务</string>
+    <string name="bbs_post_copy_content">复制帖子</string>
+    <string name="bbs_downloading_attachment">基于系统的下载已经开始，您可以在通知栏中观察详情。</string>
+    <string name="bbs_downloading_attachment_failed">由于未找到下载服务，无法下载文件</string>
+    <string name="bbs_downloading_file_template">正在下载 : %1$s</string>
+    <string name="bbs_post_only_see_him">只看他</string>
+    <string name="bbs_post_see_all">查看所有</string>
+    <string name="bbs_thread_status_only_post_listed">只查看$1%s的帖子</string>
+    <string name="bbs_thread_status_ascend">时间升序</string>
+    <string name="bbs_thread_status_descend">时间倒序</string>
+    <string name="bbs_thread_filter_poll">投票</string>
+    <string name="bbs_thread_filter_newest">最新</string>
+    <string name="bbs_thread_filter_heat">热门</string>
+    <string name="bbs_thread_filter_hottest">热帖</string>
+    <string name="bbs_thread_filter_digest">精华</string>
 
 </resources>

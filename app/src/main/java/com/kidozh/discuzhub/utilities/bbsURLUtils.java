@@ -1,6 +1,7 @@
 package com.kidozh.discuzhub.utilities;
 
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -57,12 +58,160 @@ public class bbsURLUtils {
         return BASE_URL+String.format("/data/attachment/common/1f/common_%s_icon.png",fid);
     }
 
+
+
+
+
+    public static class ForumStatus{
+        public int fid,page,perPage=15;
+        public boolean hasLoadAll = false;
+        // orderby:[dateline,replies,views]
+        public String orderBy="";
+        // filter:
+        public String filter="",filterId="";
+
+        public ForumStatus(int fid,int page){
+            this.fid = fid;
+            this.page = page;
+        }
+
+
+
+        public void clear(){
+            this.page=1;
+            this.perPage = 15;
+            this.orderBy = "";
+            this.filterId = "";
+            this.filter = "";
+        }
+
+        public void setInitAuthorId(int authorId){
+            this.page = 1;
+            this.hasLoadAll = false;
+        }
+
+        public void setInitPage(int page){
+            this.page = page;
+            this.hasLoadAll = false;
+        }
+    }
+
+    public static final String FILTER_TYPE_POLL = "FILTER_TYPE_POLL",
+            FILTER_TYPE_NEWEST = "FILTER_TYPE_NEWEST",
+            FILTER_TYPE_HEATS = "FILTER_TYPE_HEATS",
+            FILTER_TYPE_HOTTEST = "FILTER_TYPE_HOTTEST",
+            FILTER_TYPE_DIGEST = "FILTER_TYPE_DIGEST",
+            FILTER_TYPE_ID = "FILTER_TYPE_ID";
+
     public static String getForumUrlByFid(int fid,int page){
         return BASE_URL+String.format("/api/mobile/index.php?version=4&module=forumdisplay&fid=%s&page=%s&ppp=15",fid,page);
     }
 
-    public static String getThreadCommentUrlByFid(int tid,int page){
+    public static String getForumUrlByStatus(ForumStatus status){
+
+        Uri.Builder uriBuilder = Uri.parse(BASE_URL+"/api/mobile/index.php")
+                .buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","forumdisplay")
+                .appendQueryParameter("fid",String.valueOf(status.fid))
+                .appendQueryParameter("page",String.valueOf(status.page))
+                .appendQueryParameter("ppp",String.valueOf(status.perPage));
+        if(!status.orderBy.equals("")){
+            uriBuilder.appendQueryParameter("orderby",status.orderBy);
+        }
+
+        if(!status.filter.equals("")){
+
+            uriBuilder.appendQueryParameter("filter",status.filter);
+            switch (status.filter){
+                case ("specialtype"):{
+                    uriBuilder.appendQueryParameter("specialtype","poll");
+                    break;
+                }
+                case ("lastpost"):{
+                    uriBuilder.appendQueryParameter("orderby","lastpost");
+                    break;
+                }
+                case ("heat"):{
+                    uriBuilder.appendQueryParameter("orderby","heats");
+                    break;
+                }
+                case ("digest"):{
+                    uriBuilder.appendQueryParameter("digest","1");
+                    break;
+                }
+            }
+        }
+        Log.d(TAG,"Type id "+status.filterId);
+        if(!status.filterId.equals("")){
+
+            uriBuilder.appendQueryParameter("filter","typeid")
+                    .appendQueryParameter("typeid",status.filterId);
+        }
+
+
+        Uri uri = uriBuilder.build();
+        return uri.toString();
+    }
+
+
+
+    private static String getThreadCommentUrlByFid(int tid,int page){
         return BASE_URL+String.format("/api/mobile/index.php?version=4&module=viewthread&tid=%s&page=%s&ppp=15",tid,page);
+    }
+
+    public static class ThreadStatus{
+        public int tid,page=1,perPage=15;
+        public int authorId = -1;
+        public boolean hasLoadAll = false;
+        // ordertype:1 -> descend 2:-? ascend
+        public boolean datelineAscend = true;
+
+        public ThreadStatus(int tid, int page) {
+            this.tid = tid;
+            this.page = page;
+        }
+
+        public void clear(){
+            this.page=1;
+            this.perPage = 15;
+        }
+
+        public void setInitAuthorId(int authorId){
+            this.page = 1;
+            this.authorId = authorId;
+            this.hasLoadAll = false;
+        }
+
+        public void setInitPage(int page){
+            this.page = page;
+            this.hasLoadAll = false;
+        }
+    }
+
+    public static String getThreadCommentUrlByStatus(ThreadStatus status){
+
+        Uri.Builder uriBuilder = Uri.parse(BASE_URL+"/api/mobile/index.php")
+                .buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","viewthread")
+                .appendQueryParameter("tid",String.valueOf(status.tid))
+                .appendQueryParameter("page",String.valueOf(status.page))
+                .appendQueryParameter("ppp",String.valueOf(status.perPage))
+                .appendQueryParameter("pollsubmit","1");
+        if(status.authorId != -1){
+            uriBuilder.appendQueryParameter("authorid",String.valueOf(status.authorId));
+        }
+
+        if(status.datelineAscend){
+            uriBuilder.appendQueryParameter("ordertype","2");
+        }
+        else {
+            uriBuilder.appendQueryParameter("ordertype","1");
+        }
+
+        Uri uri = uriBuilder.build();
+        return uri.toString();
     }
 
     public static String getSmallAvatarUrlByUid(String uid){
@@ -222,7 +371,17 @@ public class bbsURLUtils {
     }
 
     public static String getSeccodeApiUrl(int idhash){
-        return BASE_URL + "http://192.168.0.119/api/mobile/index.php?version=4&module=seccodehtml&sechash="+idhash;
+        return BASE_URL + "/api/mobile/index.php?version=4&module=seccodehtml&sechash="+idhash;
+    }
+
+    public static String getVotePollApiUrl(int tid){
+        Uri builtUri = Uri.parse(BASE_URL+"/api/mobile/index.php")
+                .buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","pollvote")
+                .appendQueryParameter("tid",String.valueOf(tid))
+                .appendQueryParameter("pollsubmit","1").build();
+        return builtUri.toString();
     }
 
 }

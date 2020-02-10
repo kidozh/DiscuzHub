@@ -2,6 +2,8 @@ package com.kidozh.discuzhub.adapter;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -26,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,6 +53,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsShowThreadActivity;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
 import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
+import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.threadCommentInfo;
@@ -67,16 +71,20 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 import okhttp3.OkHttpClient;
 
 public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumThreadCommentAdapter.bbsForumThreadCommentViewHolder> {
     private final static String TAG = bbsForumThreadCommentAdapter.class.getSimpleName();
-    public List<threadCommentInfo> threadInfoList;
-    private Context mContext;
+    private List<threadCommentInfo> threadInfoList;
+    private Context mContext,context;
     public String subject;
     private OkHttpClient client = new OkHttpClient();
     bbsInformation bbsInfo;
     forumUserBriefInfo curUser;
+    bbsURLUtils.ThreadStatus threadStatus;
+
+    private onFilterChanged mListener;
 
     private AdapterView.OnItemClickListener listener;
     private onAdapterReply replyListener;
@@ -84,23 +92,28 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
 
 
 
-    public bbsForumThreadCommentAdapter(Context context,bbsInformation bbsInfo, forumUserBriefInfo curUser){
+    public bbsForumThreadCommentAdapter(Context context, bbsInformation bbsInfo, forumUserBriefInfo curUser, bbsURLUtils.ThreadStatus threadStatus){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
         this.mContext = context;
         client = networkUtils.getPreferredClient(context);
+        this.threadStatus = threadStatus;
     }
 
-    public void setThreadInfoList(List<threadCommentInfo> threadInfoList){
+    public void setThreadInfoList(List<threadCommentInfo> threadInfoList, bbsURLUtils.ThreadStatus threadStatus){
         this.threadInfoList = threadInfoList;
+        this.threadStatus = threadStatus;
         notifyDataSetChanged();
     }
 
+    public List<threadCommentInfo> getThreadInfoList() {
+        return threadInfoList;
+    }
 
     @NonNull
     @Override
     public bbsForumThreadCommentAdapter.bbsForumThreadCommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+        context = parent.getContext();
         int layoutIdForListItem = R.layout.item_bbs_thread_comment_detail;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
@@ -185,6 +198,23 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                 replyListener.replyToSomeOne(position);
             }
         });
+        holder.mCopyContentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String content = threadInfo.message;
+                ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData mClipData = ClipData.newPlainText("Label", content);
+                if(cm!=null){
+                    cm.setPrimaryClip(mClipData);
+                    Toasty.success(context,context.getString(R.string.bbs_post_copy_to_clipboard_successfully,threadInfo.author), Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toasty.error(context,context.getString(R.string.bbs_post_copy_clipboard_manager_null), Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+        });
 
         if(threadInfo.attachmentInfoList != null){
             bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter(mContext);
@@ -195,9 +225,40 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
             holder.mRecyclerview.setLayoutManager(linearLayoutManager);
             holder.mRecyclerview.setAdapter(attachmentAdapter);
         }
+        registerListener();
+        if(threadStatus.authorId == -1){
+            // no author is filtered
+            holder.mFilterByAuthorIdBtn.setText(mContext.getString(R.string.bbs_post_only_see_him));
+            holder.mFilterByAuthorIdBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.setAuthorId(Integer.parseInt(threadInfo.authorId));
+                }
+            });
+        }
+        else {
+            holder.mFilterByAuthorIdBtn.setText(mContext.getString(R.string.bbs_post_see_all));
+            holder.mFilterByAuthorIdBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // set it back
+                    mListener.setAuthorId(-1);
+                }
+            });
+        }
 
 
 
+
+    }
+
+    private void registerListener(){
+        if (context instanceof onFilterChanged) {
+            mListener = (onFilterChanged) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement onFilterChanged");
+        }
     }
 
     @Override
@@ -228,10 +289,18 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         RecyclerView mRecyclerview;
         @BindView(R.id.bbs_thread_reply_button)
         Button mReplyBtn;
+        @BindView(R.id.bbs_thread_copy_content_button)
+        Button mCopyContentBtn;
+        @BindView(R.id.bbs_thread_only_see_him_button)
+        Button mFilterByAuthorIdBtn;
         public bbsForumThreadCommentViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
+    }
+
+    public interface onFilterChanged{
+        void setAuthorId(int authorId);
     }
 
     class MyDrawableWrapper extends DrawableWrapper {

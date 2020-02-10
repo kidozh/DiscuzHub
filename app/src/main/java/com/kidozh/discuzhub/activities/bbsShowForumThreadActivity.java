@@ -2,6 +2,7 @@ package com.kidozh.discuzhub.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,11 +24,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
@@ -45,7 +50,11 @@ import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,6 +64,9 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import static com.kidozh.discuzhub.utilities.bbsURLUtils.FILTER_TYPE_HEATS;
+import static com.kidozh.discuzhub.utilities.bbsURLUtils.FILTER_TYPE_NEWEST;
 
 public class bbsShowForumThreadActivity extends AppCompatActivity {
     private static final String TAG = bbsShowForumThreadActivity.class.getSimpleName();
@@ -78,6 +90,8 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
     Button moreThreadBtn;
     @BindView(R.id.bbs_forum_info_cardview)
     CardView mForumInfoCardView;
+    @BindView(R.id.bbs_forum_thread_type_chipgroup)
+    ChipGroup mForumThreadTypeChipGroup;
     private forumInfo forum;
     private bbsInformation bbsInfo;
     private forumUserBriefInfo userBriefInfo;
@@ -86,8 +100,8 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
     boolean isTaskRunning;
     String fid;
     String returned_res_json;
+    MutableLiveData<bbsURLUtils.ForumStatus> forumStatusMutableLiveData;
 
-    private int page = 1;
 
 
     @Override
@@ -96,9 +110,13 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bbs_show_forum_thread);
         ButterKnife.bind(this);
         configureIntentData();
+
         Log.d(TAG, "Get bbs information "+bbsInfo);
-        fid = String.valueOf(forum.fid);
+
+        initLiveData();
         configureActionBar();
+        configureLiveData();
+
         configureFab();
         configureClient();
         configureForumInfo();
@@ -107,6 +125,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
 
         getThreadInfo();
         configurePostThreadBtn();
+        configureChipGroupFilter();
     }
 
 
@@ -116,14 +135,42 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         bbsURLUtils.setBBS(bbsInfo);
+        fid = String.valueOf(forum.fid);
+    }
+
+    private void initLiveData(){
+
+        bbsURLUtils.ForumStatus forumStatus = new bbsURLUtils.ForumStatus(forum.fid,1);
+        forumStatusMutableLiveData = new MutableLiveData<>(forumStatus);
+        forumStatusMutableLiveData.setValue(forumStatus);
+
+    }
+
+    private void configureLiveData(){
+        forumStatusMutableLiveData.observe(this, new Observer<bbsURLUtils.ForumStatus>() {
+            @Override
+            public void onChanged(bbsURLUtils.ForumStatus status) {
+                // trigger UI
+                // ensure rollback safe
+
+            }
+        });
+    }
+
+    private void reConfigureAndRefreshPage(bbsURLUtils.ForumStatus status){
+        status.hasLoadAll = false;
+        status.page = 1;
+        forumStatusMutableLiveData.postValue(status);
+        getThreadInfo();
+
     }
 
     private void configureSwipeRefreshLayout(){
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page = 1;
-                getThreadInfo();
+                bbsURLUtils.ForumStatus status = forumStatusMutableLiveData.getValue();
+                reConfigureAndRefreshPage(status);
 
             }
         });
@@ -184,6 +231,67 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
 
     }
 
+    private void configureChipGroupFilter(){
+        mForumThreadTypeChipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(ChipGroup group, int checkedId) {
+                bbsURLUtils.ForumStatus status = forumStatusMutableLiveData.getValue();
+                if(status == null){
+                    status = new bbsURLUtils.ForumStatus(forum.fid,1);
+                }
+                int position = -1;
+                for(int i=0;i<ChoiceResList.size();i++){
+                    int selectedId = ChoiceResList.get(i);
+                    if(selectedId == checkedId){
+                        position = i;
+                    }
+                }
+                Log.d(TAG,"choice group "+checkedId+" POS "+position);
+                if(position == -1){
+                    // failed
+                    status.clear();
+                    reConfigureAndRefreshPage(status);
+                }
+                else {
+                    ChoiceChipInfo choiceChipInfo = choiceChipInfoList.get(position);
+                    // need to
+                    switch (choiceChipInfo.filterType){
+
+                        case (bbsURLUtils.FILTER_TYPE_POLL):{
+                            status.filter = "specialtype";
+                            break;
+                        }
+                        case (bbsURLUtils.FILTER_TYPE_NEWEST):{
+                            status.filter = "lastpost";
+                            break;
+                        }
+                        case (bbsURLUtils.FILTER_TYPE_HEATS):{
+                            status.filter = "heat";
+                            break;
+                        }
+                        case (bbsURLUtils.FILTER_TYPE_HOTTEST):{
+                            status.filter = "hot";
+                            break;
+                        }
+                        case (bbsURLUtils.FILTER_TYPE_DIGEST):{
+                            status.filter = "digest";
+                            break;
+                        }
+                        case (bbsURLUtils.FILTER_TYPE_ID):{
+                            status.filterId = choiceChipInfo.filterName;
+                            break;
+                        }
+                        default:{
+                            status.clear();
+                        }
+
+                    }
+                    reConfigureAndRefreshPage(status);
+                }
+            }
+        });
+    }
+
 
 
     private void configureForumInfo(){
@@ -222,13 +330,103 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
         });
     }
 
+    public void addTypeChipToChipGroup(String typeId, String name){
+        choiceChipInfoList.add(new ChoiceChipInfo(bbsURLUtils.FILTER_TYPE_ID,name,typeId));
+        Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_choice,mForumThreadTypeChipGroup,false);
+        chip.setText(name);
+        chip.setClickable(true);
+        mForumThreadTypeChipGroup.addView(chip);
+        ChoiceResList.add(chip.getId());
+    }
+
+    private ColorStateList createColorStateList(int pressed, int normal) {
+        //状态
+        int[][] states = new int[2][];
+        //按下
+        states[0] = new int[] {android.R.attr.state_pressed};
+        //默认
+        states[1] = new int[] {};
+
+        //状态对应颜色值（按下，默认）
+        int[] colors = new int[] { pressed, normal};
+        return new ColorStateList(states, colors);
+    }
+
+    public void addFilterChipToChipGroup(String filterType,String name){
+        choiceChipInfoList.add(new ChoiceChipInfo(filterType,name,name));
+
+        Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_choice,mForumThreadTypeChipGroup,false);
+
+        chip.setChipBackgroundColor(getColorStateList(R.color.chip_background_select_state));
+        //chip.setTextColor(createColorStateList(R.color.colorPureWhite,R.color.colorPr));
+        chip.setTextColor(getColor(R.color.colorTextDefault));
+        chip.setText(name);
+        chip.setClickable(true);
+        mForumThreadTypeChipGroup.addView(chip);
+        ChoiceResList.add(chip.getId());
+    }
+
+
+    private class ChoiceChipInfo{
+        public String filterType,name,filterName;
+
+        public ChoiceChipInfo(String filterType, String name, String filterName) {
+            this.filterType = filterType;
+            this.name = name;
+            this.filterName = filterName;
+        }
+    }
+
+    List<ChoiceChipInfo> choiceChipInfoList = new ArrayList<>();
+    List<Integer> ChoiceResList = new ArrayList<>();
+
+    boolean firstRenderChipGroup = true;
+
+    private void configureThreadTypeChipGroup(String s){
+
+        if(!firstRenderChipGroup){
+            return;
+        }
+        Log.d(TAG,"Render thread type chips "+firstRenderChipGroup);
+        choiceChipInfoList.clear();
+        ChoiceResList.clear();
+        mForumThreadTypeChipGroup.removeAllViews();
+        // add oridnary filter first
+        addFilterChipToChipGroup(bbsURLUtils.FILTER_TYPE_POLL,getString(R.string.bbs_thread_filter_poll));
+        addFilterChipToChipGroup(bbsURLUtils.FILTER_TYPE_NEWEST,getString(R.string.bbs_thread_filter_newest));
+        addFilterChipToChipGroup(bbsURLUtils.FILTER_TYPE_HEATS,getString(R.string.bbs_thread_filter_heat));
+        addFilterChipToChipGroup(bbsURLUtils.FILTER_TYPE_HOTTEST,getString(R.string.bbs_thread_filter_hottest));
+        addFilterChipToChipGroup(bbsURLUtils.FILTER_TYPE_DIGEST,getString(R.string.bbs_thread_filter_digest));
+        try{
+            // parse it
+            Map<String,String> threadTypeMap = bbsParseUtils.parseThreadType(s);
+            for(String key:threadTypeMap.keySet()){
+                String name = threadTypeMap.get(key);
+                addTypeChipToChipGroup(key,name);
+            }
+
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        firstRenderChipGroup = false;
+    }
+
     private void getThreadInfo(){
+        bbsURLUtils.ForumStatus forumStatus = forumStatusMutableLiveData.getValue();
+
+
+        if(forumStatus!=null && forumStatus.hasLoadAll){
+            swipeRefreshLayout.setRefreshing(false);
+            return;
+        }
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getForumUrlByFid(forum.fid,page))
+                .url(bbsURLUtils.getForumUrlByStatus(forumStatus))
                 .build();
         Log.d(TAG,"Get thread info "+request.url().toString());
         Call call = client.newCall(request);
-        swipeRefreshLayout.setRefreshing(true);
+
         isTaskRunning = true;
         Handler mHandler = new Handler(Looper.getMainLooper());
         Context context = this;
@@ -254,8 +452,14 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                     Log.d(TAG,"recv form thread "+s);
                     returned_res_json = s;
                     swipeRefreshLayout.setRefreshing(false);
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            configureThreadTypeChipGroup(s);
+                        }
+                    });
                     List<threadInfo> threadInfoList;
-                    if (page == 1 || page == 0){
+                    if (forumStatus.page == 1){
                         threadInfoList = bbsParseUtils.parseThreadListInfo(s,true);
                     }
                     else {
@@ -263,7 +467,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                     }
 
                     if(threadInfoList!=null){
-                        if(adapter.threadInfoList == null || page == 1){
+                        if(adapter.threadInfoList == null || forumStatus.page == 1){
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -282,6 +486,12 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                             });
 
                         }
+                        // check
+                        if(threadInfoList.size()< forumStatus.perPage){
+                            forumStatus.hasLoadAll = true;
+                            forumStatusMutableLiveData.postValue(forumStatus);
+                        }
+
 
                     }
                     mHandler.post(new Runnable() {
@@ -290,7 +500,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                             MyTagHandler myTagHandler = new MyTagHandler(context,mForumAlert,mForumInfoCardView);
                             MyImageGetter myImageGetter = new MyImageGetter(context,mForumAlert,mForumInfoCardView);
                             Spanned sp;
-                            if (bbsParseUtils.getThreadRuleString(s).equals("")){
+                            if (bbsParseUtils.getThreadRuleString(s)!=null && bbsParseUtils.getThreadRuleString(s).equals("")){
                                 sp = Html.fromHtml(bbsParseUtils.getThreadDescriptionString(s),myImageGetter,myTagHandler);
 
                             }
@@ -305,11 +515,8 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                         }
                     });
 
-
-
-
-                    page += 1;
-                    isTaskRunning = false;
+                    forumStatus.page += 1;
+                    forumStatusMutableLiveData.postValue(forumStatus);
                 }
                 else {
 
