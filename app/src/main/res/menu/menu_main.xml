@@ -4,7 +4,6 @@
     tools:context="com.kidozh.discuzhub.MainActivity" >
     <item android:id="@+id/action_user_status"
         android:title="@string/action_settings"
-        android:orderInCategory="100"
         app:showAsAction="never" />
     <item
         android:id="@+id/bbs_about_app"

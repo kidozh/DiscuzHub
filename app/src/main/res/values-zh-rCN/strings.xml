@@ -312,5 +312,12 @@
     <string name="bbs_notification_thread_list">帖子列表</string>
     <string name="app_version_template">版本信息： %1$s</string>
     <string name="bbs_app_about">关于应用</string>
+    <string name="app_privacy_policy">隐私政策</string>
+    <string name="app_terms_of_use">使用条款</string>
+    <string name="app_contact_developer">联系开发者</string>
+    <string name="app_homepage">主页</string>
+    <string name="app_project_on_github">项目地址</string>
+    <string name="about_contact_developer_description">遇到问题？联系我吧！</string>
+    <string name="about_app_foot_note">DiscuzHub是为了Discuz!移动化所开发的非官方、第三方的以MIT协议开源的Android应用。</string>
 
 </resources>

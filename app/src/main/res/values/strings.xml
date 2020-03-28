@@ -471,6 +471,13 @@
     <string name="bbs_notification_thread_list">Thread list</string>
     <string name="app_version_template">Ver. %1$s</string>
     <string name="bbs_app_about">About APP</string>
+    <string name="app_privacy_policy">Privacy policy</string>
+    <string name="app_terms_of_use">Terms of Use</string>
+    <string name="app_contact_developer">Contact developer</string>
+    <string name="app_homepage">Homepage</string>
+    <string name="app_project_on_github">Project on Github</string>
+    <string name="about_contact_developer_description">Any problems? Please contact us!</string>
+    <string name="about_app_foot_note">DiscuzHub is an unofficial app for Discuz! bbs and released with MIT licence.</string>
 
 
 </resources>
