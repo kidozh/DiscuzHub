@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -101,7 +102,9 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
         threadInfo threadInfo = threadInfoList.get(position);
         holder.mThreadPublisher.setText(threadInfo.author);
         holder.mContent.setVisibility(View.GONE);
-        holder.mTitle.setText(threadInfo.subject);
+        Spanned sp = Html.fromHtml(threadInfo.subject);
+        SpannableString spannableString = new SpannableString(sp);
+        holder.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE);
         holder.mThreadViewNum.setText(numberFormatUtils.getShortNumberText(threadInfo.viewNum));
         holder.mThreadReplyNum.setText(numberFormatUtils.getShortNumberText(threadInfo.repliesNum));
 //        if(threadInfo.lastUpdator != null){

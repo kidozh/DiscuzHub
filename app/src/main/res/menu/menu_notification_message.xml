@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_notification_messages_pm"
+        android:title="@string/bbs_notification_my_pm" />
+    <item
+        android:id="@+id/menu_notification_message_public_message"
+        android:title="@string/bbs_notification_public_pm" />
+</menu>

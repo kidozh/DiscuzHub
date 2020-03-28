@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kidozh.discuzhub.activities.SettingsActivity;
+import com.kidozh.discuzhub.activities.aboutAppActivity;
 import com.kidozh.discuzhub.adapter.forumInformationAdapter;
 import com.kidozh.discuzhub.callback.forumSwipeToDeleteCallback;
 import com.kidozh.discuzhub.database.forumInformationDatabase;
@@ -591,6 +592,11 @@ public class MainActivity extends AppCompatActivity {
         switch (id){
             case R.id.action_user_status:{
                 Intent intent = new Intent(this,SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            case R.id.bbs_about_app:{
+                Intent intent = new Intent(this, aboutAppActivity.class);
                 startActivity(intent);
                 return true;
             }

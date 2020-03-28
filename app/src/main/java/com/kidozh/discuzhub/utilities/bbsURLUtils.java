@@ -285,11 +285,8 @@ public class bbsURLUtils {
         return BASE_URL+"/api/mobile/index.php?version=4&module=newthread&fid=" + fid ;
     }
 
-    public static String ajaxGetReplyPostParametersUrl(String tid, String pid){
-        return BASE_URL+String.format("/forum.php?mod=post&action=reply&tid=%s&repquote=%s&extra=&page=1&infloat=yes&handlekey=reply&inajax=1&ajaxtarget=fwin_content_reply",tid,pid);
-    }
-
     public static String getReplyThreadUrl(String fid,String tid){
+
         Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
                 .appendQueryParameter("mod","post")
                 .appendQueryParameter("action","reply")
@@ -299,9 +296,9 @@ public class bbsURLUtils {
                 .appendQueryParameter("replysubmit","yes")
                 .appendQueryParameter("infloat","yes")
                 .appendQueryParameter("handlekey","fastpost")
-                //.appendQueryParameter("extra","")
+                .appendQueryParameter("extra","")
                 .build();
-        return uri.toString();
+         return uri.toString();
     }
 
     public static String getReplyToSomeoneThreadUrl(String fid,String tid){
@@ -383,5 +380,48 @@ public class bbsURLUtils {
                 .appendQueryParameter("pollsubmit","1").build();
         return builtUri.toString();
     }
+
+    public static String getNoteListApiUrl(String view, String type,int page){
+        Uri builtUri = Uri.parse(BASE_URL+"/api/mobile/index.php")
+                .buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","mynotelist")
+                .appendQueryParameter("view",view)
+                .appendQueryParameter("type",type)
+                .appendQueryParameter("page",String.valueOf(page))
+                .build();
+        return builtUri.toString();
+    }
+
+    public static String getForumDisplayUrl(String fid,String pageString){
+
+        Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
+                .appendQueryParameter("mod","forumdisplay")
+                .appendQueryParameter("fid",fid)
+                .appendQueryParameter("page",pageString)
+                .build();
+        return uri.toString();
+    }
+
+    public static String getViewThreadUrl(String tid,String pageString){
+
+        Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
+                .appendQueryParameter("mod","viewthread")
+                .appendQueryParameter("tid",tid)
+                .appendQueryParameter("page",pageString)
+                .build();
+        return uri.toString();
+    }
+
+    public static String getPortalPageUrl(){
+
+        Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
+                .build();
+        return uri.toString();
+    }
+
+
+
+
 
 }

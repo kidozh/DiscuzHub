@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_notification_interact_poke"
+        android:title="@string/bbs_notification_interact_poke" />
+    <item
+        android:id="@+id/menu_notification_interact_friend"
+        android:title="@string/bbs_notification_interact_friend" />
+    <item
+        android:id="@+id/menu_notification_interact_wall"
+        android:title="@string/bbs_notification_interact_wall" />
+    <item
+        android:id="@+id/menu_notification_interact_comment"
+        android:title="@string/bbs_notification_interact_comment" />
+    <item
+        android:id="@+id/menu_notification_interact_agree"
+        android:title="@string/bbs_notification_interact_agree" />
+    <item
+        android:id="@+id/menu_notification_interact_share"
+        android:title="@string/bbs_notification_interact_share" />
+</menu>

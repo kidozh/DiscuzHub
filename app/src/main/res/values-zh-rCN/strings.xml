@@ -292,5 +292,25 @@
     <string name="bbs_thread_filter_heat">热门</string>
     <string name="bbs_thread_filter_hottest">热帖</string>
     <string name="bbs_thread_filter_digest">精华</string>
+    <string name="bbs_forum_thread_load_all">找不到更多的帖子了</string>
+    <string name="bbs_notification_messages">消息</string>
+    <string name="bbs_notification_thread">帖子</string>
+    <string name="bbs_notification_interact">互动</string>
+    <string name="bbs_notification_app">应用</string>
+    <string name="bbs_notification_myThread_thread">帖子</string>
+    <string name="bbs_notification_myThread_comment">点评</string>
+    <string name="bbs_notification_myThread_activity">活动</string>
+    <string name="bbs_notification_myThread_reward">悬赏</string>
+    <string name="bbs_notification_myThread_good">商品</string>
+    <string name="bbs_notification_myThread_mentioned">\@我的</string>
+    <string name="bbs_notification_interact_poke">打招呼</string>
+    <string name="bbs_notification_interact_friend">好友</string>
+    <string name="bbs_notification_interact_wall">留言</string>
+    <string name="bbs_notification_interact_comment">评论</string>
+    <string name="bbs_notification_interact_agree">挺我</string>
+    <string name="bbs_notification_interact_share">分享</string>
+    <string name="bbs_notification_thread_list">帖子列表</string>
+    <string name="app_version_template">版本信息： %1$s</string>
+    <string name="bbs_app_about">关于应用</string>
 
 </resources>

@@ -24,4 +24,8 @@
     <item
         android:id="@+id/bbs_settings"
         android:title="@string/action_settings" />
+    <item
+        android:id="@+id/bbs_about_app"
+        android:icon="@drawable/vector_drawable_verified_user_24px"
+        android:title="@string/app_about" />
 </menu>

@@ -21,8 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-
-
+        <activity android:name=".activities.aboutAppActivity"></activity>
+        <activity android:name=".activities.showWebPageActivity" />
         <activity
             android:name=".activities.appWelcomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -46,7 +46,8 @@
         <activity android:name=".activities.bbsShowCategoryForumActivity" />
         <activity android:name=".activities.bbsShowForumThreadActivity" />
         <activity android:name=".activities.bbsShowThreadActivity" />
-        <activity android:name=".activities.SplashScreenActivity"
+        <activity
+            android:name=".activities.SplashScreenActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,12 +55,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
-
-        </activity>
+            android:label="@string/app_name" />
         <activity android:name=".activities.bbsPostThreadActivity" />
 
         <meta-data

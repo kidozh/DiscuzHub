@@ -3,6 +3,7 @@ package com.kidozh.discuzhub.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -419,6 +420,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
 
         if(forumStatus!=null && forumStatus.hasLoadAll){
             swipeRefreshLayout.setRefreshing(false);
+            Toasty.info(this,getString(R.string.bbs_forum_thread_load_all),Toast.LENGTH_SHORT).show();
             return;
         }
         Request request = new Request.Builder()
@@ -529,6 +531,14 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
+        String currentUrl = "";
+        bbsURLUtils.ForumStatus forumStatus = forumStatusMutableLiveData.getValue();
+        if(forumStatus == null || forumStatus.page == 1){
+            currentUrl = bbsURLUtils.getForumDisplayUrl(fid,"1");
+        }
+        else {
+            currentUrl = bbsURLUtils.getForumDisplayUrl(fid,String.valueOf(forumStatus.page-1));
+        }
         switch (item.getItemId()) {
             case android.R.id.home:   //返回键的id
                 this.finishAfterTransition();
@@ -548,8 +558,28 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                 startActivity(intent,null);
                 return true;
             }
+            case R.id.bbs_forum_nav_show_in_webview:{
+                Intent intent = new Intent(this, showWebPageActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(bbsConstUtils.PASS_URL_KEY,currentUrl);
+                Log.d(TAG,"Inputted URL "+currentUrl);
+                startActivity(intent);
+                return true;
+            }
+            case R.id.bbs_forum_nav_show_in_external_browser:{
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentUrl));
+                Log.d(TAG,"Inputted URL "+currentUrl);
+                startActivity(intent);
+                return true;
+            }
             case R.id.bbs_settings:{
                 Intent intent = new Intent(this,SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            case R.id.bbs_about_app:{
+                Intent intent = new Intent(this,aboutAppActivity.class);
                 startActivity(intent);
                 return true;
             }

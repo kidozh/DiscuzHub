@@ -249,6 +249,8 @@ public class updateBBSInformationWork extends Worker {
                 .setAutoCancel(true)
                 .setContentIntent(getIntent())
                 .setAutoCancel(true)
+                .setGroupSummary(true)
+
                 .build();
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(GeneratedNotificationId,newUpdateNotification);
@@ -270,6 +272,7 @@ public class updateBBSInformationWork extends Worker {
                 .setGroup(notificationUtils.NOTIFICATION_GROUP_KEY_USER_GROUP_UPDATE)
                 .setContentIntent(getIntent())
                 .setAutoCancel(true)
+                .setGroupSummary(true)
                 .build();
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(GeneratedNotificationId,newUpdateNotification);
@@ -309,6 +312,7 @@ public class updateBBSInformationWork extends Worker {
                 .setGroup(notificationUtils.NOTIFICATION_GROUP_KEY_USER_GROUP_UPDATE)
                 .setContentIntent(getIntent())
                 .setAutoCancel(true)
+                .setGroupSummary(true)
                 .build();
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(GeneratedNotificationId,newUpdateNotification);

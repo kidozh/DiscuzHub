@@ -1,9 +1,14 @@
 package com.kidozh.discuzhub.adapter;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +25,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsShowThreadActivity;
+import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -90,14 +96,33 @@ public class bbsNotificationAdapter extends RecyclerView.Adapter<bbsNotification
                             .placeholderOf(R.drawable.avatar_person_male)
                             .error(R.drawable.avatar_person_male))
                     .into(holder.bbsNotificationImageview);
+
+            holder.bbsNotificationImageview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, showPersonalInfoActivity.class);
+                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+
+                    intent.putExtra("UID",String.valueOf(notificationDetailInfo.authorId));
+                    ActivityOptions options = ActivityOptions
+                            .makeSceneTransitionAnimation((Activity) context, holder.bbsNotificationImageview, "user_info_avatar");
+
+                    Bundle bundle = options.toBundle();
+
+                    context.startActivity(intent,bundle);
+                }
+            });
         }
         else {
             holder.bbsNotificationImageview.setImageDrawable(context.getDrawable(R.drawable.vector_drawable_info_24px_outline));
         }
         holder.bbsNotificationPublishTime.setText(timeDisplayUtils.getLocalePastTimeString(context,notificationDetailInfo.date));
         Spanned sp = Html.fromHtml(notificationDetailInfo.note);
-        holder.bbsNotificationNote.setText(sp, TextView.BufferType.SPANNABLE);
+        SpannableString spannableString = new SpannableString(sp);
+        holder.bbsNotificationNote.setText(spannableString, TextView.BufferType.SPANNABLE);
         holder.bbsNotificationNote.setTextColor(context.getColor(R.color.colorTextDefault));
+        holder.bbsNotificationNote.setMovementMethod(LinkMovementMethod.getInstance());
         if(notificationDetailInfo.type.equals("post")){
             if(notificationDetailInfo.noteVariables!=null && notificationDetailInfo.noteVariables.containsKey("tid")){
                 holder.bbsNotificationCardview.setOnClickListener(new View.OnClickListener() {

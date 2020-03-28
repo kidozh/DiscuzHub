@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,11 +14,13 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
@@ -53,6 +56,8 @@ public class loginByWebViewActivity extends AppCompatActivity {
 
     @BindView(R.id.login_by_web_webview)
     WebView webView;
+    @BindView(R.id.login_by_web_progressBar)
+    ProgressBar webViewProgressBar;
     bbsInformation curBBS;
     cookieWebViewClient cookieWebViewClientInstance;
 
@@ -117,10 +122,8 @@ public class loginByWebViewActivity extends AppCompatActivity {
 
             // other detailed information
             webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK); //关闭webview中缓存
-            webSettings.setAllowFileAccess(true); //设置可以访问文件
             webSettings.setJavaScriptCanOpenWindowsAutomatically(true); //支持通过JS打开新窗口
             webSettings.setLoadsImagesAutomatically(true); //支持自动加载图片
-            webSettings.setDefaultTextEncodingName("utf-8");//设置编码格式
             webView.setWebViewClient(cookieWebViewClientInstance);
 
         }
@@ -145,12 +148,19 @@ public class loginByWebViewActivity extends AppCompatActivity {
             return cookieManager;
         }
 
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            webViewProgressBar.setVisibility(View.VISIBLE);
+        }
+
         public void onPageFinished(WebView view, String url) {
             //cookieManager = CookieManager.getInstance();
             String CookieStr = cookieManager.getCookie(url);
 
             Log.i(TAG, "URL "+url+" Cookies = " + CookieStr);
             super.onPageFinished(view, url);
+            webViewProgressBar.setVisibility(View.GONE);
         }
 
     }

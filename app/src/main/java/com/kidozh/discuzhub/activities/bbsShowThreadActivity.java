@@ -3,6 +3,7 @@ package com.kidozh.discuzhub.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -59,6 +60,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -228,7 +231,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
             @Override
             public void onClick(View v) {
                 String commentMessage = mCommentEditText.getText().toString();
-                if(commentMessage.length() < 15){
+                if(commentMessage.length() < 1){
                     Toasty.info(getApplicationContext(),getString(R.string.bbs_require_comment),Toast.LENGTH_SHORT).show();
                 }
                 else {
@@ -506,6 +509,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     private void getThreadComment(){
         bbsURLUtils.ThreadStatus threadStatus = threadStatusMutableLiveData.getValue();
         if(threadStatus !=null && threadStatus.hasLoadAll){
+            //Toasty.info(this,getString(R.string.bbs_forum_thread_load_all),Toast.LENGTH_SHORT).show();
             swipeRefreshLayout.setRefreshing(false);
             return;
         }
@@ -649,7 +653,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 .build();
         Log.d(TAG,"get Form "+message+" hash "
                 +formHash+" fid "+fid+" tid "+tid
-                + " API ->"+bbsURLUtils.getReplyThreadUrl(fid,tid)+" postTime "+String.valueOf(timeGetTime.getTime() / 1000 - 30));
+                + " API ->"+bbsURLUtils.getReplyThreadUrl(fid,tid)+" formbody "+formBody.toString());
         Request request = new Request.Builder()
                 .url(bbsURLUtils.getReplyThreadUrl(fid,tid))
                 .post(formBody)
@@ -677,19 +681,50 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 if(response.body()!=null){
                     String s = response.body().string();
                     Log.d(TAG,"Recv comment info "+s);
-
-                }
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCommentBtn.setText(R.string.bbs_thread_comment);
-                        mCommentBtn.setEnabled(true);
-                        mCommentEditText.setText("");
-                        reloadThePage();
-                        getThreadComment();
-                        Toasty.success(getApplicationContext(),getString(R.string.bbs_comment_successfully),Toast.LENGTH_LONG).show();
+                    if(s.contains("succeedhandle_fastpost")){
+                        // success!
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mCommentBtn.setText(R.string.bbs_thread_comment);
+                                mCommentBtn.setEnabled(true);
+                                mCommentEditText.setText("");
+                                reloadThePage();
+                                getThreadComment();
+                                Toasty.success(getApplicationContext(),getString(R.string.bbs_comment_successfully),Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
-                });
+                    else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mCommentBtn.setText(R.string.bbs_thread_comment);
+                                mCommentBtn.setEnabled(true);
+                                Pattern pattern = Pattern.compile("<p>(.*?)</p>");
+                                Matcher matcher = pattern.matcher(s);
+                                if(matcher.find()){
+                                    String rawWithTagString = matcher.group();
+                                    String infoString = rawWithTagString.replace("<[^>]*>","");
+                                    if(infoString.length()>0){
+                                        Toasty.error(getApplicationContext(), infoString, Toast.LENGTH_LONG).show();
+                                    }
+                                    else {
+                                        Toasty.error(getApplicationContext(), getString(R.string.bbs_comment_failed), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                                else {
+                                    Toasty.error(getApplicationContext(), getString(R.string.bbs_comment_failed), Toast.LENGTH_LONG).show();
+                                }
+
+
+
+                            }
+                        });
+                    }
+                }
+
+
 
             }
         });
@@ -713,7 +748,8 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         int trimEnd = Math.min(MAX_CHAR_LENGTH,noticeAuthorMsg.length());
         Log.d(TAG,"get Reply Form "+message+" hash "
                 +formHash+" reppid "+replyPid+" tid "+tid
-                + " API ->"+bbsURLUtils.getReplyThreadUrl(fid,tid)+" noticeTriStr "+String.format(discuz_reply_comment_template,
+                + " API ->"+bbsURLUtils.getReplyThreadUrl(fid,tid)+
+                " noticeTriStr "+String.format(discuz_reply_comment_template,
                 replyUserName,publishAtString,noticeAuthorMsg.substring(0,trimEnd)));
         String replyMessage = noticeAuthorMsg.substring(0,trimEnd);
         if(noticeAuthorMsg.length()>MAX_CHAR_LENGTH){
@@ -759,34 +795,47 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.body()!=null){
+                if (response.body() != null) {
                     String s = response.body().string();
-                    Log.d(TAG,"Recv reply comment info "+s);
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mCommentBtn.setText(R.string.bbs_thread_comment);
-                            mCommentBtn.setEnabled(true);
-                            mCommentEditText.setText("");
-                            reloadThePage();
-                            getThreadComment();
-                            Toasty.success(getApplicationContext(),getString(R.string.bbs_comment_successfully),Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    Log.d(TAG, "Recv reply comment info " + s);
+                    if (s.contains("succeedhandle_reply")) {
+                        // success!
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mCommentBtn.setText(R.string.bbs_thread_comment);
+                                mCommentBtn.setEnabled(true);
+                                mCommentEditText.setText("");
+                                reloadThePage();
+                                getThreadComment();
+                                Toasty.success(getApplicationContext(), getString(R.string.bbs_comment_successfully), Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mCommentBtn.setText(R.string.bbs_thread_comment);
+                                mCommentBtn.setEnabled(true);
+                                Pattern pattern = Pattern.compile("<p>(.*?)</p>");
+                                Matcher matcher = pattern.matcher(s);
+                                if (matcher.find()) {
+                                    String rawWithTagString = matcher.group();
+                                    String infoString = rawWithTagString.replace("<[^>]*>", "");
+                                    if (infoString.length() > 0) {
+                                        Toasty.error(getApplicationContext(), infoString, Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toasty.error(getApplicationContext(), getString(R.string.bbs_comment_failed), Toast.LENGTH_LONG).show();
+                                    }
+                                } else {
+                                    Toasty.error(getApplicationContext(), getString(R.string.bbs_comment_failed), Toast.LENGTH_LONG).show();
+                                }
 
+
+                            }
+                        });
+                    }
                 }
-                else {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mCommentBtn.setText(R.string.bbs_thread_comment);
-                            mCommentBtn.setEnabled(true);
-                            Toasty.error(getApplicationContext(),getString(R.string.bbs_comment_failed),Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
-
-
             }
         });
 
@@ -806,6 +855,15 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
+        bbsURLUtils.ThreadStatus threadStatus = threadStatusMutableLiveData.getValue();
+        String currentUrl = "";
+        if(threadStatus == null){
+            currentUrl = bbsURLUtils.getViewThreadUrl(tid,"1");
+        }
+        else {
+            currentUrl = bbsURLUtils.getViewThreadUrl(tid,String.valueOf(threadStatus.page));
+        }
+
         switch (item.getItemId()) {
             case android.R.id.home:   //返回键的id
                 this.finishAfterTransition();
@@ -831,10 +889,25 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 return true;
 
             }
+            case R.id.bbs_forum_nav_show_in_webview:{
+                Intent intent = new Intent(this, showWebPageActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(bbsConstUtils.PASS_URL_KEY,currentUrl);
+                Log.d(TAG,"Inputted URL "+currentUrl);
+                startActivity(intent);
+                return true;
+            }
+            case R.id.bbs_forum_nav_show_in_external_browser:{
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentUrl));
+                Log.d(TAG,"Inputted URL "+currentUrl);
+                startActivity(intent);
+                return true;
+            }
             case R.id.bbs_forum_nav_dateline_sort:{
                 Log.d(TAG,"You press sort btn");
                 Context context = this;
-                bbsURLUtils.ThreadStatus threadStatus = threadStatusMutableLiveData.getValue();
+                //bbsURLUtils.ThreadStatus threadStatus = threadStatusMutableLiveData.getValue();
                 if(threadStatus!=null){
                     threadStatus.datelineAscend = !threadStatus.datelineAscend;
                     Log.d(TAG,"Ascend mode "+threadStatus.datelineAscend);
@@ -850,6 +923,11 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                     getThreadComment();
 
                 }
+                return true;
+            }
+            case R.id.bbs_about_app:{
+                Intent intent = new Intent(this,aboutAppActivity.class);
+                startActivity(intent);
                 return true;
             }
 

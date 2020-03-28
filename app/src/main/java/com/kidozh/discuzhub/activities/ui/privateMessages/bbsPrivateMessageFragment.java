@@ -200,6 +200,8 @@ public class bbsPrivateMessageFragment extends Fragment {
                     String s = response.body().string();
                     Log.d(TAG,"Getting PM "+s);
                     List<bbsParseUtils.privateMessage> privateMessageList = bbsParseUtils.parsePrivateMessage(s);
+                    bbsParseUtils.noticeNumInfo noticeNumInfo = bbsParseUtils.parseNoticeInfo(s);
+                    setNotificationNum(noticeNumInfo);
 
                     if(privateMessageList!=null){
                         newMessageNum = 0;
@@ -209,7 +211,6 @@ public class bbsPrivateMessageFragment extends Fragment {
                                 newMessageNum += 1;
                             }
                         }
-                        setNewMessageNum(newMessageNum);
 
                         Log.d(TAG,"get public message "+privateMessageList.size());
                         mHandler.post(new Runnable() {
@@ -251,10 +252,10 @@ public class bbsPrivateMessageFragment extends Fragment {
 
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void setNewMessageNum(int num) {
-        Log.d(TAG,"set message number "+num);
+    public void setNotificationNum(bbsParseUtils.noticeNumInfo notificationNum) {
+        Log.d(TAG,"set message number "+notificationNum.getAllNoticeInfo());
         if (mListener != null) {
-            mListener.setNewMessageNum(num);
+            mListener.setNotificationsNum(notificationNum);
         }
     }
 
@@ -287,6 +288,6 @@ public class bbsPrivateMessageFragment extends Fragment {
      */
     public interface OnNewMessageChangeListener {
         // TODO: Update argument type and name
-        void setNewMessageNum(int i);
+        void setNotificationsNum(bbsParseUtils.noticeNumInfo notificationsNum);
     }
 }

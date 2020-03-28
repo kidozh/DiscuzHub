@@ -55,12 +55,12 @@ import okhttp3.Response;
  */
 public class bbsNotificationFragment extends Fragment {
     private static final String TAG = bbsNotificationFragment.class.getSimpleName();
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    private OnFragmentInteractionListener mListener;
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    public static final String ARG_TYPE = "TYPE";
+    public static final String ARG_VIEW = "VIEW";
+
+    private OnNewMessageChangeListener mListener;
 
     public bbsNotificationFragment() {
         // Required empty public constructor
@@ -80,7 +80,7 @@ public class bbsNotificationFragment extends Fragment {
     bbsNotificationAdapter adapter;
     private int globalPage = 1;
     private Boolean hasLoadAll = false;
-    private String noticeType;
+    private String type, view;
 
     /**
      * Use this factory method to create a new instance of
@@ -89,10 +89,12 @@ public class bbsNotificationFragment extends Fragment {
      * @return A new instance of fragment bbsNotificationFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static bbsNotificationFragment newInstance(String noticeType) {
+    public static bbsNotificationFragment newInstance(String view, String type) {
         bbsNotificationFragment fragment = new bbsNotificationFragment();
         Bundle args = new Bundle();
-        args.putString("NOTICE_TYPE",noticeType);
+        args.putString(ARG_TYPE, type);
+        args.putString(ARG_VIEW, view);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -101,10 +103,10 @@ public class bbsNotificationFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            noticeType = getArguments().getString("NOTICE_TYPE");
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
+            type = getArguments().getString(ARG_TYPE);
+            view = getArguments().getString(ARG_VIEW);
         }
+
     }
 
     @Override
@@ -184,17 +186,9 @@ public class bbsNotificationFragment extends Fragment {
         }
         bbsNotificationSwipeRefreshLayout.setRefreshing(true);
         String apiString = "";
-        if(noticeType.equals("SYSTEM")){
-            apiString = bbsURLUtils.getPromptNotificationListApiUrl(page);
-        }
-        else if(noticeType.equals("NOTICE")){
-            apiString = bbsURLUtils.getNotificationListApiUrl(page);
-        }
-        else {
-            apiString = bbsURLUtils.getNotificationListApiUrl(page);
-        }
+        apiString = bbsURLUtils.getNoteListApiUrl(view,type,page);
 
-        Log.d(TAG,"get notice type "+noticeType);
+        Log.d(TAG,"get API string "+apiString);
 
         Request request = new Request.Builder()
                 .url(apiString)
@@ -225,6 +219,8 @@ public class bbsNotificationFragment extends Fragment {
 
                     String s = response.body().string();
                     List<bbsParseUtils.notificationDetailInfo> notificationDetailInfoList = bbsParseUtils.parseNotificationDetailInfo(s);
+                    bbsParseUtils.noticeNumInfo noticeNumInfo = bbsParseUtils.parseNoticeInfo(s);
+                    setNotificationNum(noticeNumInfo);
                     if(notificationDetailInfoList!=null){
                         mHandler.post(new Runnable() {
                             @Override
@@ -266,21 +262,23 @@ public class bbsNotificationFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+
+    public void setNotificationNum(bbsParseUtils.noticeNumInfo notificationNum) {
+        Log.d(TAG,"set message number "+notificationNum.getAllNoticeInfo());
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.setNotificationsNum(notificationNum);
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        if (context instanceof OnNewMessageChangeListener) {
+            mListener = (OnNewMessageChangeListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -299,8 +297,8 @@ public class bbsNotificationFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnNewMessageChangeListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void setNotificationsNum(bbsParseUtils.noticeNumInfo notificationsNum);
     }
 }

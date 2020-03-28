@@ -135,6 +135,7 @@
             android:ems="10"
             android:fontFamily="@font/pt_sans"
             android:inputType="textPersonName"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_bbs_security_question_spinner"

@@ -451,6 +451,26 @@
     <string name="bbs_thread_filter_heat">Heats</string>
     <string name="bbs_thread_filter_hottest">Hottest posts</string>
     <string name="bbs_thread_filter_digest">Digest</string>
+    <string name="bbs_forum_thread_load_all">Can not find more thread.</string>
+    <string name="bbs_notification_messages">Message</string>
+    <string name="bbs_notification_thread">My thread</string>
+    <string name="bbs_notification_interact">Interact</string>
+    <string name="bbs_notification_app">Applications</string>
+    <string name="bbs_notification_myThread_thread">Thread</string>
+    <string name="bbs_notification_myThread_comment">Comment</string>
+    <string name="bbs_notification_myThread_activity">Activity</string>
+    <string name="bbs_notification_myThread_reward">Reward</string>
+    <string name="bbs_notification_myThread_good">Good</string>
+    <string name="bbs_notification_myThread_mentioned">Mentioned</string>
+    <string name="bbs_notification_interact_poke">Poke</string>
+    <string name="bbs_notification_interact_friend">Friend</string>
+    <string name="bbs_notification_interact_wall">Left Message</string>
+    <string name="bbs_notification_interact_comment">Comment</string>
+    <string name="bbs_notification_interact_agree">Agree with you</string>
+    <string name="bbs_notification_interact_share">Share</string>
+    <string name="bbs_notification_thread_list">Thread list</string>
+    <string name="app_version_template">Ver. %1$s</string>
+    <string name="bbs_app_about">About APP</string>
 
 
 </resources>

@@ -42,7 +42,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/bbs_notification_my_thread" />
+
                 </com.google.android.material.tabs.TabLayout>
+
+
 
             </androidx.viewpager.widget.ViewPager>
         </LinearLayout>

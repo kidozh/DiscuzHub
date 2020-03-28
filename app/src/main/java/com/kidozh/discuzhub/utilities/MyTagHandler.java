@@ -63,6 +63,7 @@ public class MyTagHandler implements Html.TagHandler {
 
             output.setSpan(new MyTagHandler.ClickableImage(mContext, imgURL), len - 1, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
+
     }
 
     private class ClickableImage extends ClickableSpan {

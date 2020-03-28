@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_notification_myThread_thread"
+        android:title="@string/bbs_notification_myThread_thread" />
+    <item
+        android:id="@+id/menu_notification_myThread_comment"
+        android:title="@string/bbs_notification_myThread_comment" />
+    <item
+        android:id="@+id/menu_notification_myThread_activity"
+        android:title="@string/bbs_notification_myThread_activity" />
+    <item
+        android:id="@+id/menu_notification_myThread_reward"
+        android:title="@string/bbs_notification_myThread_reward" />
+    <item
+        android:id="@+id/menu_notification_myThread_good"
+        android:title="@string/bbs_notification_myThread_good" />
+    <item
+        android:id="@+id/menu_notification_myThread_mentioned"
+        android:title="@string/bbs_notification_myThread_mentioned" />
+</menu>

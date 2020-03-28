@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.activities.ui.publicPM;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
 import com.kidozh.discuzhub.adapter.bbsPublicMessageAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumInfo;
@@ -47,6 +49,8 @@ public class bbsPublicMessageFragment extends Fragment {
     SwipeRefreshLayout publicMessageSwipeRefreshLayout;
     @BindView(R.id.fragment_private_message_empty_view)
     View publicMessageEmptyView;
+
+    private bbsPrivateMessageFragment.OnNewMessageChangeListener mListener;
 
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
@@ -136,6 +140,9 @@ public class bbsPublicMessageFragment extends Fragment {
                 if(response.isSuccessful()&& response.body()!=null){
                     String s = response.body().string();
                     Log.d(TAG,"Getting PM "+s);
+                    bbsParseUtils.noticeNumInfo noticeNumInfo = bbsParseUtils.parseNoticeInfo(s);
+                    setNotificationNum(noticeNumInfo);
+
                     List<bbsParseUtils.publicMessage> publicMessageList = bbsParseUtils.parsePublicMessage(s);
                     if(publicMessageList!=null){
                         Log.d(TAG,"get public message "+publicMessageList.size());
@@ -169,5 +176,35 @@ public class bbsPublicMessageFragment extends Fragment {
                 }
             }
         });
+    }
+
+    // TODO: Rename method, update argument and hook method into UI event
+    public void setNotificationNum(bbsParseUtils.noticeNumInfo notificationNum) {
+        Log.d(TAG,"set message number "+notificationNum.getAllNoticeInfo());
+        if (mListener != null) {
+            mListener.setNotificationsNum(notificationNum);
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof bbsPrivateMessageFragment.OnNewMessageChangeListener) {
+            mListener = (bbsPrivateMessageFragment.OnNewMessageChangeListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public interface OnNewMessageChangeListener {
+        // TODO: Update argument type and name
+        void setNotificationsNum(bbsParseUtils.noticeNumInfo notificationsNum);
     }
 }
