@@ -23,6 +23,7 @@ import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.notificationUtils;
+import com.kidozh.discuzhub.viewModels.LocalBBSViewModel;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -78,16 +80,17 @@ public class MainActivity extends AppCompatActivity {
     View emptyView;
     @BindView(R.id.forum_information_swipe_refreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
-    private LiveData<List<bbsInformation>> forumInformationListLiveData;
     private forumInformationAdapter adapter;
     static int updatedBBSNum = 0, needUpdatedBBSNum = 0;
-
+    LocalBBSViewModel localBBSViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        localBBSViewModel = new ViewModelProvider(this).get(LocalBBSViewModel.class);
+
         // render recyclerview
         configureRecyclerview();
         bindForumData();
@@ -103,8 +106,9 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                List<bbsInformation> bbsInformationList = forumInformationListLiveData.getValue();
-                if(forumInformationListLiveData.getValue() == null || bbsInformationList == null){
+
+                List<bbsInformation> bbsInformationList = localBBSViewModel.getBBSInformation().getValue();
+                if(localBBSViewModel.getBBSInformation().getValue() == null || bbsInformationList == null){
                     swipeRefreshLayout.setRefreshing(false);
                 }
                 else {
@@ -537,9 +541,9 @@ public class MainActivity extends AppCompatActivity {
         mForumInfoRecyclerview.setLayoutManager(linearLayoutManager);
         adapter = new forumInformationAdapter(this,this);
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mForumInfoRecyclerview.getContext(),
-                linearLayoutManager.getOrientation());
-        mForumInfoRecyclerview.addItemDecoration(dividerItemDecoration);
+//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mForumInfoRecyclerview.getContext(),
+//                linearLayoutManager.getOrientation());
+//        mForumInfoRecyclerview.addItemDecoration(dividerItemDecoration);
         mForumInfoRecyclerview.setAdapter(adapter);
 //        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new forumSwipeToDeleteCallback(adapter));
 //        itemTouchHelper.attachToRecyclerView(mForumInfoRecyclerview);
@@ -552,14 +556,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bindForumData(){
-        forumInformationListLiveData = forumInformationDatabase
-                .getInstance(this)
-                .getForumInformationDao()
-                .getAllForumInformations();
-        adapter.setBbsInformationList(forumInformationListLiveData.getValue());
-//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new forumSwipeToDeleteCallback(adapter));
-//        itemTouchHelper.attachToRecyclerView(mForumInfoRecyclerview);
-        forumInformationListLiveData.observe(this, new Observer<List<bbsInformation>>() {
+        localBBSViewModel.getBBSInformation().observe(this, new Observer<List<bbsInformation>>() {
             @Override
             public void onChanged(List<bbsInformation> bbsInformations) {
                 Log.d(TAG,"bbs information changed!");

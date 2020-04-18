@@ -2,7 +2,7 @@ package com.kidozh.discuzhub.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.lifecycle.LiveData;
+import androidx.cardview.widget.CardView;
 import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
@@ -11,9 +11,14 @@ import androidx.work.WorkManager;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.kidozh.discuzhub.MainActivity;
@@ -32,8 +37,16 @@ import butterknife.ButterKnife;
 
 public class SplashScreenActivity extends AppCompatActivity {
     private static final String TAG = SplashScreenActivity.class.getSimpleName();
-    @BindView(R.id.splash_screen_notification)
+    @BindView(R.id.splash_screen_agreement_content)
     TextView splashScreenNotification;
+    @BindView(R.id.splash_screen_agree_to_continue_btn)
+    Button agreeToContinueBtn;
+    @BindView(R.id.splash_screen_terms_of_use_card)
+    CardView privacyPolicyCardView;
+    @BindView(R.id.splash_screen_privacy_policy_card)
+    CardView termsOfUseCardView;
+
+    String AGREEMENT_VERSION_PREFERENCE = "AGREEMENT_VERSION_PREFERENCE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,19 +57,21 @@ public class SplashScreenActivity extends AppCompatActivity {
         configureDarkMode();
 
         registerWorkManager();
-        enterMainActivity();
+        renderPage();
+        //enterMainActivity();
+
     }
 
     // register notification
     private void registerNotification(){
-        splashScreenNotification.setText(R.string.action_register_notification_channel);
+        // splashScreenNotification.setText(R.string.action_register_notification_channel);
         notificationUtils.createUpdateProgressNotificationChannel(this);
         notificationUtils.createUsersUpdateChannel(this);
     }
 
     private void registerWorkManager(){
         Log.d(TAG,"Register work");
-        splashScreenNotification.setText(getString(R.string.action_register_work));
+
         // Create a Constraints object that defines when the task should run
 
         Constraints constraints = new Constraints.Builder()
@@ -100,7 +115,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             Data userData = new Data.Builder()
                     .putInt(bbsConstUtils.WORK_MANAGER_PASS_USER_ID_KEY, userBriefInfo.getId())
                     .build();
-            splashScreenNotification.setText(getString(R.string.action_register_work_template,userBriefInfo.username));
             // start periodic work
             Log.d(TAG,"Register notification "+userBriefInfo.username);
             PeriodicWorkRequest saveRequest =
@@ -123,7 +137,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void configureDarkMode(){
-        splashScreenNotification.setText(R.string.action_configure_dark_mode);
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this) ;
         String dark_mode_settings = prefs.getString(getString(R.string.preference_key_display_mode),"");
         switch (dark_mode_settings){
@@ -149,14 +163,72 @@ public class SplashScreenActivity extends AppCompatActivity {
 
 
     private void enterMainActivity(){
-        splashScreenNotification.setText(R.string.action_ready_to_enter_main);
+
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    private void renderPage(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String agreedVersion = prefs.getString(AGREEMENT_VERSION_PREFERENCE,"");
+        String currentVersion = getVersionName();
+        agreeToContinueBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString(AGREEMENT_VERSION_PREFERENCE,currentVersion);
+                editor.apply();
+                enterMainActivity();
+            }
+        });
+        privacyPolicyCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discuzhub.kidozh.com/privacy_policy/"));
+                startActivity(intent);
+            }
+        });
+        termsOfUseCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discuzhub.kidozh.com/term_of_use/"));
+                startActivity(intent);
+            }
+        });
+
+
+
+        if(agreedVersion.equals(currentVersion)){
+            enterMainActivity();
+        }
+
+    }
+
+    public String getVersionName() {
+        try{
+            // 获取packagemanager的实例
+            PackageManager packageManager = getPackageManager();
+            // getPackageName()是你当前类的包名，0代表是获取版本信息
+            PackageInfo packInfo = packageManager.getPackageInfo(getPackageName(),0);
+            String version = packInfo.versionName;
+            return version;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return "";
+        }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        finish();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String agreedVersion = prefs.getString(AGREEMENT_VERSION_PREFERENCE,"");
+        String currentVersion = getVersionName();
+        if(agreedVersion.equals(currentVersion)){
+            enterMainActivity();
+        }
+        // finish();
     }
 }

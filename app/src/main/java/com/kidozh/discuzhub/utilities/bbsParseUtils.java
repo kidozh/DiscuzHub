@@ -187,6 +187,7 @@ public class bbsParseUtils {
                 String rushReply = threadObj.optString("rushreply","0");
                 String price = threadObj.optString("price","0");
                 String attachment = threadObj.optString("attachment","0");
+                String replyCredit = threadObj.optString("replycredit","0");
 
                 // parse short reply
                 List<threadInfo.shortReplyInfo> shortReplyInfoList = new ArrayList<>();
@@ -223,6 +224,7 @@ public class bbsParseUtils {
                 thread.attachment = Integer.parseInt(attachment);
                 thread.shortReplyInfoList = shortReplyInfoList;
                 thread.displayOrder = displayOrder;
+                thread.replyCredit = Integer.parseInt(replyCredit);
 
                 if(!displayOrder.equals("0")){
                     thread.isTop = true;
@@ -319,7 +321,7 @@ public class bbsParseUtils {
             //Log.d(TAG,"Get ->"+jsonObject.toString());
             //List<bbsNotification> notifications = new ArrayList<>();
             JSONObject variables = jsonObject.getJSONObject("Variables");
-            Log.d(TAG,"has auth " + variables.has("auth")+" null auth "+variables.isNull("auth"));
+            Log.d(TAG,"has auth " + variables.has("auth")+" auth "+variables.isNull("auth"));
             if(variables.has("auth") && (!variables.isNull("auth"))){
                 return new forumUserBriefInfo(
                         variables.getString("auth"),
@@ -1147,7 +1149,7 @@ public class bbsParseUtils {
 
         }
         catch (Exception e){
-            e.printStackTrace();
+            // e.printStackTrace();
             return null;
         }
     }
@@ -1171,9 +1173,33 @@ public class bbsParseUtils {
 
         }
         catch (Exception e){
-            e.printStackTrace();
+            // e.printStackTrace();
             return null;
         }
+    }
+
+    public static class DetailedThreadInfo{
+        @JsonProperty("tid")
+        public String tid;
+        @JsonProperty("fid")
+        public String fid;
+        @JsonProperty("posttableid")
+        public String postableId;
+        @JsonProperty("typeid")
+        public String typeId;
+        public String sortid,readperm,price,author,authorid,subject;
+        public String lastpost, lastposter, views, replies, displayorder;
+        public String highlight,digest, rate, special;
+        public String attachment, moderated, closed, stickreply;
+        public String recommends, recommend_add, recommend_sub;
+        public String heats, status, isgroup, favtimes;
+        public String stamp, icon, pushedaid, cover;
+        public String replycredit;
+        public String relatebytag, maxposition, bgcolor, comments, hidden;
+        public String threadtable, threadtableid, posttable, allreplies;
+        public String is_archived, archiveid;
+        public String subjectenc, short_subject;
+        public String recommendlevel, heatlevel, relay, ordertype, recommend;
     }
 
 }

@@ -43,11 +43,11 @@ import okhttp3.Response;
 public class bbsPublicMessageFragment extends Fragment {
     private final static String TAG = bbsPublicMessageFragment.class.getSimpleName();
 
-    @BindView(R.id.fragment_private_message_recyclerview)
+    @BindView(R.id.fragment_public_message_recyclerview)
     RecyclerView publicMessageRecyclerview;
     @BindView(R.id.fragment_private_message_swipeRefreshLayout)
     SwipeRefreshLayout publicMessageSwipeRefreshLayout;
-    @BindView(R.id.fragment_private_message_empty_view)
+    @BindView(R.id.fragment_public_message_empty_view)
     View publicMessageEmptyView;
 
     private bbsPrivateMessageFragment.OnNewMessageChangeListener mListener;
@@ -114,7 +114,7 @@ public class bbsPublicMessageFragment extends Fragment {
         Request request = new Request.Builder()
                 .url(apiStr)
                 .build();
-        Log.d(TAG,"get public message in page "+page);
+        Log.d(TAG,"get public message in page "+apiStr);
         Handler mHandler = new Handler(Looper.getMainLooper());
         client.newCall(request).enqueue(new Callback() {
             @Override

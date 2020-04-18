@@ -6,12 +6,12 @@
         android:id="@+id/bbs_forum_nav_draft_box"
         android:icon="@drawable/vector_drawable_drafts_24px"
         android:title="@string/bbs_draft_box"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/bbs_forum_nav_dateline_sort"
         android:icon="@drawable/vector_drawable_arrow_upward_24px"
         android:title="@string/bbs_draft_box"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/bbs_forum_nav_personal_center"
         android:icon="@drawable/vector_drawable_account_box_24px"

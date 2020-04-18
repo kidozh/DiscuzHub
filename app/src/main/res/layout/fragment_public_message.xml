@@ -21,7 +21,7 @@
             android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/fragment_private_message_recyclerview"
+                android:id="@+id/fragment_public_message_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
@@ -31,7 +31,7 @@
             </androidx.recyclerview.widget.RecyclerView>
 
             <include
-                android:id="@+id/fragment_private_message_empty_view"
+                android:id="@+id/fragment_public_message_empty_view"
                 layout="@layout/content_empty_information"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

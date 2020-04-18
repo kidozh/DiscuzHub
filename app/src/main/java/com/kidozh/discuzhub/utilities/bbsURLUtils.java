@@ -63,7 +63,7 @@ public class bbsURLUtils {
 
 
     public static class ForumStatus{
-        public int fid,page,perPage=15;
+        public int fid,page,perPage=10;
         public boolean hasLoadAll = false;
         // orderby:[dateline,replies,views]
         public String orderBy="";

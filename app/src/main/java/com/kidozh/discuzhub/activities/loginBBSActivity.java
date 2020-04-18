@@ -81,6 +81,8 @@ public class loginBBSActivity extends AppCompatActivity {
     TextInputLayout bbsPasswordTextInputLayout;
     private String formhash;
 
+    private OkHttpClient client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +99,13 @@ public class loginBBSActivity extends AppCompatActivity {
 
     void setInformation(){
         bbsTitle.setText(curBBS.site_name);
-        bbsBaseUrl.setText(curBBS.base_url);
+        if(curUser == null){
+            bbsBaseUrl.setText(curBBS.base_url);
+        }
+        else {
+            bbsBaseUrl.setText(getString(R.string.user_relogin,curUser.username));
+        }
+
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(this,curBBS.useSafeClient));
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
@@ -215,7 +223,10 @@ public class loginBBSActivity extends AppCompatActivity {
         Log.d(TAG,"Send user id "+userBriefInfo.getId());
         networkUtils.clearUserCookieInfo(getApplicationContext(),userBriefInfo);
         //OkHttpClient client = networkUtils.getPreferredClientWithCookieJarByUser(getApplicationContext(),userBriefInfo);
-        OkHttpClient client = networkUtils.getPreferredClientWithCookieJar(getApplicationContext());
+        if(client ==null){
+            client = networkUtils.getPreferredClientWithCookieJar(getApplicationContext());
+        }
+
         // exact login url
         String loginUrl = bbsURLUtils.getLoginUrl();
 
@@ -286,6 +297,10 @@ public class loginBBSActivity extends AppCompatActivity {
                                     Log.d(TAG,"Parse user info "+parsedUserInfo.uid+ " "+parsedUserInfo.getId());
                                     // save it to database
                                     parsedUserInfo.belongedBBSID = curBBS.getId();
+                                    if(curUser !=null){
+                                        // relogin user
+                                        parsedUserInfo.setId(curUser.getId());
+                                    }
                                     new saveUserToDatabaseAsyncTask(parsedUserInfo,client).execute();
 
 
@@ -341,6 +356,7 @@ public class loginBBSActivity extends AppCompatActivity {
                     context.getSharedPreferences("CookiePersistence",Context.MODE_PRIVATE),
                     context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE)
             );
+            Log.d(TAG, "Transiting data to preference "+networkUtils.getSharedPreferenceNameByUser(userBriefInfo));
 
             finishAfterTransition();
         }
@@ -372,9 +388,20 @@ public class loginBBSActivity extends AppCompatActivity {
             //bbsURLUtils.setBaseUrl(curBBS.base_url);
         }
         if(getSupportActionBar()!=null){
-            getSupportActionBar().setTitle(R.string.bbs_login);
+            if(curUser == null){
+                getSupportActionBar().setTitle(R.string.bbs_login);
+            }
+            else {
+                getSupportActionBar().setTitle(getString(R.string.user_relogin,curUser.username));
+            }
+
             getSupportActionBar().setSubtitle(curBBS.site_name);
         }
+
+//        if(curUser !=null){
+//            // set client previously
+//            client = networkUtils.getPreferredClientWithCookieJarByUserWithDefaultHeader(this,curUser);
+//        }
     }
 
     @Override

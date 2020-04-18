@@ -4,15 +4,23 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,14 +34,22 @@ import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsShowThreadActivity;
 import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
+import com.kidozh.discuzhub.activities.showWebPageActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.MessageSpan;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -122,7 +138,7 @@ public class bbsNotificationAdapter extends RecyclerView.Adapter<bbsNotification
         SpannableString spannableString = new SpannableString(sp);
         holder.bbsNotificationNote.setText(spannableString, TextView.BufferType.SPANNABLE);
         holder.bbsNotificationNote.setTextColor(context.getColor(R.color.colorTextDefault));
-        holder.bbsNotificationNote.setMovementMethod(LinkMovementMethod.getInstance());
+        //holder.bbsNotificationNote.setMovementMethod(LinkMovementMethod.getInstance());
         if(notificationDetailInfo.type.equals("post")){
             if(notificationDetailInfo.noteVariables!=null && notificationDetailInfo.noteVariables.containsKey("tid")){
                 holder.bbsNotificationCardview.setOnClickListener(new View.OnClickListener() {
@@ -138,10 +154,59 @@ public class bbsNotificationAdapter extends RecyclerView.Adapter<bbsNotification
                     }
                 });
             }
-            else {
-                // nothing
-                holder.bbsNotificationCardview.setClickable(false);
-            }
+
+
+        }
+        else {
+            // nothing
+            holder.bbsNotificationNote.setClickable(false);
+            // holder.bbsNotificationCardview.setClickable(false);
+            // create popup menu first
+            holder.bbsNotificationCardview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PopupMenu popupMenu = new PopupMenu(context,holder.bbsNotificationCardview);
+                    Menu menu = popupMenu.getMenu();
+
+                    // parse link href
+                    Document document = Jsoup.parse(notificationDetailInfo.note);
+                    Elements elements = document.select("a");
+                    List<String> urlLinkString = new ArrayList<>();
+                    for(int i=0; i<elements.size();i++){
+                        Element element = elements.get(i);
+                        String href = element.attr("href");
+                        String displayText = element.text();
+                        Log.d(TAG,"href "+href+" display text "+displayText);
+                        menu.add(Menu.NONE,Menu.FIRST+i,i,displayText);
+                        if(href.startsWith("http://")||href.startsWith("https://")){
+
+                        }
+                        else {
+                            // need to add protocol
+                            Uri baseUri = Uri.parse(bbsInfo.base_url);
+                            href = baseUri.getScheme()+"://" +baseUri.getHost()+"/" + href;
+                            Log.d(TAG, "Changed href to "+href);
+                        }
+                        urlLinkString.add(href);
+                    }
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            int itemId = item.getItemId();
+                            int position = itemId - Menu.FIRST;
+                            String urlLink = urlLinkString.get(position);
+                            Intent intent = new Intent(context, showWebPageActivity.class);
+                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                            intent.putExtra(bbsConstUtils.PASS_URL_KEY,urlLink);
+                            //Log.d(TAG,"Inputted URL "+currentUrl);
+                            context.startActivity(intent);
+                            return true;
+                        }
+                    });
+                    popupMenu.show();
+                }
+            });
 
         }
 

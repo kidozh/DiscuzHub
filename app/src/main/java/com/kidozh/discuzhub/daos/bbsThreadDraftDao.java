@@ -22,6 +22,9 @@ public interface bbsThreadDraftDao {
     @Query("SELECT * FROM bbsThreadDraft WHERE belongBBSId=:bbsid ORDER BY lastUpdateAt DESC")
     LiveData<List<bbsThreadDraft>> getAllThreadDraftByBBSId(int bbsid);
 
+    @Query("SELECT COUNT(id) FROM bbsThreadDraft")
+    LiveData<Integer> getDraftNumber();
+
     @Insert
     void insert(bbsThreadDraft... bbsThreadDrafts);
 

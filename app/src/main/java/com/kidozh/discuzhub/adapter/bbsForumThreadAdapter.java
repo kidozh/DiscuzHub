@@ -207,6 +207,13 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
             holder.mReadPermIcon.setVisibility(View.VISIBLE);
             holder.mReadPerm.setVisibility(View.VISIBLE);
             holder.mReadPerm.setText(numberFormatUtils.getShortNumberText(threadInfo.readperm));
+            int readPermissionVal = Integer.parseInt(threadInfo.readperm);
+            if(curUser == null || curUser.readPerm < readPermissionVal){
+                holder.mReadPerm.setTextColor(mContext.getColor(R.color.colorWarn));
+            }
+            else {
+                holder.mReadPerm.setTextColor(mContext.getColor(R.color.colorTextDefault));
+            }
         }
 
         if(threadInfo.attachment == 0){
@@ -226,7 +233,10 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
         holder.mAttachmentNumber.setText(numberFormatUtils.getShortNumberText(threadInfo.attachment));
         if(threadInfo.shortReplyInfoList!=null && threadInfo.shortReplyInfoList.size()>0){
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+            holder.mReplyRecyclerview.setFocusable(false);
+            holder.mReplyRecyclerview.setNestedScrollingEnabled(false);
             holder.mReplyRecyclerview.setLayoutManager(linearLayoutManager);
+            holder.mReplyRecyclerview.setClickable(false);
             bbsForumThreadShortReplyAdapter adapter = new bbsForumThreadShortReplyAdapter(mContext);
             adapter.setShortReplyInfoList(threadInfo.shortReplyInfoList);
             holder.mReplyRecyclerview.setAdapter(adapter);

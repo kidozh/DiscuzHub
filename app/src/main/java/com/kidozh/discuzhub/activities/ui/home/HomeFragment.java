@@ -1,5 +1,7 @@
 package com.kidozh.discuzhub.activities.ui.home;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,11 +18,14 @@ import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.loginBBSActivity;
 import com.kidozh.discuzhub.adapter.bbsPortalCategoryAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumCategorySection;
@@ -61,14 +66,15 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+
         View root = inflater.inflate(R.layout.activity_bbs_show_category_forum, container, false);
         ButterKnife.bind(this,root);
         getIntentInfo();
-        configureClient();
+
         configurePortalRecyclerview();
-        getPortalCategoryInfo();
+        bindLiveDataFromViewModel();
+        //getPortalCategoryInfo();
 
 
         return root;
@@ -85,94 +91,79 @@ public class HomeFragment extends Fragment {
         else {
             Log.d(TAG,"get bbs name "+curBBS.site_name);
             bbsURLUtils.setBBS(curBBS);
+            homeViewModel.setBBSInfo(curBBS,curUser);
             //bbsURLUtils.setBaseUrl(curBBS.base_url);
         }
-//        if(getSupportActionBar()!=null){
-//            getSupportActionBar().setTitle(curBBS.site_name);
-//        }
 
 
     }
 
-    private void configureClient(){
-        //client = networkUtils.getPreferredClient(this);
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
-        Log.d(TAG,"Current user ");
+    private void bindLiveDataFromViewModel(){
+        bbsPortalProgressbar.setVisibility(View.VISIBLE);
+        homeViewModel.getForumCategoryInfo().observe(getViewLifecycleOwner(), new Observer<List<forumCategorySection>>() {
+            @Override
+            public void onChanged(List<forumCategorySection> forumCategorySections) {
+                adapter.jsonString = homeViewModel.jsonString.getValue();
+                adapter.setmCateList(forumCategorySections);
+                bbsPortalProgressbar.setVisibility(View.GONE);
+            }
+        });
+        homeViewModel.errorText.observe(getViewLifecycleOwner(), errorText -> {
+            if(errorText!=null){
+                if(errorText.equals("mobile_is_closed")){
+                    bbsPortalErrorText.setText(R.string.bbs_mobile_is_closed);
+                }
+                else if(errorText.equals("user_banned")){
+                    bbsPortalErrorText.setText(R.string.bbs_user_banned);
+                }
+                else {
+                    bbsPortalErrorText.setText(errorText);
+                }
+            }
+            else {
+                Toasty.error(getActivity(),getString(R.string.parse_failed), Toast.LENGTH_SHORT).show();
+            }
+        });
+        homeViewModel.userBriefInfoMutableLiveData.observe(getViewLifecycleOwner(), new Observer<forumUserBriefInfo>() {
+            @Override
+            public void onChanged(forumUserBriefInfo userBriefInfo) {
+                Log.d(TAG,"changed user to "+userBriefInfo);
+                if(userBriefInfo == null && curUser!=null){
+                    // raise dialog
+                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+                    //MaterialAlertDialogBuilder builder =  new AlertDialog.Builder(getActivity());
+                    builder.setMessage(getString(R.string.user_login_expired,curUser.username))
+                            .setPositiveButton(getString(R.string.user_relogin, curUser.username), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(getActivity(), loginBBSActivity.class);
+                                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
+                                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                                    startActivity(intent);
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    builder.show();
+                }
+            }
+        });
     }
+
+    private void showReloginDialog(){
+
+    }
+
 
     private void configurePortalRecyclerview(){
         portalRecyclerView.setHasFixedSize(true);
         portalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new bbsPortalCategoryAdapter(getContext(),null,curBBS,userBriefInfo);
         portalRecyclerView.setAdapter(adapter);
-    }
-
-    private void getPortalCategoryInfo(){
-        Request request = new Request.Builder()
-                .url(bbsURLUtils.getBBSForumInfoApi())
-                .build();
-        Log.d(TAG,"Browse API " + bbsURLUtils.getBBSForumInfoApi());
-        bbsPortalProgressbar.setVisibility(View.VISIBLE);
-        Handler mHandler = new Handler(Looper.getMainLooper());
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        bbsPortalProgressbar.setVisibility(View.GONE);
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        bbsPortalProgressbar.setVisibility(View.GONE);
-                    }
-                });
-                if(response.isSuccessful() && response.body()!=null){
-
-                    String s = response.body().string();
-                    Log.d(TAG,"Fetch the information "+s);
-                    List<forumCategorySection> categorySectionFidList = bbsParseUtils.parseCategoryFids(s);
-                    if(categorySectionFidList!=null){
-                        adapter.jsonString = s;
-                        adapter.setmCateList(categorySectionFidList);
-
-
-                        Log.d(TAG,"CATE:"+categorySectionFidList.size());
-                    }
-                    else {
-
-                        String errorText = bbsParseUtils.parseErrorInformation(s);
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                bbsPortalErrorText.setVisibility(View.VISIBLE);
-                                // setErrorActionBar();
-                                if(errorText!=null){
-                                    if(errorText.equals("mobile_is_closed")){
-                                        bbsPortalErrorText.setText(R.string.bbs_mobile_is_closed);
-                                    }
-                                    else if(errorText.equals("user_banned")){
-                                        bbsPortalErrorText.setText(R.string.bbs_user_banned);
-                                    }
-                                    else {
-                                        bbsPortalErrorText.setText(errorText);
-                                    }
-                                }
-                                else {
-                                    Toasty.error(getActivity(),getString(R.string.parse_failed), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-
-                    }
-                }
-            }
-        });
     }
 }

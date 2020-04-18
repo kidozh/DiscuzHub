@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,6 +36,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -60,17 +62,18 @@ public class DashboardFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        dashboardViewModel =
-                ViewModelProviders.of(this).get(DashboardViewModel.class);
+        dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
         ButterKnife.bind(this,root);
         getIntentInfo();
 
         configureClient();
+
         configureThreadRecyclerview();
         configureSwipeRefreshLayout();
-        globalPage = 1;
-        getPageInfo(globalPage);
+        bindVieModel();
+        //globalPage = 1;
+        //getPageInfo(globalPage);
         return root;
     }
 
@@ -83,15 +86,21 @@ public class DashboardFragment extends Fragment {
         dashboardRecyclerview.setLayoutManager(linearLayoutManager);
         forumThreadAdapter = new bbsForumThreadAdapter(getContext(),"",null,curBBS,userBriefInfo);
         dashboardRecyclerview.setAdapter(forumThreadAdapter);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
-                linearLayoutManager.getOrientation());
-        dashboardRecyclerview.addItemDecoration(dividerItemDecoration);
+//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(),
+//                linearLayoutManager.getOrientation());
+//        dashboardRecyclerview.addItemDecoration(dividerItemDecoration);
         dashboardRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if(isScrollAtEnd()){
-                    getPageInfo(globalPage);
+                    if(dashboardViewModel.pageNum.getValue() == null){
+                        dashboardViewModel.setPageNumAndFetchThread(1);
+                    }
+                    else {
+                        dashboardViewModel.setPageNumAndFetchThread(dashboardViewModel.pageNum.getValue()+1);
+                    }
+                    // getPageInfo(globalPage);
 
                 }
             }
@@ -114,8 +123,9 @@ public class DashboardFragment extends Fragment {
         dashboardSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                globalPage = 1;
-                getPageInfo(globalPage);
+                dashboardViewModel.setPageNumAndFetchThread(1);
+                //globalPage = 1;
+                //getPageInfo(globalPage);
 
             }
         });
@@ -132,11 +142,35 @@ public class DashboardFragment extends Fragment {
         else {
             Log.d(TAG,"get bbs name "+curBBS.site_name);
             bbsURLUtils.setBBS(curBBS);
-            //bbsURLUtils.setBaseUrl(curBBS.base_url);
+            dashboardViewModel.setBBSInfo(curBBS,curUser);
         }
-//        if(getSupportActionBar()!=null){
-//            getSupportActionBar().setTitle(curBBS.site_name);
-//        }
+    }
+
+    private void bindVieModel(){
+        dashboardViewModel.getThreadListLiveData().observe(getViewLifecycleOwner(), new Observer<List<threadInfo>>() {
+            @Override
+            public void onChanged(List<threadInfo> threadInfos) {
+                forumThreadAdapter.setThreadInfoList(threadInfos,dashboardViewModel.jsonString);
+            }
+        });
+        dashboardViewModel.isLoading.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                dashboardSwipeRefreshLayout.setRefreshing(aBoolean);
+            }
+        });
+        dashboardViewModel.isError.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+
+                if(aBoolean){
+                    noItemFoundTextview.setVisibility(View.VISIBLE);
+                }
+                else {
+                    noItemFoundTextview.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private void getPageInfo(int curPage){

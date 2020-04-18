@@ -21,6 +21,7 @@ public class threadInfo implements Serializable {
     public Boolean isTop = false;
     public String displayOrder = "0";
     public List<shortReplyInfo> shortReplyInfoList;
+    public int replyCredit = 0;
     public threadInfo(){}
 
     public static class shortReplyInfo implements Serializable{

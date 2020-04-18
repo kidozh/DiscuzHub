@@ -85,30 +85,24 @@ public class bbsNotificationMessagePortalFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        //super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this,view);
         Log.d(TAG,"Pre-load message fragment "+filter);
         preLoadMessagesFragment();
         if(filter.equals("FILTER_PRIVATE_MESSAGE")){
+            Log.d(TAG,"RENDER PRIVATE: "+filter);
             fragmentTransaction.replace(R.id.fragment_notification_message_fragment, new bbsPrivateMessageFragment());
         }
         else {
+            Log.d(TAG,"RENDER PUBLIC: "+filter);
             fragmentTransaction.replace(R.id.fragment_notification_message_fragment, new bbsPublicMessageFragment());
         }
         fragmentTransaction.commit();
     }
 
-    public void notifyMessageStatusChanged(){
-        switch (filter){
-            case "FILTER_PRIVATE_MESSAGE":{
-                fragmentTransaction.replace(R.id.fragment_notification_message_fragment, new bbsPrivateMessageFragment());
-                break;
-            }
-            case "FILTER_PUBLIC_MESSAGE":{
-                fragmentTransaction.replace(R.id.fragment_notification_message_fragment, new bbsPublicMessageFragment());
-                break;
-            }
-        }
-        fragmentTransaction.commit();
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        // super.onSaveInstanceState(outState);
+
     }
 }

@@ -59,13 +59,11 @@
                     app:layout_constraintTop_toTopOf="parent">
 
 
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/bbs_thread_detail_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:isScrollContainer="false"
-                        tools:itemCount="3"
+                        tools:itemCount="1"
                         tools:listitem="@layout/item_bbs_thread_comment_detail">
 
 
@@ -82,7 +80,8 @@
                         android:text="@string/bbs_no_thread_gotten"
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        tools:visibility="visible" />
 
 
                 </LinearLayout>

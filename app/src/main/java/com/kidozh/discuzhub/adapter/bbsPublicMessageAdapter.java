@@ -1,6 +1,9 @@
 package com.kidozh.discuzhub.adapter;
 
 import android.content.Context;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +62,11 @@ public class bbsPublicMessageAdapter extends RecyclerView.Adapter<bbsPublicMessa
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         bbsParseUtils.publicMessage curPublicMessage = publicMessageList.get(position);
-        holder.publicMessageContent.setText(curPublicMessage.message);
+
+        Spanned sp = Html.fromHtml(curPublicMessage.message);
+        SpannableString spannableString = new SpannableString(sp);
+
+        holder.publicMessageContent.setText(spannableString, TextView.BufferType.SPANNABLE);
         holder.publicMessageUsername.setText(R.string.bbs_notification_public_pm);
         holder.publicMessageRecvTime.setText(timeDisplayUtils.getLocalePastTimeString(context,curPublicMessage.publishAt));
         holder.publicMessageAvatar.setImageDrawable(context.getDrawable(R.drawable.vector_drawable_info_24px_outline));

@@ -32,8 +32,6 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.bbsNotification.bbsNotificationFragment;
 import com.kidozh.discuzhub.activities.ui.bbsNotificationMessagePortalFragment;
 import com.kidozh.discuzhub.activities.ui.privacyProtect.privacyProtectFragment;
-import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
-import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment;
 import com.kidozh.discuzhub.activities.ui.userThreads.bbsMyThreadFragment;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 
@@ -436,9 +434,11 @@ public class NotificationsFragment extends Fragment {
                 case 0:{
                     Log.d(TAG,"Position "+position+" message "+message_state);
                     if(message_state.equals(bbsNotificationMessagePortalFragment.FILTER_PRIVATE_MESSAGE)){
+                        Log.d(TAG,"GET PRIVATE MESSAGE STATE");
                         return bbsNotificationMessagePortalFragment.newInstance(bbsNotificationMessagePortalFragment.FILTER_PRIVATE_MESSAGE);
                     }
                     else {
+                        Log.d(TAG,"GET PUBLIC MESSAGE STATE");
                         return bbsNotificationMessagePortalFragment.newInstance(bbsNotificationMessagePortalFragment.FILTER_PUBLIC_MESSAGE);
                     }
 
@@ -533,11 +533,11 @@ public class NotificationsFragment extends Fragment {
                 badgeDrawable.setNumber(noticeNumInfo.mypost);
             }
             if(noticeNumInfo.prompt!=0){
-                BadgeDrawable badgeDrawable = fragmentNotificationTabLayout.getTabAt(2).getOrCreateBadge();
+                BadgeDrawable badgeDrawable = fragmentNotificationTabLayout.getTabAt(3).getOrCreateBadge();
                 badgeDrawable.setNumber(noticeNumInfo.prompt);
             }
             if(noticeNumInfo.push!=0){
-                BadgeDrawable badgeDrawable = fragmentNotificationTabLayout.getTabAt(3).getOrCreateBadge();
+                BadgeDrawable badgeDrawable = fragmentNotificationTabLayout.getTabAt(2).getOrCreateBadge();
                 badgeDrawable.setNumber(noticeNumInfo.push);
             }
         }

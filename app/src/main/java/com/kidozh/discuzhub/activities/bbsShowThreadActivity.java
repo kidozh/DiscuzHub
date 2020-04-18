@@ -30,6 +30,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -53,6 +54,7 @@ import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.viewModels.ThreadDetailViewModel;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -118,7 +120,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     bbsInformation bbsInfo;
     forumInfo forum;
 
-    MutableLiveData<bbsURLUtils.ThreadStatus> threadStatusMutableLiveData;
+    // MutableLiveData<bbsURLUtils.ThreadStatus> threadStatusMutableLiveData;
 
     List<bbsParseUtils.smileyInfo> allSmileyInfos;
     int smileyCateNum;
@@ -130,22 +132,23 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     private bbsSmileyPicker smileyPicker;
     private EmotionInputHandler handler;
 
+    private ThreadDetailViewModel threadDetailViewModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bbs_show_thread);
         ButterKnife.bind(this);
+        threadDetailViewModel = new ViewModelProvider(this).get(ThreadDetailViewModel.class);
         configureIntentData();
         initThreadStatus();
-        configureLiveData();
         configureClient();
-
-
-
         configureToolbar();
+        bindViewModel();
         configureRecyclerview();
-        getThreadComment();
+        threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
+        // getThreadComment();
 
         configureSwipeRefreshLayout();
         configureCommentBtn();
@@ -162,16 +165,14 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         fid = intent.getStringExtra("FID");
         subject = intent.getStringExtra("SUBJECT");
         bbsURLUtils.setBBS(bbsInfo);
+        threadDetailViewModel.setBBSInfo(bbsInfo, userBriefInfo, forum, tid);
 
     }
 
     private void initThreadStatus(){
-
         bbsURLUtils.ThreadStatus threadStatus = new bbsURLUtils.ThreadStatus(Integer.parseInt(tid),1);
-        threadStatusMutableLiveData = new MutableLiveData<>();
-        threadStatusMutableLiveData.setValue(threadStatus);
-
-
+        Log.d(TAG,"Set status when init data");
+        threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
     }
 
     private void configureSmileyLayout(){
@@ -185,11 +186,95 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         });
     }
 
-    private void configureLiveData(){
+    private void bindViewModel(){
+        // for personal info
+        threadDetailViewModel.bbsPersonInfoMutableLiveData.observe(this, new Observer<forumUserBriefInfo>() {
+            @Override
+            public void onChanged(forumUserBriefInfo userBriefInfo) {
+                Log.d(TAG,"User info "+userBriefInfo);
+                if(userBriefInfo == null){
+                    mCommentConstraintLayout.setVisibility(View.GONE);
+//                    mCommentBtn.setText(R.string.bbs_require_login_to_comment);
+//                    mCommentBtn.setEnabled(false);
+//                    mCommentEditText.setEnabled(false);
+                }
+                else{
+                    mCommentConstraintLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
-        threadStatusMutableLiveData.observe(this, new Observer<bbsURLUtils.ThreadStatus>() {
+        threadDetailViewModel.threadCommentInfoListLiveData.observe(this, new Observer<List<threadCommentInfo>>() {
+            @Override
+            public void onChanged(List<threadCommentInfo> threadCommentInfos) {
+                adapter.setThreadInfoList(threadCommentInfos, threadDetailViewModel.threadStatusMutableLiveData.getValue());
+            }
+        });
+
+        threadDetailViewModel.isLoading.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                swipeRefreshLayout.setRefreshing(aBoolean);
+            }
+        });
+
+        threadDetailViewModel.hasLoadAll.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    noMoreThreadFound.setVisibility(View.VISIBLE);
+                }
+                else {
+                    noMoreThreadFound.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        threadDetailViewModel.error.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    Toasty.error(getApplication(), getString(R.string.network_failed), Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+        threadDetailViewModel.errorText.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String errorText) {
+                if(!errorText.equals("")){
+                    noMoreThreadFound.setText(errorText);
+                }
+                else {
+                    noMoreThreadFound.setText(R.string.bbs_no_thread_gotten);
+                }
+            }
+        });
+
+        threadDetailViewModel.pollInfoLiveData.observe(this, new Observer<bbsPollInfo>() {
+            @Override
+            public void onChanged(bbsPollInfo bbsPollInfo) {
+                if(pollInfo!=null){
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.bbs_thread_poll_fragment,bbsPollFragment.newInstance(pollInfo,userBriefInfo,Integer.parseInt(tid),formHash));
+                    fragmentTransaction.commit();
+                }
+
+            }
+        });
+
+        threadDetailViewModel.formHash.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                formHash = s;
+            }
+        });
+
+        threadDetailViewModel.threadStatusMutableLiveData.observe(this, new Observer<bbsURLUtils.ThreadStatus>() {
             @Override
             public void onChanged(bbsURLUtils.ThreadStatus threadStatus) {
+
                 Log.d(TAG,"Livedata changed " + threadStatus.datelineAscend);
                 if(getSupportActionBar()!=null){
 
@@ -201,21 +286,22 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                         getSupportActionBar().setSubtitle(getString(R.string.bbs_thread_status_descend));
                     }
                 }
-                invalidateOptionsMenu();
-
-
 
             }
         });
     }
 
+
+
     private void configureSwipeRefreshLayout(){
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                reloadThePage();
-                getThreadComment();
-
+                Boolean isLoading = threadDetailViewModel.isLoading.getValue();
+                if(!isLoading){
+                    reloadThePage();
+                    threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
+                }
 
             }
         });
@@ -384,22 +470,24 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         pollInfo = null;
 
         reloadThePage();
-        getThreadComment();
+        //threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
 
     }
 
     @Override
     public void setAuthorId(int authorId) {
-        bbsURLUtils.ThreadStatus threadStatus = threadStatusMutableLiveData.getValue();
+        bbsURLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
 
         if(threadStatus!=null){
             threadStatus.setInitAuthorId(authorId);
         }
 
-        threadStatusMutableLiveData.setValue(threadStatus);
+        //threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
+        reloadThePage(threadStatus);
 
         // refresh it
-        getThreadComment();
+        threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
+        // getThreadComment();
     }
 
     public class smileyViewPagerAdapter extends FragmentStatePagerAdapter{
@@ -444,7 +532,10 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         mRecyclerview.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerview.setLayoutManager(linearLayoutManager);
-        adapter = new bbsForumThreadCommentAdapter(this,bbsInfo,userBriefInfo,threadStatusMutableLiveData.getValue());
+        adapter = new bbsForumThreadCommentAdapter(this,
+                bbsInfo,
+                userBriefInfo,
+                threadDetailViewModel.threadStatusMutableLiveData.getValue());
         adapter.subject =subject;
         mRecyclerview.setAdapter(adapter);
         mRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -452,7 +543,19 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if(isScrollAtEnd()){
-                    getThreadComment();
+                    bbsURLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+                    if(threadStatus !=null){
+                        if(threadDetailViewModel.hasLoadAll.getValue()){
+                            //Toasty.info(getApplication(),getString(R.string.bbs_forum_thread_load_all),Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            threadStatus.page += 1;
+                            threadDetailViewModel.getThreadDetail(threadStatus);
+                        }
+
+                    }
+
+                    // getThreadComment();
 
                 }
             }
@@ -507,7 +610,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     }
 
     private void getThreadComment(){
-        bbsURLUtils.ThreadStatus threadStatus = threadStatusMutableLiveData.getValue();
+        bbsURLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
         if(threadStatus !=null && threadStatus.hasLoadAll){
             //Toasty.info(this,getString(R.string.bbs_forum_thread_load_all),Toast.LENGTH_SHORT).show();
             swipeRefreshLayout.setRefreshing(false);
@@ -690,7 +793,8 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                                 mCommentBtn.setEnabled(true);
                                 mCommentEditText.setText("");
                                 reloadThePage();
-                                getThreadComment();
+                                threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
+                                //getThreadComment();
                                 Toasty.success(getApplicationContext(),getString(R.string.bbs_comment_successfully),Toast.LENGTH_LONG).show();
                             }
                         });
@@ -731,11 +835,21 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     }
 
     private void reloadThePage(){
-        bbsURLUtils.ThreadStatus threadStatus = threadStatusMutableLiveData.getValue();
+        bbsURLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+        if(threadStatus!=null){
+
+            threadStatus.setInitPage(1);
+        }
+        Log.d(TAG,"Set status when reload page");
+        threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
+    }
+
+    private void reloadThePage(bbsURLUtils.ThreadStatus threadStatus){
         if(threadStatus!=null){
             threadStatus.setInitPage(1);
         }
-        threadStatusMutableLiveData.setValue(threadStatus);
+        Log.d(TAG,"Set status when init data "+threadStatus);
+        threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
     }
 
     private void postReplyToSomeoneInThread(String replyPid,String message,String noticeAuthorMsg){
@@ -745,7 +859,9 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.FULL, Locale.getDefault());
         String publishAtString = df.format(selectedThreadComment.publishAt);
         int MAX_CHAR_LENGTH = 300;
-        int trimEnd = Math.min(MAX_CHAR_LENGTH,noticeAuthorMsg.length());
+        // int trimEnd = Math.min(MAX_CHAR_LENGTH,noticeAuthorMsg.length());
+        // not to trim
+        int trimEnd = noticeAuthorMsg.length();
         Log.d(TAG,"get Reply Form "+message+" hash "
                 +formHash+" reppid "+replyPid+" tid "+tid
                 + " API ->"+bbsURLUtils.getReplyThreadUrl(fid,tid)+
@@ -807,7 +923,8 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                                 mCommentBtn.setEnabled(true);
                                 mCommentEditText.setText("");
                                 reloadThePage();
-                                getThreadComment();
+                                threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
+                                //getThreadComment();
                                 Toasty.success(getApplicationContext(), getString(R.string.bbs_comment_successfully), Toast.LENGTH_LONG).show();
                             }
                         });
@@ -855,7 +972,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        bbsURLUtils.ThreadStatus threadStatus = threadStatusMutableLiveData.getValue();
+        bbsURLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
         String currentUrl = "";
         if(threadStatus == null){
             currentUrl = bbsURLUtils.getViewThreadUrl(tid,"1");
@@ -905,14 +1022,20 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 return true;
             }
             case R.id.bbs_forum_nav_dateline_sort:{
-                Log.d(TAG,"You press sort btn");
+
                 Context context = this;
-                //bbsURLUtils.ThreadStatus threadStatus = threadStatusMutableLiveData.getValue();
+                threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+                Log.d(TAG,"You press sort btn "+threadStatus.datelineAscend);
+                // bbsURLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
                 if(threadStatus!=null){
                     threadStatus.datelineAscend = !threadStatus.datelineAscend;
-                    Log.d(TAG,"Ascend mode "+threadStatus.datelineAscend);
-                    threadStatus.setInitPage(1);
-                    threadStatusMutableLiveData.setValue(threadStatus);
+                    Log.d(TAG,"Changed Ascend mode "+threadStatus.datelineAscend);
+
+
+                    Log.d(TAG,"Apply Ascend mode "+threadDetailViewModel.threadStatusMutableLiveData.getValue().datelineAscend);
+                    reloadThePage(threadStatus);
+                    Log.d(TAG,"After reload Ascend mode "+threadDetailViewModel.threadStatusMutableLiveData.getValue().datelineAscend);
+
                     if(threadStatus.datelineAscend){
                         Toasty.success(context,getString(R.string.bbs_thread_status_ascend),Toast.LENGTH_SHORT).show();
                     }
@@ -920,7 +1043,12 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                         Toasty.success(context,getString(R.string.bbs_thread_status_descend),Toast.LENGTH_SHORT).show();
                     }
                     // reload the parameters
-                    getThreadComment();
+                    Log.d(TAG,"dateline ascend "+threadStatus.datelineAscend);
+
+                    threadDetailViewModel.getThreadDetail(threadStatus);
+
+                    invalidateOptionsMenu();
+                    // invalidateOptionsMenu();
 
                 }
                 return true;
@@ -939,7 +1067,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        configureIntentData();
+        // configureIntentData();
 
         if(userBriefInfo == null){
             getMenuInflater().inflate(R.menu.menu_bbs_user_status, menu);
@@ -948,16 +1076,17 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         else {
             getMenuInflater().inflate(R.menu.bbs_thread_nav_menu,menu);
             if(getSupportActionBar()!=null){
-                bbsURLUtils.ThreadStatus threadStatus = threadStatusMutableLiveData.getValue();
 
-                if(threadStatus !=null){
-                    Log.d(TAG,"GET ascend mode in menu "+threadStatus.datelineAscend);
-                    if(threadStatus.datelineAscend){
+                bbsURLUtils.ThreadStatus ThreadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+                if(ThreadStatus !=null){
+                    Log.d(TAG,"ON CREATE GET ascend mode in menu "+ThreadStatus.datelineAscend);
+                    if(ThreadStatus.datelineAscend){
                         menu.findItem(R.id.bbs_forum_nav_dateline_sort).setIcon(getDrawable(R.drawable.vector_drawable_arrow_upward_24px));
                     }
                     else {
                         menu.findItem(R.id.bbs_forum_nav_dateline_sort).setIcon(getDrawable(R.drawable.vector_drawable_arrow_downward_24px));
                     }
+
                 }
 
             }
@@ -967,4 +1096,20 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        bbsURLUtils.ThreadStatus ThreadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+        if(ThreadStatus !=null){
+            Log.d(TAG,"ON PREPARE GET ascend mode in menu "+ThreadStatus.datelineAscend);
+            if(ThreadStatus.datelineAscend){
+                menu.findItem(R.id.bbs_forum_nav_dateline_sort).setIcon(getDrawable(R.drawable.vector_drawable_arrow_upward_24px));
+            }
+            else {
+                menu.findItem(R.id.bbs_forum_nav_dateline_sort).setIcon(getDrawable(R.drawable.vector_drawable_arrow_downward_24px));
+            }
+            // invalidateOptionsMenu();
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
 }

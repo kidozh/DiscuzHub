@@ -319,5 +319,10 @@
     <string name="app_project_on_github">项目地址</string>
     <string name="about_contact_developer_description">遇到问题？联系我吧！</string>
     <string name="about_app_foot_note">DiscuzHub是为了Discuz!移动化所开发的非官方、第三方的以MIT协议开源的Android应用。</string>
+    <string name="user_login_expired">用户 %1$s 的信息已经过期了，你可以重新登陆以激活这个账号。</string>
+    <string name="user_relogin">重新登陆 %1$s</string>
+    <string name="app_use_agreement_content">你需要同意我们的使用条款和隐私政策后使用此应用</string>
+    <string name="app_use_agreement">声明与条款</string>
+    <string name="app_agree_to_continue">同意并继续</string>
 
 </resources>

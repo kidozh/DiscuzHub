@@ -105,6 +105,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                android:descendantFocusability="blocksDescendants"
+                android:nestedScrollingEnabled="false"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -113,7 +115,10 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/bbs_thread_attachment_recyclerview"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:descendantFocusability="blocksDescendants"
+                    android:focusable="false"
+                    android:nestedScrollingEnabled="false" />
             </LinearLayout>
 
             <Button
