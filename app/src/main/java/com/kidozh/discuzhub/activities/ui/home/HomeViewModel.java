@@ -1,6 +1,7 @@
 package com.kidozh.discuzhub.activities.ui.home;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
@@ -8,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumCategorySection;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -31,6 +33,7 @@ public class HomeViewModel extends AndroidViewModel {
     private MutableLiveData<List<forumCategorySection>> forumCategories;
     public MutableLiveData<String> errorText, jsonString;
     public MutableLiveData<forumUserBriefInfo> userBriefInfoMutableLiveData;
+    public MutableLiveData<Boolean> isLoading;
 
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
@@ -42,6 +45,7 @@ public class HomeViewModel extends AndroidViewModel {
         mText.postValue("This is home fragment");
         errorText = new MutableLiveData<String>();
         jsonString = new MutableLiveData<String>();
+        isLoading = new MutableLiveData<>(false);
 
     }
 
@@ -49,6 +53,7 @@ public class HomeViewModel extends AndroidViewModel {
         this.curBBS = curBBS;
         this.curUser = curUser;
         userBriefInfoMutableLiveData = new MutableLiveData<>(curUser);
+
     }
 
     public LiveData<List<forumCategorySection>> getForumCategoryInfo(){
@@ -59,7 +64,7 @@ public class HomeViewModel extends AndroidViewModel {
         return forumCategories;
     }
 
-    private void loadForumCategoryInfo(){
+    public void loadForumCategoryInfo(){
         if( curBBS == null){
             return;
         }
@@ -69,14 +74,20 @@ public class HomeViewModel extends AndroidViewModel {
                 .url(bbsURLUtils.getBBSForumInfoApi())
                 .build();
         Log.d(TAG,"Send request to "+bbsURLUtils.getBBSForumInfoApi());
+        Context context = getApplication();
+        errorText.setValue(null);
+        forumCategories.setValue(null);
+        isLoading.setValue(true);
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 forumCategories.postValue(null);
+                isLoading.postValue(false);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                isLoading.postValue(false);
                 if(response.isSuccessful() && response.body()!=null){
                     String s = response.body().string();
                     Log.d(TAG,"Recv Portal JSON "+s);
@@ -84,7 +95,17 @@ public class HomeViewModel extends AndroidViewModel {
                     List<forumCategorySection> categorySectionFidList = bbsParseUtils.parseCategoryFids(s);
                     forumCategories.postValue(categorySectionFidList);
                     if(categorySectionFidList == null){
-                        errorText.postValue(bbsParseUtils.parseErrorInformation(s));
+                        String errorString = bbsParseUtils.parseErrorInformation(s);
+                        if(errorString!=null){
+                            errorText.postValue(errorString);
+                        }
+                        else {
+                            errorText.postValue(context.getString(R.string.parse_failed));
+                        }
+                        // errorText.postValue(bbsParseUtils.parseErrorInformation(s));
+                    }
+                    else {
+                        errorText.postValue(null);
                     }
                     // parse person info
                     forumUserBriefInfo severReturnedUser = bbsParseUtils.parseBreifUserInfo(s);
@@ -94,7 +115,8 @@ public class HomeViewModel extends AndroidViewModel {
                 }
                 else {
                     String s = response.body().string();
-                    errorText.postValue(bbsParseUtils.parseErrorInformation(s));
+                    errorText.postValue(context.getString(R.string.parse_failed));
+                    // errorText.postValue(bbsParseUtils.parseErrorInformation(s));
                     forumCategories.postValue(null);
                 }
             }

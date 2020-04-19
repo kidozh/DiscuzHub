@@ -573,40 +573,6 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
             }
         });
 
-        mRecyclerview.addOnItemTouchListener(new RecyclerItemClickListener(this,mRecyclerview,new RecyclerItemClickListener.OnItemClickListener(){
-
-            @Override
-            public void onItemClick(View view, int position) {
-
-
-            }
-
-            @Override
-            public void onItemLongClick(View view, int position) {
-                threadCommentInfo threadCommentInfo = adapter.getThreadInfoList().get(position);
-                selectedThreadComment = threadCommentInfo;
-                mThreadReplyBadge.setText(threadCommentInfo.author);
-                mThreadReplyBadge.setVisibility(View.VISIBLE);
-                mCommentEditText.setHint(String.format("@%s",threadCommentInfo.author));
-                String decodeString = threadCommentInfo.message;
-
-                Spanned sp = Html.fromHtml(decodeString);
-
-                mThreadReplyContent.setText(sp, TextView.BufferType.SPANNABLE);
-                mThreadReplyContent.setVisibility(View.VISIBLE);
-                mThreadReplyBadge.setOnCloseIconClickListener(new View.OnClickListener(){
-
-                    @Override
-                    public void onClick(View v) {
-                        mThreadReplyBadge.setVisibility(View.GONE);
-                        mThreadReplyContent.setVisibility(View.GONE);
-                        mCommentEditText.setHint(R.string.bbs_thread_say_something);
-                        selectedThreadComment = null;
-                    }
-                });
-            }
-        }));
-
     }
 
     private void getThreadComment(){
@@ -784,7 +750,8 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 if(response.body()!=null){
                     String s = response.body().string();
                     Log.d(TAG,"Recv comment info "+s);
-                    if(s.contains("succeedhandle_fastpost")){
+                    bbsParseUtils.returnMessage returnedMessage = bbsParseUtils.parseReturnMessage(s);
+                    if(returnedMessage!=null && returnedMessage.value.equals("post_reply_succeed")){
                         // success!
                         mHandler.post(new Runnable() {
                             @Override
@@ -795,7 +762,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                                 reloadThePage();
                                 threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
                                 //getThreadComment();
-                                Toasty.success(getApplicationContext(),getString(R.string.bbs_comment_successfully),Toast.LENGTH_LONG).show();
+                                Toasty.success(getApplicationContext(),returnedMessage.string,Toast.LENGTH_LONG).show();
                             }
                         });
                     }
@@ -805,24 +772,12 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                             public void run() {
                                 mCommentBtn.setText(R.string.bbs_thread_comment);
                                 mCommentBtn.setEnabled(true);
-                                Pattern pattern = Pattern.compile("<p>(.*?)</p>");
-                                Matcher matcher = pattern.matcher(s);
-                                if(matcher.find()){
-                                    String rawWithTagString = matcher.group();
-                                    String infoString = rawWithTagString.replace("<[^>]*>","");
-                                    if(infoString.length()>0){
-                                        Toasty.error(getApplicationContext(), infoString, Toast.LENGTH_LONG).show();
-                                    }
-                                    else {
-                                        Toasty.error(getApplicationContext(), getString(R.string.bbs_comment_failed), Toast.LENGTH_LONG).show();
-                                    }
+                                if(returnedMessage == null){
+                                    Toasty.error(getApplicationContext(), getString(R.string.network_failed), Toast.LENGTH_LONG).show();
                                 }
                                 else {
-                                    Toasty.error(getApplicationContext(), getString(R.string.bbs_comment_failed), Toast.LENGTH_LONG).show();
+                                    Toasty.error(getApplicationContext(), returnedMessage.string, Toast.LENGTH_LONG).show();
                                 }
-
-
-
                             }
                         });
                     }
@@ -887,7 +842,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 //.add("subject", message)
                 .build();
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getReplyToSomeoneThreadUrl(fid,tid))
+                .url(bbsURLUtils.getReplyThreadUrl(fid,tid))
                 .post(formBody)
                 .build();
 
@@ -903,7 +858,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                     public void run() {
                         mCommentBtn.setText(R.string.bbs_thread_comment);
                         mCommentBtn.setEnabled(true);
-                        Toasty.error(getApplicationContext(),getString(R.string.bbs_comment_failed),Toast.LENGTH_LONG).show();
+                        Toasty.error(getApplicationContext(),getString(R.string.network_failed),Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -913,8 +868,10 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.body() != null) {
                     String s = response.body().string();
+                    bbsParseUtils.returnMessage returnedMessage = bbsParseUtils.parseReturnMessage(s);
+
                     Log.d(TAG, "Recv reply comment info " + s);
-                    if (s.contains("succeedhandle_reply")) {
+                    if(returnedMessage!=null && returnedMessage.value.equals("post_reply_succeed")) {
                         // success!
                         mHandler.post(new Runnable() {
                             @Override
@@ -925,7 +882,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                                 reloadThePage();
                                 threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
                                 //getThreadComment();
-                                Toasty.success(getApplicationContext(), getString(R.string.bbs_comment_successfully), Toast.LENGTH_LONG).show();
+                                Toasty.success(getApplicationContext(), returnedMessage.string, Toast.LENGTH_LONG).show();
                             }
                         });
                     } else {
@@ -934,21 +891,12 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                             public void run() {
                                 mCommentBtn.setText(R.string.bbs_thread_comment);
                                 mCommentBtn.setEnabled(true);
-                                Pattern pattern = Pattern.compile("<p>(.*?)</p>");
-                                Matcher matcher = pattern.matcher(s);
-                                if (matcher.find()) {
-                                    String rawWithTagString = matcher.group();
-                                    String infoString = rawWithTagString.replace("<[^>]*>", "");
-                                    if (infoString.length() > 0) {
-                                        Toasty.error(getApplicationContext(), infoString, Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Toasty.error(getApplicationContext(), getString(R.string.bbs_comment_failed), Toast.LENGTH_LONG).show();
-                                    }
-                                } else {
-                                    Toasty.error(getApplicationContext(), getString(R.string.bbs_comment_failed), Toast.LENGTH_LONG).show();
+                                if(returnedMessage == null){
+                                    Toasty.error(getApplicationContext(), getString(R.string.network_failed), Toast.LENGTH_LONG).show();
                                 }
-
-
+                                else {
+                                    Toasty.error(getApplicationContext(), returnedMessage.string, Toast.LENGTH_LONG).show();
+                                }
                             }
                         });
                     }
@@ -1022,7 +970,6 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 return true;
             }
             case R.id.bbs_forum_nav_dateline_sort:{
-
                 Context context = this;
                 threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
                 Log.d(TAG,"You press sort btn "+threadStatus.datelineAscend);
@@ -1070,7 +1017,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         // configureIntentData();
 
         if(userBriefInfo == null){
-            getMenuInflater().inflate(R.menu.menu_bbs_user_status, menu);
+            getMenuInflater().inflate(R.menu.bbs_incognitive_thread_nav_menu, menu);
 
         }
         else {

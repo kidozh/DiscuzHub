@@ -30,23 +30,36 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:itemCount="1"
-            tools:listitem="@layout/item_bbs_category" />
+            tools:listitem="@layout/item_bbs_category"
+            tools:visibility="gone" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/bbs_portal_error_text"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:gravity="center|center_vertical"
         android:text="@string/parse_failed"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
-        android:textColor="@color/colorPrimary"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bbs_portal_linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/bbs_portal_linearLayout"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/bbs_portal_refresh_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/refresh_page"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bbs_portal_error_text"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

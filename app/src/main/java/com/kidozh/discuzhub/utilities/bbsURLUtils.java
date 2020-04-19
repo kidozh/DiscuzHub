@@ -281,25 +281,49 @@ public class bbsURLUtils {
 
 
 
+//    public static String getPostThreadUrl(String fid){
+//        return BASE_URL+"/api/mobile/index.php?version=4&module=newthread&fid=" + fid ;
+//    }
+
     public static String getPostThreadUrl(String fid){
-        return BASE_URL+"/api/mobile/index.php?version=4&module=newthread&fid=" + fid ;
+        Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","newthread")
+                .appendQueryParameter("fid",fid)
+                .build();
+        return uri.toString();
     }
 
-    public static String getReplyThreadUrl(String fid,String tid){
-
-        Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
-                .appendQueryParameter("mod","post")
-                .appendQueryParameter("action","reply")
+    public static String getReplyThreadUrl(String fid, String tid){
+        Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","sendreply")
                 .appendQueryParameter("fid",fid)
                 .appendQueryParameter("tid",tid)
-                .appendQueryParameter("inajax","1")
+                .appendQueryParameter("action","reply")
+                //.appendQueryParameter("mod","post")
+                // reply submit is neccessary
                 .appendQueryParameter("replysubmit","yes")
-                .appendQueryParameter("infloat","yes")
-                .appendQueryParameter("handlekey","fastpost")
-                .appendQueryParameter("extra","")
+                //.appendQueryParameter("handlekey","fastpost")
                 .build();
-         return uri.toString();
+        return uri.toString();
     }
+
+//    public static String getReplyThreadUrl(String fid,String tid){
+//
+//        Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
+//                .appendQueryParameter("mod","post")
+//                .appendQueryParameter("action","reply")
+//                .appendQueryParameter("fid",fid)
+//                .appendQueryParameter("tid",tid)
+//                .appendQueryParameter("inajax","1")
+//                .appendQueryParameter("replysubmit","yes")
+//                .appendQueryParameter("infloat","yes")
+//                .appendQueryParameter("handlekey","fastpost")
+//                .appendQueryParameter("extra","")
+//                .build();
+//         return uri.toString();
+//    }
 
     public static String getReplyToSomeoneThreadUrl(String fid,String tid){
         Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()

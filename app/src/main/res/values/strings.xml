@@ -483,6 +483,7 @@
     <string name="app_use_agreement_content">You need to agree with our terms of use and privacy policy to use DiscuzHub</string>
     <string name="app_use_agreement">Statement and agreement</string>
     <string name="app_agree_to_continue">Agree and continue</string>
+    <string name="refresh_page">refresh</string>
 
 
 </resources>

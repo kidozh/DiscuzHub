@@ -324,5 +324,6 @@
     <string name="app_use_agreement_content">你需要同意我们的使用条款和隐私政策后使用此应用</string>
     <string name="app_use_agreement">声明与条款</string>
     <string name="app_agree_to_continue">同意并继续</string>
+    <string name="refresh_page">刷新</string>
 
 </resources>

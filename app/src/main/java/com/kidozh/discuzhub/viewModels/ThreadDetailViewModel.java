@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.forumInfo;
@@ -45,6 +46,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
     public MutableLiveData<forumUserBriefInfo> bbsPersonInfoMutableLiveData;
     public MutableLiveData<List<threadCommentInfo>> threadCommentInfoListLiveData;
     public MutableLiveData<bbsURLUtils.ThreadStatus> threadStatusMutableLiveData;
+    public MutableLiveData<bbsParseUtils.DetailedThreadInfo> detailedThreadInfoMutableLiveData;
 
 
     public ThreadDetailViewModel(@NonNull Application application) {
@@ -58,6 +60,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
         pollInfoLiveData = new MutableLiveData<>(null);
         threadStatusMutableLiveData = new MutableLiveData<>();
         errorText = new MutableLiveData<>("");
+        detailedThreadInfoMutableLiveData = new MutableLiveData<>();
     }
 
     public void setBBSInfo(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, forumInfo forum, String tid){
@@ -70,7 +73,6 @@ public class ThreadDetailViewModel extends AndroidViewModel {
 
         if(threadStatusMutableLiveData.getValue()==null){
             bbsURLUtils.ThreadStatus threadStatus = new bbsURLUtils.ThreadStatus(Integer.parseInt(tid),1);
-
             threadStatusMutableLiveData.setValue(threadStatus);
         }
 
@@ -119,6 +121,8 @@ public class ThreadDetailViewModel extends AndroidViewModel {
                         Log.d(TAG,"parse message "+message.string);
                         errorText.postValue(message.string);
                     }
+                    bbsParseUtils.DetailedThreadInfo detailedThreadInfo = bbsParseUtils.parseDetailedThreadInfo(s);
+                    detailedThreadInfoMutableLiveData.postValue(detailedThreadInfo);
 
                     if(pollInfoLiveData.getValue() == null){
                         pollInfoLiveData.postValue(pollInfo);
@@ -150,6 +154,9 @@ public class ThreadDetailViewModel extends AndroidViewModel {
 
                     }
                     else {
+                        if(threadStatus.page == 1 && message == null){
+                            errorText.postValue(getApplication().getString(R.string.parse_failed));
+                        }
                         hasLoadAll.postValue(true);
                         // rollback
                         if(threadStatus.page != 1){
@@ -160,6 +167,9 @@ public class ThreadDetailViewModel extends AndroidViewModel {
                     }
                 }
                 else {
+                    if(threadStatus.page == 1){
+                        errorText.postValue(getApplication().getString(R.string.network_failed));
+                    }
                     error.postValue(true);
                     if(threadStatus.page != 1){
                         threadStatus.page -=1;

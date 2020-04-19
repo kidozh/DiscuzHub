@@ -1,12 +1,11 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.kidozh.discuzhub.MainActivity" >
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/action_user_status"
-        android:icon="@drawable/vector_drawable_anonymous_user_icon"
-        android:orderInCategory="100"
-        android:title="@string/action_bbs_user_status"
+        android:id="@+id/bbs_forum_nav_dateline_sort"
+        android:icon="@drawable/vector_drawable_arrow_upward_24px"
+        android:title="@string/bbs_draft_box"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/bbs_forum_nav_show_in_webview"

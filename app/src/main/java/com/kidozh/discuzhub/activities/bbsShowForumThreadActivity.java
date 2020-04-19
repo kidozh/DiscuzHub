@@ -187,6 +187,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
             public void onChanged(String s) {
                 // reload chip if possible
                 configureThreadTypeChipGroup(s);
+                returned_res_json = s;
             }
         });
         forumThreadViewModel.draftNumberLiveData.observe(this, new Observer<Integer>() {

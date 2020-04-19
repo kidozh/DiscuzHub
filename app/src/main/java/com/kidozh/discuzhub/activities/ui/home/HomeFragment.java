@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +58,9 @@ public class HomeFragment extends Fragment {
     TextView bbsPortalErrorText;
     @BindView(R.id.bbs_portal_progressBar)
     ProgressBar bbsPortalProgressbar;
+    @BindView(R.id.bbs_portal_refresh_page)
+    Button bbsPortalRefreshPageBtn;
+
     bbsPortalCategoryAdapter adapter;
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
@@ -75,7 +79,7 @@ public class HomeFragment extends Fragment {
         configurePortalRecyclerview();
         bindLiveDataFromViewModel();
         //getPortalCategoryInfo();
-
+        configureRefreshBtn();
 
         return root;
     }
@@ -99,7 +103,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void bindLiveDataFromViewModel(){
-        bbsPortalProgressbar.setVisibility(View.VISIBLE);
+        //bbsPortalProgressbar.setVisibility(View.VISIBLE);
         homeViewModel.getForumCategoryInfo().observe(getViewLifecycleOwner(), new Observer<List<forumCategorySection>>() {
             @Override
             public void onChanged(List<forumCategorySection> forumCategorySections) {
@@ -110,6 +114,7 @@ public class HomeFragment extends Fragment {
         });
         homeViewModel.errorText.observe(getViewLifecycleOwner(), errorText -> {
             if(errorText!=null){
+
                 if(errorText.equals("mobile_is_closed")){
                     bbsPortalErrorText.setText(R.string.bbs_mobile_is_closed);
                 }
@@ -119,9 +124,12 @@ public class HomeFragment extends Fragment {
                 else {
                     bbsPortalErrorText.setText(errorText);
                 }
+                bbsPortalErrorText.setVisibility(View.VISIBLE);
+                bbsPortalRefreshPageBtn.setVisibility(View.VISIBLE);
             }
             else {
-                Toasty.error(getActivity(),getString(R.string.parse_failed), Toast.LENGTH_SHORT).show();
+                bbsPortalErrorText.setVisibility(View.GONE);
+                bbsPortalRefreshPageBtn.setVisibility(View.GONE);
             }
         });
         homeViewModel.userBriefInfoMutableLiveData.observe(getViewLifecycleOwner(), new Observer<forumUserBriefInfo>() {
@@ -153,10 +161,18 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
-    }
+        homeViewModel.isLoading.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    bbsPortalProgressbar.setVisibility(View.VISIBLE);
+                }
+                else {
+                    bbsPortalProgressbar.setVisibility(View.GONE);
+                }
 
-    private void showReloginDialog(){
-
+            }
+        });
     }
 
 
@@ -165,5 +181,14 @@ public class HomeFragment extends Fragment {
         portalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new bbsPortalCategoryAdapter(getContext(),null,curBBS,userBriefInfo);
         portalRecyclerView.setAdapter(adapter);
+    }
+
+    private void configureRefreshBtn(){
+        bbsPortalRefreshPageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homeViewModel.loadForumCategoryInfo();
+            }
+        });
     }
 }

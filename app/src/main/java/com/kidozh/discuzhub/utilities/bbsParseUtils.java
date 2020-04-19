@@ -6,7 +6,13 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -18,6 +24,7 @@ import com.kidozh.discuzhub.entities.threadInfo;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -29,145 +36,141 @@ import java.util.Map;
 
 public class bbsParseUtils {
     private static String TAG = bbsParseUtils.class.getSimpleName();
-    public static bbsInformation parseInformationByJson(String base_url, String jsonString){
-        try{
+
+    public static bbsInformation parseInformationByJson(String base_url, String jsonString) {
+        try {
             JSONObject jsonObject = new JSONObject(jsonString);
             String discuzVersion = jsonObject.getString("discuzversion");
             String charset = jsonObject.getString("charset");
             String version = jsonObject.getString("version");
             String pluginVersion = jsonObject.getString("pluginversion");
             String registerName = jsonObject.getString("regname");
-            String wsqQQConnect = jsonObject.optString("wsqqqconnect","0");
-            String wsqHideregsiter = jsonObject.optString("wsqhideregister","1");
+            String wsqQQConnect = jsonObject.optString("wsqqqconnect", "0");
+            String wsqHideregsiter = jsonObject.optString("wsqhideregister", "1");
             String siteName = jsonObject.getString("sitename");
             String siteId = jsonObject.getString("mysiteid");
             String uCenterUrl = jsonObject.getString("ucenterurl");
-            String defaultFid = jsonObject.optString("defaultfid",null);
-            String totalPost = jsonObject.optString("totalposts","0");
-            String totalMember = jsonObject.optString("totalmembers","0");
+            String defaultFid = jsonObject.optString("defaultfid", null);
+            String totalPost = jsonObject.optString("totalposts", "0");
+            String totalMember = jsonObject.optString("totalmembers", "0");
             Boolean qqConnect = wsqQQConnect.equals("1");
             Boolean hideRegister = wsqHideregsiter.equals("1");
 
             bbsInformation newForumInfo = new bbsInformation(
-                    base_url,siteName,discuzVersion,
-                    charset,version,pluginVersion,totalPost,
-                    totalMember,siteId,defaultFid,uCenterUrl,
-                    registerName,"",hideRegister,
+                    base_url, siteName, discuzVersion,
+                    charset, version, pluginVersion, totalPost,
+                    totalMember, siteId, defaultFid, uCenterUrl,
+                    registerName, "", hideRegister,
                     qqConnect
-                    );
+            );
             return newForumInfo;
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static forumInfo getForumInfoByFid(String s, int fid){
-        try{
+    public static forumInfo getForumInfoByFid(String s, int fid) {
+        try {
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONArray catagoryList = variables.getJSONArray("forumlist");
-            for(int i=0;i<catagoryList.length();i++){
+            for (int i = 0; i < catagoryList.length(); i++) {
                 JSONObject catagory = catagoryList.getJSONObject(i);
                 String fidString = catagory.getString("fid");
-                if (! fidString.equals(String.valueOf(fid))){
+                if (!fidString.equals(String.valueOf(fid))) {
                     continue;
                 }
                 String forumName = catagory.getString("name");
                 String allPost = catagory.getString("posts");
                 String thread = catagory.getString("threads");
                 String todayPosts = catagory.getString("todayposts");
-                String iconURLString = catagory.optString("icon","");
-                String description = catagory.optString("description","");
+                String iconURLString = catagory.optString("icon", "");
+                String description = catagory.optString("description", "");
 
-                return new forumInfo(forumName,fid,iconURLString,description,todayPosts,allPost,thread);
+                return new forumInfo(forumName, fid, iconURLString, description, todayPosts, allPost, thread);
 
             }
 
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
         return null;
     }
 
-    public static List<forumCategorySection> parseCategoryFids(String s){
-        try{
+    public static List<forumCategorySection> parseCategoryFids(String s) {
+        try {
             List<forumCategorySection> categorySectionFidList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONArray catagoryList = variables.getJSONArray("catlist");
-            for(int i=0;i<catagoryList.length();i++){
+            for (int i = 0; i < catagoryList.length(); i++) {
                 JSONObject catagory = catagoryList.getJSONObject(i);
                 String cataName = catagory.getString("name");
                 String fid = catagory.getString("fid");
                 JSONArray forumFidList = catagory.getJSONArray("forums");
                 List<Integer> fidList = new ArrayList<>();
-                for(int j=0;j<forumFidList.length();j++){
+                for (int j = 0; j < forumFidList.length(); j++) {
                     String fidString = forumFidList.getString(j);
                     fidList.add(Integer.parseInt(fidString));
                 }
 
-                forumCategorySection categorySectionFid = new forumCategorySection(cataName,Integer.parseInt(fid),fidList);
+                forumCategorySection categorySectionFid = new forumCategorySection(cataName, Integer.parseInt(fid), fidList);
                 categorySectionFidList.add(categorySectionFid);
             }
             return categorySectionFidList;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static String parseErrorInformation(String s){
-        try{
+    public static String parseErrorInformation(String s) {
+        try {
             JSONObject jsonObject = new JSONObject(s);
             String errorText = jsonObject.getString("error");
 
             return errorText;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
 
     }
 
-    public static Map<String,String> parseThreadType(String s){
-        try{
-            Map<String,String> threadTypeMap = new HashMap<>();
+    public static Map<String, String> parseThreadType(String s) {
+        try {
+            Map<String, String> threadTypeMap = new HashMap<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONObject threadTypes = variables.getJSONObject("threadtypes");
             JSONObject types = threadTypes.getJSONObject("types");
             Iterator<String> stringIterator = types.keys();
-            while (stringIterator.hasNext()){
+            while (stringIterator.hasNext()) {
                 String key = stringIterator.next();
                 String value = types.getString(key);
-                threadTypeMap.put(key,value);
+                threadTypeMap.put(key, value);
             }
             return threadTypeMap;
 
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static List<threadInfo> parseThreadListInfo(String s,Boolean isFirst){
-        try{
+    public static List<threadInfo> parseThreadListInfo(String s, Boolean isFirst) {
+        try {
             List<threadInfo> threadInfoList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONArray threadList = variables.getJSONArray("forum_threadlist");
-            for(int i=0;i<threadList.length();i++){
+            for (int i = 0; i < threadList.length(); i++) {
                 JSONObject threadObj = threadList.getJSONObject(i);
                 String tid = threadObj.getString("tid");
                 String typeid = threadObj.getString("typeid");
@@ -177,23 +180,23 @@ public class bbsParseUtils {
                 String subject = threadObj.getString("subject");
                 String updateAtString = threadObj.getString("lastpost");
                 String publishAtStringTimestamp = threadObj.getString("dbdateline");
-                String lastUpdator = threadObj.optString("lastposter","");
+                String lastUpdator = threadObj.optString("lastposter", "");
                 String viewNum = threadObj.getString("views");
                 String replyNum = threadObj.getString("replies");
                 String displayOrder = threadObj.getString("displayorder");
-                String digest = threadObj.optString("digest","0");
-                String special = threadObj.optString("special","0");
-                String recommendNum = threadObj.optString("recommend_add","0");
-                String rushReply = threadObj.optString("rushreply","0");
-                String price = threadObj.optString("price","0");
-                String attachment = threadObj.optString("attachment","0");
-                String replyCredit = threadObj.optString("replycredit","0");
+                String digest = threadObj.optString("digest", "0");
+                String special = threadObj.optString("special", "0");
+                String recommendNum = threadObj.optString("recommend_add", "0");
+                String rushReply = threadObj.optString("rushreply", "0");
+                String price = threadObj.optString("price", "0");
+                String attachment = threadObj.optString("attachment", "0");
+                String replyCredit = threadObj.optString("replycredit", "0");
 
                 // parse short reply
                 List<threadInfo.shortReplyInfo> shortReplyInfoList = new ArrayList<>();
-                if(threadObj.has("reply")){
+                if (threadObj.has("reply")) {
                     JSONArray shortReplies = threadObj.getJSONArray("reply");
-                    for(int j = 0;j<shortReplies.length();j++){
+                    for (int j = 0; j < shortReplies.length(); j++) {
                         JSONObject shortReply = shortReplies.getJSONObject(j);
                         shortReplyInfoList.add(new threadInfo.shortReplyInfo(
                                 shortReply.getString("pid"),
@@ -214,7 +217,7 @@ public class bbsParseUtils {
                 thread.lastUpdator = lastUpdator;
                 thread.viewNum = viewNum;
                 thread.repliesNum = replyNum;
-                thread.publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp)*1000);
+                thread.publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp) * 1000);
                 thread.lastUpdateTimeString = updateAtString;
                 thread.digest = !digest.equals("0");
                 thread.special = !special.equals("0");
@@ -226,59 +229,56 @@ public class bbsParseUtils {
                 thread.displayOrder = displayOrder;
                 thread.replyCredit = Integer.parseInt(replyCredit);
 
-                if(!displayOrder.equals("0")){
+                if (!displayOrder.equals("0")) {
                     thread.isTop = true;
                 }
-                if(isFirst==false&& thread.isTop == true){
+                if (isFirst == false && thread.isTop == true) {
                     continue;
                 }
                 threadInfoList.add(thread);
             }
             return threadInfoList;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static String getThreadRuleString(String s){
-        try{
+    public static String getThreadRuleString(String s) {
+        try {
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONObject forumInfo = variables.getJSONObject("forum");
 
-            return forumInfo.optString("rules","");
+            return forumInfo.optString("rules", "");
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static String getThreadDescriptionString(String s){
-        try{
+    public static String getThreadDescriptionString(String s) {
+        try {
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONObject forumInfo = variables.getJSONObject("forum");
 
-            return forumInfo.optString("description","");
+            return forumInfo.optString("description", "");
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static List<threadCommentInfo.attachmentInfo> getAttachmentInfo(JSONObject jsonObject){
-        try{
+    public static List<threadCommentInfo.attachmentInfo> getAttachmentInfo(JSONObject jsonObject) {
+        try {
 
             List<threadCommentInfo.attachmentInfo> attachmentInfoList = new ArrayList<>();
             Iterator<String> stringIterator = jsonObject.keys();
-            while (stringIterator.hasNext()){
+            while (stringIterator.hasNext()) {
                 String key = stringIterator.next();
                 JSONObject attachmentObj = jsonObject.getJSONObject(key);
                 String aid = attachmentObj.getString("aid");
@@ -292,37 +292,35 @@ public class bbsParseUtils {
                 String relativeUrl = attachmentObj.getString("attachment");
                 String prefixUrl = attachmentObj.getString("url");
                 String publishAtStr = attachmentObj.getString("dbdateline");
-                Date publishAt = new Timestamp(Long.parseLong(publishAtStr)*1000);
+                Date publishAt = new Timestamp(Long.parseLong(publishAtStr) * 1000);
 
-                attachmentInfoList.add(new threadCommentInfo.attachmentInfo(aid,tid,pid,uid,relativeUrl,filename,publishAt,prefixUrl));
+                attachmentInfoList.add(new threadCommentInfo.attachmentInfo(aid, tid, pid, uid, relativeUrl, filename, publishAt, prefixUrl));
             }
             return attachmentInfoList;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static String parseFormHash(String s){
-        try{
+    public static String parseFormHash(String s) {
+        try {
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             return variables.getString("formhash");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
 
-    public static forumUserBriefInfo parseBreifUserInfo(String s){
-        try{
+    public static forumUserBriefInfo parseBreifUserInfo(String s) {
+        try {
             JSONObject jsonObject = new JSONObject(s);
             //Log.d(TAG,"Get ->"+jsonObject.toString());
             //List<bbsNotification> notifications = new ArrayList<>();
             JSONObject variables = jsonObject.getJSONObject("Variables");
-            Log.d(TAG,"has auth " + variables.has("auth")+" auth "+variables.isNull("auth"));
-            if(variables.has("auth") && (!variables.isNull("auth"))){
+            Log.d(TAG, "has auth " + variables.has("auth") + " auth " + variables.isNull("auth"));
+            if (variables.has("auth") && (!variables.isNull("auth"))) {
                 return new forumUserBriefInfo(
                         variables.getString("auth"),
                         variables.getString("saltkey"),
@@ -332,45 +330,40 @@ public class bbsParseUtils {
                         Integer.parseInt(variables.getString("readaccess")),
                         variables.getString("groupid")
                 );
-            }
-            else {
+            } else {
 
                 return null;
             }
 
 
-
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static Boolean isLoginSuccessful(JSONObject variables){
-        try{
-            if(variables.has("Message") && variables.getJSONObject("Message").getString("messageval").equals("login_succeed")){
+    public static Boolean isLoginSuccessful(JSONObject variables) {
+        try {
+            if (variables.has("Message") && variables.getJSONObject("Message").getString("messageval").equals("login_succeed")) {
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
 
     }
 
-    public static forumUserBriefInfo parseLoginBreifUserInfo(String s){
-        try{
+    public static forumUserBriefInfo parseLoginBreifUserInfo(String s) {
+        try {
             JSONObject jsonObject = new JSONObject(s);
             //Log.d(TAG,"Get ->"+jsonObject.toString());
             //List<bbsNotification> notifications = new ArrayList<>();
             JSONObject variables = jsonObject.getJSONObject("Variables");
 
-            if(isLoginSuccessful(jsonObject) ){
+            if (isLoginSuccessful(jsonObject)) {
                 return new forumUserBriefInfo(
                         variables.getString("auth"),
                         variables.getString("saltkey"),
@@ -380,27 +373,24 @@ public class bbsParseUtils {
                         Integer.parseInt(variables.getString("readaccess")),
                         variables.getString("groupid")
                 );
-            }
-            else {
+            } else {
                 return null;
             }
 
 
-
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static List<threadCommentInfo> parseThreadCommentInfo(String s){
-        try{
+    public static List<threadCommentInfo> parseThreadCommentInfo(String s) {
+        try {
             List<threadCommentInfo> threadInfoList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONArray threadList = variables.getJSONArray("postlist");
-            for(int i=0;i<threadList.length();i++){
+            for (int i = 0; i < threadList.length(); i++) {
                 JSONObject threadObj = threadList.getJSONObject(i);
                 String tid = threadObj.getString("tid");
                 String pid = threadObj.getString("pid");
@@ -410,24 +400,22 @@ public class bbsParseUtils {
                 String message = threadObj.getString("message");
                 String publishAtStringTimestamp = threadObj.getString("dbdateline");
                 String lastPostTimeString = threadObj.getString("dateline");
-                Date publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp)*1000);
-                threadCommentInfo threadComment = new threadCommentInfo(tid,pid,author,authorId,message,publishAt,lastPostTimeString);
-                if(firstString.equals("1")){
+                Date publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp) * 1000);
+                threadCommentInfo threadComment = new threadCommentInfo(tid, pid, author, authorId, message, publishAt, lastPostTimeString);
+                if (firstString.equals("1")) {
                     threadComment.first = true;
-                }
-                else {
+                } else {
                     threadComment.first = false;
                 }
                 // attachment
-                if(threadObj.has("attachments")){
-                    Log.d(TAG,"Find attachment!!!");
-                    try{
+                if (threadObj.has("attachments")) {
+                    Log.d(TAG, "Find attachment!!!");
+                    try {
                         JSONObject attachmentObj = threadObj.getJSONObject("attachments");
                         List<threadCommentInfo.attachmentInfo> attachmentInfoList = getAttachmentInfo(attachmentObj);
-                        Log.d(TAG,"get attachmentInfo"+attachmentInfoList.size());
+                        Log.d(TAG, "get attachmentInfo" + attachmentInfoList.size());
                         threadComment.attachmentInfoList = attachmentInfoList;
-                    }
-                    catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -439,77 +427,72 @@ public class bbsParseUtils {
             }
             return threadInfoList;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static String parseUploadHashString(String s){
-        try{
+    public static String parseUploadHashString(String s) {
+        try {
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONObject allowperm = variables.getJSONObject("allowperm");
             return allowperm.getString("uploadhash");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static List<String> getThreadTypeList(String s){
-        try{
+    public static List<String> getThreadTypeList(String s) {
+        try {
             List<String> numKeys = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONObject forumTypeInfo = variables.getJSONObject("threadtypes");
             JSONObject forumTypes = forumTypeInfo.getJSONObject("types");
             Iterator<String> iterator = forumTypes.keys();
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String numKey = iterator.next();
                 String threadName = forumTypes.getString(numKey);
                 numKeys.add(numKey);
             }
             return numKeys;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static Boolean isPostThreadSuccessful(String s){
-        try{
+    public static Boolean isPostThreadSuccessful(String s) {
+        try {
             JSONObject jsonObject = new JSONObject(s);
             JSONObject message = jsonObject.getJSONObject("Message");
             return message.getString("messageval").equals("post_newthread_succeed");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public static String parsePostThreadInfo(String s){
-        try{
+    public static String parsePostThreadInfo(String s) {
+        try {
             JSONObject jsonObject = new JSONObject(s);
             JSONObject message = jsonObject.getJSONObject("Message");
             return message.getString("messagestr");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
 
-    public static List<threadInfo> parseHotThreadListInfo(String s){
-        try{
+    public static List<threadInfo> parseHotThreadListInfo(String s) {
+        try {
             List<threadInfo> threadInfoList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONArray threadList = variables.getJSONArray("data");
-            for(int i=0;i<threadList.length();i++){
+            for (int i = 0; i < threadList.length(); i++) {
                 JSONObject threadObj = threadList.getJSONObject(i);
                 String tid = threadObj.getString("tid");
                 String typeid = threadObj.getString("typeid");
@@ -519,22 +502,22 @@ public class bbsParseUtils {
                 String subject = threadObj.getString("subject");
                 String updateAtString = threadObj.getString("lastpost");
                 String publishAtStringTimestamp = threadObj.getString("dbdateline");
-                String lastUpdator = threadObj.optString("lastposter","");
+                String lastUpdator = threadObj.optString("lastposter", "");
                 String viewNum = threadObj.getString("views");
                 String replyNum = threadObj.getString("replies");
                 String displayOrder = threadObj.getString("displayorder");
-                String digest = threadObj.optString("digest","0");
-                String special = threadObj.optString("special","0");
-                String recommendNum = threadObj.optString("recommend_add","0");
-                String rushReply = threadObj.optString("rushreply","0");
-                String price = threadObj.optString("price","0");
-                String attachment = threadObj.optString("attachment","0");
+                String digest = threadObj.optString("digest", "0");
+                String special = threadObj.optString("special", "0");
+                String recommendNum = threadObj.optString("recommend_add", "0");
+                String rushReply = threadObj.optString("rushreply", "0");
+                String price = threadObj.optString("price", "0");
+                String attachment = threadObj.optString("attachment", "0");
 
                 // parse short reply
                 List<threadInfo.shortReplyInfo> shortReplyInfoList = new ArrayList<>();
-                if(threadObj.has("reply")){
+                if (threadObj.has("reply")) {
                     JSONArray shortReplies = threadObj.getJSONArray("reply");
-                    for(int j = 0;j<shortReplies.length();j++){
+                    for (int j = 0; j < shortReplies.length(); j++) {
                         JSONObject shortReply = shortReplies.getJSONObject(j);
                         shortReplyInfoList.add(new threadInfo.shortReplyInfo(
                                 shortReply.getString("pid"),
@@ -555,7 +538,7 @@ public class bbsParseUtils {
                 thread.lastUpdator = lastUpdator;
                 thread.viewNum = viewNum;
                 thread.repliesNum = replyNum;
-                thread.publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp)*1000);
+                thread.publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp) * 1000);
                 thread.lastUpdateTimeString = updateAtString;
                 thread.digest = !digest.equals("0");
                 thread.special = !special.equals("0");
@@ -566,25 +549,25 @@ public class bbsParseUtils {
                 thread.shortReplyInfoList = shortReplyInfoList;
                 thread.displayOrder = displayOrder;
 
-                if(!displayOrder.equals("0")){
+                if (!displayOrder.equals("0")) {
                     thread.isTop = true;
                 }
                 threadInfoList.add(thread);
             }
             return threadInfoList;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static class publicMessage{
-        public int id,authorId;
+    public static class publicMessage {
+        public int id, authorId;
         public Date publishAt;
         public String message;
-        public publicMessage(int id, int authorId, Date publishAt, String message){
+
+        public publicMessage(int id, int authorId, Date publishAt, String message) {
             this.id = id;
             this.authorId = authorId;
             this.publishAt = publishAt;
@@ -592,25 +575,24 @@ public class bbsParseUtils {
         }
     }
 
-    public static List<publicMessage> parsePublicMessage(String s){
-        try{
+    public static List<publicMessage> parsePublicMessage(String s) {
+        try {
             List<publicMessage> publicMessageList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONArray pmList = variables.getJSONArray("list");
-            for(int i=0;i<pmList.length();i++){
+            for (int i = 0; i < pmList.length(); i++) {
                 JSONObject pm = (JSONObject) pmList.get(i);
                 int id = Integer.parseInt(pm.getString("id"));
                 int authorId = Integer.parseInt(pm.getString("authorid"));
                 String message = pm.getString("message");
                 String publishAtStringTimestamp = pm.getString("dateline");
-                Date publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp)*1000);
-                publicMessageList.add(new publicMessage(id,authorId,publishAt,message));
+                Date publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp) * 1000);
+                publicMessageList.add(new publicMessage(id, authorId, publishAt, message));
             }
             return publicMessageList;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -642,13 +624,13 @@ public class bbsParseUtils {
         }
     }
 
-    public static List<privateMessage> parsePrivateMessage(String s){
-        try{
+    public static List<privateMessage> parsePrivateMessage(String s) {
+        try {
             List<privateMessage> privateMessageList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONArray pmList = variables.getJSONArray("list");
-            for(int i=0;i<pmList.length();i++){
+            for (int i = 0; i < pmList.length(); i++) {
                 JSONObject pm = (JSONObject) pmList.get(i);
                 privateMessage privateMessageInstance = new privateMessage(
                         Integer.parseInt(pm.getString("plid")),
@@ -656,9 +638,9 @@ public class bbsParseUtils {
                         pm.getString("subject"),
                         Integer.parseInt(pm.getString("touid")),
                         Integer.parseInt(pm.getString("pmid")),
-                        Integer.parseInt(pm.optString("msgfromid","0")),
-                        pm.optString("msgfrom",""),
-                        pm.optString("message",""),
+                        Integer.parseInt(pm.optString("msgfromid", "0")),
+                        pm.optString("msgfrom", ""),
+                        pm.optString("message", ""),
                         pm.getString("tousername"),
                         pm.getString("vdateline")
                 );
@@ -667,20 +649,19 @@ public class bbsParseUtils {
             }
             return privateMessageList;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static List<threadInfo> parseMyThreadListInfo(String s){
-        try{
+    public static List<threadInfo> parseMyThreadListInfo(String s) {
+        try {
             List<threadInfo> threadInfoList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONArray threadList = variables.getJSONArray("data");
-            for(int i=0;i<threadList.length();i++){
+            for (int i = 0; i < threadList.length(); i++) {
                 JSONObject threadObj = threadList.getJSONObject(i);
                 String tid = threadObj.getString("tid");
                 String typeid = threadObj.getString("typeid");
@@ -706,28 +687,27 @@ public class bbsParseUtils {
                 thread.lastUpdator = lastUpdator;
                 thread.viewNum = viewNum;
                 thread.repliesNum = replyNum;
-                thread.publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp)*1000);
+                thread.publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp) * 1000);
                 thread.fid = fid;
-                if(!displayOrder.equals("0")){
+                if (!displayOrder.equals("0")) {
                     thread.isTop = true;
                 }
                 threadInfoList.add(thread);
             }
             return threadInfoList;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static class privateDetailMessage implements Serializable{
+    public static class privateDetailMessage implements Serializable {
         public int plid;
         public String subject;
         public int pmid;
         public String message;
-        public int touid,msgFromId;
+        public int touid, msgFromId;
         public String msgFrom;
         public String vDateline;
         public Boolean isMyself;
@@ -746,19 +726,19 @@ public class bbsParseUtils {
         }
     }
 
-    public static List<privateDetailMessage> parsePrivateDetailMessage(String s, int recvId){
-        try{
+    public static List<privateDetailMessage> parsePrivateDetailMessage(String s, int recvId) {
+        try {
             List<privateDetailMessage> privateDetailMessageList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONArray pmList = variables.getJSONArray("list");
-            for(int i=0;i<pmList.length();i++){
+            for (int i = 0; i < pmList.length(); i++) {
                 JSONObject pm = (JSONObject) pmList.get(i);
                 privateDetailMessage privateDetailMessage = new privateDetailMessage(
                         Integer.parseInt(pm.getString("plid")),
                         pm.getString("subject"),
                         Integer.parseInt(pm.getString("pmid")),
-                        pm.optString("message",""),
+                        pm.optString("message", ""),
                         Integer.parseInt(pm.getString("touid")),
                         Integer.parseInt(pm.getString("msgfromid")),
                         pm.getString("msgfrom"),
@@ -766,126 +746,117 @@ public class bbsParseUtils {
                         true
                 );
 
-                if(privateDetailMessage.msgFromId == recvId){
+                if (privateDetailMessage.msgFromId == recvId) {
                     privateDetailMessage.isMyself = true;
-                }
-                else {
+                } else {
                     privateDetailMessage.isMyself = false;
                 }
-                if(privateDetailMessage.message.length()!=0){
+                if (privateDetailMessage.message.length() != 0) {
                     privateDetailMessageList.add(privateDetailMessage);
                 }
-
-
 
 
             }
             return privateDetailMessageList;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static int parsePrivateDetailMessagePerPage(String s){
-        try{
+    public static int parsePrivateDetailMessagePerPage(String s) {
+        try {
             List<privateDetailMessage> privateDetailMessageList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
 
             return Integer.parseInt(variables.getString("perpage"));
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
 
-    public static String parsePrivateDetailMessagePmid(String s){
-        try{
+    public static String parsePrivateDetailMessagePmid(String s) {
+        try {
             List<privateDetailMessage> privateDetailMessageList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
 
             return variables.getString("pmid");
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static int parsePrivateDetailMessagePage(String s){
-        try{
+    public static int parsePrivateDetailMessagePage(String s) {
+        try {
             List<privateDetailMessage> privateDetailMessageList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
 
             return Integer.parseInt(variables.getString("page"));
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return -1;
         }
     }
 
-    public static Map<String,String> parseUserProfile(String s){
+    public static Map<String, String> parseUserProfile(String s) {
 
-        try{
-            Map<String,String> info = new HashMap<>();
+        try {
+            Map<String, String> info = new HashMap<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
 
             JSONObject spaceInfo = variables.getJSONObject("space");
             Iterator<String> sIterator = spaceInfo.keys();
-            while(sIterator.hasNext()){
+            while (sIterator.hasNext()) {
                 String key = sIterator.next();
-                if(spaceInfo.get(key) instanceof String){
+                if (spaceInfo.get(key) instanceof String) {
                     String val = spaceInfo.getString(key);
-                    info.put(key,val);
+                    info.put(key, val);
                 }
             }
             return info;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static Map<String,String> parseUserGroupInfo(String s){
+    public static Map<String, String> parseUserGroupInfo(String s) {
 
-        try{
-            Map<String,String> info = new HashMap<>();
+        try {
+            Map<String, String> info = new HashMap<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
 
             JSONObject spaceInfo = variables.getJSONObject("space");
             JSONObject groupInfo = spaceInfo.getJSONObject("group");
             Iterator<String> sIterator = groupInfo.keys();
-            while(sIterator.hasNext()){
+            while (sIterator.hasNext()) {
                 String key = sIterator.next();
-                if(groupInfo.get(key) instanceof String){
+                if (groupInfo.get(key) instanceof String) {
                     String val = groupInfo.getString(key);
-                    info.put(key,val);
+                    info.put(key, val);
                 }
             }
             return info;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static class userFriend{
+    public static class userFriend {
         public int uid;
         public String username;
 
@@ -895,13 +866,13 @@ public class bbsParseUtils {
         }
     }
 
-    public static List<userFriend> parseUserFriendInfo(String s){
-        try{
+    public static List<userFriend> parseUserFriendInfo(String s) {
+        try {
             List<userFriend> userFriendList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONArray pmList = variables.getJSONArray("list");
-            for(int i=0;i<pmList.length();i++){
+            for (int i = 0; i < pmList.length(); i++) {
                 JSONObject pm = (JSONObject) pmList.get(i);
                 userFriend userFriend = new userFriend(
                         Integer.parseInt(pm.getString("uid")),
@@ -911,29 +882,29 @@ public class bbsParseUtils {
             }
             return userFriendList;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static class noticeNumInfo{
-        public int push,pm,prompt,mypost;
-        public noticeNumInfo(String push,String pm, String prompt, String mypost){
+    public static class noticeNumInfo {
+        public int push, pm, prompt, mypost;
+
+        public noticeNumInfo(String push, String pm, String prompt, String mypost) {
             this.push = Integer.parseInt(push);
             this.pm = Integer.parseInt(pm);
             this.prompt = Integer.parseInt(prompt);
             this.mypost = Integer.parseInt(mypost);
         }
 
-        public int getAllNoticeInfo(){
-            return push+pm+prompt+mypost;
+        public int getAllNoticeInfo() {
+            return push + pm + prompt + mypost;
         }
     }
 
-    public static noticeNumInfo parseNoticeInfo(String s){
-        try{
+    public static noticeNumInfo parseNoticeInfo(String s) {
+        try {
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONObject notice = variables.getJSONObject("notice");
@@ -941,25 +912,24 @@ public class bbsParseUtils {
             String newpm = notice.getString("newpm");
             String newprompt = notice.getString("newprompt");
             String newmypost = notice.getString("newmypost");
-            return new noticeNumInfo(newpush,newpm,newprompt,newmypost);
-        }
-        catch (Exception e){
+            return new noticeNumInfo(newpush, newpm, newprompt, newmypost);
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static class notificationDetailInfo{
-        public int id,uid;
+    public static class notificationDetailInfo {
+        public int id, uid;
         public String type;
         public Boolean isNew;
         public int authorId;
-        public String author,note;
+        public String author, note;
         public Date date;
         public int fromId;
         public String fromIdType;
         public int from_num;
-        public Map<String,String> noteVariables;
+        public Map<String, String> noteVariables;
 
         public notificationDetailInfo(int id, int uid, String type, Boolean isNew, int authorId, String author, String note, Date date, int fromId, String fromIdType, int from_num, Map<String, String> noteVariables) {
             this.id = id;
@@ -977,61 +947,59 @@ public class bbsParseUtils {
         }
     }
 
-    public static Map<String,String> parseNotificationVariable(JSONObject noteVar){
+    public static Map<String, String> parseNotificationVariable(JSONObject noteVar) {
 
-        try{
-            Map<String,String> info = new HashMap<>();
+        try {
+            Map<String, String> info = new HashMap<>();
 
             JSONObject spaceInfo = noteVar.getJSONObject("notevar");
             Iterator<String> sIterator = spaceInfo.keys();
-            while(sIterator.hasNext()){
+            while (sIterator.hasNext()) {
                 String key = sIterator.next();
-                if(spaceInfo.get(key) instanceof String){
+                if (spaceInfo.get(key) instanceof String) {
                     String val = spaceInfo.getString(key);
-                    info.put(key,val);
+                    info.put(key, val);
                 }
             }
             return info;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static int parseNotificationCount(String s){
-        try{
+    public static int parseNotificationCount(String s) {
+        try {
             List<privateDetailMessage> privateDetailMessageList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
 
             return Integer.parseInt(variables.getString("count"));
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
 
-    public static List<notificationDetailInfo> parseNotificationDetailInfo(String s){
-        try{
+    public static List<notificationDetailInfo> parseNotificationDetailInfo(String s) {
+        try {
             List<notificationDetailInfo> notificationDetailInfoList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONArray noticeList = variables.getJSONArray("list");
-            for(int i=0;i<noticeList.length();i++){
+            for (int i = 0; i < noticeList.length(); i++) {
                 JSONObject notice = noticeList.getJSONObject(i);
                 String publishAtStringTimestamp = notice.getString("dateline");
-                Date publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp)*1000);
+                Date publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp) * 1000);
                 notificationDetailInfo notificationDetail = new notificationDetailInfo(
                         Integer.parseInt(notice.getString("id")),
                         Integer.parseInt(notice.getString("uid")),
                         notice.getString("type"),
                         !notice.getString("new").equals("0"),
                         Integer.parseInt(notice.getString("authorid")),
-                        notice.optString("author",""),
+                        notice.optString("author", ""),
                         notice.getString("note"),
                         publishAt,
                         Integer.parseInt(notice.getString("from_id")),
@@ -1045,15 +1013,14 @@ public class bbsParseUtils {
             }
             return notificationDetailInfoList;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
     public static class smileyInfo implements Parcelable {
-        public String code,imageRelativePath;
+        public String code, imageRelativePath;
         public int category;
 
         public smileyInfo(String code, String imageRelativePath, int category) {
@@ -1081,7 +1048,7 @@ public class bbsParseUtils {
                 String imageRelativePath = source.readString();
                 int category = source.readInt();
 
-                return new smileyInfo(code,imageRelativePath,category);
+                return new smileyInfo(code, imageRelativePath, category);
             }
 
             @Override
@@ -1091,15 +1058,15 @@ public class bbsParseUtils {
         };
     }
 
-    public static List<smileyInfo> parseSmileyInfo(String s){
-        try{
+    public static List<smileyInfo> parseSmileyInfo(String s) {
+        try {
             List<smileyInfo> smileyInfoList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONArray smileyCateList = variables.getJSONArray("smilies");
-            for(int i=0;i<smileyCateList.length();i++){
+            for (int i = 0; i < smileyCateList.length(); i++) {
                 JSONArray smileyCates = smileyCateList.getJSONArray(i);
-                for(int j=0;j<smileyCates.length();j++){
+                for (int j = 0; j < smileyCates.length(); j++) {
                     JSONObject smiley = smileyCates.getJSONObject(j);
                     smileyInfoList.add(new smileyInfo(
                             smiley.getString("code"),
@@ -1110,15 +1077,14 @@ public class bbsParseUtils {
             }
             return smileyInfoList;
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public static int parseSmileyCateNum(String s){
-        try{
+    public static int parseSmileyCateNum(String s) {
+        try {
             List<smileyInfo> smileyInfoList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
@@ -1126,59 +1092,81 @@ public class bbsParseUtils {
             return smileyCateList.length();
 
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return 0;
         }
     }
 
 
+    public static bbsPollInfo parsePollInfo(String s) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
 
-    public static bbsPollInfo parsePollInfo(String s){
-                try{
-                    ObjectMapper mapper = new ObjectMapper();
-
-                    List<smileyInfo> smileyInfoList = new ArrayList<>();
-                    JSONObject jsonObject = new JSONObject(s);
-                    JSONObject variables = jsonObject.getJSONObject("Variables");
-                    JSONObject pollInfo = variables.getJSONObject("special_poll");
-                    return mapper.readValue(pollInfo.toString(),bbsPollInfo.class);
-
+            List<smileyInfo> smileyInfoList = new ArrayList<>();
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject variables = jsonObject.getJSONObject("Variables");
+            JSONObject pollInfo = variables.getJSONObject("special_poll");
+            return mapper.readValue(pollInfo.toString(), bbsPollInfo.class);
 
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             // e.printStackTrace();
             return null;
         }
     }
 
-    public static class returnMessage{
+    public static class returnMessage {
         @JsonProperty("messageval")
         public String value;
         @JsonProperty("messagestr")
         public String string;
     }
 
-    public static returnMessage parseReturnMessage(String s){
-        try{
+    public static returnMessage parseReturnMessage(String s) {
+        try {
             ObjectMapper mapper = new ObjectMapper();
 
             JSONObject jsonObject = new JSONObject(s);
             JSONObject messageObj = jsonObject.getJSONObject("Message");
-            return mapper.readValue(messageObj.toString(),returnMessage.class);
+            return mapper.readValue(messageObj.toString(), returnMessage.class);
 
 
-
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             // e.printStackTrace();
             return null;
         }
     }
 
-    public static class DetailedThreadInfo{
+    public class OneZeroDeserializer extends JsonDeserializer<Boolean> {
+
+        public OneZeroDeserializer() {
+            super();
+        }
+
+        @Override
+        public Boolean deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            JsonToken currentToken = p.getCurrentToken();
+            if (currentToken.equals(JsonToken.VALUE_STRING)) {
+                String text = p.getText();
+                if (text.equals("0") || text.equals("")) {
+                    return Boolean.FALSE;
+                } else {
+                    return Boolean.TRUE;
+                }
+
+            } else if (currentToken.equals(JsonToken.VALUE_TRUE)) {
+                return Boolean.TRUE;
+            } else if (currentToken.equals(JsonToken.VALUE_FALSE)) {
+                return Boolean.FALSE;
+            } else if (currentToken.equals(JsonToken.VALUE_NULL)) {
+                return Boolean.FALSE;
+            }
+            return Boolean.TRUE;
+        }
+    }
+
+    public static class DetailedThreadInfo {
         @JsonProperty("tid")
         public String tid;
         @JsonProperty("fid")
@@ -1187,19 +1175,34 @@ public class bbsParseUtils {
         public String postableId;
         @JsonProperty("typeid")
         public String typeId;
-        public String sortid,readperm,price,author,authorid,subject;
+        public String sortid, readperm, price, author, authorid, subject;
         public String lastpost, lastposter, views, replies, displayorder;
-        public String highlight,digest, rate, special;
-        public String attachment, moderated, closed, stickreply;
+        @JsonDeserialize(using = OneZeroDeserializer.class)
+        public Boolean highlight, digest, rate, special, moderated, closed, is_archived;
+        public String attachment, stickreply;
         public String recommends, recommend_add, recommend_sub;
         public String heats, status, isgroup, favtimes;
         public String stamp, icon, pushedaid, cover;
         public String replycredit;
         public String relatebytag, maxposition, bgcolor, comments, hidden;
         public String threadtable, threadtableid, posttable, allreplies;
-        public String is_archived, archiveid;
+        public String archiveid;
         public String subjectenc, short_subject;
         public String recommendlevel, heatlevel, relay, ordertype, recommend;
+    }
+
+    public static DetailedThreadInfo parseDetailedThreadInfo(String s) {
+        try {
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject variables = jsonObject.getJSONObject("Variables");
+            JSONObject threadInfo = variables.getJSONObject("thread");
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(threadInfo.toString(), DetailedThreadInfo.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
