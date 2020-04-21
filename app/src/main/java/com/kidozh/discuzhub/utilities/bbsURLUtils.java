@@ -222,10 +222,22 @@ public class bbsURLUtils {
         return UC_SERVER_URL+String.format("/avatar.php?uid=%s",uid);
     }
 
+//    public static String getLoginUrl(){
+//        return BASE_URL + "/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1";
+//        //return "https://bbs.nwpu.edu.cn/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1";
+//    }
+
     public static String getLoginUrl(){
-        return BASE_URL + "/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1";
-        //return "https://bbs.nwpu.edu.cn/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1";
+        Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","login")
+                .appendQueryParameter("lssubmit","yes")
+                .appendQueryParameter("loginsubmit","yes")
+                .build();
+        return uri.toString();
     }
+
+
 
     public static String getLoginWebUrl(){
         return BASE_URL+"/member.php?mod=logging&action=login";

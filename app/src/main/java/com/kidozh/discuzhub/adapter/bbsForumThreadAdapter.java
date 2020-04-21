@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
@@ -210,9 +211,11 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
             int readPermissionVal = Integer.parseInt(threadInfo.readperm);
             if(curUser == null || curUser.readPerm < readPermissionVal){
                 holder.mReadPerm.setTextColor(mContext.getColor(R.color.colorWarn));
+                holder.mReadPermIcon.setImageDrawable(mContext.getDrawable(R.drawable.vector_drawable_close));
             }
             else {
                 holder.mReadPerm.setTextColor(mContext.getColor(R.color.colorTextDefault));
+                holder.mReadPermIcon.setImageDrawable(mContext.getDrawable(R.drawable.vector_drawable_read_permission));
             }
         }
 
@@ -227,6 +230,17 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
             else {
                 holder.mAttachmentIcon.setImageDrawable(mContext.getDrawable(R.drawable.vector_drawable_image_24px));
             }
+        }
+
+        if(threadInfo.price !=0 ){
+            holder.mPriceImage.setVisibility(View.VISIBLE);
+            holder.mPriceNumber.setText(String.valueOf(threadInfo.price));
+            holder.mPriceNumber.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.mPriceImage.setVisibility(View.GONE);
+            // holder.mPriceNumber.setText(String.valueOf(threadInfo.price));
+            holder.mPriceNumber.setVisibility(View.GONE);
         }
 
 
@@ -331,6 +345,10 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
         ImageView mAttachmentIcon;
         @BindView(R.id.bbs_thread_attachment_number)
         TextView mAttachmentNumber;
+        @BindView(R.id.bbs_thread_price_image)
+        ImageView mPriceImage;
+        @BindView(R.id.bbs_thread_price_number)
+        TextView mPriceNumber;
         public bbsForumThreadViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
