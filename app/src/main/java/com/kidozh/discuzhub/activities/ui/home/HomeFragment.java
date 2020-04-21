@@ -161,7 +161,7 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
-        homeViewModel.isLoading.observe(this, new Observer<Boolean>() {
+        homeViewModel.isLoading.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){

@@ -83,6 +83,7 @@ public class HomeViewModel extends AndroidViewModel {
             public void onFailure(Call call, IOException e) {
                 forumCategories.postValue(null);
                 isLoading.postValue(false);
+                errorText.postValue(context.getString(R.string.parse_failed));
             }
 
             @Override
