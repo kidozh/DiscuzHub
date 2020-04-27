@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@color/colorTurquoise</color>
-    <color name="colorPrimaryDark">@color/colorGreensea</color>
-    <color name="colorAccent">@color/colorPumpkin</color>
+    <color name="colorPrimary">#BB86FC</color>
+    <color name="colorPrimaryDark">#512DA8</color>
+    <color name="colorAccent">#03DAC5</color>
 
 
 
@@ -12,6 +12,8 @@
     <color name="colorTextSecondaryDefault">@color/colorCloud</color>
     <color name="colorBackgroundSecondaryDefault">@color/colorWetasphalt</color>
     <color name="colorHighlight">@color/colorCloud</color>
+
+    <color name="colorUnSafeStatus">#CF6679</color>
 
 
 </resources>

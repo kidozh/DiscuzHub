@@ -197,6 +197,12 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
 
             }
         });
+        forumThreadViewModel.forumDetailedInfoMutableLiveData.observe(this, new Observer<bbsParseUtils.forumDetailedInfo>() {
+            @Override
+            public void onChanged(bbsParseUtils.forumDetailedInfo forumDetailedInfo) {
+
+            }
+        });
 
     }
 
@@ -362,8 +368,9 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                 super.onScrollStateChanged(recyclerView, newState);
                 if(isScrollAtEnd()){
                     Boolean hasLoadAll = forumThreadViewModel.hasLoadAll.getValue();
+                    boolean loading = forumThreadViewModel.isLoading.getValue();
                     Log.d(TAG,"load all "+hasLoadAll+" page "+forumThreadViewModel.forumStatusMutableLiveData.getValue().page);
-                    if(!hasLoadAll){
+                    if(!loading && !hasLoadAll){
                         bbsURLUtils.ForumStatus status = forumThreadViewModel.forumStatusMutableLiveData.getValue();
                         if(status!=null){
                             status.page += 1;
@@ -404,10 +411,6 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                     }
 
                 }
-
-
-                // getThreadInfo();
-                // new getThreadInfoTask(getApplicationContext()).execute();
             }
         });
     }

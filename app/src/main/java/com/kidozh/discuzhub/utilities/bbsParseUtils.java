@@ -5,11 +5,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -238,6 +241,30 @@ public class bbsParseUtils {
                 threadInfoList.add(thread);
             }
             return threadInfoList;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown=true)
+    public static class forumDetailedInfo{
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int fid, fup, threads, posts, autoclose, threadcount, password;
+        public String name, rules, description;
+
+
+    }
+
+    public static forumDetailedInfo getForumDetailedInfo(String s) {
+        try {
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject variables = jsonObject.getJSONObject("Variables");
+            JSONObject forumInfo = variables.getJSONObject("forum");
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(forumInfo.toString(), forumDetailedInfo.class);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1106,12 +1133,19 @@ public class bbsParseUtils {
             List<smileyInfo> smileyInfoList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONObject pollInfo = variables.getJSONObject("special_poll");
-            return mapper.readValue(pollInfo.toString(), bbsPollInfo.class);
+            if(variables.has("special_poll")){
+                JSONObject pollInfo = variables.getJSONObject("special_poll");
+                return mapper.readValue(pollInfo.toString(), bbsPollInfo.class);
+            }
+            else {
+                return null;
+            }
+
 
 
         } catch (Exception e) {
-            // e.printStackTrace();
+
+            e.printStackTrace();
             return null;
         }
     }
@@ -1138,11 +1172,7 @@ public class bbsParseUtils {
         }
     }
 
-    public class OneZeroDeserializer extends JsonDeserializer<Boolean> {
-
-        public OneZeroDeserializer() {
-            super();
-        }
+    public static class OneZeroDeserializer extends JsonDeserializer<Boolean> {
 
         @Override
         public Boolean deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
@@ -1166,29 +1196,78 @@ public class bbsParseUtils {
         }
     }
 
+    @JsonIgnoreProperties(ignoreUnknown=true)
     public static class DetailedThreadInfo {
-        @JsonProperty("tid")
         public String tid;
-        @JsonProperty("fid")
         public String fid;
         @JsonProperty("posttableid")
         public String postableId;
         @JsonProperty("typeid")
         public String typeId;
-        public String sortid, readperm, price, author, authorid, subject;
-        public String lastpost, lastposter, views, replies, displayorder;
+        public String sortid,  author, authorid, subject;
+        @JsonProperty("lastpost")
+        @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="s")
+        public Date lastPostTime;
+        public String lastposter, displayorder;
+        @JsonFormat(shape=JsonFormat.Shape.STRING)
+        public int views, replies;
+        public String highlight;
         @JsonDeserialize(using = OneZeroDeserializer.class)
-        public Boolean highlight, digest, rate, special, moderated, closed, is_archived;
-        public String attachment, stickreply;
-        public String recommends, recommend_add, recommend_sub;
-        public String heats, status, isgroup, favtimes;
+        @JsonFormat(shape=JsonFormat.Shape.STRING)
+        public Boolean  special, moderated, is_archived;
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int rate, closed, status, readperm, price, digest;
+
+
+        public String attachment;
+        @JsonDeserialize(using = OneZeroDeserializer.class)
+        @JsonProperty("stickreply")
+        public boolean stickReply;
+        @JsonFormat(shape=JsonFormat.Shape.STRING)
+        public int recommends, recommend_add, recommend_sub;
+        public String isgroup;
+        @JsonFormat(shape=JsonFormat.Shape.STRING)
+        public int favtimes = 0, sharedtimes = 0, heats = 0;
         public String stamp, icon, pushedaid, cover;
-        public String replycredit;
-        public String relatebytag, maxposition, bgcolor, comments, hidden;
-        public String threadtable, threadtableid, posttable, allreplies;
+        @JsonProperty("replycredit")
+        public String replyCredit;
+        public String relatebytag, maxposition, bgcolor;
+        @JsonProperty("maxposition")
+        @JsonFormat(shape=JsonFormat.Shape.STRING)
+        public int maxPosition;
+        @JsonProperty("comments")
+        @JsonFormat(shape= JsonFormat.Shape.STRING)
+        public int comments;
+        @JsonFormat(shape= JsonFormat.Shape.STRING)
+        @JsonDeserialize(using = OneZeroDeserializer.class)
+        public boolean hidden;
+        public String threadtable, threadtableid, posttable;
+        @JsonProperty("allreplies")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int allreplies;
         public String archiveid;
         public String subjectenc, short_subject;
         public String recommendlevel, heatlevel, relay, ordertype, recommend;
+        @JsonProperty("freemessage")
+        public String freeMessage;
+        @JsonProperty("replycredit_rule")
+        public replyCreditRule creditRule;
+    }
+
+    public static class replyCreditRule{
+        public String tid;
+        @JsonProperty("extcredits")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int extCredits;
+        @JsonProperty("extcreditstype")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int extCreditsType;
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int times, membertimes;
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int random;
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int remaining;
     }
 
     public static DetailedThreadInfo parseDetailedThreadInfo(String s) {

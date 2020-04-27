@@ -176,7 +176,7 @@
                 android:layout_marginStart="8dp"
                 app:layout_constraintStart_toEndOf="@+id/bbs_thread_read_perm_number"
                 app:layout_constraintTop_toTopOf="@+id/bbs_thread_view_textview"
-                app:srcCompat="@drawable/vector_drawable_price_tag" />
+                app:srcCompat="@drawable/ic_coin_24dp" />
 
             <ImageView
                 android:id="@+id/bbs_thread_attachment_image"

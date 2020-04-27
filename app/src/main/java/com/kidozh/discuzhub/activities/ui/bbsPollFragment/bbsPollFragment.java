@@ -277,8 +277,8 @@ public class bbsPollFragment extends Fragment {
     }
 
     void configureRecyclerview(){
-        pollOptionRecyclerview.setLayoutManager(new GridLayoutManager(getActivity(),2));
-        //pollOptionRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
+        //pollOptionRecyclerview.setLayoutManager(new GridLayoutManager(getActivity(),2));
+        pollOptionRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new bbsPollOptionAdapter();
         pollOptionRecyclerview.setAdapter(adapter);
         List<bbsPollInfo.option> options = pollInfo.options;

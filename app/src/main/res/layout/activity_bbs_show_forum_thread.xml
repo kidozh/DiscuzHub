@@ -14,8 +14,9 @@
             android:layout_height="wrap_content"
             android:background="@color/colorBackgroundDefault"
             android:backgroundTint="@color/colorBackgroundDefault"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+            app:contentScrim="@null"
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
+            app:statusBarScrim="@null">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -179,6 +180,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@color/colorAccent"
         app:layout_behavior="@string/fab_transformation_scrim_behavior"
         app:srcCompat="@drawable/vector_drawable_plus" />
 

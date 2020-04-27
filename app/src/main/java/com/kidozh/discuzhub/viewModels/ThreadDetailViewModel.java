@@ -115,7 +115,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
                     forumUserBriefInfo curPersonInfo = bbsParseUtils.parseBreifUserInfo(s);
                     // Log.d(TAG,"Recv USER info "+curPersonInfo);
                     bbsPersonInfoMutableLiveData.postValue(curPersonInfo);
-                    bbsPollInfo pollInfo = bbsParseUtils.parsePollInfo(s);
+
                     bbsParseUtils.returnMessage message = bbsParseUtils.parseReturnMessage(s);
                     if(message !=null){
                         Log.d(TAG,"parse message "+message.string);
@@ -123,15 +123,20 @@ public class ThreadDetailViewModel extends AndroidViewModel {
                     }
                     bbsParseUtils.DetailedThreadInfo detailedThreadInfo = bbsParseUtils.parseDetailedThreadInfo(s);
                     detailedThreadInfoMutableLiveData.postValue(detailedThreadInfo);
+                    bbsPollInfo pollInfo = bbsParseUtils.parsePollInfo(s);
 
-                    if(pollInfoLiveData.getValue() == null){
+                    if(pollInfoLiveData.getValue() == null && pollInfo !=null){
+                        Log.d(TAG,"recv poll info "+ pollInfo.votersCount);
                         pollInfoLiveData.postValue(pollInfo);
+
                     }
                     List<threadCommentInfo> threadInfoList = bbsParseUtils.parseThreadCommentInfo(s);
+                    int totalThreadSize = 0;
                     if(threadInfoList !=null && threadInfoList.size()!=0){
-                        hasLoadAll.postValue(false);
+
                         if(threadStatus.page == 1){
                             threadCommentInfoListLiveData.postValue(threadInfoList);
+                            totalThreadSize = threadInfoList.size();
                         }
                         else {
                             List<threadCommentInfo> currentThreadInfoList = threadCommentInfoListLiveData.getValue();
@@ -140,17 +145,10 @@ public class ThreadDetailViewModel extends AndroidViewModel {
                             }
                             currentThreadInfoList.addAll(threadInfoList);
                             threadCommentInfoListLiveData.postValue(currentThreadInfoList);
+                            totalThreadSize = currentThreadInfoList.size();
 
-                        }
-                        // load all?
-                        if(threadInfoList.size() < threadStatus.perPage){
-                            hasLoadAll.postValue(true);
-                        }
-                        else {
-                            hasLoadAll.postValue(false);
                         }
                         // special condition?
-
 
                     }
                     else {
@@ -163,6 +161,36 @@ public class ThreadDetailViewModel extends AndroidViewModel {
                             threadStatus.page -=1;
                             Log.d(TAG,"Roll back page when page to "+threadStatus.page);
                             threadStatusMutableLiveData.postValue(threadStatus);
+                        }
+                    }
+                    // load all?
+                    if(detailedThreadInfo !=null){
+                        int maxThreadNumber = detailedThreadInfo.replies;
+                        List<threadCommentInfo> currentThreadInfoList = threadCommentInfoListLiveData.getValue();
+                        int totalThreadCommentsNumber = 0;
+
+                        if(currentThreadInfoList !=null){
+                            totalThreadCommentsNumber = currentThreadInfoList.size();
+                            Log.d(TAG, "current size "+totalThreadCommentsNumber);
+                        }
+                        else {
+                            Log.d(TAG, "no thread is found ");
+                        }
+
+                        Log.d(TAG,"PAGE "+threadStatus.page+" MAX POSITION "+maxThreadNumber +" CUR "+totalThreadCommentsNumber+ " "+totalThreadSize);
+                        if(totalThreadSize >= maxThreadNumber){
+                            hasLoadAll.postValue(true);
+                        }
+                        else {
+                            hasLoadAll.postValue(false);
+                        }
+                    }
+                    else {
+                        if(threadInfoList.size() < threadStatus.perPage){
+                            hasLoadAll.postValue(true);
+                        }
+                        else {
+                            hasLoadAll.postValue(false);
                         }
                     }
                 }

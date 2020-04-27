@@ -10,10 +10,8 @@
         android:id="@+id/item_poll_option_cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:clickable="true"
+        android:descendantFocusability="afterDescendants"
         android:foreground="?attr/selectableItemBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,57 +21,92 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/item_poll_option_imageView"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:adjustViewBounds="true"
-                android:cropToPadding="true"
-                android:scaleType="centerCrop"
-                app:layout_constraintEnd_toEndOf="parent"
+            <TextView
+                android:id="@+id/item_poll_option_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@color/colorPrimary"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:textColor="@color/colorPureWhite"
+                android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+                tools:text="1" />
 
             <TextView
                 android:id="@+id/item_poll_option_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:alpha="0.75"
-                android:background="@color/colorBackgroundSecondaryDefault"
-                android:maxLines="2"
                 android:paddingStart="8dp"
                 android:textAlignment="viewStart"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                app:layout_constraintBottom_toBottomOf="@+id/item_poll_option_imageView"
+                android:textColor="@color/colorTextDefault"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/item_poll_option_position"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="@tools:sample/last_names" />
 
-            <LinearLayout
-                android:id="@+id/item_poll_option_linearLayout"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@+id/item_poll_option_imageView">
-
-                <ProgressBar
-                    android:id="@+id/item_poll_option_vote_progressBar"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:max="100"
-                    android:progress="60" />
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/item_poll_option_name">
 
                 <TextView
                     android:id="@+id/item_poll_option_vote_percent"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:singleLine="true"
+                    android:textColor="?attr/colorPrimary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:text="@tools:sample/first_names" />
-            </LinearLayout>
+
+                <TextView
+                    android:id="@+id/item_poll_option_vote_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toStartOf="@+id/item_poll_option_vote_percent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="1212" />
+
+                <ImageView
+                    android:id="@+id/item_poll_option_check_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/vector_drawable_check_24px" />
+
+                <Button
+                    android:id="@+id/item_poll_option_watch_picture"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:text="@string/bbs_poll_see_picture"
+                    app:layout_constraintStart_toEndOf="@+id/item_poll_option_check_icon"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ProgressBar
+                android:id="@+id/item_poll_option_vote_progressBar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:max="100"
+                android:progress="60"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,6 +1,8 @@
 package com.kidozh.discuzhub.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,8 +23,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -56,37 +62,45 @@ public class bbsPollOptionAdapter extends RecyclerView.Adapter<bbsPollOptionAdap
         holder.pollOptionName.setText(option.name);
         holder.pollOptionProgressBar.setMax(100);
         holder.pollOptionProgressBar.setProgress((int) option.percent);
-        Resources res = context.getResources();
-        String votersNumberString = res.getQuantityString(R.plurals.poll_voter_number, option.voteNumber, option.voteNumber);
-        holder.pollOptionVotePercent.setText(context.getString(R.string.poll_vote_percent_templates, option.percent, votersNumberString));
+        holder.pollOptionPosition.setText(String.valueOf(position+1));
+        //Resources res = context.getResources();
+        //String votersNumberString = res.getQuantityString(R.plurals.poll_voter_number, option.voteNumber, option.voteNumber);
+        holder.pollOptionVotePercent.setText(context.getString(R.string.bbs_poll_vote_percent,String.valueOf(option.percent)));
+        holder.pollOptionVoteNumber.setText(String.valueOf(option.voteNumber));
+        String colorString = option.colorName;
+        if(!colorString.startsWith("#")){
+            colorString = "#" + colorString;
+        }
+        Log.d(TAG,"color "+colorString);
+        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor(colorString));
+        holder.pollOptionProgressBar.setProgressTintList(ColorStateList.valueOf(colorDrawable.getColor()));
         if(option.imageInfo == null){
-            String colorString = option.colorName;
-            if(!colorString.startsWith("#")){
-                colorString = "#" + colorString;
-            }
-            Log.d(TAG,"color "+colorString);
-            ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor(colorString));
-            holder.pollOptionImage.setImageDrawable(colorDrawable);
-            // holder.pollOptionProgressBar.setProgressDrawable(colorDrawable);
 
+            //holder.pollOptionImage.setImageDrawable(colorDrawable);
+            // holder.pollOptionProgressBar.setProgressDrawable(colorDrawable);
+            holder.pollOptionWatchPicture.setVisibility(View.GONE);
         }
         else {
-            RequestOptions requestOptions = new RequestOptions()
-                    //.centerCrop()
-                    .placeholder(R.drawable.vector_drawable_image_wider_placeholder)
-                    .error(R.drawable.vector_drawable_image_crash);
-            Glide.with(context)
-                    .load(bbsURLUtils.getBaseUrl()+"/"+option.imageInfo.bigURL)
-                    .apply(requestOptions)
-                    .into(holder.pollOptionImage);
+            String imageUrl = bbsURLUtils.getBaseUrl()+"/"+option.imageInfo.bigURL;
+            holder.pollOptionWatchPicture.setVisibility(View.VISIBLE);
+            holder.pollOptionWatchPicture.setClickable(true);
+            holder.pollOptionWatchPicture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, showImageFullscreenActivity.class);
+                    intent.putExtra("URL",imageUrl);
+                    context.startActivity(intent);
+                }
+            });
         }
         // check the vote status
         if(option.checked){
-            holder.pollOptionName.setAlpha(1);
-            holder.pollOptionImage.setImageDrawable(context.getDrawable(R.drawable.vector_drawable_check_24px));
+            holder.pollOptionCheckIcon.setColorFilter(context.getColor(R.color.colorPrimary));
+            holder.pollOptionCheckIcon.setVisibility(View.VISIBLE);
+
         }
         else {
-            holder.pollOptionName.setAlpha(0.75f);
+            holder.pollOptionCheckIcon.setVisibility(View.INVISIBLE);
         }
 
 
@@ -107,14 +121,20 @@ public class bbsPollOptionAdapter extends RecyclerView.Adapter<bbsPollOptionAdap
     public class ViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.item_poll_option_cardview)
         CardView pollOptionCardview;
-        @BindView(R.id.item_poll_option_imageView)
-        ImageView pollOptionImage;
+        @BindView(R.id.item_poll_option_vote_number)
+        TextView pollOptionVoteNumber;
+        @BindView(R.id.item_poll_option_watch_picture)
+        Button pollOptionWatchPicture;
         @BindView(R.id.item_poll_option_name)
         TextView pollOptionName;
         @BindView(R.id.item_poll_option_vote_progressBar)
         ProgressBar pollOptionProgressBar;
         @BindView(R.id.item_poll_option_vote_percent)
         TextView pollOptionVotePercent;
+        @BindView(R.id.item_poll_option_check_icon)
+        ImageView pollOptionCheckIcon;
+        @BindView(R.id.item_poll_option_position)
+        TextView pollOptionPosition;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

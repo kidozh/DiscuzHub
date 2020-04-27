@@ -484,6 +484,16 @@
     <string name="app_use_agreement">Statement and agreement</string>
     <string name="app_agree_to_continue">Agree and continue</string>
     <string name="refresh_page">refresh</string>
+    <string name="thread_is_closed">closed</string>
+    <string name="thread_is_highlighted">highlighted</string>
+    <string name="thread_is_digested">digested</string>
+    <string name="thread_is_moderated">moderated</string>
+    <string name="thread_is_archived">archived</string>
+    <string name="thread_stick_reply">Stick reply</string>
+    <string name="thread_price">$%1$d</string>
+    <string name="thread_is_hidden">hidden</string>
+    <string name="bbs_poll_see_picture">Picture</string>
+    <string name="bbs_poll_vote_percent">%1$s %%</string>
 
 
 </resources>

@@ -15,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
+            android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary">
 
 
@@ -22,10 +23,63 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/bbs_thread_detail_type_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:clipChildren="true"
+                    android:clipToPadding="true"
+                    tools:itemCount="1" />
+
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/bbs_thread_poll_fragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent">
+
+                    <ImageView
+                        android:id="@+id/bbs_thread_comment_icon"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/vector_drawable_forum" />
+
+                    <TextView
+                        android:id="@+id/bbs_thread_comment_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toEndOf="@+id/bbs_thread_comment_icon"
+                        app:layout_constraintTop_toTopOf="@+id/bbs_thread_comment_icon"
+                        tools:text="45" />
+
+                    <ImageView
+                        android:id="@+id/bbs_thread_view_icon"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintStart_toEndOf="@+id/bbs_thread_comment_number"
+                        app:layout_constraintTop_toTopOf="@+id/bbs_thread_comment_icon"
+                        app:srcCompat="@drawable/vector_drawable_view_eye" />
+
+                    <TextView
+                        android:id="@+id/bbs_thread_view_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintStart_toEndOf="@+id/bbs_thread_view_icon"
+                        app:layout_constraintTop_toTopOf="@+id/bbs_thread_view_icon"
+                        tools:text="46" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
@@ -34,7 +88,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+<!--        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"-->
+<!--        >-->
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/bbs_thread_detail_swipeRefreshLayout"

@@ -41,6 +41,7 @@ public class ForumThreadViewModel extends AndroidViewModel {
     public MutableLiveData<List<threadInfo>> threadInfoListMutableLiveData;
     public MutableLiveData<String> jsonString, forumDescription;
     public LiveData<Integer> draftNumberLiveData;
+    public MutableLiveData<bbsParseUtils.forumDetailedInfo> forumDetailedInfoMutableLiveData;
 
 
     public ForumThreadViewModel(@NonNull Application application) {
@@ -57,6 +58,7 @@ public class ForumThreadViewModel extends AndroidViewModel {
                 .getInstance(getApplication())
                 .getbbsThreadDraftDao()
                 .getDraftNumber();
+        forumDetailedInfoMutableLiveData = new MutableLiveData<>();
     }
 
     public void setBBSInfo(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, forumInfo forum){
@@ -81,6 +83,10 @@ public class ForumThreadViewModel extends AndroidViewModel {
     }
 
     public void getThreadList(bbsURLUtils.ForumStatus forumStatus){
+        boolean loading = isLoading.getValue();
+        if(loading){
+            return;
+        }
         isError.postValue(false);
         isLoading.postValue(true);
         Request request = new Request.Builder()
@@ -121,6 +127,8 @@ public class ForumThreadViewModel extends AndroidViewModel {
                     if(currentThreadInfo == null){
                         currentThreadInfo = new ArrayList<>();
                     }
+                    bbsParseUtils.forumDetailedInfo forumDetailedInfo = bbsParseUtils.getForumDetailedInfo(s);
+                    forumDetailedInfoMutableLiveData.postValue(forumDetailedInfo);
 
                     if(threadInfoList == null){
                         isError.postValue(true);
@@ -133,17 +141,26 @@ public class ForumThreadViewModel extends AndroidViewModel {
                     else {
                         currentThreadInfo.addAll(threadInfoList);
                         threadInfoListMutableLiveData.postValue(currentThreadInfo);
-                        Log.d(TAG,"recv thread "+threadInfoList.size()+" status ppp "+forumStatus.perPage);
-                        if(threadInfoList.size() < forumStatus.perPage){
 
-                            hasLoadAll.postValue(true);
-                            if(forumStatus.page != 1){
-                                // rollback
-                                forumStatus.page -= 1;
-                                forumStatusMutableLiveData.postValue(forumStatus);
+                        // need to
+                        if(forumDetailedInfo !=null){
+                            Log.d(TAG,"recv thread "+threadInfoList.size()+" thread count "+forumDetailedInfo.threads);
+                            if(currentThreadInfo.size() >= forumDetailedInfo.threads){
+                                hasLoadAll.postValue(true);
+                                if(forumStatus.page != 1){
+                                    // rollback
+                                    forumStatus.page -= 1;
+                                    forumStatusMutableLiveData.postValue(forumStatus);
+                                }
                             }
+
+
                         }
+
                     }
+
+
+
                     // refresh description if possible
                     if (bbsParseUtils.getThreadRuleString(s)!=null && bbsParseUtils.getThreadRuleString(s).equals("")){
                         if(!forumDescription.getValue().equals(bbsParseUtils.getThreadDescriptionString(s))){

@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.activities;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -7,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Vibrator;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -28,9 +30,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -42,13 +44,13 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
 import com.kidozh.discuzhub.adapter.bbsForumThreadCommentAdapter;
+import com.kidozh.discuzhub.adapter.bbsThreadNotificationAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.forumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.threadCommentInfo;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
-import com.kidozh.discuzhub.utilities.RecyclerItemClickListener;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
@@ -62,8 +64,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -106,6 +106,12 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     ViewPager mCommentSmileyViewPager;
     @BindView(R.id.bbs_thread_detail_emoij_button)
     ImageView mCommentEmoijBtn;
+    @BindView(R.id.bbs_thread_detail_type_recyclerview)
+    RecyclerView mDetailThreadTypeRecyclerview;
+    @BindView(R.id.bbs_thread_comment_number)
+    TextView mDetailedThreadCommentNumber;
+    @BindView(R.id.bbs_thread_view_number)
+    TextView mDetailedThreadViewNumber;
 
 
 //    @BindView(R.id.error_thread_cardview)
@@ -114,6 +120,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     public String tid,subject,fid;
     private OkHttpClient client = new OkHttpClient();
     private bbsForumThreadCommentAdapter adapter;
+    private bbsThreadNotificationAdapter notificationAdapter;
     boolean isTaskRunning;
     String formHash = null;
     private forumUserBriefInfo userBriefInfo;
@@ -223,6 +230,10 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
                     noMoreThreadFound.setVisibility(View.VISIBLE);
+                    Vibrator vb = (Vibrator)getSystemService(Service.VIBRATOR_SERVICE);
+                    if(vb!=null&&vb.hasVibrator()){
+
+                    }
                 }
                 else {
                     noMoreThreadFound.setVisibility(View.GONE);
@@ -254,11 +265,15 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         threadDetailViewModel.pollInfoLiveData.observe(this, new Observer<bbsPollInfo>() {
             @Override
             public void onChanged(bbsPollInfo bbsPollInfo) {
-                if(pollInfo!=null){
+                if(bbsPollInfo!=null){
+                    Log.d(TAG, "get poll "+ bbsPollInfo.votersCount);
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.bbs_thread_poll_fragment,bbsPollFragment.newInstance(pollInfo,userBriefInfo,Integer.parseInt(tid),formHash));
+                    fragmentTransaction.replace(R.id.bbs_thread_poll_fragment,bbsPollFragment.newInstance(bbsPollInfo,userBriefInfo,Integer.parseInt(tid),formHash));
                     fragmentTransaction.commit();
+                }
+                else {
+                    Log.d(TAG,"get poll is null");
                 }
 
             }
@@ -286,6 +301,139 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                         getSupportActionBar().setSubtitle(getString(R.string.bbs_thread_status_descend));
                     }
                 }
+
+            }
+        });
+        threadDetailViewModel.detailedThreadInfoMutableLiveData.observe(this, new Observer<bbsParseUtils.DetailedThreadInfo>() {
+            @Override
+            public void onChanged(bbsParseUtils.DetailedThreadInfo detailedThreadInfo) {
+                // closed situation
+                // prepare notification list
+                List<bbsThreadNotificationAdapter.threadNotification> threadNotificationList = new ArrayList<>();
+
+                if(detailedThreadInfo.closed != 0){
+                    mCommentEditText.setEnabled(false);
+                    mCommentBtn.setEnabled(false);
+                    mCommentEditText.setHint(R.string.thread_is_closed);
+                    mCommentEmoijBtn.setClickable(false);
+                    if(detailedThreadInfo.closed == 1){
+                        threadNotificationList.add(
+                                new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_highlight_off_outlined_24px,getString(R.string.thread_is_closed))
+                        );
+                    }
+
+                }
+                else {
+                    mCommentEditText.setEnabled(true);
+                    mCommentBtn.setEnabled(true);
+                    mCommentEditText.setHint(R.string.bbs_thread_say_something);
+                    mCommentEmoijBtn.setClickable(true);
+                }
+
+                if(detailedThreadInfo.price!=0){
+                    threadNotificationList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_price_outlined_24px, getString(R.string.thread_price,detailedThreadInfo.price))
+                    );
+                }
+
+                if(detailedThreadInfo.readperm!=0){
+                    threadNotificationList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_verified_user_outlined_24px, String.valueOf(detailedThreadInfo.readperm))
+                    );
+                }
+
+                // recommend?
+
+                if(detailedThreadInfo.rate == 1){
+                    // you vote yes
+                    threadNotificationList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thumb_up_outlined_24px,
+                                    String.valueOf(detailedThreadInfo.recommend_add),
+                                    R.color.colorNephritis
+                            )
+                    );
+                }
+                else {
+                    threadNotificationList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thumb_up_outlined_24px, String.valueOf(detailedThreadInfo.recommend_add))
+                    );
+                }
+
+                if(detailedThreadInfo.rate == 1){
+                    threadNotificationList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thumb_down_outlined_24px,
+                                    String.valueOf(detailedThreadInfo.recommend_sub),
+                                    R.color.colorPomegranate
+                            )
+                    );
+                }
+                else {
+                    threadNotificationList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thumb_down_outlined_24px, String.valueOf(detailedThreadInfo.recommend_sub))
+                    );
+                }
+
+
+                if(detailedThreadInfo.hidden){
+                    threadNotificationList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thread_visibility_off_24px, getString(R.string.thread_is_hidden))
+                    );
+                }
+
+
+
+
+
+                if(!detailedThreadInfo.highlight.equals("0")){
+                    threadNotificationList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_highlight_outlined_24px,getString(R.string.thread_is_highlighted))
+                    );
+                }
+
+                if(detailedThreadInfo.digest != 0){
+                    threadNotificationList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_digest_outlined_24px,getString(R.string.thread_is_digested))
+                    );
+                }
+
+                if(detailedThreadInfo.moderated){
+                    threadNotificationList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_moderated_outlined_24px,getString(R.string.thread_is_moderated))
+                    );
+                }
+
+                if(detailedThreadInfo.is_archived){
+                    threadNotificationList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_archive_outlined_24px,getString(R.string.thread_is_archived))
+                    );
+                }
+
+                if(detailedThreadInfo.stickReply){
+                    threadNotificationList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.vector_drawable_reply_24px,getString(R.string.thread_stick_reply))
+                    );
+                }
+                threadNotificationList.add(
+                        new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_favorite_24px,String.valueOf(detailedThreadInfo.favtimes),"FAVORITE")
+                );
+
+                threadNotificationList.add(
+                        new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_share_outlined_24px,String.valueOf(detailedThreadInfo.sharedtimes),"SHARE")
+                );
+
+
+                if(detailedThreadInfo.heats !=0){
+                    threadNotificationList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_whatshot_outlined_24px,String.valueOf(detailedThreadInfo.heats))
+                    );
+                }
+
+
+
+                notificationAdapter.setThreadNotificationList(threadNotificationList);
+                // for normal rendering
+                mDetailedThreadCommentNumber.setText(String.valueOf(detailedThreadInfo.replies));
+                mDetailedThreadViewNumber.setText(String.valueOf(detailedThreadInfo.views));
 
             }
         });
@@ -373,6 +521,8 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 }
             }
         });
+
+
     }
 
     private void getSmileyInfo(){
@@ -467,9 +617,12 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     @Override
     public void onPollResultFetched() {
         // reset poll to get realtime result
+        Log.d(TAG,"POLL is voted");
         pollInfo = null;
+        threadDetailViewModel.pollInfoLiveData.setValue(null);
 
         reloadThePage();
+        threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
         //threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
 
     }
@@ -529,7 +682,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     }
 
     private void configureRecyclerview(){
-        mRecyclerview.setHasFixedSize(true);
+        //mRecyclerview.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerview.setLayoutManager(linearLayoutManager);
         adapter = new bbsForumThreadCommentAdapter(this,
@@ -572,143 +725,10 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 
             }
         });
+        mDetailThreadTypeRecyclerview.setLayoutManager(new GridLayoutManager(this, 6));
+        notificationAdapter = new bbsThreadNotificationAdapter();
+        mDetailThreadTypeRecyclerview.setAdapter(notificationAdapter);
 
-    }
-
-    private void getThreadComment(){
-        bbsURLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
-        if(threadStatus !=null && threadStatus.hasLoadAll){
-            //Toasty.info(this,getString(R.string.bbs_forum_thread_load_all),Toast.LENGTH_SHORT).show();
-            swipeRefreshLayout.setRefreshing(false);
-            return;
-        }
-        if(threadStatus.page == 1){
-            // clear it at first
-            adapter.setThreadInfoList(new ArrayList<>(),threadStatus);
-        }
-        //swipeRefreshLayout.setRefreshing(true);
-        String apiStr = bbsURLUtils.getThreadCommentUrlByStatus(threadStatus);
-        Request request = new Request.Builder()
-                .url(apiStr)
-                .build();
-        isTaskRunning = true;
-        Log.d(TAG,"get thread URL "+apiStr);
-        Handler mHandler = new Handler(Looper.getMainLooper());
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-                        Toasty.error(getApplicationContext(),
-                                getApplicationContext().getString(R.string.network_failed),
-                                Toast.LENGTH_LONG).show();
-                        noMoreThreadFound.setVisibility(View.VISIBLE);
-                    }
-                });
-                isTaskRunning = false;
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-                if(response.isSuccessful() && response.body()!=null){
-                    String s = response.body().string();
-                    Log.d(TAG,"Get Thread "+s);
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            swipeRefreshLayout.setRefreshing(false);
-                            if(s == null){
-                                noMoreThreadFound.setVisibility(View.VISIBLE);
-                                return;
-                            }
-
-
-                            String curFormHash = bbsParseUtils.parseFormHash(s);
-                            if(curFormHash != null){
-                                formHash = curFormHash;
-                                //mCommentConstraintLayout.setVisibility(View.VISIBLE);
-                            }
-
-                            forumUserBriefInfo bbsPersonInfo = bbsParseUtils.parseBreifUserInfo(s);
-                            // parse poll if possible
-                            if(pollInfo == null){
-                                pollInfo = bbsParseUtils.parsePollInfo(s);
-                                Log.d(TAG,"POLL info "+pollInfo);
-                                // start fragment
-                                if(pollInfo!=null){
-                                    FragmentManager fragmentManager = getSupportFragmentManager();
-                                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                    fragmentTransaction.replace(R.id.bbs_thread_poll_fragment,bbsPollFragment.newInstance(pollInfo,userBriefInfo,Integer.parseInt(tid),formHash));
-                                    fragmentTransaction.commit();
-                                }
-
-                            }
-
-
-                            if(bbsPersonInfo == null){
-                                mCommentConstraintLayout.setVisibility(View.GONE);
-                                mCommentBtn.setText(R.string.bbs_require_login_to_comment);
-                                mCommentBtn.setEnabled(false);
-                                mCommentEditText.setEnabled(false);
-                            }
-
-                            List<threadCommentInfo> threadInfoList;
-                            threadInfoList = bbsParseUtils.parseThreadCommentInfo(s);
-
-
-                            if(threadInfoList!=null&& threadInfoList.size() !=0){
-                                Log.d(TAG,"Getting threadList size "+threadInfoList.size());
-                                if(adapter.getThreadInfoList() == null || threadStatus.page == 1){
-                                    adapter.setThreadInfoList(threadInfoList,threadStatus);
-                                }
-                                else {
-                                    adapter.getThreadInfoList().addAll(threadInfoList);
-                                    adapter.notifyDataSetChanged();
-                                }
-                                if(threadInfoList.size()==0){
-                                    threadStatus.hasLoadAll = true;
-                                    noMoreThreadFound.setVisibility(View.VISIBLE);
-                                }
-                                if(threadInfoList.size() >= threadStatus.perPage){
-                                    threadStatus.page += 1;
-                                    isTaskRunning = false;
-                                }
-                                else {
-                                    threadStatus.hasLoadAll = true;
-                                    noMoreThreadFound.setVisibility(View.VISIBLE);
-                                }
-
-                            }
-                            else {
-                                Log.d(TAG,"Getting thread List is null get page"+threadStatus.page);
-                                noMoreThreadFound.setVisibility(View.VISIBLE);
-                                threadStatus.hasLoadAll = true;
-
-                            }
-
-
-
-                        }
-                    });
-                }
-                else {
-                    isTaskRunning = false;
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toasty.error(getApplicationContext(),getString(R.string.network_failed),Toast.LENGTH_SHORT).show();
-                            noMoreThreadFound.setVisibility(View.VISIBLE);
-                        }
-                    });
-
-                }
-
-            }
-        });
     }
 
     private void postCommentToThread(String message){
