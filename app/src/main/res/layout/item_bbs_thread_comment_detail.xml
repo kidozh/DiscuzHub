@@ -93,7 +93,7 @@
                 android:layout_marginEnd="8dp"
                 android:background="@color/colorPrimary"
                 android:padding="4dp"
-                android:textColor="@color/colorCloud"
+                android:textColor="@color/colorPureWhite"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/bbs_thread_publisher"
                 tools:text="1" />

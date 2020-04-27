@@ -1,14 +1,18 @@
 package com.kidozh.discuzhub.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -31,6 +35,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -157,6 +162,31 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                 adapter.setThreadInfoList(threadInfos,forumThreadViewModel.jsonString.getValue());
             }
         });
+        forumThreadViewModel.hasLoadAll.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                    Boolean needVibrate = prefs.getBoolean(getString(R.string.preference_key_vibrate_when_load_all),false);
+                    Toasty.info(getApplication(),getString(R.string.thread_has_load_all),Toast.LENGTH_SHORT).show();
+                    if(needVibrate){
+                        Vibrator vb = (Vibrator)getSystemService(Service.VIBRATOR_SERVICE);
+                        if(vb!=null&&vb.hasVibrator()){
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                VibrationEffect vibrationEffect = null;
+                                vibrationEffect = VibrationEffect.createOneShot(500,50);
+                                vb.vibrate(vibrationEffect);
+                            }
+                            else {
+                                vb.vibrate(500);
+                            }
+
+                        }
+                    }
+                }
+            }
+        });
+
         forumThreadViewModel.isLoading.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {

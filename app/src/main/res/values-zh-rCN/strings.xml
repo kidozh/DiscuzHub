@@ -334,5 +334,8 @@
     <string name="thread_price">价格%1$d</string>
     <string name="thread_is_hidden">已隐藏</string>
     <string name="bbs_poll_see_picture">查看图片</string>
+    <string name="preference_title_vibrate_when_load_all">振动提醒</string>
+    <string name="thread_has_load_all">已加载所有的帖子了</string>
+    <string name="preference_summary_on_vibrate_when_load_all">当加载完所有帖子时，发出振动提示</string>
 
 </resources>

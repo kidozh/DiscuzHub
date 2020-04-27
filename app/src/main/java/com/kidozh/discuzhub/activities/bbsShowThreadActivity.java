@@ -3,12 +3,15 @@ package com.kidozh.discuzhub.activities;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
+import androidx.preference.PreferenceManager;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -229,14 +232,29 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
             @Override
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
-                    noMoreThreadFound.setVisibility(View.VISIBLE);
-                    Vibrator vb = (Vibrator)getSystemService(Service.VIBRATOR_SERVICE);
-                    if(vb!=null&&vb.hasVibrator()){
+                    //noMoreThreadFound.setVisibility(View.VISIBLE);
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplication());
+                    boolean needVibrate = prefs.getBoolean(getString(R.string.preference_key_vibrate_when_load_all),false);
+                    Toasty.info(getApplication(),getString(R.string.thread_has_load_all),Toast.LENGTH_SHORT).show();
+                    if(needVibrate){
+                        Log.d(TAG,"Vibrate phone when all threads are loaded");
+                        Vibrator vb = (Vibrator)getSystemService(Service.VIBRATOR_SERVICE);
+                        if(vb!=null&&vb.hasVibrator()){
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                VibrationEffect vibrationEffect = null;
+                                vibrationEffect = VibrationEffect.createOneShot(500,20);
+                                vb.vibrate(vibrationEffect);
+                            }
+                            else {
+                                vb.vibrate(100);
+                            }
 
+                        }
                     }
+
                 }
                 else {
-                    noMoreThreadFound.setVisibility(View.GONE);
+                    //noMoreThreadFound.setVisibility(View.GONE);
                 }
             }
         });
@@ -254,6 +272,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
             @Override
             public void onChanged(String errorText) {
                 if(!errorText.equals("")){
+                    noMoreThreadFound.setVisibility(View.VISIBLE);
                     noMoreThreadFound.setText(errorText);
                 }
                 else {

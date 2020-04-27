@@ -134,6 +134,13 @@
             android:key="@string/preference_key_display_mode"
             android:summary="%s"
             android:title="@string/preference_title_display_mode" />
+        <SwitchPreferenceCompat
+            android:icon="@drawable/ic_vibration_24px"
+            app:icon="@drawable/ic_vibration_24px"
+            app:key="@string/preference_key_vibrate_when_load_all"
+            android:defaultValue="true"
+            android:summaryOn="@string/preference_summary_on_vibrate_when_load_all"
+            app:title="@string/preference_title_vibrate_when_load_all" />
     </PreferenceCategory>
 
 </PreferenceScreen>

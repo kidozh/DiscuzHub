@@ -495,5 +495,10 @@
     <string name="bbs_poll_see_picture">Picture</string>
     <string name="bbs_poll_vote_percent">%1$s %%</string>
 
+    <string name="preference_key_vibrate_when_load_all" translatable="false">preference_key_viberate_when_load_all</string>
+    <string name="preference_title_vibrate_when_load_all">Vibrating notification</string>
+    <string name="thread_has_load_all">All threads are loaded</string>
+    <string name="preference_summary_on_vibrate_when_load_all">Vibrate when all threads are loaded</string>
+
 
 </resources>

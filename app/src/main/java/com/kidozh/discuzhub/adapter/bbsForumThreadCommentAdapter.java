@@ -149,12 +149,12 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext,threadInfo.publishAt));
         if(threadInfo.first){
             holder.mThreadType.setText(R.string.bbs_thread_publisher);
-            holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorPomegranate));
+            holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorAccent));
         }
         else {
 
             holder.mThreadType.setText(String.format("%s",position+1));
-            holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorPrimary));
+            holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorPrimaryDark));
         }
         int avatar_num = position % 16;
 
