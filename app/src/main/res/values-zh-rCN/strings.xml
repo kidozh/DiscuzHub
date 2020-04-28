@@ -328,7 +328,7 @@
     <string name="thread_is_closed">已关闭</string>
     <string name="thread_is_highlighted">高亮帖</string>
     <string name="thread_is_digested">精华帖</string>
-    <string name="thread_is_moderated">被管理改动</string>
+    <string name="thread_is_moderated">已审阅</string>
     <string name="thread_is_archived">已存档</string>
     <string name="thread_stick_reply">回贴置顶</string>
     <string name="thread_price">价格%1$d</string>
@@ -336,6 +336,9 @@
     <string name="bbs_poll_see_picture">查看图片</string>
     <string name="preference_title_vibrate_when_load_all">振动提醒</string>
     <string name="thread_has_load_all">已加载所有的帖子了</string>
-    <string name="preference_summary_on_vibrate_when_load_all">当加载完所有帖子时，发出振动提示</string>
+    <string name="preference_summary_on_vibrate_when_load_all">当加载完所有帖子时，发出振动提示(带线性马达的机器即为轻振)</string>
+    <string name="bbs_thread_reply_number">回复 (%1$d)</string>
+    <string name="bbs_forum_description_not_set">此区并没有介绍自己</string>
+    <string name="bbs_rule_not_set">此区没有说明</string>
 
 </resources>

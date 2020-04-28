@@ -487,7 +487,7 @@
     <string name="thread_is_closed">closed</string>
     <string name="thread_is_highlighted">highlighted</string>
     <string name="thread_is_digested">digested</string>
-    <string name="thread_is_moderated">moderated</string>
+    <string name="thread_is_moderated">revised</string>
     <string name="thread_is_archived">archived</string>
     <string name="thread_stick_reply">Stick reply</string>
     <string name="thread_price">$%1$d</string>
@@ -499,6 +499,9 @@
     <string name="preference_title_vibrate_when_load_all">Vibrating notification</string>
     <string name="thread_has_load_all">All threads are loaded</string>
     <string name="preference_summary_on_vibrate_when_load_all">Vibrate when all threads are loaded</string>
+    <string name="bbs_thread_reply_number">Replies (%1$d)</string>
+    <string name="bbs_forum_description_not_set">The forum didn\'t have descriptions</string>
+    <string name="bbs_rule_not_set">The forum don\'t describe its rules</string>
 
 
 </resources>

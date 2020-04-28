@@ -39,7 +39,7 @@ public class ForumThreadViewModel extends AndroidViewModel {
 
     public MutableLiveData<Boolean> isLoading, isError, hasLoadAll;
     public MutableLiveData<List<threadInfo>> threadInfoListMutableLiveData;
-    public MutableLiveData<String> jsonString, forumDescription;
+    public MutableLiveData<String> jsonString, forumDescription, forumRule;
     public LiveData<Integer> draftNumberLiveData;
     public MutableLiveData<bbsParseUtils.forumDetailedInfo> forumDetailedInfoMutableLiveData;
 
@@ -53,6 +53,7 @@ public class ForumThreadViewModel extends AndroidViewModel {
         isLoading.setValue(false);
         jsonString = new MutableLiveData<>();
         forumDescription = new MutableLiveData<>("");
+        forumRule = new MutableLiveData<>("");
         hasLoadAll = new MutableLiveData<>(false);
         draftNumberLiveData = bbsThreadDraftDatabase
                 .getInstance(getApplication())
@@ -162,18 +163,20 @@ public class ForumThreadViewModel extends AndroidViewModel {
 
 
                     // refresh description if possible
-                    if (bbsParseUtils.getThreadRuleString(s)!=null && bbsParseUtils.getThreadRuleString(s).equals("")){
-                        if(!forumDescription.getValue().equals(bbsParseUtils.getThreadDescriptionString(s))){
-                            forumDescription.postValue(bbsParseUtils.getThreadDescriptionString(s));
-                        }
-
-                    }
-                    else {
-                        if(!forumDescription.getValue().equals(bbsParseUtils.getThreadRuleString(s))){
-                            forumDescription.postValue(bbsParseUtils.getThreadRuleString(s));
-                        }
-
-                    }
+                    forumDescription.postValue(bbsParseUtils.getThreadDescriptionString(s));
+                    forumRule.postValue(bbsParseUtils.getThreadRuleString(s));
+//                    if (bbsParseUtils.getThreadRuleString(s)!=null && bbsParseUtils.getThreadRuleString(s).equals("")){
+//                        if(!forumDescription.getValue().equals(bbsParseUtils.getThreadDescriptionString(s))){
+//                            forumDescription.postValue(bbsParseUtils.getThreadDescriptionString(s));
+//                        }
+//
+//                    }
+//                    else {
+//                        if(!forumDescription.getValue().equals(bbsParseUtils.getThreadRuleString(s))){
+//                            forumDescription.postValue(bbsParseUtils.getThreadRuleString(s));
+//                        }
+//
+//                    }
 
 
                 }

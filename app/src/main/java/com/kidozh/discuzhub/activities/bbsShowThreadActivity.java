@@ -234,19 +234,20 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 if(aBoolean){
                     //noMoreThreadFound.setVisibility(View.VISIBLE);
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                    boolean needVibrate = prefs.getBoolean(getString(R.string.preference_key_vibrate_when_load_all),false);
-                    Toasty.info(getApplication(),getString(R.string.thread_has_load_all),Toast.LENGTH_SHORT).show();
+                    boolean needVibrate = prefs.getBoolean(getString(R.string.preference_key_vibrate_when_load_all),true);
+                    Toasty.success(getApplication(),getString(R.string.thread_has_load_all),Toast.LENGTH_SHORT).show();
                     if(needVibrate){
                         Log.d(TAG,"Vibrate phone when all threads are loaded");
                         Vibrator vb = (Vibrator)getSystemService(Service.VIBRATOR_SERVICE);
+                        int VIBRATING_MILSEC = 200;
                         if(vb!=null&&vb.hasVibrator()){
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                                 VibrationEffect vibrationEffect = null;
-                                vibrationEffect = VibrationEffect.createOneShot(500,20);
+                                vibrationEffect = VibrationEffect.createOneShot(VIBRATING_MILSEC,10);
                                 vb.vibrate(vibrationEffect);
                             }
                             else {
-                                vb.vibrate(100);
+                                vb.vibrate(VIBRATING_MILSEC);
                             }
 
                         }
@@ -451,7 +452,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 
                 notificationAdapter.setThreadNotificationList(threadNotificationList);
                 // for normal rendering
-                mDetailedThreadCommentNumber.setText(String.valueOf(detailedThreadInfo.replies));
+                mDetailedThreadCommentNumber.setText(getString(R.string.bbs_thread_reply_number,detailedThreadInfo.replies));
                 mDetailedThreadViewNumber.setText(String.valueOf(detailedThreadInfo.views));
 
             }

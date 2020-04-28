@@ -50,7 +50,7 @@
                         android:layout_marginTop="8dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/bbs_forum_description_textview"
-                        app:srcCompat="@drawable/vector_drawable_info_circle" />
+                        app:srcCompat="@drawable/ic_forum_description_outlined_24px" />
 
                     <TextView
                         android:id="@+id/bbs_forum_alert_textview"
@@ -63,30 +63,48 @@
                         app:layout_constraintStart_toEndOf="@+id/bbs_forum_alert_image"
                         app:layout_constraintTop_toTopOf="@+id/bbs_forum_alert_image" />
 
+                    <ImageView
+                        android:id="@+id/bbs_forum_rule_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/bbs_forum_rule_textview"
+                        app:srcCompat="@drawable/ic_forum_rule_outlined_24px" />
+
+                    <TextView
+                        android:id="@+id/bbs_forum_rule_textview"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="@+id/bbs_forum_alert_textview"
+                        app:layout_constraintStart_toStartOf="@+id/bbs_forum_alert_textview"
+                        app:layout_constraintTop_toBottomOf="@+id/bbs_forum_alert_textview"
+                        tools:text="@string/display_order_1" />
+
                     <TextView
                         android:id="@+id/bbs_forum_thread"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
 
+                        android:layout_marginTop="8dp"
                         android:text="@string/bbs_forum_thread"
                         android:textAllCaps="true"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         app:layout_constraintStart_toStartOf="@+id/bbs_forum_alert_image"
-                        app:layout_constraintTop_toBottomOf="@+id/bbs_forum_alert_textview" />
+                        app:layout_constraintTop_toBottomOf="@+id/bbs_forum_rule_textview" />
 
                     <TextView
                         android:id="@+id/bbs_forum_thread_number_textview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="16dp"
                         android:layout_marginBottom="8dp"
                         android:textColor="@color/colorPrimary"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/bbs_forum_thread"
-                        app:layout_constraintTop_toBottomOf="@+id/bbs_forum_alert_textview"
+                        app:layout_constraintTop_toTopOf="@+id/bbs_forum_thread"
                         tools:text="7" />
 
                     <TextView

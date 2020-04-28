@@ -178,7 +178,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
                         }
 
                         Log.d(TAG,"PAGE "+threadStatus.page+" MAX POSITION "+maxThreadNumber +" CUR "+totalThreadCommentsNumber+ " "+totalThreadSize);
-                        if(totalThreadSize >= maxThreadNumber){
+                        if(totalThreadSize >= maxThreadNumber +1){
                             hasLoadAll.postValue(true);
                         }
                         else {

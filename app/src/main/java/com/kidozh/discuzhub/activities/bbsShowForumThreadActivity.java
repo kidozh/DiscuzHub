@@ -92,6 +92,8 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
     TextView mForumDesciption;
     @BindView(R.id.bbs_forum_alert_textview)
     TextView mForumAlert;
+    @BindView(R.id.bbs_forum_rule_textview)
+    TextView mForumRule;
     @BindView(R.id.bbs_forum_thread_number_textview)
     TextView mForumThreadNum;
     @BindView(R.id.bbs_forum_post_number_textview)
@@ -167,18 +169,19 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                    Boolean needVibrate = prefs.getBoolean(getString(R.string.preference_key_vibrate_when_load_all),false);
-                    Toasty.info(getApplication(),getString(R.string.thread_has_load_all),Toast.LENGTH_SHORT).show();
+                    Boolean needVibrate = prefs.getBoolean(getString(R.string.preference_key_vibrate_when_load_all),true);
+                    Toasty.success(getApplication(),getString(R.string.thread_has_load_all),Toast.LENGTH_SHORT).show();
                     if(needVibrate){
                         Vibrator vb = (Vibrator)getSystemService(Service.VIBRATOR_SERVICE);
+                        int VIBRATING_MILSEC = 200;
                         if(vb!=null&&vb.hasVibrator()){
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                                 VibrationEffect vibrationEffect = null;
-                                vibrationEffect = VibrationEffect.createOneShot(500,50);
+                                vibrationEffect = VibrationEffect.createOneShot(VIBRATING_MILSEC,10);
                                 vb.vibrate(vibrationEffect);
                             }
                             else {
-                                vb.vibrate(500);
+                                vb.vibrate(VIBRATING_MILSEC);
                             }
 
                         }
@@ -202,15 +205,41 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
         forumThreadViewModel.forumDescription.observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                MyTagHandler myTagHandler = new MyTagHandler(getApplication(),mForumAlert,mForumInfoCardView);
-                MyImageGetter myImageGetter = new MyImageGetter(getApplication(),mForumAlert,mForumInfoCardView);
-                Spanned sp = Html.fromHtml(s,myImageGetter,myTagHandler);
-                SpannableString spannableString = new SpannableString(sp);
-                // mForumAlert.setAutoLinkMask(Linkify.ALL);
-                mForumAlert.setMovementMethod(LinkMovementMethod.getInstance());
-                mForumAlert.setText(spannableString, TextView.BufferType.SPANNABLE);
+                if(s!=null && s.length() !=0){
+                    MyTagHandler myTagHandler = new MyTagHandler(getApplication(),mForumAlert,mForumInfoCardView);
+                    MyImageGetter myImageGetter = new MyImageGetter(getApplication(),mForumAlert,mForumInfoCardView);
+                    Spanned sp = Html.fromHtml(s,myImageGetter,myTagHandler);
+                    SpannableString spannableString = new SpannableString(sp);
+                    // mForumAlert.setAutoLinkMask(Linkify.ALL);
+                    mForumAlert.setMovementMethod(LinkMovementMethod.getInstance());
+                    mForumAlert.setText(spannableString, TextView.BufferType.SPANNABLE);
+                }
+                else {
+                    mForumAlert.setText(R.string.bbs_forum_description_not_set);
+                }
+
             }
         });
+
+        forumThreadViewModel.forumRule.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if(s!=null && s.length() !=0){
+                    MyTagHandler myTagHandler = new MyTagHandler(getApplication(),mForumRule,mForumInfoCardView);
+                    MyImageGetter myImageGetter = new MyImageGetter(getApplication(),mForumRule,mForumInfoCardView);
+                    Spanned sp = Html.fromHtml(s,myImageGetter,myTagHandler);
+                    SpannableString spannableString = new SpannableString(sp);
+                    // mForumAlert.setAutoLinkMask(Linkify.ALL);
+                    mForumRule.setMovementMethod(LinkMovementMethod.getInstance());
+                    mForumRule.setText(spannableString, TextView.BufferType.SPANNABLE);
+                }
+                else {
+                    mForumRule.setText(R.string.bbs_rule_not_set);
+                }
+
+            }
+        });
+
 
         forumThreadViewModel.jsonString.observe(this, new Observer<String>() {
             @Override
