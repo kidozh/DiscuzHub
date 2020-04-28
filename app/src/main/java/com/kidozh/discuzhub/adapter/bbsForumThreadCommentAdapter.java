@@ -227,6 +227,15 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
             holder.mRecyclerview.setLayoutManager(linearLayoutManager);
             holder.mRecyclerview.setAdapter(attachmentAdapter);
         }
+        else {
+            bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter(mContext);
+            attachmentAdapter.attachmentInfoList = threadInfo.attachmentInfoList;
+            //holder.mRecyclerview.setHasFixedSize(true);
+            holder.mRecyclerview.setNestedScrollingEnabled(false);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+            holder.mRecyclerview.setLayoutManager(linearLayoutManager);
+            holder.mRecyclerview.setAdapter(attachmentAdapter);
+        }
         registerListener();
         if(threadStatus.authorId == -1){
             // no author is filtered
