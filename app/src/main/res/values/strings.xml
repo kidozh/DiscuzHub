@@ -502,6 +502,8 @@
     <string name="bbs_thread_reply_number">Replies (%1$d)</string>
     <string name="bbs_forum_description_not_set">The forum didn\'t have descriptions</string>
     <string name="bbs_rule_not_set">The forum don\'t describe its rules</string>
+    <string name="bbs_post_image_name">IMG_%1$s_</string>
+    <string name="bbs_thread_encrypt">Encrypt my thread</string>
 
 
 </resources>

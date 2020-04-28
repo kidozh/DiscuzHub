@@ -16,7 +16,7 @@ import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
 
-@Database(entities = {bbsThreadDraft.class},version = 2, exportSchema = false)
+@Database(entities = {bbsThreadDraft.class},version = 3, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class bbsThreadDraftDatabase extends RoomDatabase {
     private static final String DB_NAME = "bbsThreadDraftDatabase.db";
@@ -39,9 +39,19 @@ public abstract class bbsThreadDraftDatabase extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE bbsThreadDraft "
+                    + " ADD COLUMN password TEXT");
+            database.execSQL("ALTER TABLE bbsThreadDraft ADD COLUMN freeMessage TEXT");
+        }
+    };
+
     private static bbsThreadDraftDatabase getDatabase(final Context context){
         return Room.databaseBuilder(context, bbsThreadDraftDatabase.class,DB_NAME)
                 .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_2_3)
                 .build();
     }
 

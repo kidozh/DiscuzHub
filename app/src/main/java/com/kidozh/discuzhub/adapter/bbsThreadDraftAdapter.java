@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -92,6 +93,12 @@ public class bbsThreadDraftAdapter extends RecyclerView.Adapter<bbsThreadDraftAd
                 context.startActivity(intent);
             }
         });
+        if(threadDraft.password == null || threadDraft.password.length() == 0){
+            holder.bbsThreadDraftPasswordIcon.setVisibility(View.GONE);
+        }
+        else {
+            holder.bbsThreadDraftPasswordIcon.setVisibility(View.VISIBLE);
+        }
 
 
     }
@@ -120,6 +127,8 @@ public class bbsThreadDraftAdapter extends RecyclerView.Adapter<bbsThreadDraftAd
         TextView bbsThreadDraftForum;
         @BindView(R.id.bbs_thread_draft_cardview)
         CardView bbsThreadCardView;
+        @BindView(R.id.bbs_thread_draft_password_icon)
+        ImageView bbsThreadDraftPasswordIcon;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -23,6 +23,7 @@ import com.kidozh.discuzhub.entities.forumCategorySection;
 import com.kidozh.discuzhub.entities.forumInfo;
 import com.kidozh.discuzhub.entities.threadCommentInfo;
 import com.kidozh.discuzhub.entities.threadInfo;
+import com.kidozh.discuzhub.results.ThreadPostParameterResult;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -1277,6 +1278,18 @@ public class bbsParseUtils {
             JSONObject threadInfo = variables.getJSONObject("thread");
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(threadInfo.toString(), DetailedThreadInfo.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ThreadPostParameterResult parseThreadPostParameter(String s) {
+        try {
+
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(s, ThreadPostParameterResult.class);
 
         } catch (Exception e) {
             e.printStackTrace();

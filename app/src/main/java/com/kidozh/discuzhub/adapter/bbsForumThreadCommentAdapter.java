@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.ClipData;
@@ -7,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -303,6 +305,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         void setAuthorId(int authorId);
     }
 
+    @SuppressLint("RestrictedApi")
     class MyDrawableWrapper extends DrawableWrapper {
         private Drawable drawable;
 
@@ -396,13 +399,19 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
             WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
             DisplayMetrics outMetrics = new DisplayMetrics();
             wm.getDefaultDisplay().getMetrics(outMetrics);
-            // int screenWidth = outMetrics.widthPixels - textView.getPaddingLeft() - textView.getPaddingRight();
-            int screenWidth =  textView.getWidth() - textView.getPaddingLeft() - textView.getPaddingRight();
+            int screenWidth = outMetrics.widthPixels - textView.getPaddingLeft() - textView.getPaddingRight();
+            // int screenWidth =  textView.getWidth() - textView.getPaddingLeft() - textView.getPaddingRight();
             Log.d(TAG,"Screen width "+screenWidth+" image width "+width);
             if (screenWidth / width < 3){
                 double rescaleFactor = ((double) screenWidth) / width;
                 int newHeight = (int) (height * rescaleFactor);
                 Log.d(TAG,"rescaleFactor "+rescaleFactor+" image new height "+newHeight);
+
+                // compress drawable it's too large
+                Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                Bitmap compressedBitmap = Bitmap.createScaledBitmap(bitmap,screenWidth, newHeight, true);
+                Log.d(TAG,"width "+screenWidth+" image new height "+newHeight);
+                drawable = new BitmapDrawable(context.getResources(),compressedBitmap);
                 myDrawable.setBounds(0,0,screenWidth,newHeight);
                 drawable.setBounds(0,0,screenWidth,newHeight);
             }
@@ -410,6 +419,8 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                 myDrawable.setBounds(0,0,width*2,height*2);
                 drawable.setBounds(0,0,width*2,height*2);
             }
+
+
 
 
             myDrawable.setDrawable(drawable);

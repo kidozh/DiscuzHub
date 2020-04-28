@@ -28,6 +28,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -35,15 +36,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.daos.bbsThreadDraftDao;
 import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
+import com.kidozh.discuzhub.dialogs.PostThreadPasswordDialogFragment;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.ThreadPostParameterResult;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.bbsColorPicker;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -52,6 +58,7 @@ import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
+import com.kidozh.discuzhub.viewModels.PostThreadViewModel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -78,7 +85,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class bbsPostThreadActivity extends AppCompatActivity implements View.OnClickListener{
+import static java.text.DateFormat.getDateInstance;
+import static java.text.DateFormat.getDateTimeInstance;
+
+public class bbsPostThreadActivity extends AppCompatActivity implements View.OnClickListener, PostThreadPasswordDialogFragment.NoticeDialogListener {
     private static String TAG = bbsPostThreadActivity.class.getSimpleName();
 
     @BindView(R.id.bbs_post_thread_subject_editText)
@@ -90,6 +100,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
     private EmotionInputHandler handler;
     private OkHttpClient client;
 
+    @BindView(R.id.bbs_post_thread_edit_bar_linear_layout)
     LinearLayout editBar;
 
     @BindView(R.id.bbs_post_thread_editor_bar)
@@ -98,6 +109,10 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
     ImageView bbsPostThreadBackupIcon;
     @BindView(R.id.bbs_post_thread_backup_info_textview)
     TextView bbsPostThreadBackupInfo;
+    @BindView(R.id.action_insert_photo)
+    ImageView actionInsertPhoto;
+    @BindView(R.id.action_set_password)
+    ImageView actionPassword;
 
     private String fid, forumApiString,forumName, uploadHash, formHash;
     private ProgressDialog uploadDialog;
@@ -110,7 +125,10 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
     forumInfo forum;
     private bbsColorPicker myColorPicker;
     private bbsSmileyPicker smileyPicker;
-    private bbsThreadDraft threadDraft;
+    //private bbsThreadDraft threadDraft;
+
+
+    private PostThreadViewModel postThreadViewModel;
 
 
     @Override
@@ -118,10 +136,12 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bbs_post_thread);
         ButterKnife.bind(this);
+        postThreadViewModel = new ViewModelProvider(this).get(PostThreadViewModel.class);
         configureIntentData();
         configureClient();
+        bindViewModel();
 
-        editBar = (LinearLayout) bbsPostThreadEditorBarInclude;
+        //editBar = (HorizontalScrollView) bbsPostThreadEditorBarInclude;
 
 
         configureToolbar();
@@ -151,8 +171,10 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         // check if it comes from draft box
-        threadDraft = (bbsThreadDraft) intent.getSerializableExtra(bbsConstUtils.PASS_THREAD_DRAFT_KEY);
+        bbsThreadDraft threadDraft = (bbsThreadDraft) intent.getSerializableExtra(bbsConstUtils.PASS_THREAD_DRAFT_KEY);
+        postThreadViewModel.bbsThreadDraftMutableLiveData.setValue(threadDraft);
         bbsURLUtils.setBBS(bbsInfo);
+
         if(threadDraft!=null){
             bbsThreadSubjectEditText.setText(threadDraft.subject);
             bbsThreadMessageEditText.setText(threadDraft.content);
@@ -164,6 +186,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
         }
 
         fid = intent.getStringExtra("fid");
+        postThreadViewModel.setBBSInfo(bbsInfo,userBriefInfo,fid);
         forumName = intent.getStringExtra("fid_name");
         if(forumApiString==null){
             forumApiString = intent.getStringExtra("api_result");
@@ -173,6 +196,52 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
     private void configureClient(){
         client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
+    }
+
+    private void bindViewModel(){
+        postThreadViewModel.getThreadPostParameterResultMutableLiveData().observe(this, new Observer<ThreadPostParameterResult>() {
+            @Override
+            public void onChanged(ThreadPostParameterResult threadPostParameterResult) {
+                if(threadPostParameterResult !=null){
+                    bbsPersonInfo = threadPostParameterResult.permissionVariables.getUserBriefInfo();
+                    formHash = threadPostParameterResult.permissionVariables.formHash;
+                    //uploadHash = threadPostParameterResult.permissionVariables.allowPerm.uploadHash;
+                }
+            }
+        });
+
+        postThreadViewModel.allowPermissionMutableLiveData.observe(this, new Observer<ThreadPostParameterResult.AllowPermission>() {
+            @Override
+            public void onChanged(ThreadPostParameterResult.AllowPermission allowPermission) {
+                Log.d(TAG,"get allow perm "+allowPermission);
+                if(allowPermission !=null){
+                    uploadHash = allowPermission.uploadHash;
+                    actionInsertPhoto.setVisibility(View.VISIBLE);
+                    Log.d(TAG,"recv upload hash "+uploadHash);
+                }
+                else {
+
+                    actionInsertPhoto.setVisibility(View.GONE);
+                    // Toasty.error(getApplication(),getString(R.string.bbs_post_thread_cannot_upload_picture),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        postThreadViewModel.bbsThreadDraftMutableLiveData.observe(this, new Observer<bbsThreadDraft>() {
+            @Override
+            public void onChanged(bbsThreadDraft bbsThreadDraft) {
+                if(bbsThreadDraft !=null){
+                    // password rendering
+                    String password = bbsThreadDraft.password;
+                    if(password.length()!=0){
+                        actionPassword.setImageResource(R.drawable.ic_thread_password_24px);
+                    }
+                    else {
+                        actionPassword.setImageResource(R.drawable.ic_thread_lock_open_24px);
+                    }
+                }
+            }
+        });
     }
 
     private void configureInputHandler(){
@@ -188,9 +257,15 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
                 c.setOnClickListener(this);
             }
         }
-        new getUploadHashCodeTask(this).execute();
         myColorPicker = new bbsColorPicker(this);
         myColorPicker.setListener((pos, v, color) -> handleInsert("[color=" + color + "][/color]"));
+
+        actionPassword.setOnClickListener(view -> {
+            // trigger dialog
+            bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+            PostThreadPasswordDialogFragment postThreadPasswordDialogFragment = new PostThreadPasswordDialogFragment(threadDraft.password);
+            postThreadPasswordDialogFragment.show(getSupportFragmentManager(),PostThreadPasswordDialogFragment.class.getSimpleName());
+        });
     }
 
     private void configureSpinner(Map<String,String> threadTypeMapper){
@@ -209,20 +284,6 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,threadTypeNames);
         mCategorySpinner.setAdapter(arrayAdapter);
         //mCategorySpinner.setOnItemClickListener(this);
-    }
-
-    private boolean checkPostInput() {
-        if (false) {
-            Toast.makeText(this, "请选择主题分类", Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (TextUtils.isEmpty(bbsThreadSubjectEditText.getText().toString().trim())) {
-            Toasty.warning(this, getString(R.string.bbs_post_thread_subject_required), Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (TextUtils.isEmpty(bbsThreadMessageEditText.getText().toString().trim())) {
-            Toasty.warning(this, getString(R.string.bbs_post_thread_message_required), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
     }
 
     private void handleInsert(String s) {
@@ -304,9 +365,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
     private void configureSyncDraft(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this) ;
         Boolean autoPostBackup = prefs.getBoolean(getString(R.string.preference_key_auto_post_backup),true);
-
-
-
+        bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
         // create an initial backup
         if(threadDraft == null){
             if(mCategorySpinner.getSelectedItem()!=null){
@@ -321,6 +380,8 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
                         mCategorySpinner.getSelectedItem().toString(),
                         forumApiString
                 );
+                postThreadViewModel.bbsThreadDraftMutableLiveData.setValue(threadDraft);
+
             }
             else {
                 threadDraft = new bbsThreadDraft(bbsThreadSubjectEditText.getText().toString(),
@@ -333,6 +394,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
                         "",
                         forumApiString
                 );
+                postThreadViewModel.bbsThreadDraftMutableLiveData.setValue(threadDraft);
             }
         }
 
@@ -355,6 +417,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
                 @Override
                 public void afterTextChanged(Editable s) {
+                    bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
                     threadDraft.subject = bbsThreadSubjectEditText.getText().toString();
                     threadDraft.content = bbsThreadMessageEditText.getText().toString();
                     threadDraft.lastUpdateAt = new Date();
@@ -372,6 +435,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
                     else {
                         new addThreadDraftTask(activity,threadDraft).execute();
                     }
+                    postThreadViewModel.bbsThreadDraftMutableLiveData.postValue(threadDraft);
 
 
                 }
@@ -381,6 +445,13 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
             bbsPostThreadBackupInfo.setVisibility(View.GONE);
             bbsPostThreadBackupIcon.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onPasswordSubmit(String password) {
+        bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+        threadDraft.password = password;
+        postThreadViewModel.bbsThreadDraftMutableLiveData.postValue(threadDraft);
     }
 
 
@@ -411,8 +482,9 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            threadDraft = insertThreadDraft;
-            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
+            postThreadViewModel.bbsThreadDraftMutableLiveData.postValue(insertThreadDraft);
+            bbsThreadDraft threadDraft = insertThreadDraft;
+            DateFormat df = getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
             bbsPostThreadBackupInfo.setText(getString(R.string.bbs_thread_auto_backup_updated_time_template,
                     df.format(threadDraft.lastUpdateAt)
             ));
@@ -459,8 +531,8 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
     private Uri lastFile;
 
     private Uri getCaptureImageOutputUri() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String timeStamp = getDateTimeInstance().format(new Date());
+        String imageFileName = getString(R.string.bbs_post_image_name,timeStamp);
         File storageDir = getExternalCacheDir();
         Uri outputFileUri = null;
         if (storageDir != null) {
@@ -586,61 +658,6 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
     private Bitmap returnBitmap = null;
 
-    private class getUploadHashCodeTask extends AsyncTask<Void,Void,String>{
-
-        Request request;
-        Context context;
-        ImageView uploadImageView;
-
-        getUploadHashCodeTask(Context context){
-            this.context = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            String checkPostUrl = bbsURLUtils.getCheckPostUrl();
-            request = new Request.Builder()
-                    .url(checkPostUrl)
-                    .build();
-            uploadImageView = (ImageView) findViewById(R.id.action_insert_photo);
-            uploadImageView.setVisibility(View.GONE);
-
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            try{
-                Response resp = client.newCall(request).execute();
-                if(resp.isSuccessful() && resp.body()!=null){
-                    return resp.body().string();
-                }
-                else {
-                    return null;
-                }
-            }
-            catch (Exception e){
-                e.printStackTrace();
-                //Log.e(TAG,e.printStackTrace());
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            Log.d(TAG,"get post hash"+s);
-            if(s == null){
-                Toasty.warning(context,context.getString(R.string.bbs_post_thread_cannot_upload_picture),Toast.LENGTH_SHORT).show();
-            }
-            else {
-                uploadHash = bbsParseUtils.parseUploadHashString(s);
-                Log.d(TAG, "get upload hash "+uploadHash);
-                uploadImageView.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
     private class uploadImageTask extends AsyncTask<Bitmap, String, String> {
         Context context;
         Request request;
@@ -670,7 +687,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
             MultipartBody multipartBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("Filedata",String.format("NH_upload_%s.jpg",currentTimeString),fileBody)
+                    .addFormDataPart("Filedata",String.format("DH_upload_%s.jpg",currentTimeString),fileBody)
                     .addFormDataPart("uid",bbsPersonInfo.uid)
                     .addFormDataPart("hash",uploadHash)
                     .build();
@@ -770,7 +787,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
     public static byte[] bitmap2Bytes(Bitmap bm) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 85, baos);
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         return baos.toByteArray();
     }
 
@@ -803,15 +820,6 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
         getSupportActionBar().setSubtitle(forumName);
 
 
-    }
-
-    private FormBody genPostFormBody(){
-        FormBody formBody = new FormBody.Builder()
-                .add("topicsubmit", "yes")
-                .add("subject",bbsThreadSubjectEditText.getText().toString())
-                .add("message",bbsThreadMessageEditText.getText().toString())
-                .build();
-        return formBody;
     }
 
     private Boolean checkIfThreadCanBePosted(){
@@ -887,6 +895,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
             // auto backup ?
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()) ;
             Boolean autoPostBackup = prefs.getBoolean(getString(R.string.preference_key_send_post_backup),true);
+            bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
             if(autoPostBackup){
                 new addThreadDraftTask(getApplicationContext(),threadDraft).execute();
             }
@@ -929,6 +938,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
                 Log.d(TAG,"You press send item");
             }
             case R.id.bbs_post_thread_toolbar_save_draft:{
+                bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
                 addThreadDraftTask task = new addThreadDraftTask(this,threadDraft,true);
                 task.execute();
             }

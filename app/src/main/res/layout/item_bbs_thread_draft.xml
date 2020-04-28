@@ -104,6 +104,15 @@
                 app:layout_constraintTop_toTopOf="@+id/bbs_thread_draft_forum_icon"
                 tools:text="@tools:sample/last_names" />
 
+            <ImageView
+                android:id="@+id/bbs_thread_draft_password_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toEndOf="@+id/bbs_thread_draft_forum"
+                app:layout_constraintTop_toTopOf="@+id/bbs_thread_draft_forum_icon"
+                app:srcCompat="@drawable/ic_thread_password_24px" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

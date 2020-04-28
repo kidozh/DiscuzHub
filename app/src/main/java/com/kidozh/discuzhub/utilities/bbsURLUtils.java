@@ -287,8 +287,17 @@ public class bbsURLUtils {
         return BASE_URL + "/misc.php?mod=swfupload&operation=upload&simple=1&type=image";
     }
 
-    public static String getCheckPostUrl(){
-        return BASE_URL + "/api/mobile/index.php?version=4&module=checkpost";
+//    public static String getCheckPostUrl(){
+//        return BASE_URL + "/api/mobile/index.php?version=4&module=checkpost";
+//    }
+
+    public static String getCheckPostUrl(String fid){
+        Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","checkpost")
+                .appendQueryParameter("fid",fid)
+                .build();
+        return uri.toString();
     }
 
 

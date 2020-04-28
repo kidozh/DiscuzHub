@@ -340,5 +340,7 @@
     <string name="bbs_thread_reply_number">回复 (%1$d)</string>
     <string name="bbs_forum_description_not_set">此区并没有介绍自己</string>
     <string name="bbs_rule_not_set">此区没有说明</string>
+    <string name="bbs_post_image_name">图像_%1$s_</string>
+    <string name="bbs_thread_encrypt">加密我的帖子</string>
 
 </resources>

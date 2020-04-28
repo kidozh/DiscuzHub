@@ -61,7 +61,8 @@
                         android:clickable="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/bbs_forum_alert_image"
-                        app:layout_constraintTop_toTopOf="@+id/bbs_forum_alert_image" />
+                        app:layout_constraintTop_toTopOf="@+id/bbs_forum_alert_image"
+                        tools:text="@tools:sample/last_names" />
 
                     <ImageView
                         android:id="@+id/bbs_forum_rule_icon"
