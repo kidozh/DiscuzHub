@@ -56,7 +56,7 @@ For detailed information, update and policy, please visit [our homepage](https:/
 	
 # Screenshots
 
-以下论坛与我们并无直接或间接关系，并且对功能不提供任何形式的担保
+The forums below have no relationship with us and provide no warranty for any functions and support.
 
 ## Home
 
@@ -69,6 +69,14 @@ For detailed information, update and policy, please visit [our homepage](https:/
 ## Threads of the forum
 
 ![Homepage](./screenshot/forumDisplay.jpg)
+
+## Threads display
+
+![Homepage](./screenshot/threads.jpg)
+
+## Poll
+
+![Homepage](./screenshot/poll.jpg)
 
 ## Notifications and pushes
 

@@ -69,6 +69,14 @@
 
 ![Homepage](./screenshot/forumDisplay.jpg)
 
+## 展示帖子
+
+![Homepage](./screenshot/threads.jpg)
+
+## 投票
+
+![Homepage](./screenshot/poll.jpg)
+
 ## 论坛消息和推送
 
 ![Homepage](./screenshot/notifications.jpg)
