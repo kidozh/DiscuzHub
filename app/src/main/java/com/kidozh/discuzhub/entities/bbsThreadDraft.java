@@ -3,11 +3,17 @@ package com.kidozh.discuzhub.entities;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.kidozh.discuzhub.utilities.DateConverter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
+@TypeConverters(DateConverter.class)
 public class bbsThreadDraft implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -26,6 +32,9 @@ public class bbsThreadDraft implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
+
+    @Ignore
+    public List<UploadAttachment> uploadAttachmentList = new ArrayList<>();
 
     @Ignore
     public bbsThreadDraft(String subject, String content, Date lastUpdateAt, int belongBBSId, String fid, String forumName, String typeid, String typeName, String apiString) {

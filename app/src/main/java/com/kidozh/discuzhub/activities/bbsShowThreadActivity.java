@@ -54,6 +54,7 @@ import com.kidozh.discuzhub.entities.forumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.threadCommentInfo;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
+import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
@@ -238,19 +239,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                     Toasty.success(getApplication(),getString(R.string.thread_has_load_all),Toast.LENGTH_SHORT).show();
                     if(needVibrate){
                         Log.d(TAG,"Vibrate phone when all threads are loaded");
-                        Vibrator vb = (Vibrator)getSystemService(Service.VIBRATOR_SERVICE);
-                        int VIBRATING_MILSEC = 200;
-                        if(vb!=null&&vb.hasVibrator()){
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                VibrationEffect vibrationEffect = null;
-                                vibrationEffect = VibrationEffect.createOneShot(VIBRATING_MILSEC,10);
-                                vb.vibrate(vibrationEffect);
-                            }
-                            else {
-                                vb.vibrate(VIBRATING_MILSEC);
-                            }
-
-                        }
+                        VibrateUtils.vibrateSlightly(getApplication());
                     }
 
                 }
@@ -715,9 +704,11 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+
                 if(isScrollAtEnd()){
                     bbsURLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
-                    if(threadStatus !=null){
+                    boolean isLoading = threadDetailViewModel.isLoading.getValue();
+                    if(!isLoading && threadStatus !=null){
                         if(threadDetailViewModel.hasLoadAll.getValue()){
                             //Toasty.info(getApplication(),getString(R.string.bbs_forum_thread_load_all),Toast.LENGTH_LONG).show();
                         }

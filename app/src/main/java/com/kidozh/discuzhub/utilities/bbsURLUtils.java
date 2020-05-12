@@ -300,6 +300,16 @@ public class bbsURLUtils {
         return uri.toString();
     }
 
+    public static String getSWFUploadAttachmentUrl(String fid) {
+        Uri uri = Uri.parse(BASE_URL + "/misc.php").buildUpon()
+                .appendQueryParameter("mod", "swfupload")
+                .appendQueryParameter("action", "swfupload")
+                .appendQueryParameter("operation", "upload")
+                .appendQueryParameter("fid",fid)
+                .build();
+        return uri.toString();
+    }
+
 
 
 //    public static String getPostThreadUrl(String fid){

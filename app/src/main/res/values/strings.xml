@@ -170,7 +170,7 @@
     <string name="bbs_post_thread_subject_required">Thread subject is required</string>
     <string name="bbs_post_thread_message_required">Thread message is required</string>
     <string name="bbs_post_thread_cannot_upload_picture">Can\'t upload pictures now for some reasons</string>
-    <string name="bbs_post_thread_choose_a_picture">Choose a picture for the thread</string>
+    <string name="bbs_post_thread_choose_a_picture">Insert a picture for the post</string>
     <string name="bbs_thread_uploading_files">Uploading the file</string>
     <string name="bbs_thread_uploading_picture">Uploading the picture</string>
     <string name="bbs_thread_upload_files_successful">Upload the file successfully</string>
@@ -454,19 +454,19 @@
     <string name="bbs_forum_thread_load_all">Can not find more thread.</string>
     <string name="bbs_notification_messages">Message</string>
     <string name="bbs_notification_thread">My thread</string>
-    <string name="bbs_notification_interact">Interact</string>
+    <string name="bbs_notification_interact">Interaction</string>
     <string name="bbs_notification_app">Applications</string>
     <string name="bbs_notification_myThread_thread">Thread</string>
     <string name="bbs_notification_myThread_comment">Comment</string>
     <string name="bbs_notification_myThread_activity">Activity</string>
     <string name="bbs_notification_myThread_reward">Reward</string>
-    <string name="bbs_notification_myThread_good">Good</string>
+    <string name="bbs_notification_myThread_good">Goods</string>
     <string name="bbs_notification_myThread_mentioned">Mentioned</string>
     <string name="bbs_notification_interact_poke">Poke</string>
     <string name="bbs_notification_interact_friend">Friend</string>
     <string name="bbs_notification_interact_wall">Left Message</string>
     <string name="bbs_notification_interact_comment">Comment</string>
-    <string name="bbs_notification_interact_agree">Agree with you</string>
+    <string name="bbs_notification_interact_agree">Agreed</string>
     <string name="bbs_notification_interact_share">Share</string>
     <string name="bbs_notification_thread_list">Thread list</string>
     <string name="app_version_template">Ver. %1$s</string>
@@ -493,17 +493,37 @@
     <string name="thread_price">$%1$d</string>
     <string name="thread_is_hidden">hidden</string>
     <string name="bbs_poll_see_picture">Picture</string>
-    <string name="bbs_poll_vote_percent">%1$s %%</string>
+    <string name="bbs_poll_vote_percent" translatable="false">%1$s %%</string>
 
     <string name="preference_key_vibrate_when_load_all" translatable="false">preference_key_viberate_when_load_all</string>
     <string name="preference_title_vibrate_when_load_all">Vibrating notification</string>
     <string name="thread_has_load_all">All threads are loaded</string>
     <string name="preference_summary_on_vibrate_when_load_all">Vibrate when all threads are loaded</string>
     <string name="bbs_thread_reply_number">Replies (%1$d)</string>
-    <string name="bbs_forum_description_not_set">The forum didn\'t have descriptions</string>
-    <string name="bbs_rule_not_set">The forum don\'t describe its rules</string>
+    <string name="bbs_forum_description_not_set">The forum doesn\'t have a description</string>
+    <string name="bbs_rule_not_set">The forum doesn\'t describe its rules</string>
     <string name="bbs_post_image_name">IMG_%1$s_</string>
     <string name="bbs_thread_encrypt">Encrypt my thread</string>
+    <string name="bbs_post_thread_unprepared">Initializing is not completed and please wait.</string>
+    <string name="vibrator_not_found">Can\'t vibrate since vibrator is not found.</string>
+    <string name="bbs_upload_an_attachment">Upload an attachment</string>
+    <string name="bbs_upload">Upload %1$s</string>
+    <string name="can_not_find_the_file_resolver">Can\'t find a file resolver.</string>
+    <string name="can_not_find_a_file">No File is chosen.</string>
+    <string name="upload_file_retrieve_failed">Failed to retrieve file from your selection.</string>
+    <string name="upload_attachment_error_1">Internal server error</string>
+    <string name="upload_attachment_error_2">The attachment is too large to accept by the server</string>
+    <string name="upload_attachment_error_3">Your group can\'t upload such a large file</string>
+    <string name="upload_attachment_error_4">The extension is not supported</string>
+    <string name="upload_attachment_error_5">The attachment is larger than the extension limit</string>
+    <string name="upload_attachment_error_6">You can\'t upload any attachment today</string>
+    <string name="upload_attachment_error_7">Please upload a picture</string>
+    <string name="upload_attachment_error_8">Can\'t save the uploaded attachments</string>
+    <string name="upload_attachment_error_9">Illegal file</string>
+    <string name="upload_attachment_error_10">Illegal Operation</string>
+    <string name="upload_attachment_error_11">You can\'t upload such a big file today</string>
+    <string name="bbs_post_confirm_dialog_title">Post your thread?</string>
+    <string name="upload_attachment_number">Attachments (%1$d)</string>
 
 
 </resources>

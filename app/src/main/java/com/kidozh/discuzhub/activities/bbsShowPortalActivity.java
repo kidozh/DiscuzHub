@@ -183,11 +183,15 @@ public class bbsShowPortalActivity extends AppCompatActivity
         if(curUser == null){
             Log.d(TAG, "Current incognitive user "+curUser);
             portalViewPager.setAdapter(new anonymousViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
-
+            navView.getMenu().clear();
+            navView.inflateMenu(R.menu.bottom_incognitive_nav_menu);
         }
         else {
             // use fragment transaction instead
+            Log.d(TAG, "Current incognitive user "+curUser.username);
             portalViewPager.setAdapter(new userViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
+            navView.getMenu().clear();
+            navView.inflateMenu(R.menu.bottom_nav_menu);
         }
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

@@ -164,8 +164,9 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private void enterMainActivity(){
 
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        //Intent intent = new Intent(this, MainActivity.class);
+        //startActivity(intent);
+        finish();
     }
 
     private void renderPage(){

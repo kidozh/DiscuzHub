@@ -7,8 +7,8 @@ android {
         applicationId "com.kidozh.discuzhub"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 4
-        versionName "1.3"
+        versionCode 5
+        versionName "1.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -111,6 +111,10 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
 
     implementation "org.jsoup:jsoup:1.12.1"
+    // for guava
+    implementation "com.google.guava:guava:28.0-jre"
+
+    api "com.google.guava:guava:28.0-android"
 
 
 }

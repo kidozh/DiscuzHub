@@ -1,6 +1,7 @@
 package com.kidozh.discuzhub.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -36,21 +38,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.loader.content.CursorLoader;
 
 
+import com.google.common.io.ByteStreams;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ui.uploadAttachment.UploadAttachmentDialogFragment;
 import com.kidozh.discuzhub.daos.bbsThreadDraftDao;
+import com.kidozh.discuzhub.database.UploadAttachmentDatabase;
 import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
+import com.kidozh.discuzhub.dialogs.PostThreadConfirmDialogFragment;
 import com.kidozh.discuzhub.dialogs.PostThreadPasswordDialogFragment;
+import com.kidozh.discuzhub.entities.UploadAttachment;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ThreadPostParameterResult;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
+import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsColorPicker;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -63,7 +73,10 @@ import com.kidozh.discuzhub.viewModels.PostThreadViewModel;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -77,6 +90,8 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -88,7 +103,9 @@ import okhttp3.Response;
 import static java.text.DateFormat.getDateInstance;
 import static java.text.DateFormat.getDateTimeInstance;
 
-public class bbsPostThreadActivity extends AppCompatActivity implements View.OnClickListener, PostThreadPasswordDialogFragment.NoticeDialogListener {
+public class bbsPostThreadActivity extends AppCompatActivity implements View.OnClickListener,
+        PostThreadConfirmDialogFragment.ConfirmDialogListener,
+        PostThreadPasswordDialogFragment.NoticeDialogListener {
     private static String TAG = bbsPostThreadActivity.class.getSimpleName();
 
     @BindView(R.id.bbs_post_thread_subject_editText)
@@ -113,6 +130,8 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
     ImageView actionInsertPhoto;
     @BindView(R.id.action_set_password)
     ImageView actionPassword;
+    @BindView(R.id.action_upload_attachment)
+    ImageView actionUploadAttachment;
 
     private String fid, forumApiString,forumName, uploadHash, formHash;
     private ProgressDialog uploadDialog;
@@ -129,6 +148,8 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
 
     private PostThreadViewModel postThreadViewModel;
+
+    LiveData<List<UploadAttachment>> uploadAttachmentLiveData;
 
 
     @Override
@@ -205,8 +226,15 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
                 if(threadPostParameterResult !=null){
                     bbsPersonInfo = threadPostParameterResult.permissionVariables.getUserBriefInfo();
                     formHash = threadPostParameterResult.permissionVariables.formHash;
-                    //uploadHash = threadPostParameterResult.permissionVariables.allowPerm.uploadHash;
+                    uploadHash = threadPostParameterResult.permissionVariables.allowPerm.uploadHash;
+                    actionInsertPhoto.setVisibility(View.VISIBLE);
+                    actionUploadAttachment.setVisibility(View.VISIBLE);
                 }
+                else {
+                    actionInsertPhoto.setVisibility(View.GONE);
+                    actionUploadAttachment.setVisibility(View.GONE);
+                }
+
             }
         });
 
@@ -242,6 +270,31 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
                 }
             }
         });
+
+        postThreadViewModel.uploadAttachmentErrorStringLiveData.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if(!s.equals("")){
+                    Toasty.error(getApplication(),s,Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        bbsThreadDraft draft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+        if(draft!=null){
+            uploadAttachmentLiveData = UploadAttachmentDatabase.getInstance(this).getUploadAttachmentDao().getAllUploadAttachmentFromDraft(draft.getId());
+            uploadAttachmentLiveData.observe(this, new Observer<List<UploadAttachment>>() {
+                @Override
+                public void onChanged(List<UploadAttachment> uploadAttachments) {
+                    bbsThreadDraft draft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+                    if(draft!=null){
+                        draft.uploadAttachmentList = uploadAttachments;
+                        postThreadViewModel.bbsThreadDraftMutableLiveData.postValue(draft);
+                        Log.d(TAG,"Get attachment "+uploadAttachments.size()+ " DRAFT id" + draft.getId());
+                    }
+                }
+            });
+        }
+
     }
 
     private void configureInputHandler(){
@@ -265,6 +318,12 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
             bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
             PostThreadPasswordDialogFragment postThreadPasswordDialogFragment = new PostThreadPasswordDialogFragment(threadDraft.password);
             postThreadPasswordDialogFragment.show(getSupportFragmentManager(),PostThreadPasswordDialogFragment.class.getSimpleName());
+        });
+
+        actionUploadAttachment.setOnClickListener(view ->{
+
+            UploadAttachmentDialogFragment uploadAttachmentDialogFragment = UploadAttachmentDialogFragment.newInstance(postThreadViewModel);
+            uploadAttachmentDialogFragment.show(getSupportFragmentManager(),UploadAttachmentDialogFragment.class.getSimpleName());
         });
     }
 
@@ -337,7 +396,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
                 if (TextUtils.isEmpty(uploadHash)) {
                     Toasty.error(bbsPostThreadActivity.this, getString(R.string.bbs_post_thread_cannot_upload_picture), Toast.LENGTH_SHORT).show();
                 } else {
-                    startActivityForResult(getPickImageChooserIntent(), 200);
+                    startActivityForResult(getPickImageChooserIntent(), bbsConstUtils.REQUEST_CODE_PICK_A_PICTURE);
                 }
                 break;
 //            case R.id.action_backspace:
@@ -404,7 +463,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
         if(autoPostBackup){
             bbsPostThreadBackupInfo.setText(R.string.bbs_thread_auto_backup_start);
-            bbsThreadMessageEditText.addTextChangedListener(new TextWatcher() {
+            TextWatcher textWatcher = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -439,7 +498,10 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
 
                 }
-            });
+            };
+
+            bbsThreadMessageEditText.addTextChangedListener(textWatcher);
+            bbsThreadSubjectEditText.addTextChangedListener(textWatcher);
         }
         else {
             bbsPostThreadBackupInfo.setVisibility(View.GONE);
@@ -450,8 +512,20 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onPasswordSubmit(String password) {
         bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
-        threadDraft.password = password;
-        postThreadViewModel.bbsThreadDraftMutableLiveData.postValue(threadDraft);
+        if(threadDraft !=null){
+            threadDraft.password = password;
+            postThreadViewModel.bbsThreadDraftMutableLiveData.postValue(threadDraft);
+        }
+        else {
+            Toasty.error(this, getString(R.string.bbs_post_thread_unprepared), Toast.LENGTH_SHORT).show();
+            VibrateUtils.vibrateForError(this);
+        }
+
+    }
+
+    @Override
+    public void onPositveBtnClicked() {
+        new publishThreadTask().execute();
     }
 
 
@@ -491,7 +565,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
             if(saveThenFinish){
                 Toasty.success(context,getString(R.string.bbs_thread_auto_backup_updated_time_template,
                         df.format(threadDraft.lastUpdateAt)),Toast.LENGTH_SHORT).show();
-                finishAfterTransition();
+                //finishAfterTransition();
             }
         }
     }
@@ -606,9 +680,10 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Bitmap bitmap = null;
+
         Log.v(TAG, "REQUEST_CODE:" + requestCode + "result:" + resultCode);
-        if (resultCode == Activity.RESULT_OK && requestCode == 200) {
+        if (resultCode == Activity.RESULT_OK && requestCode == bbsConstUtils.REQUEST_CODE_PICK_A_PICTURE) {
+            Bitmap bitmap = null;
             if (getPickImageResultUri(data) != null) {
                 Uri picUri = getPickImageResultUri(data);
                 try {
@@ -643,11 +718,43 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
                 }
 
             }
+            if (bitmap != null) {
+                uploadImage(bitmap);
+            }
+        }
+        else if(resultCode == Activity.RESULT_OK && requestCode == bbsConstUtils.REQUEST_CODE_UPLOAD_ATTACHMENT){
+            // upload an attachments
+            Uri uri = data.getData();
+            if(uri !=null){
+                Log.d(TAG,"get uri "+uri.getPath());
+                try {
+                    String path = uri.getPath();
+                    String filename = path.substring(path.lastIndexOf("/") + 1, path.length());
+                    InputStream inputStream = getContentResolver().openInputStream(uri);
+                    if(inputStream!=null){
+                        byte[] fileBytes = ByteStreams.toByteArray(inputStream);
+                        uploadAttachment(fileBytes,filename);
+                    }
+                    else {
+                        Log.d(TAG,"Input stream is null ");
+                    }
+
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+            else {
+                VibrateUtils.vibrateForNotice(this);
+                Toasty.info(this,getString(R.string.can_not_find_a_file),Toast.LENGTH_SHORT).show();
+            }
+
+
         }
 
-        if (bitmap != null) {
-            uploadImage(bitmap);
-        }
+
     }
 
     private void uploadImage(Bitmap bitmap) {
@@ -657,6 +764,90 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
 
     private Bitmap returnBitmap = null;
+
+    private void uploadAttachment(byte[] fileData, String filename){
+        postThreadViewModel.isUploadingAttachmentLiveData.postValue(true);
+
+        ThreadPostParameterResult postParameterResult = postThreadViewModel.threadPostParameterResultMutableLiveData.getValue();
+        if(postParameterResult == null){
+            return;
+        }
+        String uploadHash = postParameterResult.permissionVariables.allowPerm.uploadHash;
+
+        RequestBody fileBody = RequestBody.create(MediaType.parse("multipart/form-data"), fileData);
+
+        MultipartBody multipartBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("Filedata",filename,fileBody)
+                .addFormDataPart("uid",bbsPersonInfo.uid)
+                .addFormDataPart("hash",uploadHash)
+                .build();
+        Log.d(TAG,"Send attachment url "+bbsURLUtils.getSWFUploadAttachmentUrl(fid));
+        Request request = new Request.Builder()
+                .url(bbsURLUtils.getSWFUploadAttachmentUrl(fid))
+                .post(multipartBody)
+                .build();
+        Context context = this;
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                postThreadViewModel.isUploadingAttachmentLiveData.postValue(false);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful() && response.body() !=null){
+                    String s = response.body().string();
+                    Log.d(TAG,"upload a file "+s);
+                    try{
+                        int resCode = Integer.parseInt(s);
+                        if(resCode >= 0){
+                            // need to add to viewModel
+                            bbsThreadDraft draft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+                            UploadAttachment uploadAttachment = new UploadAttachment(resCode,filename);
+                            uploadAttachment.setEmpId(draft.getId());
+                            Log.d(TAG,"Insert attachment "+draft.getId());
+                            List<UploadAttachment> uploadAttachmentList = postThreadViewModel.uploadAttachmentListLiveData.getValue();
+                            uploadAttachmentList.add(uploadAttachment);
+                            postThreadViewModel.uploadAttachmentListLiveData.postValue(uploadAttachmentList);
+                            // need to save to database
+                            // save it to database
+                            final Runnable r = new Runnable() {
+                                @Override
+                                public void run() {
+                                    UploadAttachmentDatabase.getInstance(context).getUploadAttachmentDao().insertUploadAttachment(uploadAttachment);
+                                }
+                            };
+
+                        }
+                        else {
+                            VibrateUtils.vibrateForError(getApplication());
+                            int errorCode = - resCode;
+
+                            if(errorCode>11){
+                                postThreadViewModel.uploadAttachmentErrorStringLiveData.postValue(getString(R.string.bbs_thread_upload_files_failed));
+                            }
+                            else {
+                                int errorStringRes = getResources().getIdentifier("upload_attachment_error_"+errorCode,"string",getPackageName());
+                                String errorString = getString(errorStringRes);
+                                postThreadViewModel.uploadAttachmentErrorStringLiveData.postValue(errorString);
+
+                            }
+                        }
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+
+                }
+                postThreadViewModel.isUploadingAttachmentLiveData.postValue(false);
+            }
+        });
+
+    }
+
+
 
     private class uploadImageTask extends AsyncTask<Bitmap, String, String> {
         Context context;
@@ -791,19 +982,6 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
         return baos.toByteArray();
     }
 
-    public Bitmap getResizedBitmap(Bitmap image, int maxWidth) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        if (width > maxWidth) {
-            float bitmapRatio = (float) width / (float) height;
-            width = maxWidth;
-            height = (int) (width / bitmapRatio);
-            return Bitmap.createScaledBitmap(image, width, height, true);
-        }
-        return image;
-    }
-
     public Uri getPickImageResultUri(Intent data) {
         boolean isCamera = true;
         if (data != null) {
@@ -851,7 +1029,15 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
             FormBody.Builder formBody = new FormBody.Builder();
             List<String> aids = handler.getImagesAids();
-            formBody.add("topicsubmit", "yes")
+            // check password
+            bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+            String password = threadDraft.password;
+            if(password.length()>0){
+                message += String.format(Locale.US,"[password]%s[/password]",password);
+            }
+
+            formBody
+                    .add("topicsubmit", "yes")
                     .add("subject",subject)
                     .add("formhash",formHash)
                     .add("message",message);
@@ -863,6 +1049,15 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
             for (String aid : aids) {
                 formBody.add("attachnew[" + aid + "]", "");
             }
+            // add attachment
+            List<UploadAttachment> uploadAttachmentList = postThreadViewModel.uploadAttachmentListLiveData.getValue();
+            if(uploadAttachmentList !=null){
+                for(UploadAttachment uploadAttachment : uploadAttachmentList){
+                    formBody.add(String.format(Locale.US,"attachnew[%d][description]",uploadAttachment.aid),uploadAttachment.description);
+                }
+            }
+
+
             FormBody form = formBody.build();
 
             request = new Request.Builder()
@@ -928,7 +1123,10 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
             }
             case R.id.bbs_toolbar_send_item:{
                 if(checkIfThreadCanBePosted()){
-                    new publishThreadTask().execute();
+                    // ensure whether user is agreed to publish
+                    PostThreadConfirmDialogFragment fragment = new PostThreadConfirmDialogFragment(postThreadViewModel);
+                    fragment.show(getSupportFragmentManager(),PostThreadConfirmDialogFragment.class.getSimpleName());
+
                 }
                 else {
                     // calling a prompt?
@@ -936,11 +1134,15 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
                 }
                 Log.d(TAG,"You press send item");
+                return true;
+
             }
             case R.id.bbs_post_thread_toolbar_save_draft:{
                 bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
                 addThreadDraftTask task = new addThreadDraftTask(this,threadDraft,true);
                 task.execute();
+                return true;
+
             }
             default:
                 return super.onOptionsItemSelected(item);

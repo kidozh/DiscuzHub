@@ -66,7 +66,7 @@ public class bbsForumThreadShortReplyAdapter extends RecyclerView.Adapter<bbsFor
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
         Glide.with(context)
                 .load(source)
-                .apply(RequestOptions.placeholderOf(R.drawable.vector_drawable_people_fill).error(R.drawable.vector_drawable_people_fill))
+                .apply(RequestOptions.placeholderOf(R.drawable.ic_account_circle_24px).error(R.drawable.ic_account_circle_24px))
                 .into(holder.mReplyerAvatar);
     }
 

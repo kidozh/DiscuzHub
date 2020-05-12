@@ -467,12 +467,13 @@ public class networkUtils {
     }
 
     public static boolean canDownloadImageOrFile(Context context){
+        // for debug
         if(getConnectedType(context) == NETWORK_STATUS_WIFI){
             return true;
         }
         else {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
-            Boolean isDataSaverMode = prefs.getBoolean(context.getString(R.string.preference_key_data_save_mode),true);
+            boolean isDataSaverMode = prefs.getBoolean(context.getString(R.string.preference_key_data_save_mode),true);
             if(isDataSaverMode){
                 return false;
             }

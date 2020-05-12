@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kidozh.discuzhub.activities.SettingsActivity;
+import com.kidozh.discuzhub.activities.SplashScreenActivity;
 import com.kidozh.discuzhub.activities.aboutAppActivity;
 import com.kidozh.discuzhub.adapter.forumInformationAdapter;
 import com.kidozh.discuzhub.callback.forumSwipeToDeleteCallback;
@@ -96,7 +97,14 @@ public class MainActivity extends AppCompatActivity {
         bindForumData();
         configureFab();
         configureSwipeRefreshLayout();
+        checkTermOfUse();
 
+
+    }
+
+    private void checkTermOfUse(){
+        Intent intent = new Intent(this, SplashScreenActivity.class);
+        startActivity(intent);
     }
 
 

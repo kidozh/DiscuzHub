@@ -124,7 +124,7 @@
     <string name="bbs_post_thread_subject_required">帖子需要有主题</string>
     <string name="bbs_post_thread_message_required">帖子需要有内容</string>
     <string name="bbs_post_thread_cannot_upload_picture">目前因为某些问题无法上传图片</string>
-    <string name="bbs_post_thread_choose_a_picture">为当前的帖子选择一张图片</string>
+    <string name="bbs_post_thread_choose_a_picture">插入一张图片</string>
     <string name="bbs_thread_uploading_files">上传文件中</string>
     <string name="bbs_thread_uploading_picture">上传照片中</string>
     <string name="bbs_thread_upload_files_successful">成功上传文件</string>
@@ -342,5 +342,25 @@
     <string name="bbs_rule_not_set">此区没有说明</string>
     <string name="bbs_post_image_name">图像_%1$s_</string>
     <string name="bbs_thread_encrypt">加密我的帖子</string>
+    <string name="bbs_post_thread_unprepared">并未完成初始化，请您等待后继续此操作</string>
+    <string name="vibrator_not_found">找不到振动设备，无法振动</string>
+    <string name="bbs_upload_an_attachment">上传一个附件</string>
+    <string name="bbs_upload">上传%1$s</string>
+    <string name="can_not_find_the_file_resolver">无法找到对应的文件管理器</string>
+    <string name="can_not_find_a_file">没有选择文件</string>
+    <string name="upload_file_retrieve_failed">无法获得文件数据</string>
+    <string name="upload_attachment_error_1">内部服务器错误</string>
+    <string name="upload_attachment_error_2">服务器限制无法上传那么大的附件</string>
+    <string name="upload_attachment_error_3">用户组限制无法上传那么大的附件</string>
+    <string name="upload_attachment_error_4">不支持此文件类型</string>
+    <string name="upload_attachment_error_5">文件类型限制无法上传那么大的附件</string>
+    <string name="upload_attachment_error_6">今天你已经无法上传更多的附件了</string>
+    <string name="upload_attachment_error_7">请上传一张图片</string>
+    <string name="upload_attachment_error_8">无法保存附件文件</string>
+    <string name="upload_attachment_error_9">非法文件</string>
+    <string name="upload_attachment_error_10">非法操作</string>
+    <string name="upload_attachment_error_11">今天你已经无法上传这么大的附件</string>
+    <string name="bbs_post_confirm_dialog_title">发表下述帖子？</string>
+    <string name="upload_attachment_number">发帖附件 (%1$d)</string>
 
 </resources>

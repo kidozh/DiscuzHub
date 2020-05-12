@@ -55,6 +55,7 @@ import com.kidozh.discuzhub.entities.forumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.threadInfo;
 import com.kidozh.discuzhub.utilities.MyImageGetter;
+import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
@@ -164,6 +165,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                 adapter.setThreadInfoList(threadInfos,forumThreadViewModel.jsonString.getValue());
             }
         });
+        Context context = this;
         forumThreadViewModel.hasLoadAll.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -172,19 +174,8 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                     Boolean needVibrate = prefs.getBoolean(getString(R.string.preference_key_vibrate_when_load_all),true);
                     Toasty.success(getApplication(),getString(R.string.thread_has_load_all),Toast.LENGTH_SHORT).show();
                     if(needVibrate){
-                        Vibrator vb = (Vibrator)getSystemService(Service.VIBRATOR_SERVICE);
-                        int VIBRATING_MILSEC = 200;
-                        if(vb!=null&&vb.hasVibrator()){
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                VibrationEffect vibrationEffect = null;
-                                vibrationEffect = VibrationEffect.createOneShot(VIBRATING_MILSEC,10);
-                                vb.vibrate(vibrationEffect);
-                            }
-                            else {
-                                vb.vibrate(VIBRATING_MILSEC);
-                            }
+                        VibrateUtils.vibrateSlightly(context);
 
-                        }
                     }
                 }
             }
@@ -427,7 +418,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                 super.onScrollStateChanged(recyclerView, newState);
                 if(isScrollAtEnd()){
                     Boolean hasLoadAll = forumThreadViewModel.hasLoadAll.getValue();
-                    boolean loading = forumThreadViewModel.isLoading.getValue();
+                    Boolean loading = forumThreadViewModel.isLoading.getValue();
                     Log.d(TAG,"load all "+hasLoadAll+" page "+forumThreadViewModel.forumStatusMutableLiveData.getValue().page);
                     if(!loading && !hasLoadAll){
                         bbsURLUtils.ForumStatus status = forumThreadViewModel.forumStatusMutableLiveData.getValue();

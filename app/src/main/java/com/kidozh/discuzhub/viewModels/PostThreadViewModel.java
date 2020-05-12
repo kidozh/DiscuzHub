@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.UploadAttachment;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumInfo;
@@ -20,6 +21,8 @@ import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
@@ -38,8 +41,10 @@ public class PostThreadViewModel extends AndroidViewModel {
 
     public MutableLiveData<ThreadPostParameterResult> threadPostParameterResultMutableLiveData;
     public MutableLiveData<ThreadPostParameterResult.AllowPermission> allowPermissionMutableLiveData;
-    public MutableLiveData<Boolean> error;
+    public MutableLiveData<Boolean> error,isUploadingAttachmentLiveData;
     public MutableLiveData<bbsThreadDraft> bbsThreadDraftMutableLiveData;
+    public MutableLiveData<List<UploadAttachment>> uploadAttachmentListLiveData;
+    public MutableLiveData<String> selectedAttachmentSuffixLiveData, uploadAttachmentErrorStringLiveData;
 
 
 
@@ -48,6 +53,10 @@ public class PostThreadViewModel extends AndroidViewModel {
         error = new MutableLiveData<>(false);
         bbsThreadDraftMutableLiveData = new MutableLiveData<>(null);
         allowPermissionMutableLiveData = new MutableLiveData<>(null);
+        uploadAttachmentListLiveData = new MutableLiveData<>(new ArrayList<>());
+        selectedAttachmentSuffixLiveData = new MutableLiveData<>("");
+        uploadAttachmentErrorStringLiveData = new MutableLiveData<>("");
+        isUploadingAttachmentLiveData = new MutableLiveData<>(false);
     }
 
     public void setBBSInfo(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, String fid){
