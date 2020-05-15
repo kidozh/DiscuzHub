@@ -5,13 +5,12 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
-import com.kidozh.discuzhub.entities.forumInfo;
+import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.threadCommentInfo;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -19,7 +18,6 @@ import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
-import java.io.StreamCorruptedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +34,8 @@ public class ThreadDetailViewModel extends AndroidViewModel {
 
     private bbsInformation bbsInfo;
     private OkHttpClient client;
-    private forumInfo forum;
-    private String tid;
+    private ForumInfo forum;
+    private int tid;
     private forumUserBriefInfo userBriefInfo;
 
     public MutableLiveData<Boolean> isLoading, error, hasLoadAll;
@@ -63,7 +61,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
         detailedThreadInfoMutableLiveData = new MutableLiveData<>();
     }
 
-    public void setBBSInfo(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, forumInfo forum, String tid){
+    public void setBBSInfo(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, ForumInfo forum, int tid){
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
         this.forum = forum;
@@ -72,7 +70,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
 
 
         if(threadStatusMutableLiveData.getValue()==null){
-            bbsURLUtils.ThreadStatus threadStatus = new bbsURLUtils.ThreadStatus(Integer.parseInt(tid),1);
+            bbsURLUtils.ThreadStatus threadStatus = new bbsURLUtils.ThreadStatus(tid,1);
             threadStatusMutableLiveData.setValue(threadStatus);
         }
 

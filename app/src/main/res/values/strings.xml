@@ -471,7 +471,7 @@
     <string name="bbs_notification_thread_list">Thread list</string>
     <string name="app_version_template">Ver. %1$s</string>
     <string name="bbs_app_about">About APP</string>
-    <string name="app_privacy_policy">Privacy policy</string>
+    <string name="app_privacy_policy">Privacy Policy</string>
     <string name="app_terms_of_use">Terms of Use</string>
     <string name="app_contact_developer">Contact developer</string>
     <string name="app_homepage">Homepage</string>
@@ -524,6 +524,25 @@
     <string name="upload_attachment_error_11">You can\'t upload such a big file today</string>
     <string name="bbs_post_confirm_dialog_title">Post your thread?</string>
     <string name="upload_attachment_number">Attachments (%1$d)</string>
+    <string name="bbs_add_intro_title">Add a discuz! bbs</string>
+    <string name="bbs_add_intro_subtitle">Use the URL</string>
+    <string name="bbs_add_intro_input_url_hint">BBS\'s Complete URL</string>
+    <string name="bbs_add_intro_https_check">Use strict HTTPS verification</string>
+    <string name="bbs_add_intro_url_examples">Are you looking for?</string>
+    <string name="bbs_add_intro_suggestion">Suggestions</string>
+    <string name="bbs_add_intro_continue">Continue</string>
+    <string name="bbs_url_example_npubbs">NPU BBS</string>
+    <string name="bbs_url_example_mcbbs">Minecraft CHN BBS</string>
+    <string name="bbs_url_example_keylol">Keylol</string>
+    <string name="bbs_url_example_1point3acres">1 Point 3 Acres</string>
+    <string name="bbs_url_example_discuz_support">Discuz! Tech Support</string>
+    <string name="bbs_url_example_right_com">Right.com.cn</string>
+    <string name="bbs_url_suggestion_host">Host address</string>
+    <string name="bbs_url_suggestion_level">Level %1$d address</string>
+    <string name="app_open_source_lib">Open Source Library</string>
+    <string name="add_a_bbs_successfully">Add bbs (%1$s) to database successfully.</string>
+    <string name="add_bbs_url_failed">%1$s is not a valid URL.</string>
+    <string name="forum_today_posts_over_much" translatable="false">99+</string>
 
 
 </resources>

@@ -9,10 +9,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
+import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.forumInfo;
+import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.entities.threadInfo;
+import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -34,14 +35,15 @@ public class ForumThreadViewModel extends AndroidViewModel {
 
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
-    forumInfo forum;
+    ForumInfo forum;
     private OkHttpClient client;
 
     public MutableLiveData<Boolean> isLoading, isError, hasLoadAll;
-    public MutableLiveData<List<threadInfo>> threadInfoListMutableLiveData;
+    public MutableLiveData<List<ThreadInfo>> threadInfoListMutableLiveData;
     public MutableLiveData<String> jsonString, forumDescription, forumRule;
     public LiveData<Integer> draftNumberLiveData;
-    public MutableLiveData<bbsParseUtils.forumDetailedInfo> forumDetailedInfoMutableLiveData;
+    public MutableLiveData<ForumInfo> forumDetailedInfoMutableLiveData;
+    public MutableLiveData<DisplayForumResult> displayForumResultMutableLiveData;
 
 
     public ForumThreadViewModel(@NonNull Application application) {
@@ -60,16 +62,17 @@ public class ForumThreadViewModel extends AndroidViewModel {
                 .getbbsThreadDraftDao()
                 .getDraftNumber();
         forumDetailedInfoMutableLiveData = new MutableLiveData<>();
+        displayForumResultMutableLiveData = new MutableLiveData<>(null);
     }
 
-    public void setBBSInfo(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, forumInfo forum){
+    public void setBBSInfo(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, ForumInfo forum){
         this.curBBS = bbsInfo;
         this.curUser = userBriefInfo;
         this.forum = forum;
         client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
     }
 
-    public LiveData<List<threadInfo>> getThreadInfoListLiveData(){
+    public LiveData<List<ThreadInfo>> getThreadInfoListLiveData(){
         if(threadInfoListMutableLiveData == null){
             threadInfoListMutableLiveData = new MutableLiveData<>();
             bbsURLUtils.ForumStatus forumStatus = new bbsURLUtils.ForumStatus(forum.fid,1);
@@ -113,40 +116,35 @@ public class ForumThreadViewModel extends AndroidViewModel {
                 if(forumStatus.page == 1){
                     threadInfoListMutableLiveData.postValue(new ArrayList<>());
                 }
-                List<threadInfo> threadInfoList;
+
                 if(response.isSuccessful() && response.body()!=null){
                     String s = response.body().string();
                     jsonString.postValue(s);
                     Log.d(TAG,"recv forum thread json "+s);
-                    if(forumStatus.page == 1){
-                        threadInfoList = bbsParseUtils.parseThreadListInfo(s,true);
-                    }
-                    else {
-                        threadInfoList = bbsParseUtils.parseThreadListInfo(s,false);
-                    }
-                    List<threadInfo> currentThreadInfo = threadInfoListMutableLiveData.getValue();
-                    if(currentThreadInfo == null){
-                        currentThreadInfo = new ArrayList<>();
-                    }
-                    bbsParseUtils.forumDetailedInfo forumDetailedInfo = bbsParseUtils.getForumDetailedInfo(s);
-                    forumDetailedInfoMutableLiveData.postValue(forumDetailedInfo);
-
-                    if(threadInfoList == null){
-                        isError.postValue(true);
-                        if(forumStatus.page != 1){
-                            // rollback
-                            forumStatus.page -= 1;
-                            forumStatusMutableLiveData.postValue(forumStatus);
+                    DisplayForumResult forumResult = bbsParseUtils.parseForumInfo(s);
+                    displayForumResultMutableLiveData.postValue(forumResult);
+                    if(forumResult !=null){
+                        Log.d(TAG, "Get forum Result" + forumResult);
+                        // for list display
+                        List<ThreadInfo> threadInfoList = forumResult.forumVariables.forumThreadList;
+                        List<ThreadInfo> currentThreadInfo = threadInfoListMutableLiveData.getValue();
+                        if(currentThreadInfo == null){
+                            currentThreadInfo = new ArrayList<>();
                         }
-                    }
-                    else {
-                        currentThreadInfo.addAll(threadInfoList);
-                        threadInfoListMutableLiveData.postValue(currentThreadInfo);
 
-                        // need to
-                        if(forumDetailedInfo !=null){
-                            Log.d(TAG,"recv thread "+threadInfoList.size()+" thread count "+forumDetailedInfo.threads);
-                            if(currentThreadInfo.size() >= forumDetailedInfo.threads){
+                        if(threadInfoList == null){
+                            isError.postValue(true);
+                            if(forumStatus.page != 1){
+                                // rollback
+                                forumStatus.page -= 1;
+                                forumStatusMutableLiveData.postValue(forumStatus);
+                            }
+                        }
+                        else {
+                            currentThreadInfo.addAll(threadInfoList);
+                            threadInfoListMutableLiveData.postValue(currentThreadInfo);
+                            int totalThreadNumber = forumResult.forumVariables.forumInfo.threads;
+                            if(currentThreadInfo.size() >= totalThreadNumber){
                                 hasLoadAll.postValue(true);
                                 if(forumStatus.page != 1){
                                     // rollback
@@ -155,10 +153,14 @@ public class ForumThreadViewModel extends AndroidViewModel {
                                 }
                             }
 
-
                         }
+                        forumDetailedInfoMutableLiveData.postValue(forumResult.forumVariables.forumInfo);
 
                     }
+
+
+
+
 
 
 

@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +29,11 @@ import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsShowThreadActivity;
 import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
+import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.entities.threadInfo;
+import com.kidozh.discuzhub.results.DisplayForumResult;
+import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
@@ -53,28 +53,29 @@ import cn.gavinliu.android.lib.shapedimageview.ShapedImageView;
 
 public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAdapter.bbsForumThreadViewHolder> {
     private static final String TAG = bbsForumThreadAdapter.class.getSimpleName();
-    public List<threadInfo> threadInfoList;
+    public List<ThreadInfo> threadInfoList;
     Context mContext;
-    public String jsonString,fid;
+    public String fid;
     bbsInformation bbsInfo;
     forumUserBriefInfo curUser;
+    Map<String,String> threadType;
 
-    public bbsForumThreadAdapter(Context context, String jsonString, String fid, bbsInformation bbsInfo, forumUserBriefInfo curUser){
+    public bbsForumThreadAdapter(Context context, Map<String,String> threadType, String fid, bbsInformation bbsInfo, forumUserBriefInfo curUser){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
         this.mContext = context;
-        this.jsonString = jsonString;
+        this.threadType = threadType;
         this.fid = fid;
     }
 
-    public void setThreadInfoList(List<threadInfo> threadInfoList, String jsonString){
-        this.jsonString = jsonString;
+    public void setThreadInfoList(List<ThreadInfo> threadInfoList, Map<String,String> threadType){
+        this.threadType = threadType;
         this.threadInfoList = threadInfoList;
         notifyDataSetChanged();
     }
 
-    public void addThreadInfoList(List<threadInfo> threadInfoList, String jsonString){
-        this.jsonString = jsonString;
+    public void addThreadInfoList(List<ThreadInfo> threadInfoList, Map<String,String> threadType){
+        this.threadType = threadType;
         if(this.threadInfoList == null){
             this.threadInfoList = threadInfoList;
         }
@@ -100,71 +101,55 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
 
     @Override
     public void onBindViewHolder(@NonNull bbsForumThreadAdapter.bbsForumThreadViewHolder holder, int position) {
-        threadInfo threadInfo = threadInfoList.get(position);
+        ThreadInfo threadInfo = threadInfoList.get(position);
         holder.mThreadPublisher.setText(threadInfo.author);
         holder.mContent.setVisibility(View.GONE);
         Spanned sp = Html.fromHtml(threadInfo.subject);
         SpannableString spannableString = new SpannableString(sp);
         holder.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE);
-        holder.mThreadViewNum.setText(numberFormatUtils.getShortNumberText(threadInfo.viewNum));
-        holder.mThreadReplyNum.setText(numberFormatUtils.getShortNumberText(threadInfo.repliesNum));
-//        if(threadInfo.lastUpdator != null){
-//            holder.mPublishDate.setText(threadInfo.lastUpdator);
-//        }
-
-        //DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
-//        if(threadInfo.lastUpdateTimeString!=null){
-//            // String lastUpdateTimeString = TextUtils.htmlEncode(threadInfo.lastUpdateTimeString);
-//            SpannableString spannableString = new SpannableString(Html.fromHtml(threadInfo.lastUpdateTimeString));
-//            holder.mPublishDate.setText(spannableString, TextView.BufferType.SPANNABLE);
-//        }
-//        else {
-//            holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext,threadInfo.publishAt));
-//        }
+        holder.mThreadViewNum.setText(numberFormatUtils.getShortNumberText(threadInfo.views));
+        holder.mThreadReplyNum.setText(numberFormatUtils.getShortNumberText(threadInfo.replies));
 
         holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext,threadInfo.publishAt));
 
         //holder.mPublishDate.setText(df.format(threadInfo.publishAt));
-        if(threadInfo.isTop){
+        if(threadInfo.displayOrder !=0){
             int textResource = R.string.bbs_forum_pinned;
             switch(threadInfo.displayOrder){
-                case "3":
+                case 3:
                     textResource = R.string.display_order_3;
                     break;
-                case "2":
+                case 2:
                     textResource = R.string.display_order_2;
                     break;
-                case "1":
+                case 1:
                     textResource = R.string.display_order_1;
                     break;
-                case "-1":
+                case -1:
                     textResource = R.string.display_order_n1;
                     break;
-                case "-2":
+                case -2:
                     textResource = R.string.display_order_n2;
                     break;
-                case "-3":
+                case -3:
                     textResource = R.string.display_order_n3;
                     break;
-                case "-4":
+                case -4:
                     textResource = R.string.display_order_n4;
                     break;
                     default:
                         textResource = R.string.bbs_forum_pinned;
-
             }
             holder.mThreadType.setText(textResource);
             holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorAccent));
         }
         else {
-
-            Map<String,String> threadType = bbsParseUtils.parseThreadType(jsonString);
             if(threadType == null){
-                Log.d(TAG,"Cannot parse thread type "+jsonString);
+
                 holder.mThreadType.setText(String.format("%s",position+1));
             }
             else {
-                holder.mThreadType.setText(threadType.get(threadInfo.typeid));
+                holder.mThreadType.setText(threadType.get(String.valueOf(threadInfo.typeId)));
             }
 
             holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorPrimary));
@@ -200,15 +185,16 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
             holder.mRecommendationIcon.setVisibility(View.GONE);
         }
 
-        if(threadInfo.readperm.equals("0")){
+        if(threadInfo.readPerm == 0){
             holder.mReadPerm.setVisibility(View.GONE);
             holder.mReadPermIcon.setVisibility(View.GONE);
         }
         else {
             holder.mReadPermIcon.setVisibility(View.VISIBLE);
             holder.mReadPerm.setVisibility(View.VISIBLE);
-            holder.mReadPerm.setText(numberFormatUtils.getShortNumberText(threadInfo.readperm));
-            int readPermissionVal = Integer.parseInt(threadInfo.readperm);
+            holder.mReadPerm.setText(String.valueOf(threadInfo.readPerm));
+            //holder.mReadPerm.setText(numberFormatUtils.getShortNumberText(threadInfo.readPerm));
+            int readPermissionVal = threadInfo.readPerm;
             if(curUser == null || curUser.readPerm < readPermissionVal){
                 holder.mReadPerm.setTextColor(mContext.getColor(R.color.colorWarn));
                 holder.mReadPermIcon.setImageDrawable(mContext.getDrawable(R.drawable.vector_drawable_close));
@@ -245,15 +231,16 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
 
 
         holder.mAttachmentNumber.setText(numberFormatUtils.getShortNumberText(threadInfo.attachment));
-        if(threadInfo.shortReplyInfoList!=null && threadInfo.shortReplyInfoList.size()>0){
+        if(threadInfo.shortReplyList!=null && threadInfo.shortReplyList.size()>0){
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
             holder.mReplyRecyclerview.setFocusable(false);
             holder.mReplyRecyclerview.setNestedScrollingEnabled(false);
             holder.mReplyRecyclerview.setLayoutManager(linearLayoutManager);
             holder.mReplyRecyclerview.setClickable(false);
             bbsForumThreadShortReplyAdapter adapter = new bbsForumThreadShortReplyAdapter(mContext);
-            adapter.setShortReplyInfoList(threadInfo.shortReplyInfoList);
+            adapter.setShortReplyInfoList(threadInfo.shortReplyList);
             holder.mReplyRecyclerview.setAdapter(adapter);
+            holder.mReplyRecyclerview.setNestedScrollingEnabled(false);
         }
 
         holder.mCardview.setOnClickListener(new View.OnClickListener(){
@@ -263,16 +250,10 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
                 Intent intent = new Intent(mContext, bbsShowThreadActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
-
+                intent.putExtra("FID",threadInfo.fid);
                 intent.putExtra("TID",threadInfo.tid);
                 intent.putExtra("SUBJECT",threadInfo.subject);
-                if(threadInfo.fid!=null){
-                    intent.putExtra("FID",threadInfo.fid);
-                }
-                else {
-                    intent.putExtra("FID",fid);
-                }
-
+                VibrateUtils.vibrateForClick(mContext);
                 mContext.startActivity(intent);
             }
         });

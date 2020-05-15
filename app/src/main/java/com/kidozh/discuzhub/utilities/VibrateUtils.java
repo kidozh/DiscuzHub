@@ -27,8 +27,6 @@ public class VibrateUtils {
 
                 vb.vibrate(vibrationEffect);
             }
-
-
         }
 
     }
@@ -40,7 +38,7 @@ public class VibrateUtils {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 VibrationEffect vibrationEffect = null;
                 if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q){
-                    vibrationEffect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK);
+                    vibrationEffect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_TICK);
                 }
                 else {
                     vibrationEffect = VibrationEffect.createOneShot(VIBRATING_MILSEC,10);
@@ -61,9 +59,14 @@ public class VibrateUtils {
         Vibrator vb = (Vibrator) context.getSystemService(Service.VIBRATOR_SERVICE);
         int VIBRATING_MILSEC = 200;
         if(vb!=null&&vb.hasVibrator()){
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && vb.hasAmplitudeControl()) {
                 VibrationEffect vibrationEffect = null;
-                vibrationEffect = VibrationEffect.createOneShot(VIBRATING_MILSEC,100);
+                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q){
+                    vibrationEffect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK);
+                }
+                else {
+                    vibrationEffect = VibrationEffect.createOneShot(VIBRATING_MILSEC,30);
+                }
                 vb.vibrate(vibrationEffect);
             }
             else {
@@ -74,5 +77,23 @@ public class VibrateUtils {
         else {
             Toasty.warning(context,context.getString(R.string.vibrator_not_found), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public static void vibrateForClick(Context context){
+        Vibrator vb = (Vibrator) context.getSystemService(Service.VIBRATOR_SERVICE);
+        int VIBRATING_MILSEC = 200;
+        if(vb!=null&&vb.hasVibrator()){
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && vb.hasAmplitudeControl()) {
+                VibrationEffect vibrationEffect = null;
+                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q){
+                    vibrationEffect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK);
+                }
+                else {
+                    vibrationEffect = VibrationEffect.createOneShot(VIBRATING_MILSEC,5);
+                }
+                vb.vibrate(vibrationEffect);
+            }
+        }
+
     }
 }

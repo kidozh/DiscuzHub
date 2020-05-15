@@ -20,6 +20,7 @@ import com.kidozh.discuzhub.activities.bbsShowPortalActivity;
 import com.kidozh.discuzhub.activities.loginBBSActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.colorUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -81,6 +82,7 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
                 Intent intent = new Intent(context, bbsShowPortalActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userInfo);
+                VibrateUtils.vibrateForClick(context);
                 context.startActivity(intent);
             }
         });
@@ -91,6 +93,7 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userInfo);
                 context.startActivity(intent);
+                VibrateUtils.vibrateForNotice(context);
                 return true;
             }
         });

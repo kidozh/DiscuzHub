@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.utilities;
 
-import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -12,7 +11,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -20,9 +18,12 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.forumCategorySection;
-import com.kidozh.discuzhub.entities.forumInfo;
 import com.kidozh.discuzhub.entities.threadCommentInfo;
-import com.kidozh.discuzhub.entities.threadInfo;
+import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.results.AddCheckResult;
+import com.kidozh.discuzhub.results.BBSIndexResult;
+import com.kidozh.discuzhub.results.DisplayForumResult;
+import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.results.ThreadPostParameterResult;
 
 import org.json.JSONArray;
@@ -74,35 +75,40 @@ public class bbsParseUtils {
         }
     }
 
-    public static forumInfo getForumInfoByFid(String s, int fid) {
+    public static AddCheckResult parseCheckInfoResult(String s) {
         try {
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONArray catagoryList = variables.getJSONArray("forumlist");
-            for (int i = 0; i < catagoryList.length(); i++) {
-                JSONObject catagory = catagoryList.getJSONObject(i);
-                String fidString = catagory.getString("fid");
-                if (!fidString.equals(String.valueOf(fid))) {
-                    continue;
-                }
-                String forumName = catagory.getString("name");
-                String allPost = catagory.getString("posts");
-                String thread = catagory.getString("threads");
-                String todayPosts = catagory.getString("todayposts");
-                String iconURLString = catagory.optString("icon", "");
-                String description = catagory.optString("description", "");
-
-                return new forumInfo(forumName, fid, iconURLString, description, todayPosts, allPost, thread);
-
-            }
-
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(s, AddCheckResult.class);
 
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        return null;
     }
+
+    public static DisplayForumResult parseForumInfo(String s){
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(s, DisplayForumResult.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static BBSIndexResult parseForumIndexResult(String s){
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(s, BBSIndexResult.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 
     public static List<forumCategorySection> parseCategoryFids(String s) {
         try {
@@ -161,87 +167,6 @@ public class bbsParseUtils {
             }
             return threadTypeMap;
 
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static List<threadInfo> parseThreadListInfo(String s, Boolean isFirst) {
-        try {
-            List<threadInfo> threadInfoList = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONArray threadList = variables.getJSONArray("forum_threadlist");
-            for (int i = 0; i < threadList.length(); i++) {
-                JSONObject threadObj = threadList.getJSONObject(i);
-                String tid = threadObj.getString("tid");
-                String typeid = threadObj.getString("typeid");
-                String readPerm = threadObj.getString("readperm");
-                String author = threadObj.getString("author");
-                String authorId = threadObj.getString("authorid");
-                String subject = threadObj.getString("subject");
-                String updateAtString = threadObj.getString("lastpost");
-                String publishAtStringTimestamp = threadObj.getString("dbdateline");
-                String lastUpdator = threadObj.optString("lastposter", "");
-                String viewNum = threadObj.getString("views");
-                String replyNum = threadObj.getString("replies");
-                String displayOrder = threadObj.getString("displayorder");
-                String digest = threadObj.optString("digest", "0");
-                String special = threadObj.optString("special", "0");
-                String recommendNum = threadObj.optString("recommend_add", "0");
-                String rushReply = threadObj.optString("rushreply", "0");
-                String price = threadObj.optString("price", "0");
-                String attachment = threadObj.optString("attachment", "0");
-                String replyCredit = threadObj.optString("replycredit", "0");
-
-                // parse short reply
-                List<threadInfo.shortReplyInfo> shortReplyInfoList = new ArrayList<>();
-                if (threadObj.has("reply")) {
-                    JSONArray shortReplies = threadObj.getJSONArray("reply");
-                    for (int j = 0; j < shortReplies.length(); j++) {
-                        JSONObject shortReply = shortReplies.getJSONObject(j);
-                        shortReplyInfoList.add(new threadInfo.shortReplyInfo(
-                                shortReply.getString("pid"),
-                                shortReply.getString("author"),
-                                shortReply.getString("authorid"),
-                                shortReply.getString("message")
-                        ));
-                    }
-                }
-
-                threadInfo thread = new threadInfo();
-                thread.tid = tid;
-                thread.typeid = typeid;
-                thread.readperm = readPerm;
-                thread.author = author;
-                thread.authorId = authorId;
-                thread.subject = subject;
-                thread.lastUpdator = lastUpdator;
-                thread.viewNum = viewNum;
-                thread.repliesNum = replyNum;
-                thread.publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp) * 1000);
-                thread.lastUpdateTimeString = updateAtString;
-                thread.digest = !digest.equals("0");
-                thread.special = !special.equals("0");
-                thread.rushReply = !rushReply.equals("0");
-                thread.recommendNum = Integer.parseInt(recommendNum);
-                thread.price = Integer.parseInt(price);
-                thread.attachment = Integer.parseInt(attachment);
-                thread.shortReplyInfoList = shortReplyInfoList;
-                thread.displayOrder = displayOrder;
-                thread.replyCredit = Integer.parseInt(replyCredit);
-
-                if (!displayOrder.equals("0")) {
-                    thread.isTop = true;
-                }
-                if (isFirst == false && thread.isTop == true) {
-                    continue;
-                }
-                threadInfoList.add(thread);
-            }
-            return threadInfoList;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -461,18 +386,6 @@ public class bbsParseUtils {
         }
     }
 
-    public static String parseUploadHashString(String s) {
-        try {
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONObject allowperm = variables.getJSONObject("allowperm");
-            return allowperm.getString("uploadhash");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public static List<String> getThreadTypeList(String s) {
         try {
             List<String> numKeys = new ArrayList<>();
@@ -514,75 +427,11 @@ public class bbsParseUtils {
         }
     }
 
-    public static List<threadInfo> parseHotThreadListInfo(String s) {
+    public static DisplayThreadsResult getThreadListInfo(String s) {
         try {
-            List<threadInfo> threadInfoList = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONArray threadList = variables.getJSONArray("data");
-            for (int i = 0; i < threadList.length(); i++) {
-                JSONObject threadObj = threadList.getJSONObject(i);
-                String tid = threadObj.getString("tid");
-                String typeid = threadObj.getString("typeid");
-                String readPerm = threadObj.getString("readperm");
-                String author = threadObj.getString("author");
-                String authorId = threadObj.getString("authorid");
-                String subject = threadObj.getString("subject");
-                String updateAtString = threadObj.getString("lastpost");
-                String publishAtStringTimestamp = threadObj.getString("dbdateline");
-                String lastUpdator = threadObj.optString("lastposter", "");
-                String viewNum = threadObj.getString("views");
-                String replyNum = threadObj.getString("replies");
-                String displayOrder = threadObj.getString("displayorder");
-                String digest = threadObj.optString("digest", "0");
-                String special = threadObj.optString("special", "0");
-                String recommendNum = threadObj.optString("recommend_add", "0");
-                String rushReply = threadObj.optString("rushreply", "0");
-                String price = threadObj.optString("price", "0");
-                String attachment = threadObj.optString("attachment", "0");
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(s, DisplayThreadsResult.class);
 
-                // parse short reply
-                List<threadInfo.shortReplyInfo> shortReplyInfoList = new ArrayList<>();
-                if (threadObj.has("reply")) {
-                    JSONArray shortReplies = threadObj.getJSONArray("reply");
-                    for (int j = 0; j < shortReplies.length(); j++) {
-                        JSONObject shortReply = shortReplies.getJSONObject(j);
-                        shortReplyInfoList.add(new threadInfo.shortReplyInfo(
-                                shortReply.getString("pid"),
-                                shortReply.getString("author"),
-                                shortReply.getString("authorid"),
-                                shortReply.getString("message")
-                        ));
-                    }
-                }
-
-                threadInfo thread = new threadInfo();
-                thread.tid = tid;
-                thread.typeid = typeid;
-                thread.readperm = readPerm;
-                thread.author = author;
-                thread.authorId = authorId;
-                thread.subject = subject;
-                thread.lastUpdator = lastUpdator;
-                thread.viewNum = viewNum;
-                thread.repliesNum = replyNum;
-                thread.publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp) * 1000);
-                thread.lastUpdateTimeString = updateAtString;
-                thread.digest = !digest.equals("0");
-                thread.special = !special.equals("0");
-                thread.rushReply = !rushReply.equals("0");
-                thread.recommendNum = Integer.parseInt(recommendNum);
-                thread.price = Integer.parseInt(price);
-                thread.attachment = Integer.parseInt(attachment);
-                thread.shortReplyInfoList = shortReplyInfoList;
-                thread.displayOrder = displayOrder;
-
-                if (!displayOrder.equals("0")) {
-                    thread.isTop = true;
-                }
-                threadInfoList.add(thread);
-            }
-            return threadInfoList;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -676,53 +525,6 @@ public class bbsParseUtils {
 
             }
             return privateMessageList;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static List<threadInfo> parseMyThreadListInfo(String s) {
-        try {
-            List<threadInfo> threadInfoList = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONArray threadList = variables.getJSONArray("data");
-            for (int i = 0; i < threadList.length(); i++) {
-                JSONObject threadObj = threadList.getJSONObject(i);
-                String tid = threadObj.getString("tid");
-                String typeid = threadObj.getString("typeid");
-                String readPerm = threadObj.getString("readperm");
-                String author = threadObj.getString("author");
-                String authorId = threadObj.getString("authorid");
-                String subject = threadObj.getString("subject");
-                String updateAtString = threadObj.getString("lastpost");
-                String publishAtStringTimestamp = threadObj.getString("dbdateline");
-                String lastUpdator = threadObj.getString("lastposter");
-                String viewNum = threadObj.getString("views");
-                String replyNum = threadObj.getString("replies");
-                String displayOrder = threadObj.getString("displayorder");
-                String fid = threadObj.getString("fid");
-
-                threadInfo thread = new threadInfo();
-                thread.tid = tid;
-                thread.typeid = typeid;
-                thread.readperm = readPerm;
-                thread.author = author;
-                thread.authorId = authorId;
-                thread.subject = subject;
-                thread.lastUpdator = lastUpdator;
-                thread.viewNum = viewNum;
-                thread.repliesNum = replyNum;
-                thread.publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp) * 1000);
-                thread.fid = fid;
-                if (!displayOrder.equals("0")) {
-                    thread.isTop = true;
-                }
-                threadInfoList.add(thread);
-            }
-            return threadInfoList;
 
         } catch (Exception e) {
             e.printStackTrace();

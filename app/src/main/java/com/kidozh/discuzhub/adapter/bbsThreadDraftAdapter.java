@@ -17,6 +17,7 @@ import com.kidozh.discuzhub.activities.bbsPostThreadActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
@@ -90,6 +91,7 @@ public class bbsThreadDraftAdapter extends RecyclerView.Adapter<bbsThreadDraftAd
                 intent.putExtra(bbsConstUtils.PASS_THREAD_DRAFT_KEY,threadDraft);
                 intent.putExtra("fid",threadDraft.fid);
                 intent.putExtra("fid_name",threadDraft.forumName);
+                VibrateUtils.vibrateForClick(context);
                 context.startActivity(intent);
             }
         });

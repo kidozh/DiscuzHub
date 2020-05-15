@@ -3,32 +3,45 @@ package com.kidozh.discuzhub.adapter;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumCategorySection;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.BBSIndexResult;
+import com.kidozh.discuzhub.utilities.bbsURLUtils;
 
+import java.io.InputStream;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class bbsPortalCategoryAdapter extends RecyclerView.Adapter<bbsPortalCategoryAdapter.bbsShowPortalViewHolder> {
+import static com.kidozh.discuzhub.utilities.networkUtils.getPreferredClient;
 
+public class bbsPortalCategoryAdapter extends RecyclerView.Adapter<bbsPortalCategoryAdapter.bbsShowPortalViewHolder> {
+    private final static String TAG = bbsPortalCategoryAdapter.class.getSimpleName();
     Context mContext;
-    List<forumCategorySection> mCateList;
+    List<BBSIndexResult.ForumCategory> forumCategoryList;
     public String jsonString;
     bbsInformation bbsInfo;
     forumUserBriefInfo curUser;
+    List<ForumInfo> allForumInfo;
 
     bbsPortalCategoryAdapter(Context context){
         this.mContext = context;
@@ -41,17 +54,12 @@ public class bbsPortalCategoryAdapter extends RecyclerView.Adapter<bbsPortalCate
         this.curUser = userBriefInfo;
     }
 
-    public void setmCateList(List<forumCategorySection> mCateList){
-        this.mCateList = mCateList;
-        android.os.Handler mHandler = new Handler(Looper.getMainLooper());
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                notifyDataSetChanged();
-            }
-        });
-
+    public void setForumCategoryList(List<BBSIndexResult.ForumCategory> forumCategoryList, List<ForumInfo> allForumInfo) {
+        this.forumCategoryList = forumCategoryList;
+        this.allForumInfo = allForumInfo;
+        notifyDataSetChanged();
     }
+
 
     @NonNull
     @Override
@@ -67,9 +75,9 @@ public class bbsPortalCategoryAdapter extends RecyclerView.Adapter<bbsPortalCate
 
     @Override
     public void onBindViewHolder(@NonNull bbsShowPortalViewHolder holder, int position) {
-        forumCategorySection categorySectionFid = mCateList.get(position);
-        holder.mPortalCatagoryName.setText(categorySectionFid.name);
-        if(categorySectionFid.forumFidList.size()>=4){
+        BBSIndexResult.ForumCategory category = forumCategoryList.get(position);
+        holder.mPortalCatagoryName.setText(category.name);
+        if(category.forumIdList.size()>=4){
             holder.mRecyclerView.setLayoutManager(new GridLayoutManager(mContext,4));
         }
         else {
@@ -78,16 +86,20 @@ public class bbsPortalCategoryAdapter extends RecyclerView.Adapter<bbsPortalCate
 
         bbsPortalCategoryForumAdapter adapter = new bbsPortalCategoryForumAdapter(mContext,jsonString,bbsInfo,curUser);
         holder.mRecyclerView.setAdapter(adapter);
-        adapter.setmCateList(categorySectionFid.forumFidList);
+        List<ForumInfo> forumInfoListInTheCategory = category.getForumListInTheCategory(allForumInfo);
+        adapter.setForumInfoList(forumInfoListInTheCategory);
+
+
+
     }
 
     @Override
     public int getItemCount() {
-        if(mCateList == null){
+        if(forumCategoryList == null){
             return 0;
         }
         else {
-            return mCateList.size();
+            return forumCategoryList.size();
         }
 
     }
@@ -97,6 +109,8 @@ public class bbsPortalCategoryAdapter extends RecyclerView.Adapter<bbsPortalCate
         TextView mPortalCatagoryName;
         @BindView(R.id.portal_catagory_recyclerview)
         RecyclerView mRecyclerView;
+        @BindView(R.id.portal_category_icon)
+        ImageView mPortalCategoryIcon;
 
         public bbsShowPortalViewHolder(@NonNull View itemView) {
             super(itemView);

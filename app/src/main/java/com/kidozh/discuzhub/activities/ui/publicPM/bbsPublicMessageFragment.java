@@ -22,7 +22,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
 import com.kidozh.discuzhub.adapter.bbsPublicMessageAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.forumInfo;
+import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -54,7 +54,7 @@ public class bbsPublicMessageFragment extends Fragment {
 
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
-    forumInfo forum;
+    ForumInfo forum;
     private OkHttpClient client = new OkHttpClient();
     bbsPublicMessageAdapter adapter;
     private int globalPage = 1;

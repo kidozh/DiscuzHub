@@ -362,5 +362,23 @@
     <string name="upload_attachment_error_11">今天你已经无法上传这么大的附件</string>
     <string name="bbs_post_confirm_dialog_title">发表下述帖子？</string>
     <string name="upload_attachment_number">发帖附件 (%1$d)</string>
+    <string name="bbs_add_intro_title">添加一个Discuz！论坛</string>
+    <string name="bbs_add_intro_subtitle">使用网页链接</string>
+    <string name="bbs_add_intro_input_url_hint">BBS的完整地址</string>
+    <string name="bbs_add_intro_https_check">使用严格的HTTPS验证</string>
+    <string name="bbs_add_intro_url_examples">你是否想输入以下地址？</string>
+    <string name="bbs_add_intro_suggestion">输入建议</string>
+    <string name="bbs_add_intro_continue">继续</string>
+    <string name="bbs_url_example_npubbs">西工大三航四方（需校园网）</string>
+    <string name="bbs_url_example_mcbbs">我的世界中文论坛</string>
+    <string name="bbs_url_example_keylol">其乐</string>
+    <string name="bbs_url_example_1point3acres">一亩三分地</string>
+    <string name="bbs_url_example_discuz_support">Discuz!技术支持</string>
+    <string name="bbs_url_example_right_com">恩山无线论坛</string>
+    <string name="bbs_url_suggestion_host">主机地址</string>
+    <string name="bbs_url_suggestion_level">%1$d级地址</string>
+    <string name="app_open_source_lib">开源软件许可</string>
+    <string name="add_a_bbs_successfully">成功导入论坛 %1$s</string>
+    <string name="add_bbs_url_failed">%1$s并不是一个有效的链接</string>
 
 </resources>

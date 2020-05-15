@@ -3,6 +3,8 @@ package com.kidozh.discuzhub.entities;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -11,7 +13,10 @@ public class bbsInformation implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-    public String base_url, site_name;
+
+    public String base_url;
+
+    public String site_name;
     public String discuz_version, version, plugin_version;
     public String total_posts, total_members;
     public String default_fid, mysite_id;

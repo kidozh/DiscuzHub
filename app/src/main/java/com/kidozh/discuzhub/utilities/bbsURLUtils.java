@@ -6,7 +6,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.forumInfo;
 
 public class bbsURLUtils {
     public static String TAG = bbsURLUtils.class.getSimpleName();
@@ -218,6 +217,10 @@ public class bbsURLUtils {
         return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=small",uid);
     }
 
+    public static String getSmallAvatarUrlByUid(int uid){
+        return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=small",uid);
+    }
+
     public static String getDefaultAvatarUrlByUid(String uid){
         return UC_SERVER_URL+String.format("/avatar.php?uid=%s",uid);
     }
@@ -259,16 +262,6 @@ public class bbsURLUtils {
 
     public static String getNewThreadUrl(int fid){
         return BASE_URL + String.format("/api/mobile/index.php?module=newthread&fid=%s&mobile=2&version=4",fid);
-    }
-
-
-
-    public static String getPostsUrl(int fid, int page, boolean isInner) {
-        if (isInner) {
-            return "forum.php?mod=forumdisplay&fid=" + fid + "&page=" + page;
-        } else {
-            return "forum.php?mod=forumdisplay&fid=" + fid + "&page=" + page + "&mobile=2";
-        }
     }
 
     public static String getArticleListApiUrl(int fid, int page) {
@@ -325,12 +318,12 @@ public class bbsURLUtils {
         return uri.toString();
     }
 
-    public static String getReplyThreadUrl(String fid, String tid){
+    public static String getReplyThreadUrl(int fid, int tid){
         Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
                 .appendQueryParameter("version","4")
                 .appendQueryParameter("module","sendreply")
-                .appendQueryParameter("fid",fid)
-                .appendQueryParameter("tid",tid)
+                .appendQueryParameter("fid",String.valueOf(fid))
+                .appendQueryParameter("tid",String.valueOf(tid))
                 .appendQueryParameter("action","reply")
                 //.appendQueryParameter("mod","post")
                 // reply submit is neccessary
@@ -458,11 +451,21 @@ public class bbsURLUtils {
         return uri.toString();
     }
 
-    public static String getViewThreadUrl(String tid,String pageString){
+    public static String getForumImageUrl(int fid){
+
+        Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","forumimage")
+                .appendQueryParameter("fid",String.valueOf(fid))
+                .build();
+        return uri.toString();
+    }
+
+    public static String getViewThreadUrl(int tid,String pageString){
 
         Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
                 .appendQueryParameter("mod","viewthread")
-                .appendQueryParameter("tid",tid)
+                .appendQueryParameter("tid",String.valueOf(tid))
                 .appendQueryParameter("page",pageString)
                 .build();
         return uri.toString();

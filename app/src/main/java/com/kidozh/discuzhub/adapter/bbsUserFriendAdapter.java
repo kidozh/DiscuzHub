@@ -21,6 +21,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
@@ -102,7 +103,7 @@ public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdap
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
                 intent.putExtra("UID",String.valueOf(friend.uid));
-
+                VibrateUtils.vibrateForClick(context);
                 context.startActivity(intent);
             }
         });

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -44,11 +45,14 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.kidozh.discuzhub.R;
@@ -132,11 +136,6 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         holder.mTitle.setVisibility(View.GONE);
         //holder.mTitle.setText(threadInfo.subject);
         String decodeString = threadInfo.message;
-        decodeString =decodeString
-                .replace("&amp;","&")
-                .replace("&lt;","<")
-                .replace("&gt;",">")
-                .replace("&quot;","“");
         MyTagHandler myTagHandler = new MyTagHandler(mContext,holder.mContent);
 
         Spanned sp = Html.fromHtml(decodeString,new MyImageGetter(holder.mContent),myTagHandler);
@@ -322,6 +321,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
             super(drawable);
         }
 
+
         @Override
         public void draw(Canvas canvas) {
             if (drawable != null)
@@ -348,10 +348,9 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
 
         @Override
         public Drawable getDrawable(String source) {
-
-            Drawable drawable = mContext.getDrawable(R.drawable.vector_drawable_loading_image);
+            Drawable drawable = context.getDrawable(R.drawable.vector_drawable_image_wider_placeholder_stroke);
             myDrawable = new MyDrawableWrapper(drawable);
-            myDrawable.setDrawable(drawable);
+            // myDrawable.setDrawable(drawable);
             client = networkUtils.getPreferredClient(mContext);
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
             Glide.get(mContext)
@@ -387,7 +386,6 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         }
 
 
-
         @Override
         public void onLoadFailed(@Nullable Drawable errorDrawable) {
             super.onLoadFailed(errorDrawable);
@@ -402,47 +400,55 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
             myDrawable.setDrawable(errorDrawable);
             tv.setText(tv.getText());
             tv.invalidate();
+            //tv.setText(tv.getText());
+
         }
 
         @Override
-        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-            Drawable drawable = resource;
+        public void onResourceReady(final Drawable resource, Transition<? super Drawable> transition) {
+            final Drawable drawable = resource;
             //获取原图大小
-            int width=drawable.getIntrinsicWidth() ;
-            int height=drawable.getIntrinsicHeight();
-            // Rescale to image
-//            WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-//            DisplayMetrics outMetrics = new DisplayMetrics();
-//            wm.getDefaultDisplay().getMetrics(outMetrics);
-            // int screenWidth = outMetrics.widthPixels - textView.getPaddingLeft() - textView.getPaddingRight();
-            int screenWidth =  textView.getWidth() - textView.getPaddingLeft() - textView.getPaddingRight();
-            Log.d(TAG,"Screen width "+screenWidth+" image width "+width);
-            if (screenWidth / width < 3 && screenWidth !=0 ){
-                double rescaleFactor = ((double) screenWidth) / width;
-                int newHeight = (int) (height * rescaleFactor);
-                Log.d(TAG,"rescaleFactor "+rescaleFactor+" image new height "+newHeight);
+            textView.post(new Runnable() {
+                @Override
+                public void run() {
+                    int width=drawable.getIntrinsicWidth() ;
+                    int height=drawable.getIntrinsicHeight();
+                    // Rescale to image
+                    // int screenWidth = outMetrics.widthPixels - textView.getPaddingLeft() - textView.getPaddingRight();
+                    //int screenWidth =  textView.getWidth() - textView.getPaddingLeft() - textView.getPaddingRight();
+                    int screenWidth = textView.getMeasuredWidth();
+                    Log.d(TAG,"Screen width "+screenWidth+" image width "+width);
+                    if (screenWidth / width < 3 && screenWidth !=0 ){
+                        double rescaleFactor = ((double) screenWidth) / width;
+                        int newHeight = (int) (height * rescaleFactor);
+                        Log.d(TAG,"rescaleFactor "+rescaleFactor+" image new height "+newHeight);
+                        myDrawable.setBounds(0,0,screenWidth,newHeight);
+                        drawable.setBounds(0,0,screenWidth,newHeight);
+                        resource.setBounds(0,0,screenWidth,newHeight);
 
-                // compress drawable it's too large
-                Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-                Bitmap compressedBitmap = Bitmap.createScaledBitmap(bitmap,screenWidth, newHeight, true);
-                Log.d(TAG,"width "+screenWidth+" image new height "+newHeight);
-                drawable = new BitmapDrawable(context.getResources(),compressedBitmap);
-                resource = drawable;
-                myDrawable.setBounds(0,0,screenWidth,newHeight);
-                drawable.setBounds(0,0,screenWidth,newHeight);
-                resource.setBounds(0,0,screenWidth,newHeight);
-            }
-            else {
-                myDrawable.setBounds(0,0,width*2,height*2);
-                drawable.setBounds(0,0,width*2,height*2);
-                resource.setBounds(0,0,width*2,height*2);
-            }
+                    }
+                    else if(screenWidth == 0){
+                        Log.d(TAG, "Get textview width : 0");
+                        myDrawable.setBounds(0,0,width,height);
+                        drawable.setBounds(0,0,width,height);
+                        resource.setBounds(0,0,width,height);
+                    }
+                    else {
+                        myDrawable.setBounds(0,0,width*2,height*2);
+                        drawable.setBounds(0,0,width*2,height*2);
+                        resource.setBounds(0,0,width*2,height*2);
+                    }
 
-            myDrawable.setDrawable(drawable);
-            TextView tv = textView;
-            tv.setText(tv.getText());
+                    //myDrawable.invalidateSelf();
+                    myDrawable.setDrawable(drawable);
+                    TextView tv = textView;
+                    tv.setText(tv.getText());
+                    tv.invalidate();
+                    //tv.setText(tv.getText(), TextView.BufferType.SPANNABLE);
+                    //tv.invalidate();
+                }
+            });
 
-            tv.invalidate();
 
         }
 
@@ -507,17 +513,35 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                 Glide.get(mContext)
                         .getRegistry()
                         .replace(GlideUrl.class,InputStream.class,factory);
+                // need to judge whether the image is cached or not
+
 
                 Glide.with(mContext)
                         .load(url)
                         .error(R.drawable.vector_drawable_image_failed)
                         .placeholder(R.drawable.vector_drawable_loading_image)
+                        .onlyRetrieveFromCache(true)
                         .listener(new RequestListener<Drawable>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                Log.d(TAG,"The resource is not loaded...");
-                                isLoaded = false;
-                                isLoading = true;
+                                // load from network
+                                isLoading = false;
+                                Glide.with(mContext)
+                                        .load(url)
+                                        .error(R.drawable.vector_drawable_image_failed)
+                                        .placeholder(R.drawable.vector_drawable_loading_image)
+                                        .listener(new RequestListener<Drawable>() {
+                                            @Override
+                                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                                return false;
+                                            }
+
+                                            @Override
+                                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                                return false;
+                                            }
+                                        })
+                                        .into(new drawableTarget(myDrawable, textView));
                                 return false;
                             }
 
@@ -525,22 +549,17 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                 Log.d(TAG,"The resource is loaded and ready to open in external activity...");
                                 isLoading = false;
+                                Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
+                                intent.putExtra("URL",url);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                                mContext.startActivity(intent);
                                 //textView.invalidateDrawable(resource);
                                 textView.invalidate();
-                                if(isLoaded){
-                                    Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
-                                    intent.putExtra("URL",url);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                                    mContext.startActivity(intent);
-                                }
-                                else {
-                                    isLoaded = true;
-                                }
 
                                 return false;
                             }
-                        }).into(new drawableTarget(myDrawable,textView));
+                        }).into(new drawableTarget(myDrawable, textView));
             }
         }
     }  

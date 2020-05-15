@@ -2,7 +2,6 @@ package com.kidozh.discuzhub.activities.ui.bbsNotification;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,14 +18,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.bbsForumThreadAdapter;
 import com.kidozh.discuzhub.adapter.bbsNotificationAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.forumInfo;
+import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -75,7 +72,7 @@ public class bbsNotificationFragment extends Fragment {
 
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
-    forumInfo forum;
+    ForumInfo forum;
     private OkHttpClient client = new OkHttpClient();
     bbsNotificationAdapter adapter;
     private int globalPage = 1;

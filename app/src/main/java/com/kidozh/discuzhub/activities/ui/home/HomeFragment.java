@@ -28,9 +28,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.loginBBSActivity;
 import com.kidozh.discuzhub.adapter.bbsPortalCategoryAdapter;
+import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumCategorySection;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.BBSIndexResult;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
@@ -103,13 +105,15 @@ public class HomeFragment extends Fragment {
     }
 
     private void bindLiveDataFromViewModel(){
-        //bbsPortalProgressbar.setVisibility(View.VISIBLE);
-        homeViewModel.getForumCategoryInfo().observe(getViewLifecycleOwner(), new Observer<List<forumCategorySection>>() {
+        homeViewModel.getForumCategoryInfo().observe(getViewLifecycleOwner(), new Observer<List<BBSIndexResult.ForumCategory>>() {
             @Override
-            public void onChanged(List<forumCategorySection> forumCategorySections) {
-                adapter.jsonString = homeViewModel.jsonString.getValue();
-                adapter.setmCateList(forumCategorySections);
-                bbsPortalProgressbar.setVisibility(View.GONE);
+            public void onChanged(List<BBSIndexResult.ForumCategory> forumCategories) {
+                if(homeViewModel.bbsIndexResultMutableLiveData.getValue() !=null){
+                    List<ForumInfo> allForumInfo = homeViewModel.bbsIndexResultMutableLiveData.getValue().forumVariables.forumInfoList;
+                    adapter.setForumCategoryList(forumCategories,allForumInfo);
+                    bbsPortalProgressbar.setVisibility(View.GONE);
+                }
+
             }
         });
         homeViewModel.errorText.observe(getViewLifecycleOwner(), errorText -> {

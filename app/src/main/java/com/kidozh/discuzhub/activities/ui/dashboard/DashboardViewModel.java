@@ -6,11 +6,11 @@ import android.util.Log;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.entities.threadInfo;
+import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -35,7 +35,7 @@ public class DashboardViewModel extends AndroidViewModel {
 
     public MutableLiveData<Integer> pageNum;
     public MutableLiveData<Boolean> isLoading, isError;
-    public MutableLiveData<List<threadInfo>> threadListLiveData;
+    public MutableLiveData<List<ThreadInfo>> threadListLiveData;
     public String jsonString;
 
 
@@ -63,9 +63,9 @@ public class DashboardViewModel extends AndroidViewModel {
         return mText;
     }
 
-    public LiveData<List<threadInfo>> getThreadListLiveData() {
+    public LiveData<List<ThreadInfo>> getThreadListLiveData() {
         if(threadListLiveData == null){
-            threadListLiveData = new MutableLiveData<List<threadInfo>>();
+            threadListLiveData = new MutableLiveData<List<ThreadInfo>>();
             getThreadList(pageNum.getValue() == null ? 1 : pageNum.getValue());
         }
         return threadListLiveData;
@@ -83,7 +83,7 @@ public class DashboardViewModel extends AndroidViewModel {
         Request request = new Request.Builder()
                 .url(bbsURLUtils.getHotThreadUrl(page))
                 .build();
-
+        Log.d(TAG,"Send request to "+request.url().toString());
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -95,14 +95,18 @@ public class DashboardViewModel extends AndroidViewModel {
                 isLoading.postValue(false);
                 if(response.isSuccessful()&& response.body()!=null){
                     String s = response.body().string();
-                    jsonString =s;
-                    List<threadInfo> threadInfos = bbsParseUtils.parseHotThreadListInfo(s);
-                    List<threadInfo> currentThreadInfo = threadListLiveData.getValue();
+                    DisplayThreadsResult threadsResult = bbsParseUtils.getThreadListInfo(s);
+
+                    List<ThreadInfo> currentThreadInfo = threadListLiveData.getValue();
                     if(currentThreadInfo == null){
-                        currentThreadInfo = new ArrayList<threadInfo>();
+                        currentThreadInfo = new ArrayList<ThreadInfo>();
                     }
-                    if(threadInfos != null){
-                        currentThreadInfo.addAll(threadInfos);
+
+                    if(threadsResult!=null){
+                        List<ThreadInfo> threadInfos = threadsResult.forumVariables.forumThreadList;
+                        if(threadInfos != null){
+                            currentThreadInfo.addAll(threadInfos);
+                        }
                     }
                     else {
                         isError.postValue(true);
@@ -111,7 +115,7 @@ public class DashboardViewModel extends AndroidViewModel {
                             pageNum.postValue(pageNum.getValue() == null ?1:pageNum.getValue()-1);
                         }
                     }
-                    Log.d(TAG,"Recv thread list size "+threadInfos);
+
                     threadListLiveData.postValue(currentThreadInfo);
                 }
             }

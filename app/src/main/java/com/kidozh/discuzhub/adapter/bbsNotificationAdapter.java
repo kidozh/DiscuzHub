@@ -38,6 +38,7 @@ import com.kidozh.discuzhub.activities.showWebPageActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.MessageSpan;
+import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
@@ -150,6 +151,7 @@ public class bbsNotificationAdapter extends RecyclerView.Adapter<bbsNotification
                         intent.putExtra("TID",notificationDetailInfo.noteVariables.get("tid"));
                         intent.putExtra("FID",String.valueOf(notificationDetailInfo.authorId));
                         intent.putExtra("SUBJECT",notificationDetailInfo.noteVariables.get("subject"));
+                        VibrateUtils.vibrateForClick(context);
                         context.startActivity(intent);
                     }
                 });

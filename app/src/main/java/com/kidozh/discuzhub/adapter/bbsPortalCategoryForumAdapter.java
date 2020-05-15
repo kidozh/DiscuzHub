@@ -20,8 +20,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsShowForumThreadActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.forumInfo;
+import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 
 import java.io.InputStream;
@@ -30,22 +31,15 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.kidozh.discuzhub.utilities.bbsParseUtils.getForumInfoByFid;
 import static com.kidozh.discuzhub.utilities.networkUtils.getPreferredClient;
 
 public class bbsPortalCategoryForumAdapter extends RecyclerView.Adapter<bbsPortalCategoryForumAdapter.bbsPortalCatagoryViewHolder> {
     private String TAG = bbsPortalCategoryForumAdapter.class.getSimpleName();
-    Context mContext;
-    List<Integer> mCateList;
-    String jsonString;
-    bbsInformation bbsInfo;
-    forumUserBriefInfo curUser;
-
-    bbsPortalCategoryForumAdapter(Context context, String jsonObject, bbsInformation bbsInformation){
-        this.mContext = context;
-        this.jsonString = jsonObject;
-        this.bbsInfo = bbsInformation;
-    }
+    private Context mContext;
+    private List<ForumInfo> forumInfoList;
+    private String jsonString;
+    private bbsInformation bbsInfo;
+    private forumUserBriefInfo curUser;
 
     bbsPortalCategoryForumAdapter(Context context, String jsonObject, bbsInformation bbsInformation, forumUserBriefInfo curUser){
         this.mContext = context;
@@ -54,8 +48,8 @@ public class bbsPortalCategoryForumAdapter extends RecyclerView.Adapter<bbsPorta
         this.curUser = curUser;
     }
 
-    public void setmCateList(List<Integer> mCateList){
-        this.mCateList = mCateList;
+    public void setForumInfoList(List<ForumInfo> forumInfoList) {
+        this.forumInfoList = forumInfoList;
         notifyDataSetChanged();
     }
 
@@ -73,16 +67,19 @@ public class bbsPortalCategoryForumAdapter extends RecyclerView.Adapter<bbsPorta
 
     @Override
     public void onBindViewHolder(@NonNull bbsPortalCatagoryViewHolder holder, int position) {
-        int fid = mCateList.get(position);
-        forumInfo forum = getForumInfoByFid(jsonString,fid);
+
+        ForumInfo forum = forumInfoList.get(position);
         if(forum!=null){
             holder.mForumName.setText(forum.name);
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(getPreferredClient(this.mContext));
             Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
             Glide.with(mContext)
-                    .load(forum.iconURL)
-                    .apply(RequestOptions.placeholderOf(R.drawable.vector_drawable_forum).error(R.drawable.vector_drawable_forum))
+                    .load(forum.iconUrl)
+                    .apply(RequestOptions
+                            .placeholderOf(R.drawable.ic_forum_24px)
+                            .error(R.drawable.ic_forum_24px))
                     .into(holder.mBBSForumImage);
+
             holder.mCardview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -91,9 +88,25 @@ public class bbsPortalCategoryForumAdapter extends RecyclerView.Adapter<bbsPorta
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
                     Log.d(TAG,"put base url "+bbsInfo.base_url);
+                    VibrateUtils.vibrateForClick(mContext);
                     mContext.startActivity(intent);
                 }
             });
+            if(forum.todayPosts != 0){
+                holder.mTodayPosts.setVisibility(View.VISIBLE);
+                if(forum.todayPosts >= 100){
+                    holder.mTodayPosts.setText(R.string.forum_today_posts_over_much);
+                    holder.mTodayPosts.setBackgroundColor(mContext.getColor(R.color.colorAccent));
+                }
+                else {
+                    holder.mTodayPosts.setText(String.valueOf(forum.todayPosts));
+                    holder.mTodayPosts.setBackgroundColor(mContext.getColor(R.color.colorPrimary));
+                }
+
+            }
+            else {
+                holder.mTodayPosts.setVisibility(View.GONE);
+            }
         }
 
 
@@ -101,11 +114,11 @@ public class bbsPortalCategoryForumAdapter extends RecyclerView.Adapter<bbsPorta
 
     @Override
     public int getItemCount() {
-        if(mCateList == null){
+        if(forumInfoList == null){
             return 0;
         }
         else {
-            return mCateList.size();
+            return forumInfoList.size();
         }
 
     }
@@ -117,6 +130,8 @@ public class bbsPortalCategoryForumAdapter extends RecyclerView.Adapter<bbsPorta
         TextView mForumName;
         @BindView(R.id.bbs_forum_cardview)
         CardView mCardview;
+        @BindView(R.id.bbs_forum_today_posts)
+        TextView mTodayPosts;
         public bbsPortalCatagoryViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);

@@ -33,6 +33,8 @@ public class aboutAppActivity extends AppCompatActivity {
     CardView privacyPolicyCardView;
     @BindView(R.id.about_terms_of_use)
     CardView termsOfUseCardView;
+    @BindView(R.id.about_open_source_lib)
+    CardView openSourceLibCardview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,13 @@ public class aboutAppActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discuzhub.kidozh.com/term_of_use/"));
+                startActivity(intent);
+            }
+        });
+        openSourceLibCardview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discuzhub.kidozh.com/open_source_licence/"));
                 startActivity(intent);
             }
         });

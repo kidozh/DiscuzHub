@@ -13,6 +13,8 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumCategorySection;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.BBSIndexResult;
+import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -30,10 +32,11 @@ public class HomeViewModel extends AndroidViewModel {
     private final static String TAG = HomeViewModel.class.getSimpleName();
 
     private MutableLiveData<String> mText;
-    private MutableLiveData<List<forumCategorySection>> forumCategories;
-    public MutableLiveData<String> errorText, jsonString;
+    private MutableLiveData<List<BBSIndexResult.ForumCategory>> forumCategories;
+    public MutableLiveData<String> errorText;
     public MutableLiveData<forumUserBriefInfo> userBriefInfoMutableLiveData;
     public MutableLiveData<Boolean> isLoading;
+    public MutableLiveData<BBSIndexResult> bbsIndexResultMutableLiveData;
 
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
@@ -44,8 +47,8 @@ public class HomeViewModel extends AndroidViewModel {
         mText = new MutableLiveData<>();
         mText.postValue("This is home fragment");
         errorText = new MutableLiveData<String>();
-        jsonString = new MutableLiveData<String>();
         isLoading = new MutableLiveData<>(false);
+        bbsIndexResultMutableLiveData = new MutableLiveData<>(null);
 
     }
 
@@ -56,9 +59,9 @@ public class HomeViewModel extends AndroidViewModel {
 
     }
 
-    public LiveData<List<forumCategorySection>> getForumCategoryInfo(){
+    public LiveData<List<BBSIndexResult.ForumCategory>> getForumCategoryInfo(){
         if(forumCategories == null){
-            forumCategories = new MutableLiveData<List<forumCategorySection>>();
+            forumCategories = new MutableLiveData<List<BBSIndexResult.ForumCategory>>();
             loadForumCategoryInfo();
         }
         return forumCategories;
@@ -88,14 +91,22 @@ public class HomeViewModel extends AndroidViewModel {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                isLoading.postValue(false);
                 if(response.isSuccessful() && response.body()!=null){
                     String s = response.body().string();
                     Log.d(TAG,"Recv Portal JSON "+s);
-                    jsonString.postValue(s);
-                    List<forumCategorySection> categorySectionFidList = bbsParseUtils.parseCategoryFids(s);
-                    forumCategories.postValue(categorySectionFidList);
-                    if(categorySectionFidList == null){
+                    BBSIndexResult indexResult = bbsParseUtils.parseForumIndexResult(s);
+                    bbsIndexResultMutableLiveData.postValue(indexResult);
+                    if(indexResult !=null){
+                        forumUserBriefInfo serverReturnedUser = indexResult.forumVariables.getUserBriefInfo();
+                        userBriefInfoMutableLiveData.postValue(serverReturnedUser);
+                        errorText.postValue(null);
+                        // prepare to render index page
+                        List<BBSIndexResult.ForumCategory> categoryList = indexResult.forumVariables.forumCategoryList;
+                        forumCategories.postValue(categoryList);
+
+
+                    }
+                    else {
                         String errorString = bbsParseUtils.parseErrorInformation(s);
                         if(errorString!=null){
                             errorText.postValue(errorString);
@@ -103,15 +114,8 @@ public class HomeViewModel extends AndroidViewModel {
                         else {
                             errorText.postValue(context.getString(R.string.parse_failed));
                         }
-                        // errorText.postValue(bbsParseUtils.parseErrorInformation(s));
                     }
-                    else {
-                        errorText.postValue(null);
-                    }
-                    // parse person info
-                    forumUserBriefInfo severReturnedUser = bbsParseUtils.parseBreifUserInfo(s);
-                    Log.d(TAG,"Current User is "+severReturnedUser);
-                    userBriefInfoMutableLiveData.postValue(severReturnedUser);
+
 
                 }
                 else {
@@ -120,6 +124,7 @@ public class HomeViewModel extends AndroidViewModel {
                     // errorText.postValue(bbsParseUtils.parseErrorInformation(s));
                     forumCategories.postValue(null);
                 }
+                isLoading.postValue(false);
             }
         });
     }

@@ -1,24 +1,14 @@
 package com.kidozh.discuzhub.activities;
 
-import android.annotation.SuppressLint;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.text.Html;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,59 +19,42 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.badge.BadgeDrawable;
-import com.google.android.material.badge.BadgeUtils;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.bbsForumThreadAdapter;
-import com.kidozh.discuzhub.adapter.bbsForumThreadCommentAdapter;
+import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.forumInfo;
+import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.entities.threadInfo;
+import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.viewModels.ForumThreadViewModel;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
-import static com.kidozh.discuzhub.utilities.bbsURLUtils.FILTER_TYPE_HEATS;
-import static com.kidozh.discuzhub.utilities.bbsURLUtils.FILTER_TYPE_NEWEST;
 
 public class bbsShowForumThreadActivity extends AppCompatActivity {
     private static final String TAG = bbsShowForumThreadActivity.class.getSimpleName();
@@ -109,7 +82,11 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
     ConstraintLayout mForumInfoCardView;
     @BindView(R.id.bbs_forum_thread_type_chipgroup)
     ChipGroup mForumThreadTypeChipGroup;
-    private forumInfo forum;
+    @BindView(R.id.bbs_forum_error_textview)
+    TextView errorTextview;
+    @BindView(R.id.bbs_forum_error_layout)
+    View errorLayout;
+    private ForumInfo forum;
     private bbsInformation bbsInfo;
     private forumUserBriefInfo userBriefInfo;
     private OkHttpClient client = new OkHttpClient();
@@ -150,7 +127,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
 
     private void configureIntentData(){
         Intent intent = getIntent();
-        forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
+        forum = (ForumInfo) intent.getSerializableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         bbsURLUtils.setBBS(bbsInfo);
@@ -159,10 +136,18 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
     }
 
     private void bindViewModel(){
-        forumThreadViewModel.getThreadInfoListLiveData().observe(this, new Observer<List<threadInfo>>() {
+
+        forumThreadViewModel.getThreadInfoListLiveData().observe(this, new Observer<List<ThreadInfo>>() {
             @Override
-            public void onChanged(List<threadInfo> threadInfos) {
-                adapter.setThreadInfoList(threadInfos,forumThreadViewModel.jsonString.getValue());
+            public void onChanged(List<ThreadInfo> threadInfos) {
+                Map<String,String> threadTypeMap = null;
+                if(forumThreadViewModel.displayForumResultMutableLiveData.getValue()!=null){
+                    threadTypeMap = forumThreadViewModel.displayForumResultMutableLiveData.getValue().forumVariables.threadTypeInfo.idNameMap;
+
+                }
+                adapter.setThreadInfoList(threadInfos,threadTypeMap);
+
+
             }
         });
         Context context = this;
@@ -171,7 +156,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                    Boolean needVibrate = prefs.getBoolean(getString(R.string.preference_key_vibrate_when_load_all),true);
+                    boolean needVibrate = prefs.getBoolean(getString(R.string.preference_key_vibrate_when_load_all),true);
                     Toasty.success(getApplication(),getString(R.string.thread_has_load_all),Toast.LENGTH_SHORT).show();
                     if(needVibrate){
                         VibrateUtils.vibrateSlightly(context);
@@ -185,52 +170,8 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
             @Override
             public void onChanged(Boolean aBoolean) {
                 swipeRefreshLayout.setRefreshing(aBoolean);
-//                if(aBoolean){
-//                    moreThreadBtn.setVisibility(View.INVISIBLE);
-//                }
-//                else {
-//                    moreThreadBtn.setVisibility(View.VISIBLE);
-//                }
             }
         });
-        forumThreadViewModel.forumDescription.observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                if(s!=null && s.length() !=0){
-                    MyTagHandler myTagHandler = new MyTagHandler(getApplication(),mForumAlert,mForumInfoCardView);
-                    MyImageGetter myImageGetter = new MyImageGetter(getApplication(),mForumAlert,mForumInfoCardView);
-                    Spanned sp = Html.fromHtml(s,myImageGetter,myTagHandler);
-                    SpannableString spannableString = new SpannableString(sp);
-                    // mForumAlert.setAutoLinkMask(Linkify.ALL);
-                    mForumAlert.setMovementMethod(LinkMovementMethod.getInstance());
-                    mForumAlert.setText(spannableString, TextView.BufferType.SPANNABLE);
-                }
-                else {
-                    mForumAlert.setText(R.string.bbs_forum_description_not_set);
-                }
-
-            }
-        });
-
-        forumThreadViewModel.forumRule.observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                if(s!=null && s.length() !=0){
-                    MyTagHandler myTagHandler = new MyTagHandler(getApplication(),mForumRule,mForumInfoCardView);
-                    MyImageGetter myImageGetter = new MyImageGetter(getApplication(),mForumRule,mForumInfoCardView);
-                    Spanned sp = Html.fromHtml(s,myImageGetter,myTagHandler);
-                    SpannableString spannableString = new SpannableString(sp);
-                    // mForumAlert.setAutoLinkMask(Linkify.ALL);
-                    mForumRule.setMovementMethod(LinkMovementMethod.getInstance());
-                    mForumRule.setText(spannableString, TextView.BufferType.SPANNABLE);
-                }
-                else {
-                    mForumRule.setText(R.string.bbs_rule_not_set);
-                }
-
-            }
-        });
-
 
         forumThreadViewModel.jsonString.observe(this, new Observer<String>() {
             @Override
@@ -240,16 +181,63 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                 returned_res_json = s;
             }
         });
-        forumThreadViewModel.draftNumberLiveData.observe(this, new Observer<Integer>() {
+        forumThreadViewModel.displayForumResultMutableLiveData.observe(this, new Observer<DisplayForumResult>() {
             @Override
-            public void onChanged(Integer integer) {
+            public void onChanged(DisplayForumResult displayForumResult) {
+                if(displayForumResult != null && displayForumResult.isError()){
+                    String errorString = displayForumResult.message.content;
+                    Toasty.error(getApplicationContext(),errorString,Toast.LENGTH_LONG).show();
+                    VibrateUtils.vibrateForError(getApplication());
+                    moreThreadBtn.setVisibility(View.GONE);
+                    errorTextview.setText(errorString);
 
-
+                    errorLayout.setVisibility(View.VISIBLE);
+                }
+                else {
+                    errorLayout.setVisibility(View.GONE);
+                    moreThreadBtn.setVisibility(View.VISIBLE);
+                }
             }
         });
-        forumThreadViewModel.forumDetailedInfoMutableLiveData.observe(this, new Observer<bbsParseUtils.forumDetailedInfo>() {
+
+        forumThreadViewModel.forumDetailedInfoMutableLiveData.observe(this, new Observer<ForumInfo>() {
             @Override
-            public void onChanged(bbsParseUtils.forumDetailedInfo forumDetailedInfo) {
+            public void onChanged(ForumInfo forumInfo) {
+                // for rules
+
+                if(! mForumRule.getText().equals(forumInfo.rules)){
+                    String s = forumInfo.rules;
+                    if(s!=null && s.length() !=0){
+                        MyTagHandler myTagHandler = new MyTagHandler(getApplication(),mForumRule,mForumInfoCardView);
+                        MyImageGetter myImageGetter = new MyImageGetter(getApplication(),mForumRule,mForumInfoCardView);
+                        Spanned sp = Html.fromHtml(s,myImageGetter,myTagHandler);
+                        SpannableString spannableString = new SpannableString(sp);
+                        // mForumAlert.setAutoLinkMask(Linkify.ALL);
+                        mForumRule.setMovementMethod(LinkMovementMethod.getInstance());
+                        mForumRule.setText(spannableString, TextView.BufferType.SPANNABLE);
+                    }
+                    else {
+                        mForumRule.setText(R.string.bbs_rule_not_set);
+                    }
+                }
+
+
+                // for description
+                if(!mForumDesciption.getText().equals(forumInfo.description)){
+                    String s = forumInfo.description;
+                    if(s!=null && s.length() !=0){
+                        MyTagHandler myTagHandler = new MyTagHandler(getApplication(),mForumAlert,mForumInfoCardView);
+                        MyImageGetter myImageGetter = new MyImageGetter(getApplication(),mForumAlert,mForumInfoCardView);
+                        Spanned sp = Html.fromHtml(s,myImageGetter,myTagHandler);
+                        SpannableString spannableString = new SpannableString(sp);
+                        // mForumAlert.setAutoLinkMask(Linkify.ALL);
+                        mForumAlert.setMovementMethod(LinkMovementMethod.getInstance());
+                        mForumAlert.setText(spannableString, TextView.BufferType.SPANNABLE);
+                    }
+                    else {
+                        mForumAlert.setText(R.string.bbs_forum_description_not_set);
+                    }
+                }
 
             }
         });
@@ -400,8 +388,9 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
     private void configureForumInfo(){
 //        SpannableString spannableString = new SpannableString(Html.fromHtml(forum.description));
 //        mForumDesciption.setText(spannableString, TextView.BufferType.SPANNABLE);
+
         mForumThreadNum.setText(numberFormatUtils.getShortNumberText(forum.threads));
-        mForumPostNum.setText(numberFormatUtils.getShortNumberText(forum.totalPost));
+        mForumPostNum.setText(numberFormatUtils.getShortNumberText(forum.posts));
     }
 
     private void configureRecyclerview(){
@@ -410,7 +399,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
 
         mRecyclerview.setLayoutManager(linearLayoutManager);
 
-        adapter = new bbsForumThreadAdapter(this,"",fid,bbsInfo,userBriefInfo);
+        adapter = new bbsForumThreadAdapter(this,null,fid,bbsInfo,userBriefInfo);
         mRecyclerview.setAdapter(adapter);
         mRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

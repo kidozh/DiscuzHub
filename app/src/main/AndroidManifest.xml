@@ -11,7 +11,7 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="20" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -22,7 +22,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.aboutAppActivity"></activity>
+        <activity android:name=".activities.bbsAddIntroActivity" android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".activities.aboutAppActivity" />
         <activity android:name=".activities.showWebPageActivity" />
         <activity
             android:name=".activities.appWelcomeActivity"
@@ -47,14 +48,12 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_global_settings" />
-        <activity android:name=".activities.bbsShowCategoryForumActivity" />
+
         <activity android:name=".activities.bbsShowForumThreadActivity" />
         <activity android:name=".activities.bbsShowThreadActivity" />
         <activity
             android:name=".activities.SplashScreenActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">

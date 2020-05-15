@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.activities;
 
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,8 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
+
 import androidx.preference.PreferenceManager;
 import android.text.Html;
 import android.text.Spanned;
@@ -50,7 +48,7 @@ import com.kidozh.discuzhub.adapter.bbsForumThreadCommentAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadNotificationAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
-import com.kidozh.discuzhub.entities.forumInfo;
+import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.threadCommentInfo;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
@@ -121,7 +119,8 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 //    @BindView(R.id.error_thread_cardview)
 //    CardView errorThreadCardview;
     //int page = 1;
-    public String tid,subject,fid;
+    public String subject;
+    public int tid, fid;
     private OkHttpClient client = new OkHttpClient();
     private bbsForumThreadCommentAdapter adapter;
     private bbsThreadNotificationAdapter notificationAdapter;
@@ -129,7 +128,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     String formHash = null;
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
-    forumInfo forum;
+    ForumInfo forum;
 
     // MutableLiveData<bbsURLUtils.ThreadStatus> threadStatusMutableLiveData;
 
@@ -172,8 +171,8 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        tid = intent.getStringExtra("TID");
-        fid = intent.getStringExtra("FID");
+        tid = intent.getIntExtra("TID",0);
+        fid = intent.getIntExtra("FID",0);
         subject = intent.getStringExtra("SUBJECT");
         bbsURLUtils.setBBS(bbsInfo);
         threadDetailViewModel.setBBSInfo(bbsInfo, userBriefInfo, forum, tid);
@@ -181,7 +180,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     }
 
     private void initThreadStatus(){
-        bbsURLUtils.ThreadStatus threadStatus = new bbsURLUtils.ThreadStatus(Integer.parseInt(tid),1);
+        bbsURLUtils.ThreadStatus threadStatus = new bbsURLUtils.ThreadStatus(tid,1);
         Log.d(TAG,"Set status when init data");
         threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
     }
@@ -278,7 +277,8 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                     Log.d(TAG, "get poll "+ bbsPollInfo.votersCount);
                     FragmentManager fragmentManager = getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.bbs_thread_poll_fragment,bbsPollFragment.newInstance(bbsPollInfo,userBriefInfo,Integer.parseInt(tid),formHash));
+                    fragmentTransaction.replace(R.id.bbs_thread_poll_fragment,
+                            bbsPollFragment.newInstance(bbsPollInfo,userBriefInfo,tid,formHash));
                     fragmentTransaction.commit();
                 }
                 else {

@@ -2,7 +2,6 @@ package com.kidozh.discuzhub.activities.ui.privateMessages;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,7 +22,7 @@ import android.view.ViewGroup;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.bbsPrivateMessageAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.forumInfo;
+import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -109,7 +108,7 @@ public class bbsPrivateMessageFragment extends Fragment {
 
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
-    forumInfo forum;
+    ForumInfo forum;
     private OkHttpClient client = new OkHttpClient();
     bbsPrivateMessageAdapter adapter;
     private int globalPage = 1;

@@ -22,9 +22,10 @@ import android.view.ViewGroup;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.bbsForumThreadAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.forumInfo;
+import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.entities.threadInfo;
+import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
@@ -60,7 +61,7 @@ public class bbsMyThreadFragment extends Fragment {
 
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
-    forumInfo forum;
+    ForumInfo forum;
     private OkHttpClient client = new OkHttpClient();
     bbsForumThreadAdapter adapter;
     private int globalPage = 1;
@@ -145,18 +146,21 @@ public class bbsMyThreadFragment extends Fragment {
                 if(response.isSuccessful()&& response.body()!=null){
                     String s = response.body().string();
                     Log.d(TAG,"Getting PM "+s);
-                    List<threadInfo> threadInfoList = bbsParseUtils.parseMyThreadListInfo(s);
-                    if(threadInfoList!=null) {
-                        Log.d(TAG, "get my thread message " + threadInfoList.size());
+
+
+                    DisplayThreadsResult threadsResult = bbsParseUtils.getThreadListInfo(s);
+                    if(threadsResult!=null) {
+                        List<ThreadInfo> threadInfoList = threadsResult.forumVariables.forumThreadList;
+
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
                                 if (page == 1) {
-                                    adapter.setThreadInfoList(threadInfoList, s);
+                                    adapter.setThreadInfoList(threadInfoList, null);
                                 } else {
-                                    adapter.addThreadInfoList(threadInfoList, s);
+                                    adapter.addThreadInfoList(threadInfoList, null);
                                 }
-                                if(threadInfoList.size() == 0){
+                                if(threadInfoList == null || threadInfoList.size() == 0){
                                     myThreadEmptyView.setVisibility(View.VISIBLE);
                                 }
                                 else {
