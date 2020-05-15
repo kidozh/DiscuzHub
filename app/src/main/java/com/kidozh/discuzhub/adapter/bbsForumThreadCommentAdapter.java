@@ -373,7 +373,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                 targetList.add(currentDrawable);
                 urlDrawableMapper.put(source, targetList);
             }
-            if(false && networkUtils.canDownloadImageOrFile(mContext)){
+            if(networkUtils.canDownloadImageOrFile(mContext)){
                 Log.d(TAG,"load the picture from network "+source);
                 Glide.with(mContext)
                         .load(source)
