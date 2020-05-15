@@ -43,6 +43,7 @@
                 android:layout_marginBottom="8dp"
                 android:lines="2"
                 android:maxLines="2"
+                android:minLines="2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

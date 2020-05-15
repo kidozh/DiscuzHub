@@ -23,7 +23,6 @@ public class ThreadInfo implements Serializable{
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonProperty("pushedaid")
     public int pushedAid;
-    public String cover;
     @JsonProperty("relatebytag")
     public String relateByTag;
     @JsonProperty("maxposition")

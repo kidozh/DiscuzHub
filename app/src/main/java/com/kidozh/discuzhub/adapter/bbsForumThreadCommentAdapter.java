@@ -14,6 +14,8 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableString;
@@ -72,8 +74,11 @@ import org.w3c.dom.Text;
 import org.xml.sax.XMLReader;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -357,13 +362,24 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                     .getRegistry()
                     .replace(GlideUrl.class,InputStream.class,factory);
             Log.d(TAG,"Load image from "+source);
-            if(networkUtils.canDownloadImageOrFile(mContext)){
+            drawableTarget currentDrawable = new drawableTarget(myDrawable,textView);
+            if(urlDrawableMapper.containsKey(source)){
+                List<drawableTarget> targetList = urlDrawableMapper.get(source);
+                targetList.add(currentDrawable);
+                urlDrawableMapper.put(source, targetList);
+            }
+            else {
+                List<drawableTarget> targetList = new ArrayList<>();
+                targetList.add(currentDrawable);
+                urlDrawableMapper.put(source, targetList);
+            }
+            if(false && networkUtils.canDownloadImageOrFile(mContext)){
                 Log.d(TAG,"load the picture from network "+source);
                 Glide.with(mContext)
                         .load(source)
                         .error(R.drawable.vector_drawable_image_crash)
                         .placeholder(R.drawable.ic_loading_picture)
-                        .into(new drawableTarget(myDrawable,textView));
+                        .into(currentDrawable);
             }
             else {
                 Log.d(TAG,"load the picture from cache "+source);
@@ -372,11 +388,15 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                         .error(R.drawable.vector_drawable_image_wider_placeholder)
                         .placeholder(R.drawable.ic_loading_picture)
                         .onlyRetrieveFromCache(true)
-                        .into(new drawableTarget(myDrawable,textView));
+                        .into(currentDrawable);
             }
             return myDrawable;
         }
     }
+
+    Map<String, List<drawableTarget>> urlDrawableMapper = new HashMap<>();
+
+
     class drawableTarget extends CustomTarget<Drawable> {
         private final MyDrawableWrapper myDrawable;
         TextView textView;
@@ -514,52 +534,103 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                         .getRegistry()
                         .replace(GlideUrl.class,InputStream.class,factory);
                 // need to judge whether the image is cached or not
+                // find from imageGetter!
+                Log.d(TAG,"You press the image ");
+                if(urlDrawableMapper.containsKey(url) && urlDrawableMapper.get(url)!=null){
+                    List<drawableTarget> drawableTargetList = urlDrawableMapper.get(url);
+                    // update all target
 
-
-                Glide.with(mContext)
-                        .load(url)
-                        .error(R.drawable.vector_drawable_image_failed)
-                        .placeholder(R.drawable.vector_drawable_loading_image)
-                        .onlyRetrieveFromCache(true)
-                        .listener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                // load from network
-                                isLoading = false;
-                                Glide.with(mContext)
-                                        .load(url)
-                                        .error(R.drawable.vector_drawable_image_failed)
-                                        .placeholder(R.drawable.vector_drawable_loading_image)
-                                        .listener(new RequestListener<Drawable>() {
+                    for(drawableTarget target: drawableTargetList){
+                        Glide.with(mContext)
+                                .load(url)
+                                .error(R.drawable.vector_drawable_image_failed)
+                                .placeholder(R.drawable.vector_drawable_loading_image)
+                                .onlyRetrieveFromCache(true)
+                                .listener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        Log.d(TAG,"Can't find the image! ");
+                                        isLoading = false;
+                                        Handler handler = new Handler(Looper.getMainLooper());
+                                        handler.post(new Runnable() {
                                             @Override
-                                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                                return false;
+                                            public void run() {
+                                                Glide.with(mContext)
+                                                        .load(url)
+                                                        .error(R.drawable.vector_drawable_image_failed)
+                                                        .placeholder(R.drawable.vector_drawable_loading_image)
+                                                        .into(target);
+
                                             }
+                                        });
 
-                                            @Override
-                                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                                return false;
-                                            }
-                                        })
-                                        .into(new drawableTarget(myDrawable, textView));
-                                return false;
-                            }
+                                        return false;
+                                    }
 
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                Log.d(TAG,"The resource is loaded and ready to open in external activity...");
-                                isLoading = false;
-                                Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
-                                intent.putExtra("URL",url);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        Log.d(TAG,"Find the image! Goes to other activity");
+                                        isLoading = false;
+                                        Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
+                                        intent.putExtra("URL",url);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                                mContext.startActivity(intent);
-                                //textView.invalidateDrawable(resource);
-                                textView.invalidate();
+                                        mContext.startActivity(intent);
+                                        return false;
+                                    }
+                                })
+                                .into(target);
+                    }
+                }
+                else {
+                    drawableTarget target = new drawableTarget(myDrawable, textView);
+                    Glide.with(mContext)
+                            .load(url)
+                            .error(R.drawable.vector_drawable_image_failed)
+                            .placeholder(R.drawable.vector_drawable_loading_image)
+                            .onlyRetrieveFromCache(true)
+                            .listener(new RequestListener<Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                    // load from network
+                                    isLoading = false;
+                                    Glide.with(mContext)
+                                            .load(url)
+                                            .error(R.drawable.vector_drawable_image_failed)
+                                            .placeholder(R.drawable.vector_drawable_loading_image)
+                                            .listener(new RequestListener<Drawable>() {
+                                                @Override
+                                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                                    return false;
+                                                }
 
-                                return false;
-                            }
-                        }).into(new drawableTarget(myDrawable, textView));
+                                                @Override
+                                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                                    return false;
+                                                }
+                                            })
+                                            .into(target);
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    Log.d(TAG,"The resource is loaded and ready to open in external activity...");
+                                    isLoading = false;
+                                    Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
+                                    intent.putExtra("URL",url);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                                    mContext.startActivity(intent);
+                                    //textView.invalidateDrawable(resource);
+                                    textView.invalidate();
+
+                                    return false;
+                                }
+                            }).into(target);
+                }
+
+
             }
         }
     }  
