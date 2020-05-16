@@ -11,6 +11,7 @@ import android.os.Looper;
 
 import androidx.preference.PreferenceManager;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.Menu;
@@ -46,12 +47,14 @@ import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
 import com.kidozh.discuzhub.adapter.bbsForumThreadCommentAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadNotificationAdapter;
+import com.kidozh.discuzhub.adapter.bbsThreadPropertiesAdapter;
 import com.kidozh.discuzhub.entities.PostInfo;
+import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.entities.threadCommentInfo;
+import com.kidozh.discuzhub.results.ThreadPostResult;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -109,29 +112,27 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     ViewPager mCommentSmileyViewPager;
     @BindView(R.id.bbs_thread_detail_emoij_button)
     ImageView mCommentEmoijBtn;
-    @BindView(R.id.bbs_thread_detail_type_recyclerview)
+    @BindView(R.id.bbs_thread_interactive_recyclerview)
     RecyclerView mDetailThreadTypeRecyclerview;
     @BindView(R.id.bbs_thread_comment_number)
     TextView mDetailedThreadCommentNumber;
     @BindView(R.id.bbs_thread_view_number)
     TextView mDetailedThreadViewNumber;
-
-
-//    @BindView(R.id.error_thread_cardview)
-//    CardView errorThreadCardview;
-    //int page = 1;
+    @BindView(R.id.bbs_thread_subject)
+    TextView mDetailThreadSubjectTextview;
+    @BindView(R.id.bbs_thread_property_recyclerview)
+    RecyclerView mDetailThreadPropertyRecyclerview;
     public String subject;
     public int tid, fid;
     private OkHttpClient client = new OkHttpClient();
     private bbsForumThreadCommentAdapter adapter;
     private bbsThreadNotificationAdapter notificationAdapter;
-    boolean isTaskRunning;
+    private bbsThreadPropertiesAdapter propertiesAdapter;
     String formHash = null;
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
     ForumInfo forum;
-
-    // MutableLiveData<bbsURLUtils.ThreadStatus> threadStatusMutableLiveData;
+    ThreadInfo threadInfo;
 
     List<bbsParseUtils.smileyInfo> allSmileyInfos;
     int smileyCateNum;
@@ -172,11 +173,17 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        threadInfo = (ThreadInfo) intent.getSerializableExtra(bbsConstUtils.PASS_THREAD_KEY);
         tid = intent.getIntExtra("TID",0);
         fid = intent.getIntExtra("FID",0);
         subject = intent.getStringExtra("SUBJECT");
         bbsURLUtils.setBBS(bbsInfo);
         threadDetailViewModel.setBBSInfo(bbsInfo, userBriefInfo, forum, tid);
+        if(threadInfo!=null){
+            Spanned sp = Html.fromHtml(threadInfo.subject);
+            SpannableString spannableString = new SpannableString(sp);
+            mDetailThreadSubjectTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
+        }
 
     }
 
@@ -205,9 +212,6 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 Log.d(TAG,"User info "+userBriefInfo);
                 if(userBriefInfo == null){
                     mCommentConstraintLayout.setVisibility(View.GONE);
-//                    mCommentBtn.setText(R.string.bbs_require_login_to_comment);
-//                    mCommentBtn.setEnabled(false);
-//                    mCommentEditText.setEnabled(false);
                 }
                 else{
                     mCommentConstraintLayout.setVisibility(View.VISIBLE);
@@ -320,15 +324,21 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 // closed situation
                 // prepare notification list
                 List<bbsThreadNotificationAdapter.threadNotification> threadNotificationList = new ArrayList<>();
-
+                List<bbsThreadNotificationAdapter.threadNotification> threadPropertyList = new ArrayList<>();
+                if(detailedThreadInfo.subject!=null){
+                    Spanned sp = Html.fromHtml(detailedThreadInfo.subject);
+                    SpannableString spannableString = new SpannableString(sp);
+                    mDetailThreadSubjectTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
+                }
                 if(detailedThreadInfo.closed != 0){
                     mCommentEditText.setEnabled(false);
                     mCommentBtn.setEnabled(false);
                     mCommentEditText.setHint(R.string.thread_is_closed);
                     mCommentEmoijBtn.setClickable(false);
                     if(detailedThreadInfo.closed == 1){
-                        threadNotificationList.add(
-                                new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_highlight_off_outlined_24px,getString(R.string.thread_is_closed))
+                        threadPropertyList.add(
+                                new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_highlight_off_outlined_24px,
+                                        getString(R.string.thread_is_closed),getColor(R.color.colorPomegranate))
                         );
                     }
 
@@ -341,86 +351,74 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 }
 
                 if(detailedThreadInfo.price!=0){
-                    threadNotificationList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_price_outlined_24px, getString(R.string.thread_price,detailedThreadInfo.price))
+                    threadPropertyList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_price_outlined_24px,
+                                    getString(R.string.thread_price,detailedThreadInfo.price),getColor(R.color.colorPumpkin))
                     );
                 }
 
                 if(detailedThreadInfo.readperm!=0){
-                    threadNotificationList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_verified_user_outlined_24px, String.valueOf(detailedThreadInfo.readperm))
+                    threadPropertyList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_verified_user_outlined_24px,
+                                    String.valueOf(detailedThreadInfo.readperm),getColor(R.color.colorTurquoise))
                     );
                 }
 
                 // recommend?
-
-                if(detailedThreadInfo.rate == 1){
-                    // you vote yes
-                    threadNotificationList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thumb_up_outlined_24px,
-                                    String.valueOf(detailedThreadInfo.recommend_add),
-                                    R.color.colorNephritis
-                            )
-                    );
-                }
-                else {
-                    threadNotificationList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thumb_up_outlined_24px, String.valueOf(detailedThreadInfo.recommend_add))
-                    );
-                }
-
-                if(detailedThreadInfo.rate == 1){
-                    threadNotificationList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thumb_down_outlined_24px,
-                                    String.valueOf(detailedThreadInfo.recommend_sub),
-                                    R.color.colorPomegranate
-                            )
-                    );
-                }
-                else {
-                    threadNotificationList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thumb_down_outlined_24px, String.valueOf(detailedThreadInfo.recommend_sub))
-                    );
-                }
-
+                threadNotificationList.add(
+                        new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thumb_up_outlined_24px,
+                                String.valueOf(detailedThreadInfo.recommend_add)
+                        )
+                );
+                threadNotificationList.add(
+                        new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thumb_down_outlined_24px,
+                                String.valueOf(detailedThreadInfo.recommend_sub)
+                        )
+                );
 
                 if(detailedThreadInfo.hidden){
-                    threadNotificationList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thread_visibility_off_24px, getString(R.string.thread_is_hidden))
+                    threadPropertyList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thread_visibility_off_24px,
+                                    getString(R.string.thread_is_hidden),getColor(R.color.colorWisteria))
                     );
                 }
 
 
 
 
-
+                // need another
                 if(!detailedThreadInfo.highlight.equals("0")){
-                    threadNotificationList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_highlight_outlined_24px,getString(R.string.thread_is_highlighted))
+                    threadPropertyList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_highlight_outlined_24px,
+                                    getString(R.string.thread_is_highlighted),getColor(R.color.colorPrimary))
                     );
                 }
 
                 if(detailedThreadInfo.digest != 0){
-                    threadNotificationList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_digest_outlined_24px,getString(R.string.thread_is_digested))
+                    threadPropertyList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_digest_outlined_24px,
+                                    getString(R.string.thread_is_digested),getColor(R.color.colorGreensea))
                     );
                 }
 
                 if(detailedThreadInfo.moderated){
-                    threadNotificationList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_moderated_outlined_24px,getString(R.string.thread_is_moderated))
+                    threadPropertyList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_moderated_outlined_24px,
+                                    getString(R.string.thread_is_moderated),getColor(R.color.colorOrange))
                     );
                 }
 
                 if(detailedThreadInfo.is_archived){
-                    threadNotificationList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_archive_outlined_24px,getString(R.string.thread_is_archived))
+                    threadPropertyList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_archive_outlined_24px,
+                                    getString(R.string.thread_is_archived),getColor(R.color.colorMidnightblue))
                     );
                 }
 
                 if(detailedThreadInfo.stickReply){
-                    threadNotificationList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.vector_drawable_reply_24px,getString(R.string.thread_stick_reply))
+                    threadPropertyList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.vector_drawable_reply_24px,
+                                    getString(R.string.thread_stick_reply),getColor(R.color.colorWetasphalt))
                     );
                 }
                 threadNotificationList.add(
@@ -441,9 +439,23 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 
 
                 notificationAdapter.setThreadNotificationList(threadNotificationList);
+                propertiesAdapter.setThreadNotificationList(threadPropertyList);
                 // for normal rendering
                 mDetailedThreadCommentNumber.setText(getString(R.string.bbs_thread_reply_number,detailedThreadInfo.replies));
                 mDetailedThreadViewNumber.setText(String.valueOf(detailedThreadInfo.views));
+
+            }
+        });
+
+        threadDetailViewModel.threadPostResultMutableLiveData.observe(this, new Observer<ThreadPostResult>() {
+            @Override
+            public void onChanged(ThreadPostResult threadPostResult) {
+                if(threadPostResult!=null){
+                    Spanned sp = Html.fromHtml(threadPostResult.threadPostVariables.detailedThreadInfo.subject);
+                    SpannableString spannableString = new SpannableString(sp);
+                    mDetailThreadSubjectTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
+
+                }
 
             }
         });
@@ -737,9 +749,14 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 
             }
         });
+        mDetailThreadTypeRecyclerview.setHasFixedSize(true);
         mDetailThreadTypeRecyclerview.setLayoutManager(new GridLayoutManager(this, 6));
         notificationAdapter = new bbsThreadNotificationAdapter();
         mDetailThreadTypeRecyclerview.setAdapter(notificationAdapter);
+        propertiesAdapter = new bbsThreadPropertiesAdapter();
+        mDetailThreadPropertyRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        mDetailThreadPropertyRecyclerview.setAdapter(propertiesAdapter);
+
 
     }
 

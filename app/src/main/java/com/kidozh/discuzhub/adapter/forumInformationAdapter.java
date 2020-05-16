@@ -159,12 +159,12 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity,
                         Pair.create(holder.forumAvatar, "bbs_info_avatar"),
-                        Pair.create(holder.forumName, "bbs_info_name"),
-                        Pair.create(holder.forumPostNumber, "bbs_info_post_number"),
-                        Pair.create(holder.forumMemberNumber, "bbs_info_member_number"),
-                        Pair.create(holder.forumSiteId, "bbs_info_siteid"),
-                        Pair.create(holder.addAnAccountBtn, "bbs_info_add_account"),
-                        Pair.create(holder.forumUserRecyclerview,"bbs_info_user_list")
+                        Pair.create(holder.forumName, "bbs_info_name")
+//                        Pair.create(holder.forumPostNumber, "bbs_info_post_number"),
+//                        Pair.create(holder.forumMemberNumber, "bbs_info_member_number"),
+//                        Pair.create(holder.forumSiteId, "bbs_info_siteid"),
+//                        Pair.create(holder.addAnAccountBtn, "bbs_info_add_account"),
+//                        Pair.create(holder.forumUserRecyclerview,"bbs_info_user_list")
 
                         //Pair.create(holder.forumPostIcon,"bbs_info_post_number_tag"),
                         //Pair.create(holder.forumMemberIcon,"bbs_info_member_number_tag")

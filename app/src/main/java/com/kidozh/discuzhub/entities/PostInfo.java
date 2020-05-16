@@ -1,13 +1,22 @@
 package com.kidozh.discuzhub.entities;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,6 +26,7 @@ import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PostInfo implements Serializable {
+    private static final String TAG = PostInfo.class.getSimpleName();
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public int pid, tid;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
@@ -44,6 +54,7 @@ public class PostInfo implements Serializable {
 
 
     @JsonProperty("attachments")
+    @JsonDeserialize(using = AttachmentMapperDeserializer.class)
     public Map<String, Attachment> attachmentMapper = new HashMap<>();
     @JsonProperty("attachlist")
     public List<String> attachmentIdList;
@@ -127,6 +138,22 @@ public class PostInfo implements Serializable {
         }
 
         return attachmentList;
+    }
+
+    public static class AttachmentMapperDeserializer extends JsonDeserializer<Map<String,Attachment>> {
+
+        @Override
+        public Map<String,Attachment> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            JsonToken currentToken = p.getCurrentToken();
+            Log.d(TAG,"Token "+p.getText());
+            if(currentToken.equals(JsonToken.START_OBJECT)) {
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(p,  new TypeReference<Map<String,Attachment>>(){});
+            }
+            else {
+                return new HashMap<>();
+            }
+        }
     }
 
 

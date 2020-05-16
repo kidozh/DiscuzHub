@@ -9,6 +9,7 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -250,11 +251,17 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
                 Intent intent = new Intent(mContext, bbsShowThreadActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);
                 intent.putExtra("FID",threadInfo.fid);
                 intent.putExtra("TID",threadInfo.tid);
                 intent.putExtra("SUBJECT",threadInfo.subject);
                 VibrateUtils.vibrateForClick(mContext);
-                mContext.startActivity(intent);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
+                        Pair.create(holder.mTitle, "bbs_thread_subject")
+                );
+
+                Bundle bundle = options.toBundle();
+                mContext.startActivity(intent,bundle);
             }
         });
 
