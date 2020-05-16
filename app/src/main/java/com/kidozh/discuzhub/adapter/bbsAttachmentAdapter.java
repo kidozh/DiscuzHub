@@ -185,7 +185,15 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
         PostInfo.Attachment attachmentInfo = attachmentInfoList.get(position);
 
         Log.d(TAG,"Cur attachment position : "+position+" filename "+attachmentInfo.filename);
-        holder.mAttachmentBadge.setText(mContext.getString(R.string.bbs_thread_attachment_template,position+1,attachmentInfo.ext.toUpperCase()));
+        if(attachmentInfo.ext !=null){
+            holder.mAttachmentBadge.setText(mContext.getString(R.string.bbs_thread_attachment_template,position+1,attachmentInfo.ext.toUpperCase()));
+        }
+        else {
+            // parse it manually
+
+            holder.mAttachmentBadge.setText(mContext.getString(R.string.bbs_thread_attachment_template,position+1,""));
+        }
+
         holder.mAttachmentTitle.setText(attachmentInfo.filename);
         if(attachmentInfo.isImage()){
             renderPicture(holder,position);
