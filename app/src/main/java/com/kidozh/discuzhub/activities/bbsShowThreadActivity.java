@@ -362,10 +362,28 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                     if(result != null){
                         forumUserBriefInfo userBriefInfo = result.threadPostVariables.getUserBriefInfo();
                     }
-                    threadPropertyList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_verified_user_outlined_24px,
-                                    getString(R.string.thread_readperm,detailedThreadInfo.readperm,userBriefInfo.readPerm),getColor(R.color.colorTurquoise))
-                    );
+                    if(userBriefInfo!=null && userBriefInfo.readPerm >= detailedThreadInfo.readperm){
+                        threadPropertyList.add(
+                                new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_verified_user_outlined_24px,
+                                        getString(R.string.thread_readperm,detailedThreadInfo.readperm,userBriefInfo.readPerm),getColor(R.color.colorTurquoise))
+                        );
+                    }
+                    else {
+                        if(userBriefInfo == null){
+                            threadPropertyList.add(
+                                    new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_read_perm_unsatisfied_24px,
+                                            getString(R.string.thread_anoymous_readperm,detailedThreadInfo.readperm),getColor(R.color.colorAsbestos))
+                            );
+                        }
+                        else {
+                            threadPropertyList.add(
+                                    new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_read_perm_unsatisfied_24px,
+                                            getString(R.string.thread_readperm,detailedThreadInfo.readperm,userBriefInfo.readPerm),getColor(R.color.colorAlizarin))
+                            );
+                        }
+
+                    }
+
                 }
 
                 // recommend?
