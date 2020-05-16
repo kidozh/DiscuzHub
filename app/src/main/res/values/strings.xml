@@ -449,7 +449,7 @@
     <string name="bbs_thread_filter_poll">Poll</string>
     <string name="bbs_thread_filter_newest">New</string>
     <string name="bbs_thread_filter_heat">Heats</string>
-    <string name="bbs_thread_filter_hottest">Hottest posts</string>
+    <string name="bbs_thread_filter_hottest">Popular</string>
     <string name="bbs_thread_filter_digest">Digest</string>
     <string name="bbs_forum_thread_load_all">Can not find more thread.</string>
     <string name="bbs_notification_messages">Message</string>
