@@ -3,7 +3,10 @@ package com.kidozh.discuzhub.entities;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
@@ -28,10 +31,13 @@ import java.util.Map;
 public class PostInfo implements Serializable {
     private static final String TAG = PostInfo.class.getSimpleName();
     @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @NonNull
     public int pid, tid;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-    public boolean first,anonymous;
+    @NonNull
+    public boolean first, anonymous;
+    @NonNull
     public String author, dateline, message, username;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonProperty("authorid")
@@ -45,7 +51,7 @@ public class PostInfo implements Serializable {
     @JsonProperty("groupid")
     public int groupId;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @JsonProperty("memeberstatus")
+    @JsonProperty("memberstatus")
     public int memberStatus;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING , pattern = "s")
@@ -55,11 +61,16 @@ public class PostInfo implements Serializable {
 
     @JsonProperty("attachments")
     @JsonDeserialize(using = AttachmentMapperDeserializer.class)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public Map<String, Attachment> attachmentMapper = new HashMap<>();
+
     @JsonProperty("attachlist")
-    public List<String> attachmentIdList;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public List<String> attachmentIdList = new ArrayList<>();
+
     @JsonProperty("imagelist")
-    public List<String> imageIdList;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public List<String> imageIdList = new ArrayList<>();
     @JsonProperty("groupiconid")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public String groupIconId;
@@ -145,7 +156,7 @@ public class PostInfo implements Serializable {
         @Override
         public Map<String,Attachment> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
             JsonToken currentToken = p.getCurrentToken();
-            Log.d(TAG,"Token "+p.getText());
+            // Log.d(TAG,"Token "+p.getText());
             if(currentToken.equals(JsonToken.START_OBJECT)) {
                 ObjectMapper mapper = new ObjectMapper();
                 return mapper.readValue(p,  new TypeReference<Map<String,Attachment>>(){});

@@ -358,9 +358,13 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 }
 
                 if(detailedThreadInfo.readperm!=0){
+                    ThreadPostResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
+                    if(result != null){
+                        forumUserBriefInfo userBriefInfo = result.threadPostVariables.getUserBriefInfo();
+                    }
                     threadPropertyList.add(
                             new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_verified_user_outlined_24px,
-                                    String.valueOf(detailedThreadInfo.readperm),getColor(R.color.colorTurquoise))
+                                    getString(R.string.thread_readperm,detailedThreadInfo.readperm,userBriefInfo.readPerm),getColor(R.color.colorTurquoise))
                     );
                 }
 

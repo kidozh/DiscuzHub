@@ -88,7 +88,7 @@ import okhttp3.OkHttpClient;
 
 public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumThreadCommentAdapter.bbsForumThreadCommentViewHolder> {
     private final static String TAG = bbsForumThreadCommentAdapter.class.getSimpleName();
-    private List<PostInfo> threadInfoList;
+    private List<PostInfo> threadInfoList = new ArrayList<>();
     private Context mContext,context;
     public String subject;
     private OkHttpClient client = new OkHttpClient();
@@ -115,6 +115,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
     public void setThreadInfoList(List<PostInfo> threadInfoList, bbsURLUtils.ThreadStatus threadStatus){
         this.threadInfoList = threadInfoList;
         this.threadStatus = threadStatus;
+
         notifyDataSetChanged();
     }
 
@@ -140,17 +141,24 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         PostInfo threadInfo = threadInfoList.get(position);
         holder.mThreadPublisher.setText(threadInfo.author);
         holder.mTitle.setVisibility(View.GONE);
-        //holder.mTitle.setText(threadInfo.subject);
-        String decodeString = threadInfo.message;
-        MyTagHandler myTagHandler = new MyTagHandler(mContext,holder.mContent);
 
+        Log.d(TAG,"Thread info "+position+" Total size "+threadInfoList.size());
+        //holder.mTitle.setText(threadInfo.subject);
+
+        String decodeString = threadInfo.message;
+        if(decodeString == null){
+            return;
+        }
+        MyTagHandler myTagHandler = new MyTagHandler(mContext,holder.mContent);
         Spanned sp = Html.fromHtml(decodeString,new MyImageGetter(holder.mContent),myTagHandler);
         SpannableString spannableString = new SpannableString(sp);
 
         holder.mContent.setText(spannableString, TextView.BufferType.SPANNABLE);
-
+        holder.mContent.setFocusable(true);
+        holder.mContent.setTextIsSelectable(true);
         holder.mContent.setMovementMethod(LinkMovementMethod.getInstance());
-        holder.mContent.setCompoundDrawablePadding(8);
+
+
         //DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
         //holder.mPublishDate.setText(df.format(threadInfo.publishAt));
         holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext,threadInfo.publishAt));

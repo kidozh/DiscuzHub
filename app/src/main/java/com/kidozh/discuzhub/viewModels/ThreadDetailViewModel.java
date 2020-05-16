@@ -22,6 +22,7 @@ import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import okhttp3.Call;
@@ -139,6 +140,16 @@ public class ThreadDetailViewModel extends AndroidViewModel {
 
                             }
                             List<PostInfo> postInfoList = threadPostResult.threadPostVariables.postInfoList;
+                            // remove null object
+                            Log.d(TAG,"Recv post info size "+postInfoList.size());
+                            Iterator<PostInfo> iterator = postInfoList.iterator();
+                            while (iterator.hasNext()){
+                                PostInfo postInfo = iterator.next();
+                                if(postInfo.message == null || postInfo.author == null){
+                                    iterator.remove();
+                                }
+                            }
+                            Log.d(TAG,"Recv Non Nullable post info size "+postInfoList.size());
                             if(postInfoList !=null && postInfoList.size()!=0){
                                 if(threadStatus.page == 1){
                                     threadCommentInfoListLiveData.postValue(postInfoList);

@@ -381,5 +381,6 @@
     <string name="add_a_bbs_successfully">成功导入论坛 %1$s</string>
     <string name="add_bbs_url_failed">%1$s并不是一个有效的链接</string>
     <string name="attachment_download_time">已下载%1$d次</string>
+    <string name="thread_readperm">此贴阅读权限为 %1$d，您的阅读权限为%2$d。</string>
 
 </resources>

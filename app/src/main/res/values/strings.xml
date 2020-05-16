@@ -544,6 +544,7 @@
     <string name="add_bbs_url_failed">%1$s is not a valid URL.</string>
     <string name="forum_today_posts_over_much" translatable="false">99+</string>
     <string name="attachment_download_time">%1$d Downloads</string>
+    <string name="thread_readperm">The read permission is %1$d and your credit is %2$d</string>
 
 
 </resources>
