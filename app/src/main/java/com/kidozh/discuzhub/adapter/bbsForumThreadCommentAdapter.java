@@ -91,9 +91,9 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
     private Context mContext,context;
     public String subject;
     private OkHttpClient client = new OkHttpClient();
-    bbsInformation bbsInfo;
-    forumUserBriefInfo curUser;
-    bbsURLUtils.ThreadStatus threadStatus;
+    private bbsInformation bbsInfo;
+    private forumUserBriefInfo curUser;
+    private bbsURLUtils.ThreadStatus threadStatus;
 
     private onFilterChanged mListener;
 
@@ -344,7 +344,6 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
 
     class MyImageGetter implements Html.ImageGetter {
         TextView textView;
-        Boolean loadPictureDirectly = false;
 
         MyImageGetter(TextView textView){
             this.textView = textView;
@@ -373,7 +372,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                 targetList.add(currentDrawable);
                 urlDrawableMapper.put(source, targetList);
             }
-            if(networkUtils.canDownloadImageOrFile(mContext)){
+            if(false && networkUtils.canDownloadImageOrFile(mContext)){
                 Log.d(TAG,"load the picture from network "+source);
                 Glide.with(mContext)
                         .load(source)
@@ -438,7 +437,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                     //int screenWidth =  textView.getWidth() - textView.getPaddingLeft() - textView.getPaddingRight();
                     int screenWidth = textView.getMeasuredWidth();
                     Log.d(TAG,"Screen width "+screenWidth+" image width "+width);
-                    if (screenWidth / width < 3 && screenWidth !=0 ){
+                    if (screenWidth / width < 4 && screenWidth !=0 ){
                         double rescaleFactor = ((double) screenWidth) / width;
                         int newHeight = (int) (height * rescaleFactor);
                         Log.d(TAG,"rescaleFactor "+rescaleFactor+" image new height "+newHeight);
@@ -539,19 +538,19 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                 if(urlDrawableMapper.containsKey(url) && urlDrawableMapper.get(url)!=null){
                     List<drawableTarget> drawableTargetList = urlDrawableMapper.get(url);
                     // update all target
-
-                    for(drawableTarget target: drawableTargetList){
-                        Glide.with(mContext)
-                                .load(url)
-                                .error(R.drawable.vector_drawable_image_failed)
-                                .placeholder(R.drawable.vector_drawable_loading_image)
-                                .onlyRetrieveFromCache(true)
-                                .listener(new RequestListener<Drawable>() {
-                                    @Override
-                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                        Log.d(TAG,"Can't find the image! ");
-                                        isLoading = false;
-                                        Handler handler = new Handler(Looper.getMainLooper());
+                    Glide.with(mContext)
+                            .load(url)
+                            .error(R.drawable.vector_drawable_image_failed)
+                            .placeholder(R.drawable.vector_drawable_loading_image)
+                            .onlyRetrieveFromCache(true)
+                            .listener(new RequestListener<Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                    Log.d(TAG,"Can't find the image! ");
+                                    isLoading = false;
+                                    Handler handler = new Handler(Looper.getMainLooper());
+                                    // update all drawable target
+                                    for(drawableTarget drawTarget: drawableTargetList){
                                         handler.post(new Runnable() {
                                             @Override
                                             public void run() {
@@ -559,30 +558,35 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
                                                         .load(url)
                                                         .error(R.drawable.vector_drawable_image_failed)
                                                         .placeholder(R.drawable.vector_drawable_loading_image)
-                                                        .into(target);
+                                                        .into(drawTarget);
 
                                             }
                                         });
 
-                                        return false;
                                     }
 
-                                    @Override
-                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                        Log.d(TAG,"Find the image! Goes to other activity");
-                                        isLoading = false;
-                                        Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
-                                        intent.putExtra("URL",url);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                                        mContext.startActivity(intent);
-                                        return false;
-                                    }
-                                })
-                                .into(target);
-                    }
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    Log.d(TAG,"Find the image! Goes to other activity");
+                                    isLoading = false;
+                                    Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
+                                    intent.putExtra("URL",url);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                                    mContext.startActivity(intent);
+                                    return false;
+                                }
+                            })
+                            .into(new drawableTarget(myDrawable,textView));
+
+
                 }
                 else {
+
                     drawableTarget target = new drawableTarget(myDrawable, textView);
                     Glide.with(mContext)
                             .load(url)
