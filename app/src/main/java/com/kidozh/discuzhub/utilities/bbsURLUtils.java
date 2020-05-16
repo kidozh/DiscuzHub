@@ -295,12 +295,16 @@ public class bbsURLUtils {
         else {
             // this is local URL
             // Log.d(TAG,"Get attachment aliencode "+attachmentInfo.aidEncode);
-            if(attachmentInfo.aidEncode!=null && attachmentInfo.aidEncode.length()!=0){
-                //http://192.168.0.119/forum.php?mod=attachment&aid=NHxlZTdjN2UwOHwxNTg5NjE3MzgxfDN8Nw%3D%3D&nothumb=yes
+            if(attachmentInfo.url !=null && attachmentInfo.attachment !=null){
+                source = bbsURLUtils.getBaseUrl()+"/"+ attachmentInfo.url + attachmentInfo.attachment;
+            }
+            else if(attachmentInfo.aidEncode!=null && attachmentInfo.aidEncode.length()!=0) {
                 source = bbsURLUtils.getAttachmentWithAlienCode(attachmentInfo.aidEncode);
             }
+
             else {
-                source = bbsURLUtils.getBaseUrl()+"/"+ attachmentInfo.url + attachmentInfo.attachment;
+                // have no way give blank
+                source = "";
             }
 
         }

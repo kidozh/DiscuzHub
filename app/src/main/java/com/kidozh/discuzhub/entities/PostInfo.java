@@ -47,6 +47,8 @@ public class PostInfo implements Serializable {
     public Map<String, Attachment> attachmentMapper = new HashMap<>();
     @JsonProperty("attachlist")
     public List<String> attachmentIdList;
+    @JsonProperty("imagelist")
+    public List<String> imageIdList;
     @JsonProperty("groupiconid")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public String groupIconId;
@@ -107,10 +109,23 @@ public class PostInfo implements Serializable {
 
     public List<Attachment> getAllAttachments(){
         List<Attachment> attachmentList = new ArrayList<>();
-        for(String key : this.attachmentMapper.keySet()){
-            Attachment attachment = attachmentMapper.get(key);
-            attachmentList.add(attachment);
+        List<String> attachmentIdList = this.attachmentIdList;
+        List<String> imageIdList = this.imageIdList;
+        List<String> totalIdList = new ArrayList<>();
+        if(imageIdList!=null){
+            totalIdList.addAll(imageIdList);
         }
+        if(attachmentIdList!=null){
+            totalIdList.addAll(attachmentIdList);
+        }
+
+        for(String key : totalIdList){
+            if(attachmentMapper.containsKey(key)){
+                Attachment attachment = attachmentMapper.get(key);
+                attachmentList.add(attachment);
+            }
+        }
+
         return attachmentList;
     }
 
