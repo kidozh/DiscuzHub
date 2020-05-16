@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 
 public class bbsURLUtils {
@@ -274,6 +275,36 @@ public class bbsURLUtils {
 
     public static String getAttachmentImageUrl(String s){
         return BASE_URL +"/data/attachment/forum/"+s;
+    }
+
+    public static String getAttachmentWithAlienCode(String alienCode){
+        Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
+                .appendQueryParameter("mod","attachment")
+                .appendQueryParameter("aid",alienCode)
+                .build();
+        return uri.toString();
+    }
+
+    public static String getAttachmentURL(PostInfo.Attachment attachmentInfo){
+        String source;
+
+        if(attachmentInfo.remote){
+            // this is remote URL
+            source = attachmentInfo.url + attachmentInfo.attachment;
+        }
+        else {
+            // this is local URL
+            // Log.d(TAG,"Get attachment aliencode "+attachmentInfo.aidEncode);
+            if(attachmentInfo.aidEncode!=null && attachmentInfo.aidEncode.length()!=0){
+                //http://192.168.0.119/forum.php?mod=attachment&aid=NHxlZTdjN2UwOHwxNTg5NjE3MzgxfDN8Nw%3D%3D&nothumb=yes
+                source = bbsURLUtils.getAttachmentWithAlienCode(attachmentInfo.aidEncode);
+            }
+            else {
+                source = bbsURLUtils.getBaseUrl()+"/"+ attachmentInfo.url + attachmentInfo.attachment;
+            }
+
+        }
+        return source;
     }
 
     public static String getUploadImageUrl() {

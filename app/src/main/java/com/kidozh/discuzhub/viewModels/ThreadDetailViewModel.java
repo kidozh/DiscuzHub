@@ -8,11 +8,14 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.threadCommentInfo;
+import com.kidozh.discuzhub.results.ThreadPostParameterResult;
+import com.kidozh.discuzhub.results.ThreadPostResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -42,9 +45,10 @@ public class ThreadDetailViewModel extends AndroidViewModel {
     public MutableLiveData<String> formHash, errorText;
     public MutableLiveData<bbsPollInfo> pollInfoLiveData;
     public MutableLiveData<forumUserBriefInfo> bbsPersonInfoMutableLiveData;
-    public MutableLiveData<List<threadCommentInfo>> threadCommentInfoListLiveData;
+    public MutableLiveData<List<PostInfo>> threadCommentInfoListLiveData;
     public MutableLiveData<bbsURLUtils.ThreadStatus> threadStatusMutableLiveData;
     public MutableLiveData<bbsParseUtils.DetailedThreadInfo> detailedThreadInfoMutableLiveData;
+    public MutableLiveData<ThreadPostResult> threadPostResultMutableLiveData;
 
 
     public ThreadDetailViewModel(@NonNull Application application) {
@@ -59,6 +63,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
         threadStatusMutableLiveData = new MutableLiveData<>();
         errorText = new MutableLiveData<>("");
         detailedThreadInfoMutableLiveData = new MutableLiveData<>();
+        threadPostResultMutableLiveData = new MutableLiveData<>();
     }
 
     public void setBBSInfo(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, ForumInfo forum, int tid){
@@ -107,88 +112,84 @@ public class ThreadDetailViewModel extends AndroidViewModel {
                 isLoading.postValue(false);
                 if(response.isSuccessful() && response.body()!=null){
                     String s = response.body().string();
-                    Log.d(TAG,"Recv thread JSON "+s);
-                    String curFormHash = bbsParseUtils.parseFormHash(s);
-                    formHash.postValue(curFormHash);
-                    forumUserBriefInfo curPersonInfo = bbsParseUtils.parseBreifUserInfo(s);
-                    // Log.d(TAG,"Recv USER info "+curPersonInfo);
-                    bbsPersonInfoMutableLiveData.postValue(curPersonInfo);
-
-                    bbsParseUtils.returnMessage message = bbsParseUtils.parseReturnMessage(s);
-                    if(message !=null){
-                        Log.d(TAG,"parse message "+message.string);
-                        errorText.postValue(message.string);
-                    }
-                    bbsParseUtils.DetailedThreadInfo detailedThreadInfo = bbsParseUtils.parseDetailedThreadInfo(s);
-                    detailedThreadInfoMutableLiveData.postValue(detailedThreadInfo);
-                    bbsPollInfo pollInfo = bbsParseUtils.parsePollInfo(s);
-
-                    if(pollInfoLiveData.getValue() == null && pollInfo !=null){
-                        Log.d(TAG,"recv poll info "+ pollInfo.votersCount);
-                        pollInfoLiveData.postValue(pollInfo);
-
-                    }
-                    List<threadCommentInfo> threadInfoList = bbsParseUtils.parseThreadCommentInfo(s);
                     int totalThreadSize = 0;
-                    if(threadInfoList !=null && threadInfoList.size()!=0){
-
-                        if(threadStatus.page == 1){
-                            threadCommentInfoListLiveData.postValue(threadInfoList);
-                            totalThreadSize = threadInfoList.size();
+                    Log.d(TAG,"Recv thread JSON "+s);
+                    ThreadPostResult threadPostResult = bbsParseUtils.parseThreadPostResult(s);
+                    bbsParseUtils.DetailedThreadInfo detailedThreadInfo = null;
+                    if(threadPostResult!=null && threadPostResult.threadPostVariables!=null){
+                        // update formhash first
+                        if(threadPostResult.threadPostVariables.formHash !=null){
+                            formHash.postValue(threadPostResult.threadPostVariables.formHash);
                         }
-                        else {
-                            List<threadCommentInfo> currentThreadInfoList = threadCommentInfoListLiveData.getValue();
-                            if(currentThreadInfoList == null){
-                                currentThreadInfoList = new ArrayList<>();
+                        // parse message
+                        if(threadPostResult.message!=null){
+                            errorText.postValue(threadPostResult.message.content);
+                        }
+                        // update user
+                        if(threadPostResult.threadPostVariables!=null){
+                            bbsPersonInfoMutableLiveData.postValue(threadPostResult.threadPostVariables.getUserBriefInfo());
+                            // parse detailed info
+                            detailedThreadInfo = threadPostResult.threadPostVariables.detailedThreadInfo;
+                            detailedThreadInfoMutableLiveData.postValue(threadPostResult.threadPostVariables.detailedThreadInfo);
+
+                            bbsPollInfo pollInfo = threadPostResult.threadPostVariables.pollInfo;
+                            if(pollInfoLiveData.getValue() == null && pollInfo !=null){
+                                Log.d(TAG,"recv poll info "+ pollInfo.votersCount);
+                                pollInfoLiveData.postValue(pollInfo);
+
                             }
-                            currentThreadInfoList.addAll(threadInfoList);
-                            threadCommentInfoListLiveData.postValue(currentThreadInfoList);
-                            totalThreadSize = currentThreadInfoList.size();
+                            List<PostInfo> postInfoList = threadPostResult.threadPostVariables.postInfoList;
+                            if(postInfoList !=null && postInfoList.size()!=0){
+                                if(threadStatus.page == 1){
+                                    threadCommentInfoListLiveData.postValue(postInfoList);
+                                    totalThreadSize = postInfoList.size();
+                                }
+                                else {
+                                    List<PostInfo> currentThreadInfoList = threadCommentInfoListLiveData.getValue();
+                                    if(currentThreadInfoList == null){
+                                        currentThreadInfoList = new ArrayList<>();
+                                    }
+                                    currentThreadInfoList.addAll(postInfoList);
+                                    threadCommentInfoListLiveData.postValue(currentThreadInfoList);
+                                    totalThreadSize = currentThreadInfoList.size();
 
-                        }
-                        // special condition?
-
-                    }
-                    else {
-                        if(threadStatus.page == 1 && message == null){
-                            errorText.postValue(getApplication().getString(R.string.parse_failed));
-                        }
-                        hasLoadAll.postValue(true);
-                        // rollback
-                        if(threadStatus.page != 1){
-                            threadStatus.page -=1;
-                            Log.d(TAG,"Roll back page when page to "+threadStatus.page);
-                            threadStatusMutableLiveData.postValue(threadStatus);
-                        }
-                    }
-                    // load all?
-                    if(detailedThreadInfo !=null){
-                        int maxThreadNumber = detailedThreadInfo.replies;
-                        List<threadCommentInfo> currentThreadInfoList = threadCommentInfoListLiveData.getValue();
-                        int totalThreadCommentsNumber = 0;
-
-                        if(currentThreadInfoList !=null){
-                            totalThreadCommentsNumber = currentThreadInfoList.size();
-                            Log.d(TAG, "current size "+totalThreadCommentsNumber);
-                        }
-                        else {
-                            Log.d(TAG, "no thread is found ");
+                                }
+                            }
+                            else {
+                                if(threadStatus.page == 1 && (threadPostResult == null || threadPostResult.message !=null)){
+                                    errorText.postValue(getApplication().getString(R.string.parse_failed));
+                                }
+                                hasLoadAll.postValue(true);
+                                // rollback
+                                if(threadStatus.page != 1){
+                                    threadStatus.page -=1;
+                                    Log.d(TAG,"Roll back page when page to "+threadStatus.page);
+                                    threadStatusMutableLiveData.postValue(threadStatus);
+                                }
+                            }
                         }
 
-                        Log.d(TAG,"PAGE "+threadStatus.page+" MAX POSITION "+maxThreadNumber +" CUR "+totalThreadCommentsNumber+ " "+totalThreadSize);
-                        if(totalThreadSize >= maxThreadNumber +1){
-                            hasLoadAll.postValue(true);
-                        }
-                        else {
-                            hasLoadAll.postValue(false);
-                        }
-                    }
-                    else {
-                        if(threadInfoList.size() < threadStatus.perPage){
-                            hasLoadAll.postValue(true);
-                        }
-                        else {
-                            hasLoadAll.postValue(false);
+                        // load all?
+                        if(detailedThreadInfo !=null){
+                            int maxThreadNumber = detailedThreadInfo.replies;
+                            List<PostInfo> currentThreadInfoList = threadCommentInfoListLiveData.getValue();
+                            int totalThreadCommentsNumber = 0;
+
+                            if(currentThreadInfoList !=null){
+                                totalThreadCommentsNumber = currentThreadInfoList.size();
+                                Log.d(TAG, "current size "+totalThreadCommentsNumber);
+                            }
+                            else {
+                                Log.d(TAG, "no thread is found ");
+                            }
+
+                            Log.d(TAG,"PAGE "+threadStatus.page+" MAX POSITION "+maxThreadNumber +" CUR "+totalThreadCommentsNumber+ " "+totalThreadSize);
+                            if(totalThreadSize >= maxThreadNumber +1){
+                                hasLoadAll.postValue(true);
+                            }
+                            else {
+                                hasLoadAll.postValue(false);
+                            }
                         }
                     }
                 }

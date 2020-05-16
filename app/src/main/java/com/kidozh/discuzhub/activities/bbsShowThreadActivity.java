@@ -46,6 +46,7 @@ import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
 import com.kidozh.discuzhub.adapter.bbsForumThreadCommentAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadNotificationAdapter;
+import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
@@ -138,7 +139,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     bbsPollInfo pollInfo;
 
 
-    private threadCommentInfo selectedThreadComment =null;
+    private PostInfo selectedThreadComment =null;
     private bbsSmileyPicker smileyPicker;
     private EmotionInputHandler handler;
 
@@ -214,10 +215,10 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
             }
         });
 
-        threadDetailViewModel.threadCommentInfoListLiveData.observe(this, new Observer<List<threadCommentInfo>>() {
+        threadDetailViewModel.threadCommentInfoListLiveData.observe(this, new Observer<List<PostInfo>>() {
             @Override
-            public void onChanged(List<threadCommentInfo> threadCommentInfos) {
-                adapter.setThreadInfoList(threadCommentInfos, threadDetailViewModel.threadStatusMutableLiveData.getValue());
+            public void onChanged(List<PostInfo> postInfos) {
+                adapter.setThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue());
             }
         });
 
@@ -485,7 +486,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 
                     }
                     else {
-                        String pid = selectedThreadComment.pid;
+                        int pid = selectedThreadComment.pid;
                         Log.d(TAG,"Send Reply to "+pid);
                         postReplyToSomeoneInThread(pid,commentMessage,selectedThreadComment.message);
                     }
@@ -600,7 +601,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 
     @Override
     public void replyToSomeOne(int position) {
-        threadCommentInfo threadCommentInfo = adapter.getThreadInfoList().get(position);
+        PostInfo threadCommentInfo = adapter.getThreadInfoList().get(position);
         selectedThreadComment = threadCommentInfo;
         mThreadReplyBadge.setText(threadCommentInfo.author);
         mThreadReplyBadge.setVisibility(View.VISIBLE);
@@ -838,7 +839,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
     }
 
-    private void postReplyToSomeoneInThread(String replyPid,String message,String noticeAuthorMsg){
+    private void postReplyToSomeoneInThread(int replyPid,String message,String noticeAuthorMsg){
 
         String discuz_reply_comment_template = getString(R.string.discuz_reply_message_template);
         String replyUserName = selectedThreadComment.author;
@@ -863,8 +864,8 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 .add("handlekey","reply")
 
                 .add("usesig", "1")
-                .add("reppid", replyPid)
-                .add("reppost", replyPid)
+                .add("reppid", String.valueOf(replyPid))
+                .add("reppost", String.valueOf(replyPid))
                 .add("message", message)
                 .add("noticeauthormsg",noticeAuthorMsg)
                 .add("noticetrimstr",String.format(discuz_reply_comment_template,
@@ -879,7 +880,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 
         mCommentBtn.setText(R.string.bbs_commentting);
         mCommentBtn.setEnabled(false);
-        String pid = selectedThreadComment.pid;
+        int pid = selectedThreadComment.pid;
         Handler mHandler = new Handler(Looper.getMainLooper());
         client.newCall(request).enqueue(new Callback() {
             @Override

@@ -3,13 +3,23 @@ package com.kidozh.discuzhub.results;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -78,11 +88,30 @@ public class DisplayForumResult extends BaseResult {
         @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
         public boolean required, listable, prefix;
         @JsonProperty("types")
+        @JsonDeserialize(using = ForumThreadTypeDeserializer.class)
         public Map<String, String> idNameMap;
         @JsonProperty("icons")
+        @JsonDeserialize(using = ForumThreadTypeDeserializer.class)
         public Map<String, String> idIconMap;
         @JsonProperty("moderators")
+        @JsonDeserialize(using = ForumThreadTypeDeserializer.class)
         public Map<String, String> idModeratorMap;
+    }
+
+    public static class ForumThreadTypeDeserializer extends JsonDeserializer<Map<String,String>>{
+
+        @Override
+        public Map<String, String> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            JsonToken currentToken = p.getCurrentToken();
+            if(currentToken.equals(JsonToken.START_OBJECT)) {
+                ObjectMapper mapper = new ObjectMapper();
+
+                return mapper.readValue(p,  new TypeReference<Map<String,String>>(){});
+            }
+            else {
+                return new HashMap<>();
+            }
+        }
     }
 
     public boolean isError(){

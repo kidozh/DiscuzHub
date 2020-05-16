@@ -34,10 +34,13 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
+import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.threadCommentInfo;
 import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
+
+import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -53,7 +56,7 @@ import es.dmoral.toasty.Toasty;
 public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdapter.bbsAttachmentViewHolder> {
     private static final String TAG = bbsAttachmentAdapter.class.getSimpleName();
     Context mContext;
-    List<threadCommentInfo.attachmentInfo> attachmentInfoList;
+    List<PostInfo.Attachment> attachmentInfoList;
 
     bbsAttachmentAdapter(Context context){
         this.mContext = context;
@@ -71,26 +74,15 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
         return new bbsAttachmentViewHolder(view);
     }
 
-    void loadImageWithGlideInNetwork(bbsAttachmentViewHolder holder, threadCommentInfo.attachmentInfo attachmentInfo){
+    void loadImageWithGlideInNetwork(bbsAttachmentViewHolder holder, PostInfo.Attachment attachmentInfo){
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(mContext));
         Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-
-        String source;
-        if(attachmentInfo.urlPrefix.startsWith("http:")||attachmentInfo.urlPrefix.startsWith("https:")){
-            source = attachmentInfo.urlPrefix + attachmentInfo.relativeUrl;
-        }
-        else {
-            // add a base url
-            source = bbsURLUtils.getBaseUrl()+"/"+ attachmentInfo.urlPrefix + attachmentInfo.relativeUrl;
-        }
-
+        String source = bbsURLUtils.getAttachmentURL(attachmentInfo);
 
         RequestOptions options = new RequestOptions()
                 //.centerCrop()
                 .placeholder(R.drawable.vector_drawable_image_wider_placeholder)
                 .error(R.drawable.vector_drawable_image_crash);
-
-
 
         Glide.with(mContext)
                 .load(source)
@@ -124,7 +116,7 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
     }
 
     private void renderPicture(bbsAttachmentViewHolder holder, int position){
-        threadCommentInfo.attachmentInfo attachmentInfo = attachmentInfoList.get(position);
+        PostInfo.Attachment attachmentInfo = attachmentInfoList.get(position);
 
         if(networkUtils.canDownloadImageOrFile(mContext)){
             loadImageWithGlideInNetwork(holder,attachmentInfo);
@@ -133,18 +125,7 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
             // retrieve file from cache
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(mContext));
             Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-            String source;
-
-            if(attachmentInfo.urlPrefix.startsWith("http:")||attachmentInfo.urlPrefix.startsWith("https:")){
-                source = attachmentInfo.urlPrefix + attachmentInfo.relativeUrl;
-            }
-            else {
-                // add a base url
-                source = bbsURLUtils.getBaseUrl()+"/"+ attachmentInfo.urlPrefix + attachmentInfo.relativeUrl;
-            }
-
-            //String source = bbsURLUtils.getAttachmentImageUrl(attachmentInfo.relativeUrl);
-
+            String source = bbsURLUtils.getAttachmentURL(attachmentInfo);
 
             RequestOptions options = new RequestOptions()
                     .centerInside()
@@ -201,44 +182,25 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
 
     @Override
     public void onBindViewHolder(@NonNull bbsAttachmentViewHolder holder, int position) {
-        threadCommentInfo.attachmentInfo attachmentInfo = attachmentInfoList.get(position);
+        PostInfo.Attachment attachmentInfo = attachmentInfoList.get(position);
 
         Log.d(TAG,"Cur attachment position : "+position+" filename "+attachmentInfo.filename);
-        String[] fileNameSegement = attachmentInfo.filename.split("\\.");
-        String fileSuffix = "";
-        if(fileNameSegement.length >0){
-            fileSuffix = fileNameSegement[fileNameSegement.length-1];
-        }
-        else {
-            fileSuffix = "";
-        }
-
-        Set<String> commonPictureSuffixSet = new HashSet<String>(
-                Arrays.asList("gif","jpg","png","bmp")
-        );
-        fileSuffix = fileSuffix.toLowerCase();
-        holder.mAttachmentBadge.setText(mContext.getString(R.string.bbs_thread_attachment_template,position+1,fileSuffix.toUpperCase()));
+        holder.mAttachmentBadge.setText(mContext.getString(R.string.bbs_thread_attachment_template,position+1,attachmentInfo.ext.toUpperCase()));
         holder.mAttachmentTitle.setText(attachmentInfo.filename);
-        if(commonPictureSuffixSet.contains(fileSuffix)){
+        if(attachmentInfo.isImage()){
             renderPicture(holder,position);
         }
         else {
-            String source;
+            String source = bbsURLUtils.getAttachmentURL(attachmentInfo);
 
-            if(attachmentInfo.urlPrefix.startsWith("http:")||attachmentInfo.urlPrefix.startsWith("https:")){
-                source = attachmentInfo.urlPrefix + attachmentInfo.relativeUrl;
-            }
-            else {
-                // add a base url
-                source = bbsURLUtils.getBaseUrl()+"/"+ attachmentInfo.urlPrefix + attachmentInfo.relativeUrl;
-            }
             holder.mAttachmentImageview.setImageDrawable(mContext.getDrawable(R.drawable.vector_drawable_attach_file_placeholder_24px));
             holder.mAttachmentImageview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     DownloadManager.Request request = new DownloadManager.Request(Uri.parse(source));
+                    Log.d(TAG, "Download by URL "+source);
                     request.setDestinationInExternalFilesDir(mContext,Environment.DIRECTORY_DOWNLOADS,attachmentInfo.filename);
-                    //request.setDestinationInExternalFilesDir(,mContext.getExternalFilesDir(null),attachmentInfo.filename);
+
                     DownloadManager downloadManager= (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
                     request.setTitle(mContext.getString(R.string.bbs_downloading_file_template,attachmentInfo.filename));
                     request.setDescription(attachmentInfo.filename);
@@ -253,6 +215,20 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
 
                 }
             });
+        }
+        if(attachmentInfo.attachSize.length()!=0){
+            holder.mAttachmentSize.setText(attachmentInfo.attachSize);
+            holder.mAttachmentSize.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.mAttachmentSize.setVisibility(View.GONE);
+        }
+        if(attachmentInfo.downloads == 0){
+            holder.mAttachmentDownloadTimes.setVisibility(View.GONE);
+        }
+        else {
+            holder.mAttachmentDownloadTimes.setVisibility(View.VISIBLE);
+            holder.mAttachmentDownloadTimes.setText(mContext.getString(R.string.attachment_download_time,attachmentInfo.downloads));
         }
 
 
@@ -278,6 +254,10 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
         ImageView mAttachmentImageview;
         @BindView(R.id.bbs_attachment_badge)
         TextView mAttachmentBadge;
+        @BindView(R.id.bbs_attachment_filesize)
+        TextView mAttachmentSize;
+        @BindView(R.id.bbs_attachment_download_times)
+        TextView mAttachmentDownloadTimes;
         Boolean isPictureLoaded = false;
 
         public bbsAttachmentViewHolder(@NonNull View itemView) {

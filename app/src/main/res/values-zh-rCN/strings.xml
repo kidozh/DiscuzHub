@@ -34,8 +34,8 @@
     <string name="preference_title_use_safer_client">使用安全的HTTPS认证方式</string>
     <string name="action_bbs_user_status">用户状态</string>
     <string name="bbs_more_thread_btn">更多帖子</string>
-    <string name="bbs_forum_post">发帖</string>
-    <string name="bbs_forum_thread">主题</string>
+    <string name="bbs_forum_post">发言</string>
+    <string name="bbs_forum_thread">帖子</string>
     <string name="time_template_days_ago">%d天前%s</string>
     <string name="time_template_today_time">今天 %s</string>
     <string name="time_template_yesterday_time">昨天 %s</string>
@@ -380,5 +380,6 @@
     <string name="app_open_source_lib">开源软件许可</string>
     <string name="add_a_bbs_successfully">成功导入论坛 %1$s</string>
     <string name="add_bbs_url_failed">%1$s并不是一个有效的链接</string>
+    <string name="attachment_download_time">已下载%1$d次</string>
 
 </resources>

@@ -53,15 +53,15 @@ public class ThreadInfo implements Serializable{
     public int displayOrder;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-    public boolean digest, special, moderated = false,
-            closed = false, stickreply = false, isgroup = false,
+    public boolean digest =false, special =false, moderated = false,
+            stickreply = false, isgroup = false,
             hidden=false, moved = false;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonProperty("new")
     @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
     public boolean isNew;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    public int attachment;
+    public int attachment, closed;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonProperty("recommend_add")
     public int recommendNum;

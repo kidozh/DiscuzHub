@@ -25,6 +25,7 @@ import com.kidozh.discuzhub.results.BBSIndexResult;
 import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.results.ThreadPostParameterResult;
+import com.kidozh.discuzhub.results.ThreadPostResult;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -108,36 +109,6 @@ public class bbsParseUtils {
         }
     }
 
-
-
-    public static List<forumCategorySection> parseCategoryFids(String s) {
-        try {
-            List<forumCategorySection> categorySectionFidList = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONArray catagoryList = variables.getJSONArray("catlist");
-            for (int i = 0; i < catagoryList.length(); i++) {
-                JSONObject catagory = catagoryList.getJSONObject(i);
-                String cataName = catagory.getString("name");
-                String fid = catagory.getString("fid");
-                JSONArray forumFidList = catagory.getJSONArray("forums");
-                List<Integer> fidList = new ArrayList<>();
-                for (int j = 0; j < forumFidList.length(); j++) {
-                    String fidString = forumFidList.getString(j);
-                    fidList.add(Integer.parseInt(fidString));
-                }
-
-                forumCategorySection categorySectionFid = new forumCategorySection(cataName, Integer.parseInt(fid), fidList);
-                categorySectionFidList.add(categorySectionFid);
-            }
-            return categorySectionFidList;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public static String parseErrorInformation(String s) {
         try {
             JSONObject jsonObject = new JSONObject(s);
@@ -167,58 +138,6 @@ public class bbsParseUtils {
             }
             return threadTypeMap;
 
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @JsonIgnoreProperties(ignoreUnknown=true)
-    public static class forumDetailedInfo{
-        @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int fid, fup, threads, posts, autoclose, threadcount, password;
-        public String name, rules, description;
-
-
-    }
-
-    public static forumDetailedInfo getForumDetailedInfo(String s) {
-        try {
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONObject forumInfo = variables.getJSONObject("forum");
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(forumInfo.toString(), forumDetailedInfo.class);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static String getThreadRuleString(String s) {
-        try {
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONObject forumInfo = variables.getJSONObject("forum");
-
-            return forumInfo.optString("rules", "");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static String getThreadDescriptionString(String s) {
-        try {
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONObject forumInfo = variables.getJSONObject("forum");
-
-            return forumInfo.optString("description", "");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -330,6 +249,17 @@ public class bbsParseUtils {
                 return null;
             }
 
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ThreadPostResult parseThreadPostResult(String s){
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(s, ThreadPostResult.class);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1001,25 +931,36 @@ public class bbsParseUtils {
 
     @JsonIgnoreProperties(ignoreUnknown=true)
     public static class DetailedThreadInfo {
-        public String tid;
-        public String fid;
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int tid;
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int fid;
         @JsonProperty("posttableid")
         public String postableId;
         @JsonProperty("typeid")
         public String typeId;
-        public String sortid,  author, authorid, subject;
+        public String author, subject;
+        @JsonProperty("authorid")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int authorId;
+        @JsonProperty("sortid")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int sortId;
         @JsonProperty("lastpost")
         @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="s")
         public Date lastPostTime;
-        public String lastposter, displayorder;
+        public String lastposter;
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        @JsonProperty("displayorder")
+        public int displayOrder;
         @JsonFormat(shape=JsonFormat.Shape.STRING)
         public int views, replies;
         public String highlight;
         @JsonDeserialize(using = OneZeroDeserializer.class)
         @JsonFormat(shape=JsonFormat.Shape.STRING)
-        public Boolean  special, moderated, is_archived;
+        public Boolean special=false, moderated=false, is_archived=false;
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int rate, closed, status, readperm, price, digest;
+        public int rate, status, readperm, price, digest, closed;
 
 
         public String attachment;
@@ -1050,13 +991,20 @@ public class bbsParseUtils {
         public int allreplies;
         public String archiveid;
         public String subjectenc, short_subject;
-        public String recommendlevel, heatlevel, relay, ordertype, recommend;
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int relay, ordertype, recommend;
+        @JsonProperty("recommendlevel")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int recommendLevel;
+        @JsonProperty("heatlevel")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int heatLevel;
         @JsonProperty("freemessage")
         public String freeMessage;
         @JsonProperty("replycredit_rule")
         public replyCreditRule creditRule;
     }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class replyCreditRule{
         public String tid;
         @JsonProperty("extcredits")

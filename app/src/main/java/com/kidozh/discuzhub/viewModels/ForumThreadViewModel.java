@@ -111,7 +111,6 @@ public class ForumThreadViewModel extends AndroidViewModel {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                isLoading.postValue(false);
                 // clear status if page == 1
                 if(forumStatus.page == 1){
                     threadInfoListMutableLiveData.postValue(new ArrayList<>());
@@ -157,31 +156,15 @@ public class ForumThreadViewModel extends AndroidViewModel {
                         forumDetailedInfoMutableLiveData.postValue(forumResult.forumVariables.forumInfo);
 
                     }
-
-
-
-
-
-
-
-                    // refresh description if possible
-                    forumDescription.postValue(bbsParseUtils.getThreadDescriptionString(s));
-                    forumRule.postValue(bbsParseUtils.getThreadRuleString(s));
-//                    if (bbsParseUtils.getThreadRuleString(s)!=null && bbsParseUtils.getThreadRuleString(s).equals("")){
-//                        if(!forumDescription.getValue().equals(bbsParseUtils.getThreadDescriptionString(s))){
-//                            forumDescription.postValue(bbsParseUtils.getThreadDescriptionString(s));
-//                        }
-//
-//                    }
-//                    else {
-//                        if(!forumDescription.getValue().equals(bbsParseUtils.getThreadRuleString(s))){
-//                            forumDescription.postValue(bbsParseUtils.getThreadRuleString(s));
-//                        }
-//
-//                    }
-
+                    else {
+                        isError.postValue(true);
+                    }
 
                 }
+                else {
+                    isError.postValue(true);
+                }
+                isLoading.postValue(false);
             }
         });
 

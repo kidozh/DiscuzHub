@@ -62,6 +62,7 @@ import com.kidozh.discuzhub.activities.bbsShowThreadActivity;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
 import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
 import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
+import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.threadCommentInfo;
@@ -87,7 +88,7 @@ import okhttp3.OkHttpClient;
 
 public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumThreadCommentAdapter.bbsForumThreadCommentViewHolder> {
     private final static String TAG = bbsForumThreadCommentAdapter.class.getSimpleName();
-    private List<threadCommentInfo> threadInfoList;
+    private List<PostInfo> threadInfoList;
     private Context mContext,context;
     public String subject;
     private OkHttpClient client = new OkHttpClient();
@@ -111,13 +112,13 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         this.threadStatus = threadStatus;
     }
 
-    public void setThreadInfoList(List<threadCommentInfo> threadInfoList, bbsURLUtils.ThreadStatus threadStatus){
+    public void setThreadInfoList(List<PostInfo> threadInfoList, bbsURLUtils.ThreadStatus threadStatus){
         this.threadInfoList = threadInfoList;
         this.threadStatus = threadStatus;
         notifyDataSetChanged();
     }
 
-    public List<threadCommentInfo> getThreadInfoList() {
+    public List<PostInfo> getThreadInfoList() {
         return threadInfoList;
     }
 
@@ -136,7 +137,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
 
     @Override
     public void onBindViewHolder(@NonNull bbsForumThreadCommentAdapter.bbsForumThreadCommentViewHolder holder, int position) {
-        threadCommentInfo threadInfo = threadInfoList.get(position);
+        PostInfo threadInfo = threadInfoList.get(position);
         holder.mThreadPublisher.setText(threadInfo.author);
         holder.mTitle.setVisibility(View.GONE);
         //holder.mTitle.setText(threadInfo.subject);
@@ -222,9 +223,9 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
             }
         });
 
-        if(threadInfo.attachmentInfoList != null){
+        if(threadInfo.getAllAttachments() != null){
             bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter(mContext);
-            attachmentAdapter.attachmentInfoList = threadInfo.attachmentInfoList;
+            attachmentAdapter.attachmentInfoList = threadInfo.getAllAttachments();
             //holder.mRecyclerview.setHasFixedSize(true);
             holder.mRecyclerview.setNestedScrollingEnabled(false);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
@@ -233,7 +234,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         }
         else {
             bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter(mContext);
-            attachmentAdapter.attachmentInfoList = threadInfo.attachmentInfoList;
+            attachmentAdapter.attachmentInfoList = threadInfo.getAllAttachments();
             //holder.mRecyclerview.setHasFixedSize(true);
             holder.mRecyclerview.setNestedScrollingEnabled(false);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
@@ -247,7 +248,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
             holder.mFilterByAuthorIdBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.setAuthorId(Integer.parseInt(threadInfo.authorId));
+                    mListener.setAuthorId(threadInfo.authorId);
                 }
             });
         }

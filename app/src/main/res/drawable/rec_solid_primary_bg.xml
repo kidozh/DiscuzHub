@@ -7,10 +7,10 @@
         android:right="2dp"
         android:top="2dp" />
     <!-- 圆角 -->
-    <corners android:radius="1dp" /><!-- 设置圆角半径 -->
+    <corners android:radius="0dp" /><!-- 设置圆角半径 -->
     <!-- 填充 -->
     <stroke
-        android:width="0.6dp"
+        android:width="1dp"
         android:color="@color/colorPrimary" />
     <solid android:color="@color/colorBackgroundDefault" /><!-- 填充的颜色 -->
 </shape>

@@ -1,0 +1,85 @@
+package com.kidozh.discuzhub.results;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.kidozh.discuzhub.entities.PostInfo;
+import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.entities.bbsPollInfo;
+import com.kidozh.discuzhub.utilities.bbsParseUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class ThreadPostResult extends BaseResult {
+    @JsonProperty("Variables")
+    public ThreadPostVariable threadPostVariables;
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class ThreadPostVariable extends VariableResults{
+        @JsonProperty("thread")
+        public bbsParseUtils.DetailedThreadInfo detailedThreadInfo;
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int fid;
+        @JsonProperty("postlist")
+        public List<PostInfo> postInfoList;
+        @JsonProperty("allowpostcomment")
+        public List<String> allowPostCommentList;
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int ppp;
+        @JsonProperty("setting_rewriterule")
+        public Map<String, String> rewriteRule;
+        @JsonProperty("setting_rewritestatus")
+        @JsonDeserialize(using = SettingRewriteStatusJsonDeserializer.class)
+        public List<String> rewriteList;
+        @JsonProperty("forum_threadpay")
+        public String threadPay;
+        @JsonProperty("cache_custominfo_postno")
+        public List<String> customPostNoList;
+        // for poll
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonProperty("special_poll")
+        public bbsPollInfo pollInfo;
+
+    }
+
+
+
+
+
+    public boolean isError(){
+        return this.message == null;
+    }
+
+    public static class SettingRewriteStatusJsonDeserializer extends JsonDeserializer<List<String>>{
+
+        @Override
+        public List<String> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            JsonToken currentToken = p.getCurrentToken();
+            if(currentToken.equals(JsonToken.VALUE_STRING)){
+                return new ArrayList<>();
+            }
+            else if(currentToken.equals(JsonToken.START_ARRAY)) {
+                ObjectMapper mapper = new ObjectMapper();
+
+                return mapper.readValue(p,  new TypeReference<List<String>>(){});
+            }
+            else {
+                return new ArrayList<>();
+            }
+
+        }
+    }
+
+}

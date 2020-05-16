@@ -141,7 +141,8 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<ThreadInfo> threadInfos) {
                 Map<String,String> threadTypeMap = null;
-                if(forumThreadViewModel.displayForumResultMutableLiveData.getValue()!=null){
+                if(forumThreadViewModel.displayForumResultMutableLiveData.getValue()!=null &&
+                        forumThreadViewModel.displayForumResultMutableLiveData.getValue().forumVariables.threadTypeInfo !=null){
                     threadTypeMap = forumThreadViewModel.displayForumResultMutableLiveData.getValue().forumVariables.threadTypeInfo.idNameMap;
 
                 }

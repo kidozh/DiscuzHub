@@ -543,6 +543,7 @@
     <string name="add_a_bbs_successfully">Add bbs (%1$s) to database successfully.</string>
     <string name="add_bbs_url_failed">%1$s is not a valid URL.</string>
     <string name="forum_today_posts_over_much" translatable="false">99+</string>
+    <string name="attachment_download_time">Downloaded times: %1$d</string>
 
 
 </resources>

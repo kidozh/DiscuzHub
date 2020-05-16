@@ -48,4 +48,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bbs_attachment_filename"
         app:srcCompat="@drawable/vector_drawable_image_wider_placeholder" />
+
+    <TextView
+        android:id="@+id/bbs_attachment_filesize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0.8"
+        android:background="?attr/colorPrimaryDark"
+        android:padding="4dp"
+        android:textColor="@color/colorPureWhite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bbs_attachment_imageview"
+        tools:text="2MB" />
+
+    <TextView
+        android:id="@+id/bbs_attachment_download_times"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0.8"
+        android:background="@drawable/rec_solid_primary_bg"
+        android:padding="4dp"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="@tools:sample/date/hhmm" />
 </androidx.constraintlayout.widget.ConstraintLayout>
