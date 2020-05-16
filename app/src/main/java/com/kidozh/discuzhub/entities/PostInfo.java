@@ -49,7 +49,7 @@ public class PostInfo implements Serializable {
     public List<String> attachmentIdList;
     @JsonProperty("groupiconid")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    public int groupIconId;
+    public String groupIconId;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Attachment implements Serializable{
