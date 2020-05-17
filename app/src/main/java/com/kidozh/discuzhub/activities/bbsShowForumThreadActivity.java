@@ -468,7 +468,9 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
     public void addTypeChipToChipGroup(String typeId, String name){
         choiceChipInfoList.add(new ChoiceChipInfo(bbsURLUtils.FILTER_TYPE_ID,name,typeId));
         Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_choice,mForumThreadTypeChipGroup,false);
-        chip.setText(name);
+        Spanned threadSpanned = Html.fromHtml(name);
+        SpannableString threadSpannableString = new SpannableString(threadSpanned);
+        chip.setText(threadSpannableString);
         chip.setClickable(true);
         mForumThreadTypeChipGroup.addView(chip);
         ChoiceResList.add(chip.getId());

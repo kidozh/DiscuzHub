@@ -32,7 +32,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:itemCount="5"
+                    tools:itemCount="0"
                     tools:listitem="@layout/item_forum_information">
 
                 </androidx.recyclerview.widget.RecyclerView>
@@ -40,7 +40,7 @@
                 <include
                     android:id="@+id/forum_information_emptyview"
                     layout="@layout/content_empty_bbs_information"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@+id/forum_information_recyclerview"

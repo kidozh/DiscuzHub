@@ -55,7 +55,7 @@ public class bbsThreadPropertiesAdapter extends RecyclerView.Adapter<bbsThreadPr
             holder.itemThreadTypeTextview.setText(notification.typeString);
             holder.itemThreadTypeTextview.setTextColor(notification.highlightColorRes);
             holder.itemThreadTypeCardview.setBackgroundColor(notification.highlightColorRes);
-            holder.itemThreadTypeCardview.getBackground().setAlpha(20);
+            holder.itemThreadTypeCardview.getBackground().setAlpha(25);
         }
 
     }

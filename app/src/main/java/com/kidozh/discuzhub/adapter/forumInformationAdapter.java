@@ -74,11 +74,12 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
     @NonNull
     @Override
     public forumInformationAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.d(TAG,"BBS info "+bbsInformationList);
         if(bbsInformationList!=null && bbsInformationList.size()!=0){
             return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_forum_information,parent,false));
         }
         else {
-            return new EmptyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_forum_information,parent,false));
+            return new EmptyViewHolder(LayoutInflater.from(context).inflate(R.layout.content_empty_bbs_information,parent,false));
         }
 
     }
@@ -90,8 +91,8 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
 
     @Override
     public void onBindViewHolder(@NonNull forumInformationAdapter.ViewHolder holder, int position) {
-        if(bbsInformationList!=null && bbsInformationList.size()!=0){
-
+        if(bbsInformationList == null || bbsInformationList.size() == 0){
+            return;
         }
         bbsInformation forumInfo = bbsInformationList.get(position);
 
@@ -266,7 +267,7 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
 
     @Override
     public int getItemCount() {
-        if (bbsInformationList == null){
+        if (bbsInformationList == null || bbsInformationList.size() == 0){
             return 0;
         }
         else {
@@ -303,10 +304,6 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
         bbsInformationList.add(position,deletedForumInfo);
         notifyDataSetChanged();
         new MainActivity.addNewForumInformationTask(deletedForumInfo, context).execute();
-
-//        mListItems.add(mRecentlyDeletedItemPosition,
-//                mRecentlyDeletedItem);
-//        notifyItemInserted(mRecentlyDeletedItemPosition);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{

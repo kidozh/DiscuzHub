@@ -383,5 +383,13 @@
     <string name="attachment_download_time">已下载%1$d次</string>
     <string name="thread_readperm">此贴阅读权限为 %1$d，您的阅读权限为%2$d。</string>
     <string name="thread_anoymous_readperm">在匿名模式下，您无法查看本帖（需要%1$d阅读权限）</string>
+    <string name="post_block">此贴已被屏蔽</string>
+    <string name="post_warn">此贴已被警告</string>
+    <string name="post_revised">帖子审核后再编辑标记，用于防止重复加分</string>
+    <string name="post_mobile">此贴由手机发出</string>
+    <string name="thread_cache_location">本贴已经缓存</string>
+    <string name="thread_reply_only_see_by_poster">只有楼主和管理员才能查看回帖</string>
+    <string name="thread_reward_lotto">本贴为抢楼贴，若你刚好发中了某个楼层，你可能会得到奖励</string>
+    <string name="thread_notify_author">你的发言将会提醒作者</string>
 
 </resources>

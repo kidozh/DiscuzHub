@@ -226,6 +226,10 @@ public class bbsURLUtils {
         return UC_SERVER_URL+String.format("/avatar.php?uid=%s",uid);
     }
 
+    public static String getDefaultAvatarUrlByUid(int uid){
+        return UC_SERVER_URL+String.format("/avatar.php?uid=%s",uid);
+    }
+
 //    public static String getLoginUrl(){
 //        return BASE_URL + "/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1";
 //        //return "https://bbs.nwpu.edu.cn/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1";

@@ -83,6 +83,14 @@ public class userFriendFragment extends Fragment {
         return fragment;
     }
 
+    public static userFriendFragment newInstance(int uid) {
+        userFriendFragment fragment = new userFriendFragment();
+        Bundle args = new Bundle();
+        args.putString(UID,String.valueOf(uid));
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

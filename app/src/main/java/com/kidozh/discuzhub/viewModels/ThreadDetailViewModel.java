@@ -110,7 +110,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                isLoading.postValue(false);
+
                 if(response.isSuccessful() && response.body()!=null){
                     String s = response.body().string();
                     int totalThreadSize = 0;
@@ -215,6 +215,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
                         threadStatusMutableLiveData.postValue(threadStatus);
                     }
                 }
+                isLoading.postValue(false);
             }
         });
     }

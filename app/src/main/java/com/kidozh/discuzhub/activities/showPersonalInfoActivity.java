@@ -121,7 +121,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
     forumUserBriefInfo userBriefInfo;
-    private String userId;
+    private int userId;
     OkHttpClient client;
     String friendNum, threadNum, postsNum;
     String username;
@@ -165,8 +165,8 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
         personalInfoPMBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bbsParseUtils.privateMessage privateM = new bbsParseUtils.privateMessage(Integer.parseInt(userId),
-                        false,"",Integer.parseInt(userId),1,1,
+                bbsParseUtils.privateMessage privateM = new bbsParseUtils.privateMessage(userId,
+                        false,"",userId,1,1,
                         username,"",username,""
                 );
                 Intent intent = new Intent(getApplicationContext(), bbsPrivateMessageDetailActivity.class);
@@ -182,7 +182,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
     void configureActionBar(){
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setSubtitle(userId);
+        getSupportActionBar().setSubtitle(String.valueOf(userId));
     }
 
     private void getIntentInfo(){
@@ -190,7 +190,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
         curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        userId = intent.getStringExtra("UID");
+        userId = intent.getIntExtra("UID",0);
         if(curBBS == null){
             finishAfterTransition();
         }
@@ -203,7 +203,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
             getSupportActionBar().setTitle(curBBS.site_name);
         }
         client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
-        if(userId !=null && userBriefInfo!=null && userId.equals(String.valueOf(userBriefInfo.uid))){
+        if(userBriefInfo!=null && userId == Integer.parseInt(userBriefInfo.uid)){
             personalInfoFollowBtn.setVisibility(View.GONE);
             personalInfoPMBtn.setVisibility(View.GONE);
         }
@@ -221,7 +221,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
     }
 
     void getUserInfo(){
-        String apiStr = bbsURLUtils.getProfileApiUrlByUid(Integer.parseInt(userId));
+        String apiStr = bbsURLUtils.getProfileApiUrlByUid(userId);
         Request request = new Request.Builder()
                 .url(apiStr)
                 .build();

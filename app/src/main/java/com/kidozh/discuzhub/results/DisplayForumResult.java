@@ -2,6 +2,7 @@ package com.kidozh.discuzhub.results;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -86,7 +87,9 @@ public class DisplayForumResult extends BaseResult {
     public static class ThreadTypeInfo implements Serializable{
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-        public boolean required, listable, prefix;
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        public boolean required = false, listable = false;
+        public String prefix;
         @JsonProperty("types")
         @JsonDeserialize(using = ForumThreadTypeDeserializer.class)
         public Map<String, String> idNameMap;

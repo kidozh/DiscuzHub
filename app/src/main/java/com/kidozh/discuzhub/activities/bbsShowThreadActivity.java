@@ -193,6 +193,10 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
     }
 
+    private boolean checkWithPerm(int status, int perm){
+        return (status & perm) != 0;
+    }
+
     private void configureSmileyLayout(){
         handler = new EmotionInputHandler(mCommentEditText, (enable, s) -> {
 
@@ -210,7 +214,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
             @Override
             public void onChanged(forumUserBriefInfo userBriefInfo) {
                 Log.d(TAG,"User info "+userBriefInfo);
-                if(userBriefInfo == null){
+                if(userBriefInfo == null || userBriefInfo.auth == null){
                     mCommentConstraintLayout.setVisibility(View.GONE);
                 }
                 else{
@@ -405,9 +409,6 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                     );
                 }
 
-
-
-
                 // need another
                 if(!detailedThreadInfo.highlight.equals("0")){
                     threadPropertyList.add(
@@ -455,6 +456,36 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 if(detailedThreadInfo.heats !=0){
                     threadNotificationList.add(
                             new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_whatshot_outlined_24px,String.valueOf(detailedThreadInfo.heats))
+                    );
+                }
+
+                int status = detailedThreadInfo.status;
+                // check with perm
+                final int STATUS_CACHE_THREAD_LOCATION = 1, STATUS_ONLY_SEE_BY_POSTER = 2,
+                        STATUS_REWARD_LOTTO = 4, STATUS_DESCEND_REPLY = 8, STATUS_EXIST_ICON = 16,
+                        STATUS_NOTIFY_AUTHOR = 32;
+                if(checkWithPerm(status,STATUS_CACHE_THREAD_LOCATION)){
+                    threadPropertyList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_cache_thread_location_24px,
+                                    getString(R.string.thread_cache_location),getColor(R.color.colorMidnightblue))
+                    );
+                }
+                if(checkWithPerm(status,STATUS_ONLY_SEE_BY_POSTER)){
+                    threadPropertyList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_reply_only_see_by_poster_24px,
+                                    getString(R.string.thread_reply_only_see_by_poster),getColor(R.color.colorNephritis))
+                    );
+                }
+                if(checkWithPerm(status,STATUS_REWARD_LOTTO)){
+                    threadPropertyList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thread_reward_lotto_24px,
+                                    getString(R.string.thread_reward_lotto),getColor(R.color.colorSunflower))
+                    );
+                }
+                if(checkWithPerm(status,STATUS_NOTIFY_AUTHOR)){
+                    threadPropertyList.add(
+                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thread_notify_author_24px,
+                                    getString(R.string.thread_notify_author),getColor(R.color.colorPrimaryDark))
                     );
                 }
 

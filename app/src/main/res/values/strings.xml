@@ -546,6 +546,14 @@
     <string name="attachment_download_time">%1$d Downloads</string>
     <string name="thread_readperm">The read permission is %1$d and your credit is %2$d</string>
     <string name="thread_anoymous_readperm">You can\'t see the thread(read permission : %1$d) in igconitive mode</string>
+    <string name="post_block">The post is blocked.</string>
+    <string name="post_warn">The post is warned.</string>
+    <string name="post_revised">The post is censored and revised in case of extra credits.</string>
+    <string name="post_mobile">The post is send via mobile phone.</string>
+    <string name="thread_cache_location">The thread is cached</string>
+    <string name="thread_reply_only_see_by_poster">The reply can only be seen by poster and administrator.</string>
+    <string name="thread_reward_lotto">You may get reward if you post at certain number.</string>
+    <string name="thread_notify_author">Your post will notify author</string>
 
 
 </resources>

@@ -103,7 +103,7 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
     @Override
     public void onBindViewHolder(@NonNull bbsForumThreadAdapter.bbsForumThreadViewHolder holder, int position) {
         ThreadInfo threadInfo = threadInfoList.get(position);
-        holder.mThreadPublisher.setText(threadInfo.author);
+
         holder.mContent.setVisibility(View.GONE);
         Spanned sp = Html.fromHtml(threadInfo.subject);
         SpannableString spannableString = new SpannableString(sp);
@@ -150,11 +150,24 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
                 holder.mThreadType.setText(String.format("%s",position+1));
             }
             else {
-                holder.mThreadType.setText(threadType.get(String.valueOf(threadInfo.typeId)));
+                // provided by label
+                String type = threadType.get(String.valueOf(threadInfo.typeId));
+                Log.d(TAG, "Get thread type "+type);
+                if(type !=null){
+                    Spanned threadSpanned = Html.fromHtml(type);
+                    SpannableString threadSpannableString = new SpannableString(threadSpanned);
+                    holder.mThreadType.setText(threadSpannableString);
+                }
+                else {
+                    holder.mThreadType.setText(String.format("%s",position+1));
+                }
+
             }
 
             holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorPrimary));
         }
+
+        holder.mThreadPublisher.setText(threadInfo.author);
         int avatar_num = position % 16;
 
         int avatarResource = mContext.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",mContext.getPackageName());
@@ -243,6 +256,9 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
             holder.mReplyRecyclerview.setAdapter(adapter);
             holder.mReplyRecyclerview.setNestedScrollingEnabled(false);
         }
+        else {
+
+        }
 
         holder.mCardview.setOnClickListener(new View.OnClickListener(){
 
@@ -271,12 +287,7 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
                 Intent intent = new Intent(mContext, showPersonalInfoActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
-
                 intent.putExtra("UID",threadInfo.authorId);
-
-//                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
-//                        mContext, Pair.create(holder.mAvatarImageview, "user_info_avatar")
-//                );
 
                 ActivityOptions options = ActivityOptions
                         .makeSceneTransitionAnimation((Activity) mContext, holder.mAvatarImageview, "user_info_avatar");

@@ -371,11 +371,11 @@ public class MainActivity extends AppCompatActivity {
         localBBSViewModel.getBBSInformation().observe(this, new Observer<List<bbsInformation>>() {
             @Override
             public void onChanged(List<bbsInformation> bbsInformations) {
-                Log.d(TAG,"bbs information changed!");
+                Log.d(TAG,"bbs information changed! " +bbsInformations+" "+ bbsInformations.size());
                 adapter.setBbsInformationList(bbsInformations);
                 ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new forumSwipeToDeleteCallback(adapter));
                 itemTouchHelper.attachToRecyclerView(mForumInfoRecyclerview);
-                if(adapter.getBbsInformationList()==null || adapter.getBbsInformationList().size()==0){
+                if(bbsInformations ==null || bbsInformations.size()==0){
                     emptyView.setVisibility(View.VISIBLE);
                 }
                 else {
