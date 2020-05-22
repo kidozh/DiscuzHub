@@ -227,28 +227,10 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
                 replyListener.replyToSomeOne(position);
             }
         });
-        holder.mCopyContentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String content = threadInfo.message;
-                ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData mClipData = ClipData.newPlainText("Label", content);
-                if(cm!=null){
-                    cm.setPrimaryClip(mClipData);
-                    Toasty.success(context,context.getString(R.string.bbs_post_copy_to_clipboard_successfully,threadInfo.author), Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toasty.error(context,context.getString(R.string.bbs_post_copy_clipboard_manager_null), Toast.LENGTH_SHORT).show();
-                }
-
-
-            }
-        });
 
         if(threadInfo.getAllAttachments() != null){
             bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter(mContext);
             attachmentAdapter.attachmentInfoList = threadInfo.getAllAttachments();
-            //holder.mRecyclerview.setHasFixedSize(true);
             holder.mRecyclerview.setNestedScrollingEnabled(false);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
             holder.mRecyclerview.setLayoutManager(linearLayoutManager);
@@ -257,7 +239,6 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
         else {
             bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter(mContext);
             attachmentAdapter.attachmentInfoList = threadInfo.getAllAttachments();
-            //holder.mRecyclerview.setHasFixedSize(true);
             holder.mRecyclerview.setNestedScrollingEnabled(false);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
             holder.mRecyclerview.setLayoutManager(linearLayoutManager);
@@ -325,8 +306,6 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
         RecyclerView mRecyclerview;
         @BindView(R.id.bbs_thread_reply_button)
         Button mReplyBtn;
-        @BindView(R.id.bbs_thread_copy_content_button)
-        Button mCopyContentBtn;
         @BindView(R.id.bbs_thread_only_see_him_button)
         Button mFilterByAuthorIdBtn;
         @BindView(R.id.bbs_post_status_mobile)
