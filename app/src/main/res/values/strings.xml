@@ -554,6 +554,9 @@
     <string name="thread_reply_only_see_by_poster">The reply can only be seen by poster and administrator.</string>
     <string name="thread_reward_lotto">You may get reward if you post at certain number.</string>
     <string name="thread_notify_author">Your post will notify author</string>
+    <string name="post_is_blocked">The post is blocked.</string>
+    <string name="post_is_warned">The post is warned.</string>
+    <string name="post_is_edited">The post is revised and edited to prevent duplicate credits.</string>
 
 
 </resources>

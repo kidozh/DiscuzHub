@@ -9,24 +9,22 @@ import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ui.bbsNotification.bbsNotificationFragment;
+import com.kidozh.discuzhub.activities.ui.UserNotification.UserNotificationFragment;
 import com.kidozh.discuzhub.activities.ui.dashboard.DashboardFragment;
 import com.kidozh.discuzhub.activities.ui.home.HomeFragment;
 import com.kidozh.discuzhub.activities.ui.notifications.NotificationsFragment;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
 import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment;
-import com.kidozh.discuzhub.activities.ui.userThreads.bbsMyThreadFragment;
 import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import androidx.annotation.NonNull;
@@ -34,18 +32,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.viewpager.widget.ViewPager;
 
 import java.io.IOException;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,7 +50,7 @@ import okhttp3.Response;
 public class bbsShowPortalActivity extends AppCompatActivity
         implements bbsPrivateMessageFragment.OnNewMessageChangeListener,
         bbsPublicMessageFragment.OnNewMessageChangeListener,
-        bbsNotificationFragment.OnNewMessageChangeListener,
+        UserNotificationFragment.OnNewMessageChangeListener,
         NotificationsFragment.onPrivateMessageChangeListener{
     private static final String TAG = bbsShowPortalActivity.class.getSimpleName();
 
@@ -280,13 +272,13 @@ public class bbsShowPortalActivity extends AppCompatActivity
         curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
-        bbsURLUtils.setBBS(curBBS);
+        URLUtils.setBBS(curBBS);
         if(curBBS == null){
             finishAfterTransition();
         }
         else {
             Log.d(TAG,"get bbs name "+curBBS.site_name);
-            bbsURLUtils.setBBS(curBBS);
+            URLUtils.setBBS(curBBS);
             //bbsURLUtils.setBaseUrl(curBBS.base_url);
         }
         if(getSupportActionBar()!=null){
@@ -298,7 +290,7 @@ public class bbsShowPortalActivity extends AppCompatActivity
 
     private void getNotificationInfo(){
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getLoginApiUrl())
+                .url(URLUtils.getLoginApiUrl())
                 .build();
         Handler mHandler = new Handler(Looper.getMainLooper());
         client.newCall(request).enqueue(new Callback() {
@@ -333,7 +325,7 @@ public class bbsShowPortalActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        String currentUrl = bbsURLUtils.getPortalPageUrl();
+        String currentUrl = URLUtils.getPortalPageUrl();
 
         int id = item.getItemId();
         switch (id){

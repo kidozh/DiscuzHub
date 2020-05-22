@@ -7,13 +7,10 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,10 +20,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.RequestListener;
@@ -35,18 +30,12 @@ import com.bumptech.glide.request.target.Target;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
 import com.kidozh.discuzhub.entities.PostInfo;
-import com.kidozh.discuzhub.entities.threadCommentInfo;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 
-import org.w3c.dom.Text;
-
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,7 +66,7 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
     void loadImageWithGlideInNetwork(bbsAttachmentViewHolder holder, PostInfo.Attachment attachmentInfo){
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(mContext));
         Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-        String source = bbsURLUtils.getAttachmentURL(attachmentInfo);
+        String source = URLUtils.getAttachmentURL(attachmentInfo);
 
         RequestOptions options = new RequestOptions()
                 //.centerCrop()
@@ -125,7 +114,7 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
             // retrieve file from cache
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(mContext));
             Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-            String source = bbsURLUtils.getAttachmentURL(attachmentInfo);
+            String source = URLUtils.getAttachmentURL(attachmentInfo);
 
             RequestOptions options = new RequestOptions()
                     .centerInside()
@@ -199,7 +188,7 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
             renderPicture(holder,position);
         }
         else {
-            String source = bbsURLUtils.getAttachmentURL(attachmentInfo);
+            String source = URLUtils.getAttachmentURL(attachmentInfo);
 
             holder.mAttachmentImageview.setImageDrawable(mContext.getDrawable(R.drawable.vector_drawable_attach_file_placeholder_24px));
             holder.mAttachmentImageview.setOnClickListener(new View.OnClickListener() {

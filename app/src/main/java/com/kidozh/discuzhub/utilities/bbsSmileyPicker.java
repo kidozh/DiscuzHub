@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,7 +69,7 @@ public class bbsSmileyPicker extends PopupWindow {
 
     private void getSmileyInfo(){
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getSmileyApiUrl())
+                .url(URLUtils.getSmileyApiUrl())
                 .build();
         Handler mHandler = new Handler(Looper.getMainLooper());
         client.newCall(request).enqueue(new Callback() {

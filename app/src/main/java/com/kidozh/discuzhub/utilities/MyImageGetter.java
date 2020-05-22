@@ -9,10 +9,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.bbsForumThreadCommentAdapter;
 
 import java.io.InputStream;
 

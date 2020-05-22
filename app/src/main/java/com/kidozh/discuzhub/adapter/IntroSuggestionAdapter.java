@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.adapter;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,20 +10,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.kidozh.discuzhub.MainActivity;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.SuggestURLInfo;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.results.AddCheckResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
@@ -33,7 +28,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -118,8 +112,8 @@ public class IntroSuggestionAdapter extends RecyclerView.Adapter<IntroSuggestion
     private void queryBBSInfo(String base_url, Boolean useSafeClient, IntroSuggestionViewHolder holder){
         holder.checkProgressbar.setVisibility(View.VISIBLE);
         holder.suggestionOKIcon.setVisibility(View.GONE);
-        bbsURLUtils.setBaseUrl(base_url);
-        String query_url = bbsURLUtils.getBBSForumInformationUrl();
+        URLUtils.setBaseUrl(base_url);
+        String query_url = URLUtils.getBBSForumInformationUrl();
         OkHttpClient client = networkUtils.getPreferredClient(context,useSafeClient);
         Request request = new Request.Builder().url(query_url).build();
         Call call = client.newCall(request);

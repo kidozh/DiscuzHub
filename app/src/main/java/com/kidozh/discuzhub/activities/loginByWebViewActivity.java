@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.activities;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -25,18 +24,16 @@ import android.widget.Toast;
 
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.dialog.MaterialDialogs;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
-import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +86,7 @@ public class loginByWebViewActivity extends AppCompatActivity {
     void configureIntentData(){
         Intent intent = getIntent();
         curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        bbsURLUtils.setBBS(curBBS);
+        URLUtils.setBBS(curBBS);
     }
 
     void configureActionBar(){
@@ -103,8 +100,8 @@ public class loginByWebViewActivity extends AppCompatActivity {
 
     void configureWebView(){
         cookieWebViewClientInstance = new cookieWebViewClient();
-        Log.d(TAG,"login web url "+bbsURLUtils.getLoginWebUrl());
-        webView.loadUrl(bbsURLUtils.getLoginWebUrl());
+        Log.d(TAG,"login web url "+ URLUtils.getLoginWebUrl());
+        webView.loadUrl(URLUtils.getLoginWebUrl());
         webView.clearCache(true);
         WebSettings webSettings = webView.getSettings();
         if(webSettings!=null){
@@ -188,7 +185,7 @@ public class loginByWebViewActivity extends AppCompatActivity {
         client.cookieJar().saveFromResponse(httpUrl,cookieList);
         // exact login url
 
-        String loginApiUrl = bbsURLUtils.getLoginApiUrl();
+        String loginApiUrl = URLUtils.getLoginApiUrl();
         Request request = new Request.Builder()
                 .url(loginApiUrl)
                 .build();

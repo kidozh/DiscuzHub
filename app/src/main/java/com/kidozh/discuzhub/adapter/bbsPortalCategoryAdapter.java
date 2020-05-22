@@ -1,9 +1,6 @@
 package com.kidozh.discuzhub.adapter;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,19 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.forumCategorySection;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.BBSIndexResult;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
 
-import java.io.InputStream;
 import java.util.List;
 
 import butterknife.BindView;

@@ -22,38 +22,26 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.lifecycle.Lifecycle;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ui.notifications.NotificationsFragment;
 import com.kidozh.discuzhub.activities.ui.privacyProtect.privacyProtectFragment;
-import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
-import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment;
 import com.kidozh.discuzhub.activities.ui.userFriend.userFriendFragment;
-import com.kidozh.discuzhub.activities.ui.userThreads.bbsMyThreadFragment;
-import com.kidozh.discuzhub.adapter.bbsForumThreadCommentAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
@@ -146,10 +134,17 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(this,curBBS.useSafeClient));
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
+        int avatar_num = userId % 16;
+        if(avatar_num < 0){
+            avatar_num = -avatar_num;
+        }
+
+        int avatarResource = getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",getPackageName());
+
         Glide.with(this)
-                .load(bbsURLUtils.getDefaultAvatarUrlByUid(userId))
-                .error(R.drawable.vector_drawable_bbs)
-                .placeholder(R.drawable.vector_drawable_bbs)
+                .load(URLUtils.getDefaultAvatarUrlByUid(userId))
+                .error(avatarResource)
+                .placeholder(avatarResource)
                 .centerInside()
                 .into(personalInfoAvatar);
     }
@@ -196,7 +191,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
         }
         else {
             Log.d(TAG,"get bbs name "+curBBS.site_name);
-            bbsURLUtils.setBBS(curBBS);
+            URLUtils.setBBS(curBBS);
             //bbsURLUtils.setBaseUrl(curBBS.base_url);
         }
         if(getSupportActionBar()!=null){
@@ -221,7 +216,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
     }
 
     void getUserInfo(){
-        String apiStr = bbsURLUtils.getProfileApiUrlByUid(userId);
+        String apiStr = URLUtils.getProfileApiUrlByUid(userId);
         Request request = new Request.Builder()
                 .url(apiStr)
                 .build();

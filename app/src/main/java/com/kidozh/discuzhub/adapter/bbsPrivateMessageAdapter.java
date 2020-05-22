@@ -30,7 +30,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.InputStream;
@@ -108,7 +108,7 @@ public class bbsPrivateMessageAdapter extends RecyclerView.Adapter<bbsPrivateMes
         int avatarResource = context.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",context.getPackageName());
 
         Glide.with(context)
-                .load(bbsURLUtils.getSmallAvatarUrlByUid(String.valueOf(privateM.toUid)))
+                .load(URLUtils.getSmallAvatarUrlByUid(String.valueOf(privateM.toUid)))
                 .centerInside()
                 .placeholder(avatarResource)
                 .error(avatarResource)

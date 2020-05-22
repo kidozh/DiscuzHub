@@ -3,7 +3,6 @@ package com.kidozh.discuzhub.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.text.Html;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -14,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,7 +28,7 @@ import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.InputStream;
@@ -146,7 +144,7 @@ public class bbsPrivateDetailMessageAdapter extends RecyclerView.Adapter<bbsPriv
         int avatarResource = context.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",context.getPackageName());
         if(curPrivateDetailMessage.isMyself){
             Glide.with(context)
-                    .load(bbsURLUtils.getSmallAvatarUrlByUid(String.valueOf(curPrivateDetailMessage.msgFromId)))
+                    .load(URLUtils.getSmallAvatarUrlByUid(String.valueOf(curPrivateDetailMessage.msgFromId)))
                     .centerInside()
                     .placeholder(avatarResource)
                     .error(avatarResource)
@@ -159,7 +157,7 @@ public class bbsPrivateDetailMessageAdapter extends RecyclerView.Adapter<bbsPriv
         }
         else {
             Glide.with(context)
-                    .load(bbsURLUtils.getSmallAvatarUrlByUid(String.valueOf(curPrivateDetailMessage.msgFromId)))
+                    .load(URLUtils.getSmallAvatarUrlByUid(String.valueOf(curPrivateDetailMessage.msgFromId)))
                     .centerInside()
                     .placeholder(avatarResource)
                     .error(avatarResource)

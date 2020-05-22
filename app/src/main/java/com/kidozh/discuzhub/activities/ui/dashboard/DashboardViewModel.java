@@ -12,7 +12,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
@@ -81,7 +81,7 @@ public class DashboardViewModel extends AndroidViewModel {
         isLoading.postValue(true);
         isError.postValue(false);
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getHotThreadUrl(page))
+                .url(URLUtils.getHotThreadUrl(page))
                 .build();
         Log.d(TAG,"Send request to "+request.url().toString());
         client.newCall(request).enqueue(new Callback() {

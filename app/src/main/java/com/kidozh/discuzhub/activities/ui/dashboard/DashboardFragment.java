@@ -2,8 +2,6 @@ package com.kidozh.discuzhub.activities.ui.dashboard;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,20 +22,14 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
-import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class DashboardFragment extends Fragment {
     private static final String TAG = DashboardFragment.class.getSimpleName();
@@ -132,7 +124,7 @@ public class DashboardFragment extends Fragment {
         }
         else {
             Log.d(TAG,"get bbs name "+curBBS.site_name);
-            bbsURLUtils.setBBS(curBBS);
+            URLUtils.setBBS(curBBS);
             dashboardViewModel.setBBSInfo(curBBS,curUser);
         }
     }

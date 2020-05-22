@@ -13,11 +13,9 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.entities.threadCommentInfo;
-import com.kidozh.discuzhub.results.ThreadPostParameterResult;
 import com.kidozh.discuzhub.results.ThreadPostResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
@@ -47,7 +45,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
     public MutableLiveData<bbsPollInfo> pollInfoLiveData;
     public MutableLiveData<forumUserBriefInfo> bbsPersonInfoMutableLiveData;
     public MutableLiveData<List<PostInfo>> threadCommentInfoListLiveData;
-    public MutableLiveData<bbsURLUtils.ThreadStatus> threadStatusMutableLiveData;
+    public MutableLiveData<URLUtils.ThreadStatus> threadStatusMutableLiveData;
     public MutableLiveData<bbsParseUtils.DetailedThreadInfo> detailedThreadInfoMutableLiveData;
     public MutableLiveData<ThreadPostResult> threadPostResultMutableLiveData;
 
@@ -76,7 +74,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
 
 
         if(threadStatusMutableLiveData.getValue()==null){
-            bbsURLUtils.ThreadStatus threadStatus = new bbsURLUtils.ThreadStatus(tid,1);
+            URLUtils.ThreadStatus threadStatus = new URLUtils.ThreadStatus(tid,1);
             threadStatusMutableLiveData.setValue(threadStatus);
         }
 
@@ -85,7 +83,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
         // bbsPersonInfoMutableLiveData.postValue(userBriefInfo);
     }
 
-    public void getThreadDetail(bbsURLUtils.ThreadStatus threadStatus){
+    public void getThreadDetail(URLUtils.ThreadStatus threadStatus){
         isLoading.postValue(true);
         error.postValue(false);
         hasLoadAll.postValue(false);
@@ -96,7 +94,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
             // clear it first
             threadCommentInfoListLiveData.setValue(new ArrayList<>());
         }
-        String apiStr = bbsURLUtils.getThreadCommentUrlByStatus(threadStatus);
+        String apiStr = URLUtils.getThreadCommentUrlByStatus(threadStatus);
         Log.d(TAG,"Send request to "+apiStr);
         Request request = new Request.Builder()
                 .url(apiStr)
@@ -117,6 +115,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
                     Log.d(TAG,"Recv thread JSON "+s);
                     ThreadPostResult threadPostResult = bbsParseUtils.parseThreadPostResult(s);
                     bbsParseUtils.DetailedThreadInfo detailedThreadInfo = null;
+                    threadPostResultMutableLiveData.postValue(threadPostResult);
                     if(threadPostResult!=null && threadPostResult.threadPostVariables!=null){
                         // update formhash first
                         if(threadPostResult.threadPostVariables.formHash !=null){

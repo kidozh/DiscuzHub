@@ -6,9 +6,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -17,12 +14,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.bbsForumThreadCommentAdapter;
-import com.kidozh.discuzhub.adapter.forumUsersAdapter;
 
 class BitmapTarget extends SimpleTarget<Bitmap> {
     private String TAG = BitmapTarget.class.getSimpleName();

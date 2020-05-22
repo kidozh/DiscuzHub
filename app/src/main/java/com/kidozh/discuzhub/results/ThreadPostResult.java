@@ -1,6 +1,7 @@
 package com.kidozh.discuzhub.results;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
@@ -18,10 +19,11 @@ import com.kidozh.discuzhub.utilities.bbsParseUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class ThreadPostResult extends BaseResult {
     @JsonProperty("Variables")
     public ThreadPostVariable threadPostVariables;
@@ -36,6 +38,14 @@ public class ThreadPostResult extends BaseResult {
         public List<PostInfo> postInfoList;
         @JsonProperty("allowpostcomment")
         public List<String> allowPostCommentList;
+        @JsonIgnore
+        @JsonProperty("comments")
+        @JsonDeserialize(using = CommentListJsonDeserializer.class)
+        public Map<String, List<Comment>> commentList;
+        @JsonIgnore
+        @JsonProperty("commentcount")
+        @JsonDeserialize(using = CommentCountJsonDeserializer.class)
+        public Map<String, String> commentCount;
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         public int ppp;
         @JsonProperty("setting_rewriterule")
@@ -59,7 +69,7 @@ public class ThreadPostResult extends BaseResult {
 
 
     public boolean isError(){
-        return this.message == null;
+        return this.message != null;
     }
 
     public static class SettingRewriteStatusJsonDeserializer extends JsonDeserializer<List<String>>{
@@ -80,6 +90,55 @@ public class ThreadPostResult extends BaseResult {
             }
 
         }
+    }
+
+    public static class CommentListJsonDeserializer extends JsonDeserializer<Map<String, List<Comment>>>{
+
+        @Override
+        public Map<String, List<Comment>> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            JsonToken currentToken = p.getCurrentToken();
+            if(currentToken.equals(JsonToken.VALUE_STRING)){
+                return new HashMap<>();
+            }
+            else if(currentToken.equals(JsonToken.START_OBJECT)) {
+                ObjectMapper mapper = new ObjectMapper();
+
+                return mapper.readValue(p,  new TypeReference<Map<String, List<Comment>>>(){});
+            }
+            else {
+                return new HashMap<>();
+            }
+
+        }
+    }
+
+    public static class CommentCountJsonDeserializer extends JsonDeserializer<Map<String, String>>{
+
+        @Override
+        public Map<String, String> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            JsonToken currentToken = p.getCurrentToken();
+            if(currentToken.equals(JsonToken.VALUE_STRING)){
+                return new HashMap<>();
+            }
+            else if(currentToken.equals(JsonToken.START_OBJECT)) {
+                ObjectMapper mapper = new ObjectMapper();
+
+                return mapper.readValue(p,  new TypeReference<Map<String, String>>(){});
+            }
+            else {
+                return new HashMap<>();
+            }
+
+        }
+    }
+
+    public static class Comment{
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int id, tid, pid;
+        public String author, dateline, comment, avatar;
+        @JsonProperty("authorid")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        public int authorId;
     }
 
 }

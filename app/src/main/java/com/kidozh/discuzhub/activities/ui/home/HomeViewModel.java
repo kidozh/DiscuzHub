@@ -7,16 +7,13 @@ import android.util.Log;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.forumCategorySection;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.BBSIndexResult;
-import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
@@ -71,12 +68,12 @@ public class HomeViewModel extends AndroidViewModel {
         if( curBBS == null){
             return;
         }
-        bbsURLUtils.setBBS(curBBS);
+        URLUtils.setBBS(curBBS);
         OkHttpClient client = networkUtils.getPreferredClientWithCookieJarByUser(this.getApplication(),curUser);
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getBBSForumInfoApi())
+                .url(URLUtils.getBBSForumInfoApi())
                 .build();
-        Log.d(TAG,"Send request to "+bbsURLUtils.getBBSForumInfoApi());
+        Log.d(TAG,"Send request to "+ URLUtils.getBBSForumInfoApi());
         Context context = getApplication();
         errorText.setValue(null);
         forumCategories.setValue(null);

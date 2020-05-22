@@ -8,14 +8,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -45,7 +45,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
-import com.kidozh.discuzhub.adapter.bbsForumThreadCommentAdapter;
+import com.kidozh.discuzhub.adapter.ThreadPostsAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadNotificationAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadPropertiesAdapter;
 import com.kidozh.discuzhub.entities.PostInfo;
@@ -60,7 +60,7 @@ import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.viewModels.ThreadDetailViewModel;
 
@@ -82,8 +82,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFragment.OnSmileyPressedInteraction,
-        bbsForumThreadCommentAdapter.onFilterChanged,
-        bbsForumThreadCommentAdapter.onAdapterReply,
+        ThreadPostsAdapter.onFilterChanged,
+        ThreadPostsAdapter.onAdapterReply,
         bbsPollFragment.OnFragmentInteractionListener{
     private final static String TAG = bbsShowThreadActivity.class.getSimpleName();
     @BindView(R.id.bbs_thread_detail_recyclerview)
@@ -125,7 +125,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     public String subject;
     public int tid, fid;
     private OkHttpClient client = new OkHttpClient();
-    private bbsForumThreadCommentAdapter adapter;
+    private ThreadPostsAdapter adapter;
     private bbsThreadNotificationAdapter notificationAdapter;
     private bbsThreadPropertiesAdapter propertiesAdapter;
     String formHash = null;
@@ -177,7 +177,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         tid = intent.getIntExtra("TID",0);
         fid = intent.getIntExtra("FID",0);
         subject = intent.getStringExtra("SUBJECT");
-        bbsURLUtils.setBBS(bbsInfo);
+        URLUtils.setBBS(bbsInfo);
         threadDetailViewModel.setBBSInfo(bbsInfo, userBriefInfo, forum, tid);
         if(threadInfo!=null){
             Spanned sp = Html.fromHtml(threadInfo.subject);
@@ -188,7 +188,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     }
 
     private void initThreadStatus(){
-        bbsURLUtils.ThreadStatus threadStatus = new bbsURLUtils.ThreadStatus(tid,1);
+        URLUtils.ThreadStatus threadStatus = new URLUtils.ThreadStatus(tid,1);
         Log.d(TAG,"Set status when init data");
         threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
     }
@@ -266,18 +266,6 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 
             }
         });
-        threadDetailViewModel.errorText.observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String errorText) {
-                if(!errorText.equals("")){
-                    noMoreThreadFound.setVisibility(View.VISIBLE);
-                    noMoreThreadFound.setText(errorText);
-                }
-                else {
-                    noMoreThreadFound.setText(R.string.bbs_no_thread_gotten);
-                }
-            }
-        });
 
         threadDetailViewModel.pollInfoLiveData.observe(this, new Observer<bbsPollInfo>() {
             @Override
@@ -304,9 +292,9 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
             }
         });
 
-        threadDetailViewModel.threadStatusMutableLiveData.observe(this, new Observer<bbsURLUtils.ThreadStatus>() {
+        threadDetailViewModel.threadStatusMutableLiveData.observe(this, new Observer<URLUtils.ThreadStatus>() {
             @Override
-            public void onChanged(bbsURLUtils.ThreadStatus threadStatus) {
+            public void onChanged(URLUtils.ThreadStatus threadStatus) {
 
                 Log.d(TAG,"Livedata changed " + threadStatus.datelineAscend);
                 if(getSupportActionBar()!=null){
@@ -507,7 +495,14 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                     Spanned sp = Html.fromHtml(threadPostResult.threadPostVariables.detailedThreadInfo.subject);
                     SpannableString spannableString = new SpannableString(sp);
                     mDetailThreadSubjectTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
-
+                    Log.d(TAG,"Thread post result error "+threadPostResult.isError()+ threadPostResult.threadPostVariables.message);
+                    if(threadPostResult.isError()){
+                        noMoreThreadFound.setVisibility(View.VISIBLE);
+                        noMoreThreadFound.setText(threadPostResult.threadPostVariables.message.content);
+                    }
+                    else {
+                        noMoreThreadFound.setVisibility(View.GONE);
+                    }
                 }
 
             }
@@ -602,7 +597,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 
     private void getSmileyInfo(){
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getSmileyApiUrl())
+                .url(URLUtils.getSmileyApiUrl())
                 .build();
         Handler mHandler = new Handler(Looper.getMainLooper());
         client.newCall(request).enqueue(new Callback() {
@@ -704,7 +699,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 
     @Override
     public void setAuthorId(int authorId) {
-        bbsURLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+        URLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
 
         if(threadStatus!=null){
             threadStatus.setInitAuthorId(authorId);
@@ -760,7 +755,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         //mRecyclerview.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerview.setLayoutManager(linearLayoutManager);
-        adapter = new bbsForumThreadCommentAdapter(this,
+        adapter = new ThreadPostsAdapter(this,
                 bbsInfo,
                 userBriefInfo,
                 threadDetailViewModel.threadStatusMutableLiveData.getValue());
@@ -772,7 +767,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 super.onScrollStateChanged(recyclerView, newState);
 
                 if(isScrollAtEnd()){
-                    bbsURLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+                    URLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
                     boolean isLoading = threadDetailViewModel.isLoading.getValue();
                     if(!isLoading && threadStatus !=null){
                         if(threadDetailViewModel.hasLoadAll.getValue()){
@@ -824,9 +819,9 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 .build();
         Log.d(TAG,"get Form "+message+" hash "
                 +formHash+" fid "+fid+" tid "+tid
-                + " API ->"+bbsURLUtils.getReplyThreadUrl(fid,tid)+" formbody "+formBody.toString());
+                + " API ->"+ URLUtils.getReplyThreadUrl(fid,tid)+" formbody "+formBody.toString());
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getReplyThreadUrl(fid,tid))
+                .url(URLUtils.getReplyThreadUrl(fid,tid))
                 .post(formBody)
                 .build();
         Handler mHandler = new Handler(Looper.getMainLooper());
@@ -892,7 +887,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     }
 
     private void reloadThePage(){
-        bbsURLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+        URLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
         if(threadStatus!=null){
 
             threadStatus.setInitPage(1);
@@ -901,7 +896,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
     }
 
-    private void reloadThePage(bbsURLUtils.ThreadStatus threadStatus){
+    private void reloadThePage(URLUtils.ThreadStatus threadStatus){
         if(threadStatus!=null){
             threadStatus.setInitPage(1);
         }
@@ -921,7 +916,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
         int trimEnd = noticeAuthorMsg.length();
         Log.d(TAG,"get Reply Form "+message+" hash "
                 +formHash+" reppid "+replyPid+" tid "+tid
-                + " API ->"+bbsURLUtils.getReplyThreadUrl(fid,tid)+
+                + " API ->"+ URLUtils.getReplyThreadUrl(fid,tid)+
                 " noticeTriStr "+String.format(discuz_reply_comment_template,
                 replyUserName,publishAtString,noticeAuthorMsg.substring(0,trimEnd)));
         String replyMessage = noticeAuthorMsg.substring(0,trimEnd);
@@ -944,7 +939,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 //.add("subject", message)
                 .build();
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getReplyThreadUrl(fid,tid))
+                .url(URLUtils.getReplyThreadUrl(fid,tid))
                 .post(formBody)
                 .build();
 
@@ -1022,13 +1017,13 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        bbsURLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+        URLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
         String currentUrl = "";
         if(threadStatus == null){
-            currentUrl = bbsURLUtils.getViewThreadUrl(tid,"1");
+            currentUrl = URLUtils.getViewThreadUrl(tid,"1");
         }
         else {
-            currentUrl = bbsURLUtils.getViewThreadUrl(tid,String.valueOf(threadStatus.page));
+            currentUrl = URLUtils.getViewThreadUrl(tid,String.valueOf(threadStatus.page));
         }
 
         switch (item.getItemId()) {
@@ -1126,7 +1121,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
             getMenuInflater().inflate(R.menu.bbs_thread_nav_menu,menu);
             if(getSupportActionBar()!=null){
 
-                bbsURLUtils.ThreadStatus ThreadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+                URLUtils.ThreadStatus ThreadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
                 if(ThreadStatus !=null){
                     Log.d(TAG,"ON CREATE GET ascend mode in menu "+ThreadStatus.datelineAscend);
                     if(ThreadStatus.datelineAscend){
@@ -1148,7 +1143,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        bbsURLUtils.ThreadStatus ThreadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+        URLUtils.ThreadStatus ThreadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
         if(ThreadStatus !=null){
             Log.d(TAG,"ON PREPARE GET ascend mode in menu "+ThreadStatus.datelineAscend);
             if(ThreadStatus.datelineAscend){

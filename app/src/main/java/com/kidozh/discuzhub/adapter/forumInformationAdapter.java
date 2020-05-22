@@ -20,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,7 +38,7 @@ import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
 
@@ -102,11 +101,11 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
         holder.forumPostNumber.setText(numberFormatUtils.getShortNumberText(forumInfo.total_posts));
         holder.forumMemberNumber.setText(numberFormatUtils.getShortNumberText(forumInfo.total_members));
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(context));
-        bbsURLUtils.setBBS(forumInfo);
+        URLUtils.setBBS(forumInfo);
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
         Glide.with(context)
-                .load(bbsURLUtils.getBBSLogoUrl())
+                .load(URLUtils.getBBSLogoUrl())
                 .error(R.drawable.vector_drawable_bbs)
                 .placeholder(R.drawable.vector_drawable_bbs)
                 .centerInside()
@@ -133,6 +132,7 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
         forumUsersAdapter adapter = new forumUsersAdapter(this.context, forumInfo);
         holder.forumUserRecyclerview.setAdapter(adapter);
         holder.forumUserRecyclerview.setHasFixedSize(true);
+        holder.forumUserRecyclerview.setNestedScrollingEnabled(false);
 
         // render forum user info
         LiveData<List<forumUserBriefInfo>> bbsUserInfoLiveDatas = forumUserBriefInfoDatabase
@@ -222,8 +222,8 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    bbsURLUtils.setBBS(forumInfo);
-                                    Uri uri = Uri.parse(bbsURLUtils.getBBSRegisterUrl(forumInfo.register_name));
+                                    URLUtils.setBBS(forumInfo);
+                                    Uri uri = Uri.parse(URLUtils.getBBSRegisterUrl(forumInfo.register_name));
                                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                                     context.startActivity(intent);
                                 }

@@ -2,9 +2,7 @@ package com.kidozh.discuzhub.activities.ui.bbsDetailedInformation;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,7 +38,7 @@ import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
@@ -100,7 +98,7 @@ public class bbsShowInformationActivity extends AppCompatActivity implements for
     private void configureIntent(){
         Intent intent = getIntent();
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        bbsURLUtils.setBBS(bbsInfo);
+        URLUtils.setBBS(bbsInfo);
     }
 
     private void configureViewModel(){
@@ -117,7 +115,7 @@ public class bbsShowInformationActivity extends AppCompatActivity implements for
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
         Glide.with(this)
-                .load(bbsURLUtils.getBBSLogoUrl())
+                .load(URLUtils.getBBSLogoUrl())
                 .error(R.drawable.vector_drawable_bbs)
                 .placeholder(R.drawable.vector_drawable_bbs)
                 .centerInside()

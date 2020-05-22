@@ -56,20 +56,103 @@
                 app:layout_constraintTop_toBottomOf="@+id/bbs_thread_publisher"
                 tools:text="@tools:sample/date/hhmmss" />
 
-            <TextView
-                android:id="@+id/bbs_thread_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:id="@+id/bbs_post_status_mobile"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/bbs_thread_publisher"
+                app:layout_constraintStart_toEndOf="@+id/bbs_thread_publisher"
+                app:layout_constraintTop_toTopOf="@+id/bbs_thread_publisher"
+                app:srcCompat="@drawable/ic_post_status_mobile_24px" />
+
+            <LinearLayout
+                android:id="@+id/bbs_thread_post_status"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:textAlignment="viewStart"
-                android:textIsSelectable="false"
-                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bbs_thread_publish_date"
-                tools:text="@tools:sample/last_names" />
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/bbs_post_status_blocked_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/bbs_post_status_blocked_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:srcCompat="@drawable/ic_post_status_hidden_24px" />
+
+                    <TextView
+                        android:id="@+id/bbs_post_status_blocked_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/post_is_blocked"
+                        android:textColor="@color/colorPomegranate" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/bbs_post_status_warned_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/bbs_post_status_warned_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:srcCompat="@drawable/ic_post_status_warned_24px" />
+
+                    <TextView
+                        android:id="@+id/bbs_post_status_warned_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/post_is_warned"
+                        android:textColor="@color/colorOrange" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/bbs_post_status_edited_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/bbs_post_status_edited_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:srcCompat="@drawable/ic_post_status_edited_24px" />
+
+                    <TextView
+                        android:id="@+id/bbs_post_status_edited_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/post_is_edited"
+                        android:textColor="?attr/colorPrimary" />
+                </LinearLayout>
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/bbs_thread_content"
@@ -83,7 +166,7 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bbs_thread_title"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_thread_post_status"
                 tools:text="@tools:sample/lorem" />
 
             <TextView

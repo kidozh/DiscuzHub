@@ -391,5 +391,8 @@
     <string name="thread_reply_only_see_by_poster">只有楼主和管理员才能查看回帖</string>
     <string name="thread_reward_lotto">本贴为抢楼贴，若你刚好发中了某个楼层，你可能会得到奖励</string>
     <string name="thread_notify_author">你的发言将会提醒作者</string>
+    <string name="post_is_blocked">帖子被屏蔽</string>
+    <string name="post_is_warned">帖子被警告</string>
+    <string name="post_is_edited">帖子审核后再编辑标记，用于防止重复加分</string>
 
 </resources>

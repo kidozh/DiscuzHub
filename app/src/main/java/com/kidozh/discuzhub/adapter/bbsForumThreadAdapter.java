@@ -33,11 +33,9 @@ import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
@@ -168,16 +166,18 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
         }
 
         holder.mThreadPublisher.setText(threadInfo.author);
-        int avatar_num = position % 16;
+
+        int avatar_num = threadInfo.authorId % 16;
+        if(avatar_num < 0){
+            avatar_num = -avatar_num;
+        }
 
         int avatarResource = mContext.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",mContext.getPackageName());
-        //holder.mAvatarImageview.setImageDrawable(mContext.getDrawable(avatarResource));
 
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(mContext));
         Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-        String source = bbsURLUtils.getSmallAvatarUrlByUid(threadInfo.authorId);
+        String source = URLUtils.getSmallAvatarUrlByUid(threadInfo.authorId);
         RequestOptions options = new RequestOptions()
-                .centerCrop()
                 .placeholder(mContext.getDrawable(avatarResource))
                 .error(mContext.getDrawable(avatarResource))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.activities.ui.bbsPollFragment;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,7 +15,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -33,14 +30,12 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.RecyclerItemClickListener;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -223,7 +218,7 @@ public class bbsPollFragment extends Fragment {
                         }
                     }
                     Request request = new Request.Builder()
-                            .url(bbsURLUtils.getVotePollApiUrl(tid))
+                            .url(URLUtils.getVotePollApiUrl(tid))
                             .post(formBodyBuilder.build())
                             .build();
                     Handler mHandler = new Handler(Looper.getMainLooper());

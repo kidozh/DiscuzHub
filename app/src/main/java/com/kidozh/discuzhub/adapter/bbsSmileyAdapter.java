@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.utilities.ListItemClickListener;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 
 import java.util.List;
 
@@ -81,7 +81,7 @@ public class bbsSmileyAdapter extends RecyclerView.Adapter<bbsSmileyAdapter.Smil
         private void setSmiley(int position) {
             bbsParseUtils.smileyInfo smileyInfo = smileyInfos.get(position);
             Glide.with(context).
-                    load(bbsURLUtils.getSmileyImageUrl(smileyInfo.imageRelativePath))
+                    load(URLUtils.getSmileyImageUrl(smileyInfo.imageRelativePath))
                     .into(image);
             //Glide.with(context).load(smileys.get(position).first).into(image);
             //Picasso.get().load(smileys.get(position).first).into(image);

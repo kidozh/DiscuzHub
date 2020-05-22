@@ -29,7 +29,7 @@ import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
@@ -195,7 +195,7 @@ public class userFriendFragment extends Fragment {
         }
         userFriendSwipeRefreshLayout.setRefreshing(true);
         Log.d(TAG,"friend id "+uid+" page number "+page);
-        String apiStr = bbsURLUtils.getFriendApiUrlByUid(Integer.valueOf(uid),page);
+        String apiStr = URLUtils.getFriendApiUrlByUid(Integer.valueOf(uid),page);
         Request request = new Request.Builder()
                 .url(apiStr)
                 .build();

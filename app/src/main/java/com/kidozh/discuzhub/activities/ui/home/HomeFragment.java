@@ -1,11 +1,8 @@
 package com.kidozh.discuzhub.activities.ui.home;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,14 +10,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,25 +24,16 @@ import com.kidozh.discuzhub.activities.loginBBSActivity;
 import com.kidozh.discuzhub.adapter.bbsPortalCategoryAdapter;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.forumCategorySection;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.BBSIndexResult;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 
-import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dmoral.toasty.Toasty;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class HomeFragment extends Fragment {
     private static final String TAG = HomeFragment.class.getSimpleName();
@@ -96,7 +81,7 @@ public class HomeFragment extends Fragment {
         }
         else {
             Log.d(TAG,"get bbs name "+curBBS.site_name);
-            bbsURLUtils.setBBS(curBBS);
+            URLUtils.setBBS(curBBS);
             homeViewModel.setBBSInfo(curBBS,curUser);
             //bbsURLUtils.setBaseUrl(curBBS.base_url);
         }

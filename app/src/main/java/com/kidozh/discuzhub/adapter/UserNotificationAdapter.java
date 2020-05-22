@@ -6,16 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,11 +33,10 @@ import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
 import com.kidozh.discuzhub.activities.showWebPageActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.utilities.MessageSpan;
+import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
 import org.jsoup.Jsoup;
@@ -58,24 +53,28 @@ import butterknife.ButterKnife;
 
 import static com.kidozh.discuzhub.utilities.networkUtils.getPreferredClient;
 
-public class bbsNotificationAdapter extends RecyclerView.Adapter<bbsNotificationAdapter.ViewHolder> {
-    private static final String TAG = bbsNotificationAdapter.class.getSimpleName();
+public class UserNotificationAdapter extends RecyclerView.Adapter<UserNotificationAdapter.ViewHolder> {
+    private static final String TAG = UserNotificationAdapter.class.getSimpleName();
     private Context context;
-    private List<bbsParseUtils.notificationDetailInfo> notificationDetailInfoList;
+    private List<UserNoteListResult.UserNotification> notificationDetailInfoList;
     bbsInformation bbsInfo;
     forumUserBriefInfo curUser;
 
-    public bbsNotificationAdapter(bbsInformation bbsInfo, forumUserBriefInfo curUser){
+    public List<UserNoteListResult.UserNotification> getNotificationDetailInfoList() {
+        return notificationDetailInfoList;
+    }
+
+    public UserNotificationAdapter(bbsInformation bbsInfo, forumUserBriefInfo curUser){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
     }
 
-    public void setNotificationDetailInfoList(List<bbsParseUtils.notificationDetailInfo> notificationDetailInfoList) {
+    public void setNotificationDetailInfoList(List<UserNoteListResult.UserNotification> notificationDetailInfoList) {
         this.notificationDetailInfoList = notificationDetailInfoList;
         notifyDataSetChanged();
     }
 
-    public void addNotificationDetailInfoList(List<bbsParseUtils.notificationDetailInfo> notificationDetailInfoList) {
+    public void addNotificationDetailInfoList(List<UserNoteListResult.UserNotification> notificationDetailInfoList) {
         if(notificationDetailInfoList == null){
             this.notificationDetailInfoList = notificationDetailInfoList;
         }
@@ -96,22 +95,31 @@ public class bbsNotificationAdapter extends RecyclerView.Adapter<bbsNotification
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        bbsParseUtils.notificationDetailInfo notificationDetailInfo = this.notificationDetailInfoList.get(position);
-        if(notificationDetailInfo.author.length() == 0){
+        UserNoteListResult.UserNotification notificationDetailInfo = this.notificationDetailInfoList.get(position);
+        // remove author if not named
+        if(notificationDetailInfo.authorId == 0){
             holder.bbsNotificationAuthor.setVisibility(View.GONE);
+            holder.bbsNotificationImageview.setImageDrawable(context.getDrawable(R.drawable.vector_drawable_info_24px_outline));
         }
         else {
             holder.bbsNotificationAuthor.setVisibility(View.VISIBLE);
-        }
-        holder.bbsNotificationAuthor.setText(notificationDetailInfo.author);
-        if(notificationDetailInfo.authorId!=0){
+            holder.bbsNotificationAuthor.setText(notificationDetailInfo.author);
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(getPreferredClient(context));
             Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+            // determine avatar placeholder
+            int avatar_num = notificationDetailInfo.authorId % 16;
+            if(avatar_num < 0){
+                avatar_num = -avatar_num;
+            }
+
+            int avatarResource = context.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",context.getPackageName());
+
             Glide.with(context)
-                    .load(bbsURLUtils.getDefaultAvatarUrlByUid(String.valueOf(notificationDetailInfo.authorId)))
+                    .load(URLUtils.getDefaultAvatarUrlByUid(String.valueOf(notificationDetailInfo.authorId)))
                     .apply(RequestOptions
-                            .placeholderOf(R.drawable.avatar_person_male)
-                            .error(R.drawable.avatar_person_male))
+                            .placeholderOf(avatarResource)
+                            .error(avatarResource)
+                    )
                     .into(holder.bbsNotificationImageview);
 
             holder.bbsNotificationImageview.setOnClickListener(new View.OnClickListener() {
@@ -120,44 +128,35 @@ public class bbsNotificationAdapter extends RecyclerView.Adapter<bbsNotification
                     Intent intent = new Intent(context, showPersonalInfoActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
-
-                    intent.putExtra("UID",String.valueOf(notificationDetailInfo.authorId));
+                    intent.putExtra("UID",notificationDetailInfo.authorId);
                     ActivityOptions options = ActivityOptions
                             .makeSceneTransitionAnimation((Activity) context, holder.bbsNotificationImageview, "user_info_avatar");
 
                     Bundle bundle = options.toBundle();
-
                     context.startActivity(intent,bundle);
                 }
             });
         }
-        else {
-            holder.bbsNotificationImageview.setImageDrawable(context.getDrawable(R.drawable.vector_drawable_info_24px_outline));
-        }
+
         holder.bbsNotificationPublishTime.setText(timeDisplayUtils.getLocalePastTimeString(context,notificationDetailInfo.date));
         Spanned sp = Html.fromHtml(notificationDetailInfo.note);
         SpannableString spannableString = new SpannableString(sp);
         holder.bbsNotificationNote.setText(spannableString, TextView.BufferType.SPANNABLE);
-        holder.bbsNotificationNote.setTextColor(context.getColor(R.color.colorTextDefault));
-        //holder.bbsNotificationNote.setMovementMethod(LinkMovementMethod.getInstance());
-        if(notificationDetailInfo.type.equals("post")){
-            if(notificationDetailInfo.noteVariables!=null && notificationDetailInfo.noteVariables.containsKey("tid")){
-                holder.bbsNotificationCardview.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(context, bbsShowThreadActivity.class);
-                        intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                        intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
-                        intent.putExtra("TID",notificationDetailInfo.noteVariables.get("tid"));
-                        intent.putExtra("FID",String.valueOf(notificationDetailInfo.authorId));
-                        intent.putExtra("SUBJECT",notificationDetailInfo.noteVariables.get("subject"));
-                        VibrateUtils.vibrateForClick(context);
-                        context.startActivity(intent);
-                    }
-                });
-            }
 
-
+        if(notificationDetailInfo.notificationExtraInfo != null){
+            holder.bbsNotificationCardview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, bbsShowThreadActivity.class);
+                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                    intent.putExtra("TID",notificationDetailInfo.notificationExtraInfo.tid);
+                    intent.putExtra("FID",notificationDetailInfo.authorId);
+                    intent.putExtra("SUBJECT",notificationDetailInfo.notificationExtraInfo.subject);
+                    VibrateUtils.vibrateForClick(context);
+                    context.startActivity(intent);
+                }
+            });
         }
         else {
             // nothing
@@ -209,7 +208,6 @@ public class bbsNotificationAdapter extends RecyclerView.Adapter<bbsNotification
                     popupMenu.show();
                 }
             });
-
         }
 
     }

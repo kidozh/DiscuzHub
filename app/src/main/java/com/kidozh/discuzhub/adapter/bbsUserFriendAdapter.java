@@ -24,7 +24,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 
 import java.io.InputStream;
 import java.util.List;
@@ -91,7 +91,7 @@ public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdap
         int avatarResource = context.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",context.getPackageName());
 
         Glide.with(context)
-                .load(bbsURLUtils.getDefaultAvatarUrlByUid(String.valueOf(friend.uid)))
+                .load(URLUtils.getDefaultAvatarUrlByUid(String.valueOf(friend.uid)))
                 .apply(RequestOptions.placeholderOf(avatarResource)
                         .error(avatarResource))
                 .into(holder.avatar);

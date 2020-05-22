@@ -16,7 +16,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.results.DisplayForumResult;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.InputStream;
@@ -60,7 +60,7 @@ public class bbsForumThreadShortReplyAdapter extends RecyclerView.Adapter<bbsFor
         // download avatar not regarding data save mode
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(context));
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-        String source = bbsURLUtils.getSmallAvatarUrlByUid(replyInfo.authorId);
+        String source = URLUtils.getSmallAvatarUrlByUid(replyInfo.authorId);
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
         Glide.with(context)
                 .load(source)

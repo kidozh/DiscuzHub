@@ -26,7 +26,7 @@ import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
@@ -168,7 +168,7 @@ public class bbsPrivateMessageFragment extends Fragment {
 
     void getPrivateMessage(int page){
         privateMessageSwipeRefreshLayout.setRefreshing(true);
-        String apiStr = bbsURLUtils.getPrivatePMApiUrl(page);
+        String apiStr = URLUtils.getPrivatePMApiUrl(page);
         Request request = new Request.Builder()
                 .url(apiStr)
                 .build();

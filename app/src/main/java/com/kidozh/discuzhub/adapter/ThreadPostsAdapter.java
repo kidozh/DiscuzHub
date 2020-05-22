@@ -7,11 +7,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,12 +19,10 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -42,36 +36,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.bbsShowThreadActivity;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
 import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
-import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.entities.threadCommentInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
-import org.w3c.dom.Text;
 import org.xml.sax.XMLReader;
 
 import java.io.InputStream;
@@ -86,15 +70,15 @@ import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import okhttp3.OkHttpClient;
 
-public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumThreadCommentAdapter.bbsForumThreadCommentViewHolder> {
-    private final static String TAG = bbsForumThreadCommentAdapter.class.getSimpleName();
+public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.bbsForumThreadCommentViewHolder> {
+    private final static String TAG = ThreadPostsAdapter.class.getSimpleName();
     private List<PostInfo> threadInfoList = new ArrayList<>();
     private Context mContext,context;
     public String subject;
     private OkHttpClient client = new OkHttpClient();
     private bbsInformation bbsInfo;
     private forumUserBriefInfo curUser;
-    private bbsURLUtils.ThreadStatus threadStatus;
+    private URLUtils.ThreadStatus threadStatus;
 
     private onFilterChanged mListener;
 
@@ -104,7 +88,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
 
 
 
-    public bbsForumThreadCommentAdapter(Context context, bbsInformation bbsInfo, forumUserBriefInfo curUser, bbsURLUtils.ThreadStatus threadStatus){
+    public ThreadPostsAdapter(Context context, bbsInformation bbsInfo, forumUserBriefInfo curUser, URLUtils.ThreadStatus threadStatus){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
         this.mContext = context;
@@ -112,7 +96,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         this.threadStatus = threadStatus;
     }
 
-    public void setThreadInfoList(List<PostInfo> threadInfoList, bbsURLUtils.ThreadStatus threadStatus){
+    public void setThreadInfoList(List<PostInfo> threadInfoList, URLUtils.ThreadStatus threadStatus){
         this.threadInfoList = threadInfoList;
         this.threadStatus = threadStatus;
 
@@ -125,7 +109,7 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
 
     @NonNull
     @Override
-    public bbsForumThreadCommentAdapter.bbsForumThreadCommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ThreadPostsAdapter.bbsForumThreadCommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         int layoutIdForListItem = R.layout.item_bbs_thread_comment_detail;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -137,13 +121,42 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
     }
 
     @Override
-    public void onBindViewHolder(@NonNull bbsForumThreadCommentAdapter.bbsForumThreadCommentViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ThreadPostsAdapter.bbsForumThreadCommentViewHolder holder, int position) {
         PostInfo threadInfo = threadInfoList.get(position);
         holder.mThreadPublisher.setText(threadInfo.author);
-        holder.mTitle.setVisibility(View.GONE);
+        // parse status
+        int status = threadInfo.status;
+        final int POST_HIDDEN = 1, POST_WARNED = 2, POST_REVISED = 4, POST_MOBILE = 8;
+        if((status & POST_HIDDEN) != 0){
+            holder.mPostStatusBlockedView.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.mPostStatusBlockedView.setVisibility(View.GONE);
+        }
+
+        if((status & POST_WARNED) != 0){
+            holder.mPostStatusWarnedView.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.mPostStatusWarnedView.setVisibility(View.GONE);
+        }
+
+        if((status & POST_REVISED) != 0){
+            holder.mPostStatusEditedView.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.mPostStatusEditedView.setVisibility(View.GONE);
+        }
+
+        if((status & POST_MOBILE) != 0){
+            holder.mPostStatusMobileIcon.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.mPostStatusMobileIcon.setVisibility(View.GONE);
+        }
+
 
         Log.d(TAG,"Thread info "+position+" Total size "+threadInfoList.size());
-        //holder.mTitle.setText(threadInfo.subject);
 
         String decodeString = threadInfo.message;
         if(decodeString == null){
@@ -171,16 +184,17 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
             holder.mThreadType.setText(String.format("%s",position+1));
             holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorPrimaryDark));
         }
-        int avatar_num = position % 16;
+        int avatar_num = threadInfo.authorId % 16;
+        if(avatar_num < 0){
+            avatar_num = -avatar_num;
+        }
 
         int avatarResource = mContext.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",mContext.getPackageName());
-        // holder.mAvatarImageview.setImageDrawable(mContext.getDrawable(avatarResource));
 
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
         Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-        String source = bbsURLUtils.getSmallAvatarUrlByUid(threadInfo.authorId);
+        String source = URLUtils.getSmallAvatarUrlByUid(threadInfo.authorId);
         RequestOptions options = new RequestOptions()
-
                 .placeholder(mContext.getDrawable(avatarResource))
                 .error(mContext.getDrawable(avatarResource))
                 //.diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -301,8 +315,6 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         TextView mThreadPublisher;
         @BindView(R.id.bbs_thread_publish_date)
         TextView mPublishDate;
-        @BindView(R.id.bbs_thread_title)
-        TextView mTitle;
         @BindView(R.id.bbs_thread_content)
         TextView mContent;
         @BindView(R.id.bbs_thread_type)
@@ -317,6 +329,14 @@ public class bbsForumThreadCommentAdapter extends RecyclerView.Adapter<bbsForumT
         Button mCopyContentBtn;
         @BindView(R.id.bbs_thread_only_see_him_button)
         Button mFilterByAuthorIdBtn;
+        @BindView(R.id.bbs_post_status_mobile)
+        ImageView mPostStatusMobileIcon;
+        @BindView(R.id.bbs_post_status_blocked_layout)
+        View mPostStatusBlockedView;
+        @BindView(R.id.bbs_post_status_warned_layout)
+        View mPostStatusWarnedView;
+        @BindView(R.id.bbs_post_status_edited_layout)
+        View mPostStatusEditedView;
         public bbsForumThreadCommentViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);

@@ -12,13 +12,15 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
+        app:cardPreventCornerOverlap="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp">
 
             <ImageView
                 android:id="@+id/bbs_notification_imageView"
@@ -58,10 +60,7 @@
                 android:id="@+id/bbs_notification_publish_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:textAlignment="viewStart"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/bbs_notification_note"
                 app:layout_constraintTop_toBottomOf="@+id/bbs_notification_note"
                 tools:text="@tools:sample/date/hhmmss" />

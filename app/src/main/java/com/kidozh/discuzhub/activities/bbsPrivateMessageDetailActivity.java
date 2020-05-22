@@ -33,12 +33,11 @@ import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
 import com.kidozh.discuzhub.adapter.bbsPrivateDetailMessageAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.entities.threadCommentInfo;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
@@ -205,7 +204,7 @@ public class bbsPrivateMessageDetailActivity extends AppCompatActivity implement
 
     private void getSmileyInfo(){
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getSmileyApiUrl())
+                .url(URLUtils.getSmileyApiUrl())
                 .build();
         Handler mHandler = new Handler(Looper.getMainLooper());
         client.newCall(request).enqueue(new Callback() {
@@ -311,7 +310,7 @@ public class bbsPrivateMessageDetailActivity extends AppCompatActivity implement
 
     private void getPageInfo(int page){
         privateMessageDetailSwipeRefreshLayout.setRefreshing(true);
-        String apiStr = bbsURLUtils.getPrivatePMDetailApiUrlByTouid(privateMessageInfo.toUid,page);
+        String apiStr = URLUtils.getPrivatePMDetailApiUrlByTouid(privateMessageInfo.toUid,page);
         Request request = new Request.Builder()
                 .url(apiStr)
                 .build();
@@ -392,7 +391,7 @@ public class bbsPrivateMessageDetailActivity extends AppCompatActivity implement
         }
         else {
             Log.d(TAG,"get bbs name "+curBBS.site_name);
-            bbsURLUtils.setBBS(curBBS);
+            URLUtils.setBBS(curBBS);
             //bbsURLUtils.setBaseUrl(curBBS.base_url);
         }
         if(getSupportActionBar()!=null){
@@ -412,7 +411,7 @@ public class bbsPrivateMessageDetailActivity extends AppCompatActivity implement
                 .add("topmuid",String.valueOf(privateMessageInfo.toUid))
                 .build();
 
-        String apiStr = bbsURLUtils.getSendPMApiUrl(privateMessageInfo.plid,Integer.parseInt(pmid));
+        String apiStr = URLUtils.getSendPMApiUrl(privateMessageInfo.plid,Integer.parseInt(pmid));
         Log.d(TAG,"Send PM "+apiStr+" topmuid "+privateMessageInfo.toUid+" formhash "+formHash);
         Request request = new Request.Builder()
                 .url(apiStr)

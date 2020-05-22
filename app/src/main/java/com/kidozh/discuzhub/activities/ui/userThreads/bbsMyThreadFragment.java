@@ -28,7 +28,7 @@ import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
@@ -116,7 +116,7 @@ public class bbsMyThreadFragment extends Fragment {
 
     void getMyThread(int page){
         myThreadSwipeRefreshLayout.setRefreshing(true);
-        String apiStr = bbsURLUtils.getUserThreadUrl(page);
+        String apiStr = URLUtils.getUserThreadUrl(page);
         Request request = new Request.Builder()
                 .url(apiStr)
                 .build();

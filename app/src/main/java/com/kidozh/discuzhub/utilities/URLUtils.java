@@ -8,15 +8,15 @@ import androidx.annotation.NonNull;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 
-public class bbsURLUtils {
-    public static String TAG = bbsURLUtils.class.getSimpleName();
+public class URLUtils {
+    public static String TAG = URLUtils.class.getSimpleName();
     public static String BASE_URL;
     public static String UC_SERVER_URL;
     public static bbsInformation bbsInfo;
 
 
 
-    public bbsURLUtils(@NonNull String baseUrl){
+    public URLUtils(@NonNull String baseUrl){
         BASE_URL = baseUrl;
     }
 
@@ -299,13 +299,12 @@ public class bbsURLUtils {
         else {
             // this is local URL
             // Log.d(TAG,"Get attachment aliencode "+attachmentInfo.aidEncode);
-            if(attachmentInfo.url !=null && attachmentInfo.attachment !=null){
-                source = bbsURLUtils.getBaseUrl()+"/"+ attachmentInfo.url + attachmentInfo.attachment;
+            if(attachmentInfo.aidEncode!=null && attachmentInfo.aidEncode.length()!=0) {
+                source = URLUtils.getAttachmentWithAlienCode(attachmentInfo.aidEncode);
             }
-            else if(attachmentInfo.aidEncode!=null && attachmentInfo.aidEncode.length()!=0) {
-                source = bbsURLUtils.getAttachmentWithAlienCode(attachmentInfo.aidEncode);
+            else if(attachmentInfo.url !=null && attachmentInfo.attachment !=null){
+                source = URLUtils.getBaseUrl()+"/"+ attachmentInfo.url + attachmentInfo.attachment;
             }
-
             else {
                 // have no way give blank
                 source = "";
@@ -318,10 +317,6 @@ public class bbsURLUtils {
     public static String getUploadImageUrl() {
         return BASE_URL + "/misc.php?mod=swfupload&operation=upload&simple=1&type=image";
     }
-
-//    public static String getCheckPostUrl(){
-//        return BASE_URL + "/api/mobile/index.php?version=4&module=checkpost";
-//    }
 
     public static String getCheckPostUrl(String fid){
         Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
@@ -342,11 +337,6 @@ public class bbsURLUtils {
         return uri.toString();
     }
 
-
-
-//    public static String getPostThreadUrl(String fid){
-//        return BASE_URL+"/api/mobile/index.php?version=4&module=newthread&fid=" + fid ;
-//    }
 
     public static String getPostThreadUrl(String fid){
         Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
@@ -372,21 +362,6 @@ public class bbsURLUtils {
         return uri.toString();
     }
 
-//    public static String getReplyThreadUrl(String fid,String tid){
-//
-//        Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
-//                .appendQueryParameter("mod","post")
-//                .appendQueryParameter("action","reply")
-//                .appendQueryParameter("fid",fid)
-//                .appendQueryParameter("tid",tid)
-//                .appendQueryParameter("inajax","1")
-//                .appendQueryParameter("replysubmit","yes")
-//                .appendQueryParameter("infloat","yes")
-//                .appendQueryParameter("handlekey","fastpost")
-//                .appendQueryParameter("extra","")
-//                .build();
-//         return uri.toString();
-//    }
 
     public static String getReplyToSomeoneThreadUrl(String fid,String tid){
         Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
@@ -448,10 +423,6 @@ public class bbsURLUtils {
 
     public static String getSmileyImageUrl(String path) {
         return BASE_URL + "/static/image/smiley/"+path;
-    }
-
-    public static String getPromptNotificationListApiUrl(int page){
-        return BASE_URL + "/api/mobile/index.php?version=4&module=mynotelist&view=system&page="+page;
     }
 
     public static String getSeccodeApiUrl(int idhash){

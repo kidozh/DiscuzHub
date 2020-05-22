@@ -3,10 +3,8 @@ package com.kidozh.discuzhub.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,14 +18,10 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
-
-import org.w3c.dom.Text;
+import com.kidozh.discuzhub.utilities.URLUtils;
 
 import java.util.List;
 
@@ -81,7 +75,7 @@ public class bbsPollOptionAdapter extends RecyclerView.Adapter<bbsPollOptionAdap
             holder.pollOptionWatchPicture.setVisibility(View.GONE);
         }
         else {
-            String imageUrl = bbsURLUtils.getBaseUrl()+"/"+option.imageInfo.bigURL;
+            String imageUrl = URLUtils.getBaseUrl()+"/"+option.imageInfo.bigURL;
             holder.pollOptionWatchPicture.setVisibility(View.VISIBLE);
             holder.pollOptionWatchPicture.setClickable(true);
             holder.pollOptionWatchPicture.setOnClickListener(new View.OnClickListener() {

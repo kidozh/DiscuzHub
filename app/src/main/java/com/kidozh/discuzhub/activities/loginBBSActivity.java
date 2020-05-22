@@ -32,7 +32,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
@@ -110,7 +110,7 @@ public class loginBBSActivity extends AppCompatActivity {
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
         Glide.with(this)
-                .load(bbsURLUtils.getBBSLogoUrl())
+                .load(URLUtils.getBBSLogoUrl())
                 .error(R.drawable.vector_drawable_bbs)
                 .placeholder(R.drawable.vector_drawable_bbs)
                 .centerInside()
@@ -228,7 +228,7 @@ public class loginBBSActivity extends AppCompatActivity {
         }
 
         // exact login url
-        String loginUrl = bbsURLUtils.getLoginUrl();
+        String loginUrl = URLUtils.getLoginUrl();
 
 
         FormBody formBody = new FormBody.Builder()
@@ -267,7 +267,7 @@ public class loginBBSActivity extends AppCompatActivity {
                     String res = response.body().string();
                     // fetch the api URL
                     Log.d(TAG,"get result json "+res);
-                    String loginApiUrl = bbsURLUtils.getLoginApiUrl();
+                    String loginApiUrl = URLUtils.getLoginApiUrl();
                     Request request = new Request.Builder()
                             .url(loginApiUrl)
                             .build();
@@ -384,7 +384,7 @@ public class loginBBSActivity extends AppCompatActivity {
         }
         else {
             Log.d(TAG,"get bbs name "+curBBS.site_name);
-            bbsURLUtils.setBBS(curBBS);
+            URLUtils.setBBS(curBBS);
             //bbsURLUtils.setBaseUrl(curBBS.base_url);
         }
         if(getSupportActionBar()!=null){

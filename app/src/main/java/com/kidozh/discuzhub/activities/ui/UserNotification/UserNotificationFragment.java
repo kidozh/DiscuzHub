@@ -1,4 +1,4 @@
-package com.kidozh.discuzhub.activities.ui.bbsNotification;
+package com.kidozh.discuzhub.activities.ui.UserNotification;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,51 +7,42 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.bbsNotificationAdapter;
+import com.kidozh.discuzhub.adapter.UserNotificationAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
-import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dmoral.toasty.Toasty;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link bbsNotificationFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link bbsNotificationFragment#newInstance} factory method to
+ * Use the {@link UserNotificationFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class bbsNotificationFragment extends Fragment {
-    private static final String TAG = bbsNotificationFragment.class.getSimpleName();
+public class UserNotificationFragment extends Fragment {
+    private static final String TAG = UserNotificationFragment.class.getSimpleName();
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String ARG_TYPE = "TYPE";
@@ -59,7 +50,7 @@ public class bbsNotificationFragment extends Fragment {
 
     private OnNewMessageChangeListener mListener;
 
-    public bbsNotificationFragment() {
+    public UserNotificationFragment() {
         // Required empty public constructor
     }
 
@@ -74,10 +65,12 @@ public class bbsNotificationFragment extends Fragment {
     bbsInformation bbsInfo;
     ForumInfo forum;
     private OkHttpClient client = new OkHttpClient();
-    bbsNotificationAdapter adapter;
+    UserNotificationAdapter adapter;
     private int globalPage = 1;
     private Boolean hasLoadAll = false;
     private String type, view;
+
+    UserNotificationViewModel viewModel;
 
     /**
      * Use this factory method to create a new instance of
@@ -86,8 +79,8 @@ public class bbsNotificationFragment extends Fragment {
      * @return A new instance of fragment bbsNotificationFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static bbsNotificationFragment newInstance(String view, String type) {
-        bbsNotificationFragment fragment = new bbsNotificationFragment();
+    public static UserNotificationFragment newInstance(String view, String type) {
+        UserNotificationFragment fragment = new UserNotificationFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TYPE, type);
         args.putString(ARG_VIEW, view);
@@ -110,6 +103,7 @@ public class bbsNotificationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        viewModel = new ViewModelProvider(this).get(UserNotificationViewModel.class);
         return inflater.inflate(R.layout.fragment_bbs_notification, container, false);
     }
 
@@ -120,6 +114,7 @@ public class bbsNotificationFragment extends Fragment {
         configureIntentData();
         configureRecyclerview();
         configureSwipeRefreshLayout();
+        bindViewModel();
     }
 
     private void configureIntentData(){
@@ -128,23 +123,26 @@ public class bbsNotificationFragment extends Fragment {
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+        viewModel.setBBSInfo(bbsInfo,userBriefInfo);
     }
 
     private void configureRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         bbsNotificationRecyclerview.setLayoutManager(linearLayoutManager);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
-                linearLayoutManager.getOrientation());
-        bbsNotificationRecyclerview.addItemDecoration(dividerItemDecoration);
-        adapter = new bbsNotificationAdapter(bbsInfo,userBriefInfo);
+//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
+//                linearLayoutManager.getOrientation());
+//        bbsNotificationRecyclerview.addItemDecoration(dividerItemDecoration);
+        adapter = new UserNotificationAdapter(bbsInfo,userBriefInfo);
         bbsNotificationRecyclerview.setAdapter(adapter);
 
         bbsNotificationRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(isScrollAtEnd()){
-                    getBBSNotificationByPage(globalPage);
+
+                if(isScrollAtEnd() && viewModel.isLoading.getValue() == false && viewModel.hasLoadedAll.getValue() == false){
+                    globalPage += 1;
+                    viewModel.getUserNotificationByPage(view,type, globalPage);
 
                 }
             }
@@ -164,102 +162,88 @@ public class bbsNotificationFragment extends Fragment {
 
     }
 
-    void configureSwipeRefreshLayout(){
-        bbsNotificationSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    private void bindViewModel(){
+        viewModel.userNoteListResultMutableLiveData.observe(getViewLifecycleOwner(), new Observer<UserNoteListResult>() {
             @Override
-            public void onRefresh() {
-                globalPage = 1;
-                hasLoadAll = false;
-                getBBSNotificationByPage(globalPage);
-            }
-        });
-        getBBSNotificationByPage(globalPage);
-    }
-
-    void getBBSNotificationByPage(int page){
-
-        if(hasLoadAll){
-            return;
-        }
-        bbsNotificationSwipeRefreshLayout.setRefreshing(true);
-        String apiString = "";
-        apiString = bbsURLUtils.getNoteListApiUrl(view,type,page);
-
-        Log.d(TAG,"get API string "+apiString);
-
-        Request request = new Request.Builder()
-                .url(apiString)
-                .build();
-        Log.d(TAG,"get notification url "+request.url().toString());
-        Handler mHandler = new Handler(Looper.getMainLooper());
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        bbsNotificationEmptyView.setVisibility(View.VISIBLE);
-                        bbsNotificationSwipeRefreshLayout.setRefreshing(false);
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful()&& response.body()!=null){
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            bbsNotificationSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
-
-                    String s = response.body().string();
-                    List<bbsParseUtils.notificationDetailInfo> notificationDetailInfoList = bbsParseUtils.parseNotificationDetailInfo(s);
-                    bbsParseUtils.noticeNumInfo noticeNumInfo = bbsParseUtils.parseNoticeInfo(s);
-                    setNotificationNum(noticeNumInfo);
-                    if(notificationDetailInfoList!=null){
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                bbsNotificationEmptyView.setVisibility(View.GONE);
-                                if(page == 1){
-                                    adapter.setNotificationDetailInfoList(notificationDetailInfoList);
-                                }
-                                else {
-                                    adapter.addNotificationDetailInfoList(notificationDetailInfoList);
-                                }
-                                // load all?
-                                int perpage = bbsParseUtils.parsePrivateDetailMessagePerPage(s);
-                                if(perpage > notificationDetailInfoList.size()){
-                                    hasLoadAll = true;
-                                }
-                                if(notificationDetailInfoList.size()==0 && page == 1){
-                                    bbsNotificationEmptyView.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        });
-                        globalPage += 1;
+            public void onChanged(UserNoteListResult userNoteListResult) {
+                Log.d(TAG, "Recv notelist "+userNoteListResult);
+                if(userNoteListResult !=null){
+                    List<UserNoteListResult.UserNotification> notificationList = userNoteListResult.noteListVariableResult.notificationList;
+                    if(globalPage == 1){
+                        adapter.setNotificationDetailInfoList(notificationList);
                     }
                     else {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toasty.error(getContext(),getString(R.string.network_failed), Toast.LENGTH_SHORT).show();
-                                if(page == 1){
-                                    bbsNotificationEmptyView.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        });
+                        adapter.addNotificationDetailInfoList(notificationList);
                     }
+                    // judge the loadall
+                    if(adapter.getNotificationDetailInfoList()!=null &&
+                            adapter.getNotificationDetailInfoList().size() >= userNoteListResult.noteListVariableResult.count){
+                        viewModel.hasLoadedAll.postValue(true);
+                    }
+                    else {
+                        viewModel.hasLoadedAll.postValue(false);
+                    }
+                }
+            }
+        });
+
+        viewModel.isLoading.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                bbsNotificationSwipeRefreshLayout.setRefreshing(aBoolean);
+            }
+        });
+
+        viewModel.hasLoadedAll.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    if(globalPage == 1 &&
+                            (adapter.getNotificationDetailInfoList() ==null || adapter.getNotificationDetailInfoList().size() == 0)){
+
+                        bbsNotificationEmptyView.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        bbsNotificationEmptyView.setVisibility(View.GONE);
+                    }
+
+
+                }
+                else {
+                    bbsNotificationEmptyView.setVisibility(View.GONE);
+                }
+
+            }
+        });
+        viewModel.isError.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    bbsNotificationEmptyView.setVisibility(View.VISIBLE);
+                    if(globalPage > 1){
+                        globalPage -= 1;
+                    }
+                }
+                else {
+                    bbsNotificationEmptyView.setVisibility(View.GONE);
                 }
             }
         });
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    void configureSwipeRefreshLayout(){
+        bbsNotificationSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                globalPage = 1;
+                viewModel.getUserNotificationByPage(view,type,globalPage);
+            }
+        });
+        viewModel.getUserNotificationByPage(view,type,globalPage);
+    }
 
+
+    // TODO: Rename method, update argument and hook method into UI event
     public void setNotificationNum(bbsParseUtils.noticeNumInfo notificationNum) {
         Log.d(TAG,"set message number "+notificationNum.getAllNoticeInfo());
         if (mListener != null) {

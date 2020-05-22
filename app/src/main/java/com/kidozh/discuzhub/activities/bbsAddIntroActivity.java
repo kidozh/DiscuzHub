@@ -7,18 +7,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -33,7 +29,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.results.AddCheckResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.viewModels.AddBBSViewModel;
 
@@ -42,7 +38,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -229,8 +224,8 @@ public class bbsAddIntroActivity extends AppCompatActivity
         boolean useSafeClient = httpsCheckedTextview.isChecked();
         viewModel.isLoadingLiveData.postValue(true);
 
-        bbsURLUtils.setBaseUrl(base_url);
-        String query_url = bbsURLUtils.getBBSForumInformationUrl();
+        URLUtils.setBaseUrl(base_url);
+        String query_url = URLUtils.getBBSForumInformationUrl();
         OkHttpClient client = networkUtils.getPreferredClient(this,useSafeClient);
         Request request = new Request.Builder().url(query_url).build();
         Call call = client.newCall(request);

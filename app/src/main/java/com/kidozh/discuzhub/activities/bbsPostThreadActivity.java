@@ -59,7 +59,7 @@ import com.kidozh.discuzhub.utilities.bbsColorPicker;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 import com.kidozh.discuzhub.viewModels.PostThreadViewModel;
@@ -185,7 +185,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
         // check if it comes from draft box
         bbsThreadDraft threadDraft = (bbsThreadDraft) intent.getSerializableExtra(bbsConstUtils.PASS_THREAD_DRAFT_KEY);
         postThreadViewModel.bbsThreadDraftMutableLiveData.setValue(threadDraft);
-        bbsURLUtils.setBBS(bbsInfo);
+        URLUtils.setBBS(bbsInfo);
 
         if(threadDraft!=null){
             bbsThreadSubjectEditText.setText(threadDraft.subject);
@@ -431,6 +431,8 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
                         forumApiString
                 );
                 postThreadViewModel.bbsThreadDraftMutableLiveData.setValue(threadDraft);
+                // need to create an id for attachment attach
+                new addThreadDraftTask(this,threadDraft).execute();
 
             }
             else {
@@ -773,9 +775,9 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
                 .addFormDataPart("uid",bbsPersonInfo.uid)
                 .addFormDataPart("hash",uploadHash)
                 .build();
-        Log.d(TAG,"Send attachment url "+bbsURLUtils.getSWFUploadAttachmentUrl(fid));
+        Log.d(TAG,"Send attachment url "+ URLUtils.getSWFUploadAttachmentUrl(fid));
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getSWFUploadAttachmentUrl(fid))
+                .url(URLUtils.getSWFUploadAttachmentUrl(fid))
                 .post(multipartBody)
                 .build();
         Context context = this;
@@ -878,7 +880,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
 
 
             request = new Request.Builder()
-                    .url(bbsURLUtils.getUploadImageUrl())
+                    .url(URLUtils.getUploadImageUrl())
                     .post(multipartBody)
                     .build();
         }
@@ -1052,7 +1054,7 @@ public class bbsPostThreadActivity extends AppCompatActivity implements View.OnC
             FormBody form = formBody.build();
 
             request = new Request.Builder()
-                    .url(bbsURLUtils.getPostThreadUrl(fid))
+                    .url(URLUtils.getPostThreadUrl(fid))
                     .post(form)
                     .build();
         }

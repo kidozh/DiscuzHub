@@ -8,28 +8,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.badge.BadgeDrawable;
-import com.google.android.material.badge.BadgeUtils;
 import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ui.bbsNotification.bbsNotificationFragment;
+import com.kidozh.discuzhub.activities.ui.UserNotification.UserNotificationFragment;
 import com.kidozh.discuzhub.activities.ui.bbsNotificationMessagePortalFragment;
 import com.kidozh.discuzhub.activities.ui.privacyProtect.privacyProtectFragment;
 import com.kidozh.discuzhub.activities.ui.userThreads.bbsMyThreadFragment;
@@ -276,7 +268,7 @@ public class NotificationsFragment extends Fragment {
             return;
         }
         Log.d(TAG,"add popMenu to list "+index);
-        PopupMenu popupMenu = new PopupMenu(getActivity(), messageTab.view);
+        PopupMenu popupMenu = new PopupMenu(getActivity().getApplicationContext(), messageTab.view);
         MenuInflater inflater = popupMenu.getMenuInflater();
         switch (index){
             case 0:{
@@ -447,10 +439,10 @@ public class NotificationsFragment extends Fragment {
 
                 case 1:{
                     if(view == null || type == null){
-                        return bbsNotificationFragment.newInstance("mypost","post");
+                        return UserNotificationFragment.newInstance("mypost","post");
                     }
                     else {
-                        return bbsNotificationFragment.newInstance(view,type);
+                        return UserNotificationFragment.newInstance(view,type);
                     }
 
                 }
@@ -458,15 +450,15 @@ public class NotificationsFragment extends Fragment {
 
                 case 2:{
                     if(view == null || type == null){
-                        return bbsNotificationFragment.newInstance("interactive","poke");
+                        return UserNotificationFragment.newInstance("interactive","poke");
                     }
                     else {
-                        return bbsNotificationFragment.newInstance(view,type);
+                        return UserNotificationFragment.newInstance(view,type);
                     }
 
                 }
                 case 3:{
-                    return bbsNotificationFragment.newInstance("system","system");
+                    return UserNotificationFragment.newInstance("system","system");
 
                 }
 

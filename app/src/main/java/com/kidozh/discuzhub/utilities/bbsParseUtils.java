@@ -26,6 +26,7 @@ import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.results.ThreadPostParameterResult;
 import com.kidozh.discuzhub.results.ThreadPostResult;
+import com.kidozh.discuzhub.results.UserNoteListResult;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -260,55 +261,6 @@ public class bbsParseUtils {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(s, ThreadPostResult.class);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static List<threadCommentInfo> parseThreadCommentInfo(String s) {
-        try {
-            List<threadCommentInfo> threadInfoList = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONArray threadList = variables.getJSONArray("postlist");
-            for (int i = 0; i < threadList.length(); i++) {
-                JSONObject threadObj = threadList.getJSONObject(i);
-                String tid = threadObj.getString("tid");
-                String pid = threadObj.getString("pid");
-                String firstString = threadObj.getString("first");
-                String author = threadObj.getString("author");
-                String authorId = threadObj.getString("authorid");
-                String message = threadObj.getString("message");
-                String publishAtStringTimestamp = threadObj.getString("dbdateline");
-                String lastPostTimeString = threadObj.getString("dateline");
-                Date publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp) * 1000);
-                threadCommentInfo threadComment = new threadCommentInfo(tid, pid, author, authorId, message, publishAt, lastPostTimeString);
-                if (firstString.equals("1")) {
-                    threadComment.first = true;
-                } else {
-                    threadComment.first = false;
-                }
-                // attachment
-                if (threadObj.has("attachments")) {
-                    Log.d(TAG, "Find attachment!!!");
-                    try {
-                        JSONObject attachmentObj = threadObj.getJSONObject("attachments");
-                        List<threadCommentInfo.attachmentInfo> attachmentInfoList = getAttachmentInfo(attachmentObj);
-                        Log.d(TAG, "get attachmentInfo" + attachmentInfoList.size());
-                        threadComment.attachmentInfoList = attachmentInfoList;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-                threadInfoList.add(threadComment);
-
-
-            }
-            return threadInfoList;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -704,6 +656,18 @@ public class bbsParseUtils {
             this.fromIdType = fromIdType;
             this.from_num = from_num;
             this.noteVariables = noteVariables;
+        }
+    }
+
+    public static UserNoteListResult getUserNoteListResult(String s) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(s, UserNoteListResult.class);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

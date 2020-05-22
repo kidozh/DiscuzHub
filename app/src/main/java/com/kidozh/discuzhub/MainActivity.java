@@ -1,11 +1,8 @@
 package com.kidozh.discuzhub;
 
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -22,48 +19,35 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.services.updateBBSInformationWork;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.notificationUtils;
 import com.kidozh.discuzhub.viewModels.LocalBBSViewModel;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -147,8 +131,8 @@ public class MainActivity extends AppCompatActivity {
                     for(int i=0;i<bbsInformationList.size();i++){
                         bbsInformation bbsInfo = bbsInformationList.get(i);
                         OkHttpClient client = networkUtils.getPreferredClient(getApplicationContext());
-                        bbsURLUtils.setBaseUrl(bbsInfo.base_url);
-                        String query_url = bbsURLUtils.getBBSForumInformationUrl();
+                        URLUtils.setBaseUrl(bbsInfo.base_url);
+                        String query_url = URLUtils.getBBSForumInformationUrl();
                         Request request = new Request.Builder().url(query_url).build();
                         Call call = client.newCall(request);
                         Handler mHandler = new Handler(Looper.getMainLooper());

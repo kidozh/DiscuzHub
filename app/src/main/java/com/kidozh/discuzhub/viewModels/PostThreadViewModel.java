@@ -15,7 +15,7 @@ import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ThreadPostParameterResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
@@ -74,9 +74,9 @@ public class PostThreadViewModel extends AndroidViewModel {
 
     public void loadThreadPostParameter(){
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getCheckPostUrl(fid))
+                .url(URLUtils.getCheckPostUrl(fid))
                 .build();
-        Log.d(TAG,"Post parameters send request "+bbsURLUtils.getCheckPostUrl(String.valueOf(fid)));
+        Log.d(TAG,"Post parameters send request "+ URLUtils.getCheckPostUrl(String.valueOf(fid)));
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

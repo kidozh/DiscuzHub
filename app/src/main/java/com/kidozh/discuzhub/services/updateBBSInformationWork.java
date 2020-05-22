@@ -1,14 +1,11 @@
 package com.kidozh.discuzhub.services;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -16,12 +13,10 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 
-import com.kidozh.discuzhub.MainActivity;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsShowPortalActivity;
 import com.kidozh.discuzhub.database.forumInformationDatabase;
@@ -30,19 +25,16 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.notificationUtils;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -147,7 +139,7 @@ public class updateBBSInformationWork extends Worker {
                 .getForumInformationDao()
                 .getForumInformationById(userBriefInfo.belongedBBSID);
         // needs to set it
-        bbsURLUtils.setBBS(bbsInformation);
+        URLUtils.setBBS(bbsInformation);
         if(!bbsInformation.isSync){
             // skip those
             return Result.success();
@@ -168,7 +160,7 @@ public class updateBBSInformationWork extends Worker {
         Set<String> notificationSituation = prefs.getStringSet(context.getString(R.string.preference_key_recv_notification_situation),new HashSet<>());
 
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getLoginApiUrl())
+                .url(URLUtils.getLoginApiUrl())
                 .build();
 
         try{

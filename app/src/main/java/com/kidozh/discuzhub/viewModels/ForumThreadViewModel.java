@@ -15,7 +15,7 @@ import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ import okhttp3.Response;
 public class ForumThreadViewModel extends AndroidViewModel {
     private String TAG = ForumThreadViewModel.class.getSimpleName();
 
-    public MutableLiveData<bbsURLUtils.ForumStatus> forumStatusMutableLiveData;
+    public MutableLiveData<URLUtils.ForumStatus> forumStatusMutableLiveData;
 
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
@@ -48,7 +48,7 @@ public class ForumThreadViewModel extends AndroidViewModel {
 
     public ForumThreadViewModel(@NonNull Application application) {
         super(application);
-        forumStatusMutableLiveData = new MutableLiveData<bbsURLUtils.ForumStatus>();
+        forumStatusMutableLiveData = new MutableLiveData<URLUtils.ForumStatus>();
         isLoading = new MutableLiveData<Boolean>(false);
         isError = new MutableLiveData<Boolean>(false);
         isError.setValue(false);
@@ -75,18 +75,18 @@ public class ForumThreadViewModel extends AndroidViewModel {
     public LiveData<List<ThreadInfo>> getThreadInfoListLiveData(){
         if(threadInfoListMutableLiveData == null){
             threadInfoListMutableLiveData = new MutableLiveData<>();
-            bbsURLUtils.ForumStatus forumStatus = new bbsURLUtils.ForumStatus(forum.fid,1);
+            URLUtils.ForumStatus forumStatus = new URLUtils.ForumStatus(forum.fid,1);
             setForumStatusAndFetchThread(forumStatus);
         }
         return threadInfoListMutableLiveData;
     }
 
-    public void setForumStatusAndFetchThread(bbsURLUtils.ForumStatus forumStatus){
+    public void setForumStatusAndFetchThread(URLUtils.ForumStatus forumStatus){
         forumStatusMutableLiveData.postValue(forumStatus);
         getThreadList(forumStatus);
     }
 
-    public void getThreadList(bbsURLUtils.ForumStatus forumStatus){
+    public void getThreadList(URLUtils.ForumStatus forumStatus){
         boolean loading = isLoading.getValue();
         if(loading){
             return;
@@ -94,9 +94,9 @@ public class ForumThreadViewModel extends AndroidViewModel {
         isError.postValue(false);
         isLoading.postValue(true);
         Request request = new Request.Builder()
-                .url(bbsURLUtils.getForumUrlByStatus(forumStatus))
+                .url(URLUtils.getForumUrlByStatus(forumStatus))
                 .build();
-        Log.d(TAG,"Send request to "+bbsURLUtils.getForumUrlByStatus(forumStatus));
+        Log.d(TAG,"Send request to "+ URLUtils.getForumUrlByStatus(forumStatus));
 
         client.newCall(request).enqueue(new Callback() {
             @Override

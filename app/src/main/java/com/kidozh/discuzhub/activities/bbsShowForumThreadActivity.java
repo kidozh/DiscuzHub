@@ -42,7 +42,7 @@ import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsURLUtils;
+import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.viewModels.ForumThreadViewModel;
@@ -130,7 +130,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
         forum = (ForumInfo) intent.getSerializableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        bbsURLUtils.setBBS(bbsInfo);
+        URLUtils.setBBS(bbsInfo);
         fid = String.valueOf(forum.fid);
         forumThreadViewModel.setBBSInfo(bbsInfo,userBriefInfo,forum);
     }
@@ -247,12 +247,12 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
 
     private void initLiveData(){
 
-        bbsURLUtils.ForumStatus forumStatus = new bbsURLUtils.ForumStatus(forum.fid,1);
+        URLUtils.ForumStatus forumStatus = new URLUtils.ForumStatus(forum.fid,1);
         forumThreadViewModel.forumStatusMutableLiveData.setValue(forumStatus);
 
     }
 
-    private void reConfigureAndRefreshPage(bbsURLUtils.ForumStatus status){
+    private void reConfigureAndRefreshPage(URLUtils.ForumStatus status){
         status.hasLoadAll = false;
         status.page = 1;
         forumThreadViewModel.forumStatusMutableLiveData.postValue(status);
@@ -264,7 +264,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                bbsURLUtils.ForumStatus status = forumThreadViewModel.forumStatusMutableLiveData.getValue();
+                URLUtils.ForumStatus status = forumThreadViewModel.forumStatusMutableLiveData.getValue();
                 reConfigureAndRefreshPage(status);
 
             }
@@ -327,9 +327,9 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
         mForumThreadTypeChipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(ChipGroup group, int checkedId) {
-                bbsURLUtils.ForumStatus status = forumThreadViewModel.forumStatusMutableLiveData.getValue();
+                URLUtils.ForumStatus status = forumThreadViewModel.forumStatusMutableLiveData.getValue();
                 if(status == null){
-                    status = new bbsURLUtils.ForumStatus(forum.fid,1);
+                    status = new URLUtils.ForumStatus(forum.fid,1);
                 }
                 int position = -1;
                 for(int i=0;i<ChoiceResList.size();i++){
@@ -349,27 +349,27 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                     // need to
                     switch (choiceChipInfo.filterType){
 
-                        case (bbsURLUtils.FILTER_TYPE_POLL):{
+                        case (URLUtils.FILTER_TYPE_POLL):{
                             status.filter = "specialtype";
                             break;
                         }
-                        case (bbsURLUtils.FILTER_TYPE_NEWEST):{
+                        case (URLUtils.FILTER_TYPE_NEWEST):{
                             status.filter = "lastpost";
                             break;
                         }
-                        case (bbsURLUtils.FILTER_TYPE_HEATS):{
+                        case (URLUtils.FILTER_TYPE_HEATS):{
                             status.filter = "heat";
                             break;
                         }
-                        case (bbsURLUtils.FILTER_TYPE_HOTTEST):{
+                        case (URLUtils.FILTER_TYPE_HOTTEST):{
                             status.filter = "hot";
                             break;
                         }
-                        case (bbsURLUtils.FILTER_TYPE_DIGEST):{
+                        case (URLUtils.FILTER_TYPE_DIGEST):{
                             status.filter = "digest";
                             break;
                         }
-                        case (bbsURLUtils.FILTER_TYPE_ID):{
+                        case (URLUtils.FILTER_TYPE_ID):{
                             status.filterId = choiceChipInfo.filterName;
                             break;
                         }
@@ -411,7 +411,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                     Boolean loading = forumThreadViewModel.isLoading.getValue();
                     Log.d(TAG,"load all "+hasLoadAll+" page "+forumThreadViewModel.forumStatusMutableLiveData.getValue().page);
                     if(!loading && !hasLoadAll){
-                        bbsURLUtils.ForumStatus status = forumThreadViewModel.forumStatusMutableLiveData.getValue();
+                        URLUtils.ForumStatus status = forumThreadViewModel.forumStatusMutableLiveData.getValue();
                         if(status!=null){
                             status.page += 1;
                             forumThreadViewModel.setForumStatusAndFetchThread(status);
@@ -438,7 +438,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
         moreThreadBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                bbsURLUtils.ForumStatus forumStatus = forumThreadViewModel.forumStatusMutableLiveData.getValue();
+                URLUtils.ForumStatus forumStatus = forumThreadViewModel.forumStatusMutableLiveData.getValue();
                 Boolean loadAll = forumThreadViewModel.hasLoadAll.getValue();
                 // to next page
                 if(forumStatus!=null){
@@ -466,7 +466,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
     }
 
     public void addTypeChipToChipGroup(String typeId, String name){
-        choiceChipInfoList.add(new ChoiceChipInfo(bbsURLUtils.FILTER_TYPE_ID,name,typeId));
+        choiceChipInfoList.add(new ChoiceChipInfo(URLUtils.FILTER_TYPE_ID,name,typeId));
         Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_choice,mForumThreadTypeChipGroup,false);
         Spanned threadSpanned = Html.fromHtml(name);
         SpannableString threadSpannableString = new SpannableString(threadSpanned);
@@ -516,11 +516,11 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
         ChoiceResList.clear();
         mForumThreadTypeChipGroup.removeAllViews();
         // add oridnary filter first
-        addFilterChipToChipGroup(bbsURLUtils.FILTER_TYPE_POLL,getString(R.string.bbs_thread_filter_poll));
-        addFilterChipToChipGroup(bbsURLUtils.FILTER_TYPE_NEWEST,getString(R.string.bbs_thread_filter_newest));
-        addFilterChipToChipGroup(bbsURLUtils.FILTER_TYPE_HEATS,getString(R.string.bbs_thread_filter_heat));
-        addFilterChipToChipGroup(bbsURLUtils.FILTER_TYPE_HOTTEST,getString(R.string.bbs_thread_filter_hottest));
-        addFilterChipToChipGroup(bbsURLUtils.FILTER_TYPE_DIGEST,getString(R.string.bbs_thread_filter_digest));
+        addFilterChipToChipGroup(URLUtils.FILTER_TYPE_POLL,getString(R.string.bbs_thread_filter_poll));
+        addFilterChipToChipGroup(URLUtils.FILTER_TYPE_NEWEST,getString(R.string.bbs_thread_filter_newest));
+        addFilterChipToChipGroup(URLUtils.FILTER_TYPE_HEATS,getString(R.string.bbs_thread_filter_heat));
+        addFilterChipToChipGroup(URLUtils.FILTER_TYPE_HOTTEST,getString(R.string.bbs_thread_filter_hottest));
+        addFilterChipToChipGroup(URLUtils.FILTER_TYPE_DIGEST,getString(R.string.bbs_thread_filter_digest));
         try{
             // parse it
             Map<String,String> threadTypeMap = bbsParseUtils.parseThreadType(s);
@@ -540,12 +540,12 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         String currentUrl = "";
-        bbsURLUtils.ForumStatus forumStatus = forumThreadViewModel.forumStatusMutableLiveData.getValue();
+        URLUtils.ForumStatus forumStatus = forumThreadViewModel.forumStatusMutableLiveData.getValue();
         if(forumStatus == null || forumStatus.page == 1){
-            currentUrl = bbsURLUtils.getForumDisplayUrl(fid,"1");
+            currentUrl = URLUtils.getForumDisplayUrl(fid,"1");
         }
         else {
-            currentUrl = bbsURLUtils.getForumDisplayUrl(fid,String.valueOf(forumStatus.page-1));
+            currentUrl = URLUtils.getForumDisplayUrl(fid,String.valueOf(forumStatus.page-1));
         }
 
         switch (item.getItemId()) {
