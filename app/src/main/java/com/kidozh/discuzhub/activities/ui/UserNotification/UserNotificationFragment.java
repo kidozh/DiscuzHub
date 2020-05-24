@@ -167,7 +167,7 @@ public class UserNotificationFragment extends Fragment {
             @Override
             public void onChanged(UserNoteListResult userNoteListResult) {
                 Log.d(TAG, "Recv notelist "+userNoteListResult);
-                if(userNoteListResult !=null){
+                if(userNoteListResult !=null && userNoteListResult.noteListVariableResult!=null){
                     List<UserNoteListResult.UserNotification> notificationList = userNoteListResult.noteListVariableResult.notificationList;
                     if(globalPage == 1){
                         adapter.setNotificationDetailInfoList(notificationList);

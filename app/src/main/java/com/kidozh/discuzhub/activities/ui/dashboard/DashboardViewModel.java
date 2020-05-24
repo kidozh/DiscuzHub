@@ -36,6 +36,7 @@ public class DashboardViewModel extends AndroidViewModel {
     public MutableLiveData<Integer> pageNum;
     public MutableLiveData<Boolean> isLoading, isError;
     public MutableLiveData<List<ThreadInfo>> threadListLiveData;
+    public MutableLiveData<String> errorTextLiveData;
     public String jsonString;
 
 
@@ -50,6 +51,7 @@ public class DashboardViewModel extends AndroidViewModel {
         isLoading.postValue(false);
         isError = new MutableLiveData<Boolean>();
         isError.postValue(false);
+        errorTextLiveData = new MutableLiveData<>("");
 
     }
 
@@ -102,7 +104,7 @@ public class DashboardViewModel extends AndroidViewModel {
                         currentThreadInfo = new ArrayList<ThreadInfo>();
                     }
 
-                    if(threadsResult!=null){
+                    if(threadsResult!=null && threadsResult.forumVariables !=null){
                         List<ThreadInfo> threadInfos = threadsResult.forumVariables.forumThreadList;
                         if(threadInfos != null){
                             currentThreadInfo.addAll(threadInfos);
@@ -110,6 +112,14 @@ public class DashboardViewModel extends AndroidViewModel {
                     }
                     else {
                         isError.postValue(true);
+                        if(threadsResult!=null){
+                            if(threadsResult.message !=null){
+                                errorTextLiveData.postValue(threadsResult.message.content);
+                            }
+                            else if(threadsResult.error.length()!=0){
+                                errorTextLiveData.postValue(threadsResult.error);
+                            }
+                        }
                         if(page != 1){
                             // not at initial state
                             pageNum.postValue(pageNum.getValue() == null ?1:pageNum.getValue()-1);

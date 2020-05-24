@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".activities.showPersonalInfoActivity"
+    tools:context=".activities.UserProfileActivity"
     tools:showIn="@layout/activity_show_personal_info">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -58,7 +58,7 @@
                 app:layout_constraintTop_toTopOf="@+id/show_personal_info_message_btn" />
 
             <TextView
-                android:id="@+id/show_personal_info_bio_textview"
+                android:id="@+id/user_signature_textview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -74,8 +74,8 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="@+id/show_personal_info_bio_textview"
-                app:layout_constraintTop_toBottomOf="@+id/show_personal_info_bio_textview"
+                app:layout_constraintStart_toStartOf="@+id/user_signature_textview"
+                app:layout_constraintTop_toBottomOf="@+id/user_signature_textview"
                 app:srcCompat="@drawable/vector_drawable_attachment" />
 
             <TextView
@@ -86,7 +86,7 @@
                 android:singleLine="true"
                 android:textAlignment="viewStart"
                 android:textColor="@color/colorPrimaryDark"
-                app:layout_constraintEnd_toEndOf="@+id/show_personal_info_bio_textview"
+                app:layout_constraintEnd_toEndOf="@+id/user_signature_textview"
                 app:layout_constraintStart_toEndOf="@+id/show_personal_info_interest_icon"
                 app:layout_constraintTop_toTopOf="@+id/show_personal_info_interest_icon"
                 tools:text="@tools:sample/lorem" />

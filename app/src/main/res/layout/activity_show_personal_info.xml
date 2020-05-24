@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activities.showPersonalInfoActivity">
+    tools:context=".activities.UserProfileActivity">
 
 
     <com.google.android.material.appbar.AppBarLayout
@@ -50,20 +50,6 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:srcCompat="@drawable/avatar_1" />
 
-                    <TextView
-                        android:id="@+id/show_personal_info_username"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:singleLine="true"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:visibility="gone"
-                        app:layout_constraintEnd_toEndOf="@+id/show_personal_info_message_btn"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_avatar"
-                        tools:text="@tools:sample/full_names" />
-
                     <Button
                         android:id="@+id/show_personal_info_message_btn"
                         style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -91,7 +77,19 @@
                         app:layout_constraintTop_toTopOf="@+id/show_personal_info_message_btn" />
 
                     <TextView
-                        android:id="@+id/show_personal_info_bio_textview"
+                        android:id="@+id/user_bio_textview"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_avatar"
+                        tools:text="@tools:sample/cities" />
+
+                    <TextView
+                        android:id="@+id/user_signature_textview"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -100,7 +98,7 @@
                         android:textAlignment="viewStart"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_username"
+                        app:layout_constraintTop_toBottomOf="@+id/user_bio_textview"
                         tools:text="@tools:sample/lorem" />
 
                     <ImageView
@@ -108,8 +106,8 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginTop="8dp"
-                        app:layout_constraintStart_toStartOf="@+id/show_personal_info_bio_textview"
-                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_bio_textview"
+                        app:layout_constraintStart_toStartOf="@+id/user_signature_textview"
+                        app:layout_constraintTop_toBottomOf="@+id/user_signature_textview"
                         app:srcCompat="@drawable/vector_drawable_attachment" />
 
                     <TextView
@@ -243,7 +241,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context=".activities.showPersonalInfoActivity"
+        tools:context=".activities.UserProfileActivity"
         tools:showIn="@layout/activity_show_personal_info">
 
 

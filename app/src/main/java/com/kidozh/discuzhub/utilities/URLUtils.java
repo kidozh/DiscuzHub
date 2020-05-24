@@ -54,8 +54,8 @@ public class URLUtils {
         return BASE_URL + "/api/mobile/index.php?version=4&module=forumindex";
     }
 
-    public static String getBBSForumIconURLByFid(int fid){
-        return BASE_URL+String.format("/data/attachment/common/1f/common_%s_icon.png",fid);
+    public static String getBBSMedalImageURL(String image){
+        return BASE_URL+String.format("/static/image/common/%s",image);
     }
 
 
@@ -230,11 +230,6 @@ public class URLUtils {
         return UC_SERVER_URL+String.format("/avatar.php?uid=%s",uid);
     }
 
-//    public static String getLoginUrl(){
-//        return BASE_URL + "/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1";
-//        //return "https://bbs.nwpu.edu.cn/member.php?mod=logging&action=login&loginsubmit=yes&infloat=yes&lssubmit=yes&inajax=1";
-//    }
-
     public static String getLoginUrl(){
         Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
                 .appendQueryParameter("version","4")
@@ -363,21 +358,6 @@ public class URLUtils {
     }
 
 
-    public static String getReplyToSomeoneThreadUrl(String fid,String tid){
-        Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
-                .appendQueryParameter("mod","post")
-                .appendQueryParameter("action","reply")
-                .appendQueryParameter("fid",fid)
-                .appendQueryParameter("tid",tid)
-                .appendQueryParameter("inajax","1")
-                .appendQueryParameter("replysubmit","yes")
-                .appendQueryParameter("infloat","yes")
-                //.appendQueryParameter("extra","")
-                .build();
-        return uri.toString();
-    }
-
-
 
     public static String getHotThreadUrl(int page){
         return BASE_URL+"/api/mobile/index.php?version=4&module=hotthread&page="+page ;
@@ -405,10 +385,6 @@ public class URLUtils {
         return BASE_URL+"/api/mobile/index.php?version=4&ac=pm&op=send&daterange=0&module=sendpm&plid="+plid+"&pmid="+pmid+"&handlekey=pmsend&pmsubmit=yes&inajax=1";
     }
 
-    public static String getProfileApiUrlByUid(int uid){
-        return BASE_URL+"/api/mobile/index.php?version=4&module=profile&uid="+uid;
-    }
-
     public static String getFriendApiUrlByUid(int uid,int page){
         return BASE_URL+"/api/mobile/index.php?version=4&module=friend&uid="+uid+"&page="+page;
     }
@@ -427,6 +403,26 @@ public class URLUtils {
 
     public static String getSeccodeApiUrl(int idhash){
         return BASE_URL + "/api/mobile/index.php?version=4&module=seccodehtml&sechash="+idhash;
+    }
+
+    public static String getProfileApiUrlByUid(int uid){
+        Uri builtUri = Uri.parse(BASE_URL+"/api/mobile/index.php")
+                .buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","profile")
+                .appendQueryParameter("uid",String.valueOf(uid))
+                .build();
+        return builtUri.toString();
+    }
+
+    public static String getUserProfileUrl(int uid){
+        Uri builtUri = Uri.parse(BASE_URL+"/api/mobile/index.php")
+                .buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","profile")
+                .appendQueryParameter("uid",String.valueOf(uid))
+                .build();
+        return builtUri.toString();
     }
 
     public static String getVotePollApiUrl(int tid){

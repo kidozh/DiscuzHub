@@ -334,7 +334,7 @@ public class bbsShowPortalActivity extends AppCompatActivity
                 return false;
             }
             case R.id.bbs_forum_nav_personal_center:{
-                Intent intent = new Intent(this, showPersonalInfoActivity.class);
+                Intent intent = new Intent(this, UserProfileActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
                 intent.putExtra("UID",String.valueOf(curUser.uid));

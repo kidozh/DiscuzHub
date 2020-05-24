@@ -70,6 +70,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
         this.userBriefInfo = userBriefInfo;
         this.forum = forum;
         this.tid = tid;
+        URLUtils.setBBS(bbsInfo);
         client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
 
 

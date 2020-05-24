@@ -495,10 +495,11 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                     Spanned sp = Html.fromHtml(threadPostResult.threadPostVariables.detailedThreadInfo.subject);
                     SpannableString spannableString = new SpannableString(sp);
                     mDetailThreadSubjectTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
-                    Log.d(TAG,"Thread post result error "+threadPostResult.isError()+ threadPostResult.threadPostVariables.message);
+                    Log.d(TAG,"Thread post result error "+threadPostResult.isError()+" "+ threadPostResult.threadPostVariables.message);
                     if(threadPostResult.isError()){
+
                         noMoreThreadFound.setVisibility(View.VISIBLE);
-                        noMoreThreadFound.setText(threadPostResult.threadPostVariables.message.content);
+                        noMoreThreadFound.setText(threadPostResult.message.content);
                     }
                     else {
                         noMoreThreadFound.setVisibility(View.GONE);
@@ -1031,7 +1032,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
                 this.finishAfterTransition();
                 return false;
             case R.id.bbs_forum_nav_personal_center:{
-                Intent intent = new Intent(this, showPersonalInfoActivity.class);
+                Intent intent = new Intent(this, UserProfileActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra("UID",String.valueOf(userBriefInfo.uid));

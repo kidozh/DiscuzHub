@@ -3,8 +3,6 @@ package com.kidozh.discuzhub.adapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -27,7 +25,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,7 +44,7 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
-import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
+import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -67,7 +64,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dmoral.toasty.Toasty;
 import okhttp3.OkHttpClient;
 
 public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.bbsForumThreadCommentViewHolder> {
@@ -207,7 +203,7 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
         holder.mAvatarImageview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, showPersonalInfoActivity.class);
+                Intent intent = new Intent(mContext, UserProfileActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
 

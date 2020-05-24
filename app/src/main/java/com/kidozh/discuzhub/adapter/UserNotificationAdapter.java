@@ -28,8 +28,8 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.activities.bbsShowThreadActivity;
-import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
 import com.kidozh.discuzhub.activities.showWebPageActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -125,7 +125,7 @@ public class UserNotificationAdapter extends RecyclerView.Adapter<UserNotificati
             holder.bbsNotificationImageview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, showPersonalInfoActivity.class);
+                    Intent intent = new Intent(context, UserProfileActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
                     intent.putExtra("UID",notificationDetailInfo.authorId);

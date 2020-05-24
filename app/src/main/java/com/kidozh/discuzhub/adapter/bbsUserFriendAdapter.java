@@ -18,7 +18,7 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
+import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -99,7 +99,7 @@ public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdap
             @Override
             public void onClick(View v) {
                 Log.d(TAG,"click friend cardview");
-                Intent intent = new Intent(context, showPersonalInfoActivity.class);
+                Intent intent = new Intent(context, UserProfileActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
                 intent.putExtra("UID",String.valueOf(friend.uid));

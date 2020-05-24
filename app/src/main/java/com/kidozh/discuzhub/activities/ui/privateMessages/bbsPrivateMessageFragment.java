@@ -252,7 +252,7 @@ public class bbsPrivateMessageFragment extends Fragment {
 
     // TODO: Rename method, update argument and hook method into UI event
     public void setNotificationNum(bbsParseUtils.noticeNumInfo notificationNum) {
-        Log.d(TAG,"set message number "+notificationNum.getAllNoticeInfo());
+        //Log.d(TAG,"set message number "+notificationNum.getAllNoticeInfo());
         if (mListener != null) {
             mListener.setNotificationsNum(notificationNum);
         }

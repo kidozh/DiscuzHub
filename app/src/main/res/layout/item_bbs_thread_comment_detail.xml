@@ -223,7 +223,7 @@
                 android:text="@string/bbs_post_only_see_him"
                 app:icon="@drawable/vector_drawable_eye_24px"
                 app:layout_constraintStart_toEndOf="@+id/bbs_thread_reply_button"
-                tools:layout_editor_absoluteY="402dp" />
+                app:layout_constraintTop_toTopOf="@+id/bbs_thread_reply_button" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

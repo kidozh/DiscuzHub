@@ -61,6 +61,7 @@ public class PostThreadViewModel extends AndroidViewModel {
         this.curBBS = bbsInfo;
         this.curUser = userBriefInfo;
         this.fid = fid;
+        URLUtils.setBBS(bbsInfo);
         client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
     }
 

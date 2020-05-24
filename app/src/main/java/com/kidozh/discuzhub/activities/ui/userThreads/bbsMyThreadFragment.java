@@ -149,7 +149,7 @@ public class bbsMyThreadFragment extends Fragment {
 
 
                     DisplayThreadsResult threadsResult = bbsParseUtils.getThreadListInfo(s);
-                    if(threadsResult!=null) {
+                    if(threadsResult!=null && threadsResult.forumVariables !=null) {
                         List<ThreadInfo> threadInfoList = threadsResult.forumVariables.forumThreadList;
 
                         mHandler.post(new Runnable() {

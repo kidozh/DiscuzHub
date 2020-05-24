@@ -2,6 +2,8 @@ package com.kidozh.discuzhub.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,7 +72,9 @@ public class bbsPortalCategoryForumAdapter extends RecyclerView.Adapter<bbsPorta
 
         ForumInfo forum = forumInfoList.get(position);
         if(forum!=null){
-            holder.mForumName.setText(forum.name);
+            // support rich text
+            Spanned sp = Html.fromHtml(forum.name,null,null);
+            holder.mForumName.setText(sp, TextView.BufferType.SPANNABLE);
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(getPreferredClient(this.mContext));
             Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
             Glide.with(mContext)

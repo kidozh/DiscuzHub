@@ -93,7 +93,7 @@ public class HomeViewModel extends AndroidViewModel {
                     Log.d(TAG,"Recv Portal JSON "+s);
                     BBSIndexResult indexResult = bbsParseUtils.parseForumIndexResult(s);
                     bbsIndexResultMutableLiveData.postValue(indexResult);
-                    if(indexResult !=null){
+                    if(indexResult !=null && indexResult.forumVariables !=null){
                         forumUserBriefInfo serverReturnedUser = indexResult.forumVariables.getUserBriefInfo();
                         userBriefInfoMutableLiveData.postValue(serverReturnedUser);
                         errorText.postValue(null);
@@ -104,9 +104,16 @@ public class HomeViewModel extends AndroidViewModel {
 
                     }
                     else {
-                        String errorString = bbsParseUtils.parseErrorInformation(s);
-                        if(errorString!=null){
-                            errorText.postValue(errorString);
+                        if(indexResult!=null){
+                            if(indexResult.message!=null){
+                                errorText.postValue(indexResult.message.content);
+                            }
+                            else if(indexResult.error.length()!=0){
+                                errorText.postValue(indexResult.error);
+                            }
+                            else {
+                                errorText.postValue(context.getString(R.string.parse_failed));
+                            }
                         }
                         else {
                             errorText.postValue(context.getString(R.string.parse_failed));

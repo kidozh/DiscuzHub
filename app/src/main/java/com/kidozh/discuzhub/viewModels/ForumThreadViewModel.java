@@ -69,6 +69,7 @@ public class ForumThreadViewModel extends AndroidViewModel {
         this.curBBS = bbsInfo;
         this.curUser = userBriefInfo;
         this.forum = forum;
+        URLUtils.setBBS(bbsInfo);
         client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
     }
 

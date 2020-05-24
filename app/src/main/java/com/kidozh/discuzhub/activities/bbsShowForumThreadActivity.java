@@ -553,7 +553,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                 this.finishAfterTransition();
                 return false;
             case R.id.bbs_forum_nav_personal_center:{
-                Intent intent = new Intent(this, showPersonalInfoActivity.class);
+                Intent intent = new Intent(this, UserProfileActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra("UID",String.valueOf(userBriefInfo.uid));

@@ -3,6 +3,8 @@ package com.kidozh.discuzhub.activities.ui.home;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spannable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,7 +95,8 @@ public class HomeFragment extends Fragment {
         homeViewModel.getForumCategoryInfo().observe(getViewLifecycleOwner(), new Observer<List<BBSIndexResult.ForumCategory>>() {
             @Override
             public void onChanged(List<BBSIndexResult.ForumCategory> forumCategories) {
-                if(homeViewModel.bbsIndexResultMutableLiveData.getValue() !=null){
+                if(homeViewModel.bbsIndexResultMutableLiveData.getValue() !=null &&
+                        homeViewModel.bbsIndexResultMutableLiveData.getValue().forumVariables !=null){
                     List<ForumInfo> allForumInfo = homeViewModel.bbsIndexResultMutableLiveData.getValue().forumVariables.forumInfoList;
                     adapter.setForumCategoryList(forumCategories,allForumInfo);
                     bbsPortalProgressbar.setVisibility(View.GONE);
@@ -111,7 +114,9 @@ public class HomeFragment extends Fragment {
                     bbsPortalErrorText.setText(R.string.bbs_user_banned);
                 }
                 else {
-                    bbsPortalErrorText.setText(errorText);
+
+                    bbsPortalErrorText.setText(Html.fromHtml(errorText), TextView.BufferType.SPANNABLE);
+
                 }
                 bbsPortalErrorText.setVisibility(View.VISIBLE);
                 bbsPortalRefreshPageBtn.setVisibility(View.VISIBLE);

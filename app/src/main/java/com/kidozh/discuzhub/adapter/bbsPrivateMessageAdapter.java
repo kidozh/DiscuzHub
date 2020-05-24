@@ -24,8 +24,8 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.activities.bbsPrivateMessageDetailActivity;
-import com.kidozh.discuzhub.activities.showPersonalInfoActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -128,7 +128,7 @@ public class bbsPrivateMessageAdapter extends RecyclerView.Adapter<bbsPrivateMes
         holder.privateMessageAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, showPersonalInfoActivity.class);
+                Intent intent = new Intent(context, UserProfileActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
 

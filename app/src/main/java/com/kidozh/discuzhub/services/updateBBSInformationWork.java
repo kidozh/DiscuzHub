@@ -139,6 +139,9 @@ public class updateBBSInformationWork extends Worker {
                 .getForumInformationDao()
                 .getForumInformationById(userBriefInfo.belongedBBSID);
         // needs to set it
+        if(bbsInformation == null){
+            return Result.failure();
+        }
         URLUtils.setBBS(bbsInformation);
         if(!bbsInformation.isSync){
             // skip those

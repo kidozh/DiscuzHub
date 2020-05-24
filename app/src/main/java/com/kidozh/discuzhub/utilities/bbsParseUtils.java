@@ -27,6 +27,7 @@ import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.results.ThreadPostParameterResult;
 import com.kidozh.discuzhub.results.ThreadPostResult;
 import com.kidozh.discuzhub.results.UserNoteListResult;
+import com.kidozh.discuzhub.results.UserProfileResult;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -261,6 +262,17 @@ public class bbsParseUtils {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(s, ThreadPostResult.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static UserProfileResult parseUserProfileResult(String s){
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(s, UserProfileResult.class);
 
         } catch (Exception e) {
             e.printStackTrace();

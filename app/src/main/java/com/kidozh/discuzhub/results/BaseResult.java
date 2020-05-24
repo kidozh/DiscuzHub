@@ -14,6 +14,7 @@ public class BaseResult {
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonProperty("Message")
     public MessageResult message;
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public String error="";
 
 }

@@ -1,11 +1,8 @@
 package com.kidozh.discuzhub.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -17,7 +14,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +22,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
@@ -37,37 +35,30 @@ import com.kidozh.discuzhub.activities.ui.privacyProtect.privacyProtectFragment;
 import com.kidozh.discuzhub.activities.ui.userFriend.userFriendFragment;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.UserProfileResult;
 import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
-import com.kidozh.discuzhub.utilities.timeDisplayUtils;
+import com.kidozh.discuzhub.viewModels.UserProfileViewModel;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dmoral.toasty.Toasty;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
-public class showPersonalInfoActivity extends AppCompatActivity implements userFriendFragment.OnFragmentInteractionListener{
+public class UserProfileActivity extends AppCompatActivity implements userFriendFragment.OnFragmentInteractionListener{
 
-    private static final String TAG = showPersonalInfoActivity.class.getSimpleName();
+    private static final String TAG = UserProfileActivity.class.getSimpleName();
 
     @BindView(R.id.show_personal_info_avatar)
     ImageView personalInfoAvatar;
-    @BindView(R.id.show_personal_info_bio_textview)
+    @BindView(R.id.user_signature_textview)
     TextView personalInfoBioTextView;
     @BindView(R.id.show_personal_info_interest_icon)
     ImageView personalInfoInterestIcon;
@@ -113,18 +104,19 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
     OkHttpClient client;
     String friendNum, threadNum, postsNum;
     String username;
+    private UserProfileViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_personal_info);
         ButterKnife.bind(this);
+        viewModel = new ViewModelProvider(this).get(UserProfileViewModel.class);
         getIntentInfo();
         configureActionBar();
         renderFollowAndPMBtn();
-
+        bindViewModel();
         renderUserInfo();
-        getUserInfo();
         configurePMBtn();
 
 
@@ -192,7 +184,7 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
         else {
             Log.d(TAG,"get bbs name "+curBBS.site_name);
             URLUtils.setBBS(curBBS);
-            //bbsURLUtils.setBaseUrl(curBBS.base_url);
+            viewModel.setBBSInfo(curBBS,userBriefInfo, userId);
         }
         if(getSupportActionBar()!=null){
             getSupportActionBar().setTitle(curBBS.site_name);
@@ -205,126 +197,43 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
 
     }
 
-    void setIconAndTextView(String inputtedString, ImageView iconView, TextView textView){
-        if(inputtedString!=null && inputtedString.length()>0){
-            textView.setText(inputtedString);
-        }
-        else {
-            iconView.setVisibility(View.GONE);
-            textView.setVisibility(View.GONE);
-        }
-    }
-
-    void getUserInfo(){
-        String apiStr = URLUtils.getProfileApiUrlByUid(userId);
-        Request request = new Request.Builder()
-                .url(apiStr)
-                .build();
-        Activity curActivity = this;
-        Handler mHandler = new Handler(Looper.getMainLooper());
-        showPersonalInfoProgressbar.setVisibility(View.VISIBLE);
-        showPersonalInfoLayout.setVisibility(View.GONE);
-        client.newCall(request).enqueue(new Callback() {
+    private void bindViewModel(){
+        viewModel.getUserProfileResultLiveData().observe(this, new Observer<UserProfileResult>() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toasty.error(getApplication(),getString(R.string.network_failed), Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful()&& response.body()!=null){
-                    String s = response.body().string();
-                    Map<String,String> info = bbsParseUtils.parseUserProfile(s);
-                    if(info!=null){
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                showPersonalInfoProgressbar.setVisibility(View.GONE);
-                                showPersonalInfoLayout.setVisibility(View.VISIBLE);
-                                getSupportActionBar().setTitle(info.get("username"));
-
-                                String sightml = info.get("sightml");
-                                if(sightml!=null && sightml.length()>0){
-                                    MyTagHandler myTagHandler = new MyTagHandler(getApplication(),personalInfoBioTextView,personalInfoBioTextView);
-                                    MyImageGetter myImageGetter = new MyImageGetter(getApplication(),personalInfoBioTextView,personalInfoBioTextView,true);
-                                    Spanned sp = Html.fromHtml(sightml,myImageGetter,myTagHandler);
-                                    SpannableString spannableString = new SpannableString(sp);
-
-                                    personalInfoBioTextView.setText(spannableString, TextView.BufferType.SPANNABLE);
-                                    personalInfoBioTextView.setMovementMethod(LinkMovementMethod.getInstance());
-                                }
-                                else {
-                                    personalInfoBioTextView.setText(R.string.bbs_bio_not_set);
-                                }
-
-
-                                personalInfoUsername.setText(info.get("username"));
-                                username = info.get("username");
-                                personalInfoInterestTextView.setText(info.get("interest"));
-                                setIconAndTextView(info.get("interest"),personalInfoInterestIcon,personalInfoInterestTextView);
-                                setIconAndTextView(
-                                        info.get("birthprovince")+info.get("birthcity")+info.get("birthdist")+info.get("birthcommunity"),
-                                        personalInfoBirthPlaceIcon,
-                                        personInfoBirthPlace
-                                );
-                                String regdate = info.get("regdate");
-                                if(regdate!=null){
-                                    regdate = regdate.replace("\n","");
-                                }
-                                String lastTimeString = info.get("lastactivitydb");
-                                if(lastTimeString !=null){
-                                    Date lastActivity = new Date(Long.parseLong(lastTimeString)*1000);
-                                    personalInfoLastActivityTime.setText(timeDisplayUtils.getLocalePastTimeString(curActivity,lastActivity));
-                                }
-                                else {
-                                    personalInfoLastActivityTime.setText(R.string.not_known);
-                                }
-
-
-                                setIconAndTextView(regdate,personalInfoRegdateIcon,personalInfoRegdateTextview);
-                                setIconAndTextView(info.get("recentnote"),personalInfoRecentNoteIcon,personalInfoRecentNoteTextview);
-                                friendNum = info.get("friends");
-                                threadNum = info.get("threads");
-                                postsNum = info.get("posts");
-                                configureViewPager();
-                                String userCredit = info.get("credits");
-                                Map<String,String> userGroupInfo = bbsParseUtils.parseUserGroupInfo(s);
-                                if(userGroupInfo!=null){
-                                    String type = userGroupInfo.get("type");
-                                    if(type.equals("special")){
-                                        personalInfoGroupIcon.setImageDrawable(getDrawable(R.drawable.vector_drawable_verified_user_24px));
-                                    }
-                                    else {
-                                        personalInfoGroupIcon.setImageDrawable(getDrawable(R.drawable.vector_drawable_account_box_24px));
-                                    }
-
-                                    String groupTitle = userGroupInfo.get("grouptitle");
-                                    String groupInfoText = getString(R.string.bbs_personal_info_credit_with_title_template,groupTitle,userCredit);
-                                    Spanned styledText = Html.fromHtml(groupInfoText);
-                                    personalInfoGroupInfo.setText(styledText, TextView.BufferType.SPANNABLE);
-
-                                }
-                            }
-                        });
+            public void onChanged(UserProfileResult userProfileResult) {
+                if(userProfileResult !=null){
+                    // for avatar rendering
+                    OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(getApplication(),curBBS.useSafeClient));
+                    Glide.get(getApplicationContext()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+                    int uid = userProfileResult.userProfileVariableResult.space.uid;
+                    int avatar_num = uid % 16;
+                    if(avatar_num < 0){
+                        avatar_num = -avatar_num;
                     }
 
-                }
-                else {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toasty.error(getApplication(),getString(R.string.network_failed), Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    int avatarResource = getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",getPackageName());
+
+                    Glide.with(getApplication())
+                            .load(URLUtils.getDefaultAvatarUrlByUid(uid))
+                            .error(avatarResource)
+                            .placeholder(avatarResource)
+                            .centerInside()
+                            .into(personalInfoAvatar);
+
+                    // signature
+                    String sigHtml = userProfileResult.userProfileVariableResult.space.sigatureHtml;
+                    MyTagHandler myTagHandler = new MyTagHandler(getApplication(),personalInfoBioTextView,personalInfoBioTextView);
+                    MyImageGetter myImageGetter = new MyImageGetter(getApplication(),personalInfoBioTextView,personalInfoBioTextView,true);
+                    Spanned sp = Html.fromHtml(sigHtml,myImageGetter,myTagHandler);
+                    SpannableString spannableString = new SpannableString(sp);
+
+                    personalInfoBioTextView.setText(spannableString, TextView.BufferType.SPANNABLE);
+                    personalInfoBioTextView.setMovementMethod(LinkMovementMethod.getInstance());
                 }
             }
         });
     }
+
 
     void configureViewPager(){
         Log.d(TAG,"Configuring friend fragment");
@@ -336,9 +245,6 @@ public class showPersonalInfoActivity extends AppCompatActivity implements userF
         tabTitles.add(getString(R.string.bbs_user_friend)+String.format(" (%s)",friendNum));
         tabTitles.add(getString(R.string.bbs_forum_thread)+String.format(" (%s)",threadNum));
         tabTitles.add(getString(R.string.bbs_forum_post)+String.format(" (%s)",postsNum));
-//        new TabLayoutMediator(personInfoTabLayout,personInfoViewPager,(
-//                (tab, position) -> tab.setText(tabTitles.get(position)))
-//        ).attach();
 
     }
 
