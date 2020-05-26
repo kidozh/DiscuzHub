@@ -244,7 +244,10 @@ public class userFriendFragment extends Fragment {
                                 else {
                                     hasLoadAll = true;
                                 }
-                                mListener.onRenderSuccessfully();
+                                if(mListener!=null){
+                                    mListener.onRenderSuccessfully();
+                                }
+
                             }
                         });
 

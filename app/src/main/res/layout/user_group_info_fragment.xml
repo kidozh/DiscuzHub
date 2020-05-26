@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.ui.UserGroup.UserGroupInfoFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/user_group_admin_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/colorPomegranate"
+            app:cardCornerRadius="8dp"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/user_group_admin_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/colorPureWhite"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Administrator" />
+
+                <TextView
+                    android:id="@+id/user_group_admin_star"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_group_admin_star_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/user_group_admin_star_icon"
+                    tools:text="10" />
+
+                <ImageView
+                    android:id="@+id/user_group_admin_star_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_user_profile_group_star_24px"
+                    app:layout_constraintEnd_toStartOf="@+id/user_group_admin_star"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/user_admin_group_admin_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintStart_toStartOf="@+id/user_group_admin_title"
+                    app:layout_constraintTop_toBottomOf="@+id/user_group_admin_title"
+                    tools:text="FREDS" />
+
+                <TextView
+                    android:id="@+id/user_admin_group_readaccess"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_admin_group_readaccess_icon"
+                    app:layout_constraintStart_toEndOf="@+id/user_admin_group_readaccess_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/user_group_admin_title"
+                    tools:text="255" />
+
+                <ImageView
+                    android:id="@+id/user_admin_group_readaccess_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/ic_read_access_24px"
+                    android:tint="@color/colorCloud"
+                    app:layout_constraintStart_toEndOf="@+id/user_admin_group_admin_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/user_group_admin_title" />
+
+                <ImageView
+                    android:id="@+id/user_admin_group_allow_attach_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_profile_item_enable_24px"
+                    app:layout_constraintStart_toStartOf="@+id/user_admin_group_admin_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/user_admin_group_admin_icon" />
+
+                <TextView
+                    android:id="@+id/user_admin_group_allow_attach_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/group_get_attachment"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_admin_group_allow_attach_icon"
+                    app:layout_constraintStart_toEndOf="@+id/user_admin_group_allow_attach_icon"
+                    app:layout_constraintTop_toTopOf="@+id/user_admin_group_allow_attach_icon" />
+
+                <ImageView
+                    android:id="@+id/user_admin_group_allow_image_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_profile_item_enable_24px"
+                    app:layout_constraintStart_toEndOf="@+id/user_admin_group_allow_attach_textview"
+                    app:layout_constraintTop_toBottomOf="@+id/user_admin_group_admin_icon" />
+
+                <TextView
+                    android:id="@+id/user_admin_group_allow_image_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/group_get_image"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_admin_group_allow_attach_icon"
+                    app:layout_constraintStart_toEndOf="@+id/user_admin_group_allow_image_icon"
+                    app:layout_constraintTop_toTopOf="@+id/user_admin_group_allow_attach_icon" />
+
+                <ImageView
+                    android:id="@+id/user_admin_group_allow_media_code_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_profile_item_enable_24px"
+                    app:layout_constraintStart_toEndOf="@+id/user_admin_group_allow_image_textview"
+                    app:layout_constraintTop_toBottomOf="@+id/user_admin_group_admin_icon" />
+
+                <TextView
+                    android:id="@+id/user_admin_group_allow_media_code_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/group_get_media_code"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_admin_group_allow_attach_icon"
+                    app:layout_constraintStart_toEndOf="@+id/user_admin_group_allow_media_code_icon"
+                    app:layout_constraintTop_toTopOf="@+id/user_admin_group_allow_attach_icon" />
+
+                <ImageView
+                    android:id="@+id/user_admin_group_max_signature_size_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:src="@drawable/ic_signature_size_24px"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/user_admin_group_allow_attach_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/user_admin_group_allow_attach_icon"
+                    />
+
+                <TextView
+                    android:id="@+id/user_admin_group_max_signature_size_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_admin_group_max_signature_size_icon"
+                    app:layout_constraintStart_toEndOf="@+id/user_admin_group_max_signature_size_icon"
+                    app:layout_constraintTop_toTopOf="@+id/user_admin_group_max_signature_size_icon"
+                    tools:text="@string/group_max_signature" />
+
+                <ImageView
+                    android:id="@+id/user_admin_group_begin_code_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/ic_profile_item_enable_24px"
+                    app:layout_constraintStart_toEndOf="@+id/user_admin_group_max_signature_size_textview"
+                    app:layout_constraintTop_toTopOf="@+id/user_admin_group_max_signature_size_icon" />
+
+                <TextView
+                    android:id="@+id/user_admin_group_begin_code_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/group_begin_code"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_admin_group_begin_code_icon"
+                    app:layout_constraintStart_toEndOf="@+id/user_admin_group_begin_code_icon"
+                    app:layout_constraintTop_toTopOf="@+id/user_admin_group_begin_code_icon" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/user_group_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/colorPrimaryDark"
+            app:cardCornerRadius="8dp"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/user_group_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/colorPureWhite"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Simple Users" />
+
+                <TextView
+                    android:id="@+id/user_group_star"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_group_star_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/user_group_star_icon"
+                    tools:text="10" />
+
+                <ImageView
+                    android:id="@+id/user_group_star_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_user_profile_group_star_24px"
+                    app:layout_constraintEnd_toStartOf="@+id/user_group_star"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/user_group_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintStart_toStartOf="@+id/user_group_title"
+                    app:layout_constraintTop_toBottomOf="@+id/user_group_title"
+                    tools:text="FREDS" />
+
+                <TextView
+                    android:id="@+id/user_group_readaccess"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_group_readaccess_icon"
+                    app:layout_constraintStart_toEndOf="@+id/user_group_readaccess_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/user_group_title"
+                    tools:text="255" />
+
+                <ImageView
+                    android:id="@+id/user_group_readaccess_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/ic_read_access_24px"
+                    android:tint="@color/colorCloud"
+                    app:layout_constraintStart_toEndOf="@+id/user_group_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/user_group_title" />
+
+                <ImageView
+                    android:id="@+id/user_group_allow_attach_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_profile_item_enable_24px"
+                    app:layout_constraintStart_toStartOf="@+id/user_group_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/user_group_icon" />
+
+                <TextView
+                    android:id="@+id/user_group_allow_attach_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/group_get_attachment"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_group_allow_attach_icon"
+                    app:layout_constraintStart_toEndOf="@+id/user_group_allow_attach_icon"
+                    app:layout_constraintTop_toTopOf="@+id/user_group_allow_attach_icon" />
+
+                <ImageView
+                    android:id="@+id/user_group_allow_image_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_profile_item_enable_24px"
+                    app:layout_constraintStart_toEndOf="@+id/user_group_allow_attach_textview"
+                    app:layout_constraintTop_toBottomOf="@+id/user_group_icon" />
+
+                <TextView
+                    android:id="@+id/user_group_allow_image_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/group_get_image"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_group_allow_attach_icon"
+                    app:layout_constraintStart_toEndOf="@+id/user_group_allow_image_icon"
+                    app:layout_constraintTop_toTopOf="@+id/user_group_allow_attach_icon" />
+
+                <ImageView
+                    android:id="@+id/user_group_allow_media_code_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_profile_item_enable_24px"
+                    app:layout_constraintStart_toEndOf="@+id/user_group_allow_image_textview"
+                    app:layout_constraintTop_toBottomOf="@+id/user_group_icon" />
+
+                <TextView
+                    android:id="@+id/user_group_allow_media_code_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/group_get_media_code"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_group_allow_attach_icon"
+                    app:layout_constraintStart_toEndOf="@+id/user_group_allow_media_code_icon"
+                    app:layout_constraintTop_toTopOf="@+id/user_group_allow_attach_icon" />
+
+                <ImageView
+                    android:id="@+id/user_group_max_signature_size_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:src="@drawable/ic_signature_size_24px"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/user_group_allow_attach_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/user_group_allow_attach_icon"
+                    />
+
+                <TextView
+                    android:id="@+id/user_group_max_signature_size_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_group_max_signature_size_icon"
+                    app:layout_constraintStart_toEndOf="@+id/user_group_max_signature_size_icon"
+                    app:layout_constraintTop_toTopOf="@+id/user_group_max_signature_size_icon"
+                    tools:text="@string/group_max_signature" />
+
+                <ImageView
+                    android:id="@+id/user_group_begin_code_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/ic_profile_item_enable_24px"
+                    app:layout_constraintStart_toEndOf="@+id/user_group_max_signature_size_textview"
+                    app:layout_constraintTop_toTopOf="@+id/user_group_max_signature_size_icon" />
+
+                <TextView
+                    android:id="@+id/user_group_begin_code_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/group_begin_code"
+                    android:textColor="@color/colorCloud"
+                    app:layout_constraintBottom_toBottomOf="@+id/user_group_begin_code_icon"
+                    app:layout_constraintStart_toEndOf="@+id/user_group_begin_code_icon"
+                    app:layout_constraintTop_toTopOf="@+id/user_group_begin_code_icon" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</ScrollView>

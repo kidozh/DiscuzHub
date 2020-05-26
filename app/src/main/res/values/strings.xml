@@ -557,6 +557,46 @@
     <string name="post_is_blocked">The post is blocked.</string>
     <string name="post_is_warned">The post is warned.</string>
     <string name="post_is_edited">The post is revised and edited to prevent duplicate credits.</string>
+    <string name="user_profile_privacy_hidden">Hidden due to privacy settings.</string>
+    <string name="user_profile_item_not_set">The Item may not set</string>
+    <string name="user_profile_item_only_visible_to_friend">The item is only visible to the friends.</string>
+    <string name="gender">Gender</string>
+    <string name="gender_secret">He / She / They / It / Whatever</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+    <string name="item_parse_failed">The item is set incorrectly.</string>
+    <string name="birthday">Birthday</string>
+    <string name="birthplace">Birthplace</string>
+    <string name="married_status">Marry</string>
+    <string name="profile_looking_for">Looking for friends</string>
+    <string name="blood_type">Blood type</string>
+    <string name="user_profile_basic_information">Basic information</string>
+    <string name="user_profile_deploma">Deploma</string>
+    <string name="user_profile_graduate_from">Graduate from</string>
+    <string name="user_profile_company">Company</string>
+    <string name="user_profile_occupation">Occupation</string>
+    <string name="user_profile_position">Position</string>
+    <string name="user_profile_revenue">Revenue</string>
+    <string name="user_profile_edu_information">Education</string>
+    <string name="user_profile_job">Job</string>
+    <string name="user_profile_extra_information">Extra information</string>
+    <string name="user_profile_homepage">Homepage</string>
+    <string name="user_profile_interest">Interests</string>
+    <string name="user_profile_favorite_times">Favorite threads</string>
+    <string name="user_profile_share_times">Share times</string>
+    <string name="constellation">Constellation</string>
+    <string name="user_profile_friend_number_template">Friends (%1$d)</string>
+    <string name="user_profile_last_visit">Last visit at</string>
+    <string name="user_profile_last_post">Last post at</string>
+    <string name="user_profile_last_activity">Last activity at</string>
+    <string name="user_profile_last_send_mail">Last mail</string>
+    <string name="group_get_attachment">Get attachments</string>
+    <string name="group_get_image">Get Images</string>
+    <string name="group_get_media_code">Use media code</string>
+    <string name="group_max_signature">Max signature Length: %1$d</string>
+    <string name="group_begin_code">Begin code</string>
+    <string name="profile_group_information">Group</string>
+    <string name="resident_location">Resident location</string>
 
 
 </resources>

@@ -1,5 +1,7 @@
 package com.kidozh.discuzhub.results;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -10,8 +12,11 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.deser.std.JsonNodeDeserializer;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer;
 import com.kidozh.discuzhub.utilities.URLUtils;
 
@@ -19,13 +24,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+
 public class UserProfileResult extends BaseResult {
+    private static final String TAG = UserProfileResult.class.getSimpleName();
+
     @JsonProperty("Variables")
     public UserProfileVariableResult userProfileVariableResult;
+    @JsonProperty("extcredits")
+    public Map<String,extendCredit> extendCreditMap;
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
+
+    //@JsonIgnoreProperties(ignoreUnknown = true)
     public static class UserProfileVariableResult extends VariableResults{
 
         @JsonProperty("space")
@@ -101,29 +113,28 @@ public class UserProfileResult extends BaseResult {
         public String videophoto, spacename, spacedescription, domain,addsize,
                 addfriend,menunum,theme,spacecss, blockposition, feedfriend, magicgift;
         @JsonProperty("recentnote")
-        public String recentNotification;
+        public String recentNote= "";
         @JsonProperty("spacenote")
         public String spaceNotification;
-        @JsonProperty("privacy")
-        public PrivacySetting privacySetting;
+
         @JsonProperty("sightml")
-        public String sigatureHtml;
+        public String sigatureHtml = "";
         public String publishfeed, authstr, groupterms, groups, attentiongroup;
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         public int gender, birthyear, birthmonth, birthday;
 
-        public String constellation, zodiac, nationality, birthprovince,
-                birthcity, birthdist, birthcommunity, resideprovince,
-                residecity, residedist, residecommunity, residesuite, graduateschool;
+        public String constellation= "", zodiac, nationality, birthprovince= "",
+                birthcity= "", birthdist= "", birthcommunity= "", resideprovince= "",
+                residecity= "", residedist= "", residecommunity= "", residesuite= "", graduateschool= "";
         @JsonProperty("position")
-        public String workPosition;
-        public String company, education, occupation, revenue, lookingfor, bloodtype;
+        public String workPosition= "";
+        public String company= "", education= "", occupation= "", revenue= "", lookingfor= "", bloodtype= "";
         @JsonProperty("affectivestatus")
-        public String marriedStatus;
-        public String height, weight, site, bio, interest;
+        public String marriedStatus= "";
+        public String height= "", weight= "", site= "", bio = "", interest= "";
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         public int port;
-        public String lastvisit, lastactivity,lastpost, lastsendmail;
+        public String lastvisit, lastactivity= "",lastpost, lastsendmail;
         public String field1,field2,field3,field4,field5,field6,field7,field8;
         public String regipport,lastipport;
         @JsonFormat(shape = JsonFormat.Shape.STRING)
@@ -145,18 +156,23 @@ public class UserProfileResult extends BaseResult {
         @JsonDeserialize(using = MedalInfoJsonDeserializer.class)
         public List<Medal> medals = new ArrayList<>();
 
+        @JsonProperty("privacy")
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonIgnore
+        public PrivacySetting privacySetting = new PrivacySetting();
+
 
 
     }
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class PrivacySetting{
         @JsonProperty("feed")
-        public FeedPrivacySetting feedPrivacy;
+        public FeedPrivacySetting feedPrivacy = new FeedPrivacySetting();
         @JsonProperty("view")
-        public ViewPrivacySetting viewPrivacySetting;
+        public ViewPrivacySetting viewPrivacySetting = new ViewPrivacySetting();
         @JsonProperty("profile")
         @JsonIgnoreProperties(ignoreUnknown = true)
-        public ProfilePrivacySetting profilePrivacySetting;
+        public ProfilePrivacySetting profilePrivacySetting =  new ProfilePrivacySetting();
     }
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class FeedPrivacySetting{
@@ -165,23 +181,25 @@ public class UserProfileResult extends BaseResult {
                 share, friend, comment, show, credit, invite, task, profile, click, newreply;
 
     }
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ViewPrivacySetting{
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int friend = 2, wall = 2, home = 2, doing  = 2, blog = 2, album = 2, share = 2;
+        public int friend = 2, wall = 2, home = 2, doing  = 2, blog = 2, album = 2, share = 2 ,index =2;
 
     }
-    @JsonIgnoreProperties(ignoreUnknown = true)
+    //@JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonDeserialize(using = ProfilePrivacyJsonDeserializer.class)
+    @JsonIgnoreProperties
     public static class ProfilePrivacySetting{
         public int realname ,gender ,birthday ,birthcity ,residecity ,affectivestatus ,lookingfor ,
                 bloodtype ,telephone ,mobile ,qq ,msn ,taobao ,graduateschool ,education ,company ,
                 occupation ,position ,revenue ,idcardtype ,idcard ,address ,zipcode ,site ,bio ,interest;
     }
-    @JsonIgnoreProperties(ignoreUnknown = true)
+    //@JsonIgnoreProperties(ignoreUnknown = true)
     public static class AdminGroupVariables{
         public String type;
         @JsonProperty("grouptitle")
-        public String groupTitle;
+        public String groupTitle = "";
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         public int stars;
         public String color, icon;
@@ -295,6 +313,32 @@ public class UserProfileResult extends BaseResult {
             }
             else {
                 return new ArrayList<>();
+            }
+
+        }
+    }
+
+    public final class JsonNullAwareDeserializer extends JsonNodeDeserializer{
+        @Override
+        public JsonNode getNullValue(DeserializationContext ctxt) {
+            return NullNode.getInstance();
+        }
+    }
+
+    public static class ProfilePrivacyJsonDeserializer extends JsonDeserializer<ProfilePrivacySetting> {
+
+        @Override
+        public ProfilePrivacySetting deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+            JsonToken currentToken = p.getCurrentToken();
+            if(currentToken.equals(JsonToken.START_OBJECT)){
+                return new ProfilePrivacySetting();
+//                ObjectMapper mapper = new ObjectMapper();
+//
+//                return mapper.readValue(p,  ProfilePrivacySetting.class);
+            }
+
+            else {
+                return new ProfilePrivacySetting();
             }
 
         }

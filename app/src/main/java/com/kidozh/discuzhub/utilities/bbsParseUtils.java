@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -272,6 +273,7 @@ public class bbsParseUtils {
     public static UserProfileResult parseUserProfileResult(String s){
         try {
             ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             return mapper.readValue(s, UserProfileResult.class);
 
         } catch (Exception e) {
@@ -531,54 +533,8 @@ public class bbsParseUtils {
         }
     }
 
-    public static Map<String, String> parseUserProfile(String s) {
 
-        try {
-            Map<String, String> info = new HashMap<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
 
-            JSONObject spaceInfo = variables.getJSONObject("space");
-            Iterator<String> sIterator = spaceInfo.keys();
-            while (sIterator.hasNext()) {
-                String key = sIterator.next();
-                if (spaceInfo.get(key) instanceof String) {
-                    String val = spaceInfo.getString(key);
-                    info.put(key, val);
-                }
-            }
-            return info;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static Map<String, String> parseUserGroupInfo(String s) {
-
-        try {
-            Map<String, String> info = new HashMap<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-
-            JSONObject spaceInfo = variables.getJSONObject("space");
-            JSONObject groupInfo = spaceInfo.getJSONObject("group");
-            Iterator<String> sIterator = groupInfo.keys();
-            while (sIterator.hasNext()) {
-                String key = sIterator.next();
-                if (groupInfo.get(key) instanceof String) {
-                    String val = groupInfo.getString(key);
-                    info.put(key, val);
-                }
-            }
-            return info;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     public static class userFriend {
         public int uid;

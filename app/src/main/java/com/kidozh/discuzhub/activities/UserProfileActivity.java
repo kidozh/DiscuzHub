@@ -31,8 +31,10 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ui.privacyProtect.privacyProtectFragment;
+import com.kidozh.discuzhub.activities.ui.UserGroup.UserGroupInfoFragment;
+import com.kidozh.discuzhub.activities.ui.UserProfileList.UserProfileInfoListFragment;
 import com.kidozh.discuzhub.activities.ui.userFriend.userFriendFragment;
+import com.kidozh.discuzhub.entities.UserProfileItem;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.UserProfileResult;
@@ -45,8 +47,12 @@ import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.viewModels.UserProfileViewModel;
 
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,13 +65,11 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
     @BindView(R.id.show_personal_info_avatar)
     ImageView personalInfoAvatar;
     @BindView(R.id.user_signature_textview)
-    TextView personalInfoBioTextView;
+    TextView personalInfoSignatureTextView;
     @BindView(R.id.show_personal_info_interest_icon)
     ImageView personalInfoInterestIcon;
     @BindView(R.id.show_personal_info_interest_textView)
     TextView personalInfoInterestTextView;
-    @BindView(R.id.show_personal_info_username)
-    TextView personalInfoUsername;
     @BindView(R.id.show_personal_info_birthplace_textView)
     TextView personInfoBirthPlace;
     @BindView(R.id.show_personal_info_birthplace_icon)
@@ -96,6 +100,8 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
     TextView personalInfoGroupInfo;
     @BindView(R.id.show_personal_info_last_activity_time)
     TextView personalInfoLastActivityTime;
+    @BindView(R.id.user_bio_textview)
+    TextView userBioTextview;
 
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
@@ -105,6 +111,7 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
     String friendNum, threadNum, postsNum;
     String username;
     private UserProfileViewModel viewModel;
+    personalInfoViewPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +125,7 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
         bindViewModel();
         renderUserInfo();
         configurePMBtn();
+        configureViewPager();
 
 
     }
@@ -201,7 +209,16 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
         viewModel.getUserProfileResultLiveData().observe(this, new Observer<UserProfileResult>() {
             @Override
             public void onChanged(UserProfileResult userProfileResult) {
-                if(userProfileResult !=null){
+                Log.d(TAG,"User profile result "+userProfileResult);
+                if(userProfileResult !=null
+                        && userProfileResult.userProfileVariableResult !=null
+                        && userProfileResult.userProfileVariableResult.space !=null){
+                    String username = userProfileResult.userProfileVariableResult.space.username;
+                    if(getSupportActionBar()!=null){
+                        getSupportActionBar().setSubtitle(username);
+                    }
+
+
                     // for avatar rendering
                     OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(getApplication(),curBBS.useSafeClient));
                     Glide.get(getApplicationContext()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
@@ -222,16 +239,341 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
 
                     // signature
                     String sigHtml = userProfileResult.userProfileVariableResult.space.sigatureHtml;
-                    MyTagHandler myTagHandler = new MyTagHandler(getApplication(),personalInfoBioTextView,personalInfoBioTextView);
-                    MyImageGetter myImageGetter = new MyImageGetter(getApplication(),personalInfoBioTextView,personalInfoBioTextView,true);
+                    Log.d(TAG,"Signature html "+sigHtml);
+                    MyTagHandler myTagHandler = new MyTagHandler(getApplication(),personalInfoSignatureTextView,personalInfoSignatureTextView);
+                    MyImageGetter myImageGetter = new MyImageGetter(getApplication(),personalInfoSignatureTextView,personalInfoSignatureTextView,true);
                     Spanned sp = Html.fromHtml(sigHtml,myImageGetter,myTagHandler);
                     SpannableString spannableString = new SpannableString(sp);
 
-                    personalInfoBioTextView.setText(spannableString, TextView.BufferType.SPANNABLE);
-                    personalInfoBioTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                    personalInfoSignatureTextView.setText(spannableString, TextView.BufferType.SPANNABLE);
+                    personalInfoSignatureTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                    if(userProfileResult.userProfileVariableResult.space.bio.length()!=0){
+                        userBioTextview.setText(userProfileResult.userProfileVariableResult.space.bio);
+                    }
+                    else {
+                        userBioTextview.setVisibility(View.GONE);
+                    }
+
+                    if(userProfileResult.userProfileVariableResult.space.interest.length()!=0){
+                        personalInfoInterestIcon.setVisibility(View.VISIBLE);
+                        personalInfoInterestTextView.setVisibility(View.VISIBLE);
+                        personalInfoInterestTextView.setText(userProfileResult.userProfileVariableResult.space.interest);
+                    }
+                    else {
+                        personalInfoInterestIcon.setVisibility(View.GONE);
+                        personalInfoInterestTextView.setVisibility(View.GONE);
+                        personalInfoInterestTextView.setText(userProfileResult.userProfileVariableResult.space.interest);
+                    }
+
+                    String birthPlace = userProfileResult.userProfileVariableResult.space.birthprovince +
+                            userProfileResult.userProfileVariableResult.space.birthcity +
+                            userProfileResult.userProfileVariableResult.space.birthdist +
+                            userProfileResult.userProfileVariableResult.space.birthcommunity;
+                    if(birthPlace.length()!=0){
+                        personalInfoBirthPlaceIcon.setVisibility(View.VISIBLE);
+                        personInfoBirthPlace.setVisibility(View.VISIBLE);
+                        personInfoBirthPlace.setText(birthPlace);
+                    }
+                    else {
+                        personalInfoBirthPlaceIcon.setVisibility(View.GONE);
+                        personInfoBirthPlace.setVisibility(View.GONE);
+                    }
+                    personalInfoRegdateTextview.setText(userProfileResult.userProfileVariableResult.space.regdate);
+                    personalInfoLastActivityTime.setText(userProfileResult.userProfileVariableResult.space.lastactivity);
+
+                    personalInfoRecentNoteTextview.setText(userProfileResult.userProfileVariableResult.space.recentNote);
+                    if(userProfileResult.userProfileVariableResult.space.group!=null){
+                        personalInfoGroupInfo.setText(
+                                Html.fromHtml(userProfileResult.userProfileVariableResult.space.group.groupTitle),
+                                TextView.BufferType.SPANNABLE);
+                    }
+                    else {
+                        personalInfoGroupInfo.setVisibility(View.GONE);
+                        personalInfoGroupIcon.setVisibility(View.GONE);
+                    }
+                    // for detailed information
+
+                }
+                personInfoViewPager.invalidate();
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        viewModel.isLoading.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    showPersonalInfoProgressbar.setVisibility(View.VISIBLE);
+                }
+                else {
+                    showPersonalInfoProgressbar.setVisibility(View.GONE);
                 }
             }
         });
+
+    }
+
+    private UserProfileItem generateUserProfileItem(String title, String content, int iconId, int privateStatus){
+        Log.d(TAG,"title "+title+" content "+content);
+        if(content.length() !=0){
+            return new UserProfileItem(title,content,iconId);
+        }
+        else {
+            switch (privateStatus){
+                case 0:{
+                    return new UserProfileItem(title,getString(R.string.user_profile_item_not_set),iconId);
+                }
+                case 1:{
+                    return new UserProfileItem(title,getString(R.string.user_profile_item_only_visible_to_friend),R.drawable.ic_profile_private_item_24px);
+                }
+                case 3:{
+                    return new UserProfileItem(title,getString(R.string.user_profile_privacy_hidden),R.drawable.ic_profile_private_item_24px);
+                }
+                default:{
+                    return new UserProfileItem(title,getString(R.string.user_profile_item_not_set),R.drawable.ic_profile_private_item_24px);
+                }
+            }
+        }
+
+    }
+
+    private UserProfileItem generateGenderUserProfileItem(int genderStatus, int privateStatus){
+        if(privateStatus == 2){
+            return generateUserProfileItem(getString(R.string.gender),"",R.drawable.ic_profile_private_item_24px, privateStatus);
+        }
+        else {
+            switch (genderStatus){
+                case 0:{
+                    return generateUserProfileItem(getString(R.string.gender),getString(R.string.gender_secret),R.drawable.ic_secret_24px, privateStatus);
+                }
+                case 1:{
+                    return generateUserProfileItem(getString(R.string.gender),getString(R.string.gender_male),R.drawable.ic_male_24px, privateStatus);
+                }
+                case 2:{
+                    return generateUserProfileItem(getString(R.string.gender),getString(R.string.gender_female),R.drawable.ic_female_24px, privateStatus);
+                }
+                default:{
+                    return generateUserProfileItem(getString(R.string.gender),getString(R.string.item_parse_failed),R.drawable.ic_error_outline_24px, privateStatus);
+                }
+
+            }
+        }
+    }
+
+
+    private List<UserProfileItem> getBasicInfoList(){
+        UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
+        if(userProfileResult == null){
+            return new ArrayList<>();
+        }
+        List<UserProfileItem> userProfileItemList = new ArrayList<>();
+        UserProfileResult.SpaceVariables spaceVariables = userProfileResult.userProfileVariableResult.space;
+        UserProfileResult.PrivacySetting privacySetting = spaceVariables.privacySetting;
+        // gender
+        int genderPrivate =  privacySetting.profilePrivacySetting.gender;
+        Log.d(TAG,"Gender int "+ spaceVariables.gender);
+        userProfileItemList.add(generateGenderUserProfileItem(spaceVariables.gender,genderPrivate));
+        // birthday
+        int birthPrivate =  privacySetting.profilePrivacySetting.birthday;
+        int birthYear = spaceVariables.birthyear;
+        int birthMonth = spaceVariables.birthmonth;
+        int birthDay = spaceVariables.birthday;
+        if(birthYear == 0 || birthMonth == 0 || birthDay == 0){
+            userProfileItemList.add(
+                    generateUserProfileItem(getString(R.string.birthday),
+                            "",R.drawable.ic_cake_outlined_24px,
+                            birthPrivate)
+            );
+        }
+        else {
+            // construct the date
+            DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
+            Calendar birthCalendar = Calendar.getInstance();
+            birthCalendar.set(birthYear,birthMonth,birthDay);
+            Date birthDate = birthCalendar.getTime();
+            userProfileItemList.add(
+                    generateUserProfileItem(getString(R.string.birthday),
+                            df.format(birthDate),
+                            R.drawable.ic_cake_outlined_24px,
+                            birthPrivate)
+            );
+
+            userProfileItemList.add(
+                    generateUserProfileItem(getString(R.string.constellation),
+                            spaceVariables.constellation,
+                            R.drawable.ic_constellation_24px,
+                            birthPrivate)
+            );
+        }
+        // birthplace
+        int birthPlacePrivate = privacySetting.profilePrivacySetting.birthcity;
+        String birthPlace = spaceVariables.birthprovince + spaceVariables.birthcity + spaceVariables.birthdist
+                +spaceVariables.birthcommunity;
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.birthplace),
+                        birthPlace,R.drawable.ic_child_care_24px,
+                        birthPlacePrivate)
+        );
+
+        // resident place
+        int residentPlacePrivate = privacySetting.profilePrivacySetting.residecity;
+        String residentPlace = spaceVariables.resideprovince + spaceVariables.residecity
+                + spaceVariables.residedist
+                +spaceVariables.residecommunity;
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.resident_location),
+                        residentPlace,R.drawable.ic_location_city_24px,
+                        residentPlacePrivate)
+        );
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.married_status),
+                        spaceVariables.marriedStatus,R.drawable.ic_marry_status_24px,
+                        privacySetting.profilePrivacySetting.affectivestatus)
+        );
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.profile_looking_for),
+                        spaceVariables.lookingfor,R.drawable.ic_looking_for_friend_24px,
+                        privacySetting.profilePrivacySetting.lookingfor)
+        );
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.blood_type),
+                        spaceVariables.bloodtype,R.drawable.ic_blood_type_24px,
+                        privacySetting.profilePrivacySetting.bloodtype)
+        );
+        Log.d(TAG,"Blood type "+ spaceVariables.bloodtype);
+
+
+
+        return userProfileItemList;
+
+    }
+
+    private List<UserProfileItem> getEducationInfoList(){
+        UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
+        if(userProfileResult == null){
+            return new ArrayList<>();
+        }
+        List<UserProfileItem> userProfileItemList = new ArrayList<>();
+        UserProfileResult.SpaceVariables spaceVariables = userProfileResult.userProfileVariableResult.space;
+        UserProfileResult.PrivacySetting privacySetting = spaceVariables.privacySetting;
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.user_profile_deploma),
+                        spaceVariables.education,R.drawable.ic_study_degree_24px,
+                        privacySetting.profilePrivacySetting.education)
+        );
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.user_profile_graduate_from),
+                        spaceVariables.graduateschool,R.drawable.ic_school_24px,
+                        privacySetting.profilePrivacySetting.graduateschool)
+        );
+
+
+
+
+        return userProfileItemList;
+
+    }
+
+    private List<UserProfileItem> getOccupationInfoList(){
+        UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
+        if(userProfileResult == null){
+            return new ArrayList<>();
+        }
+        List<UserProfileItem> userProfileItemList = new ArrayList<>();
+        UserProfileResult.SpaceVariables spaceVariables = userProfileResult.userProfileVariableResult.space;
+        UserProfileResult.PrivacySetting privacySetting = spaceVariables.privacySetting;
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.user_profile_company),
+                        spaceVariables.company,R.drawable.ic_company_24px,
+                        privacySetting.profilePrivacySetting.company)
+        );
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.user_profile_occupation),
+                        spaceVariables.occupation,R.drawable.ic_work_occupation_24px,
+                        privacySetting.profilePrivacySetting.occupation)
+        );
+
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.user_profile_position),
+                        spaceVariables.workPosition,R.drawable.ic_work_grade_24px,
+                        privacySetting.profilePrivacySetting.position)
+        );
+
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.user_profile_revenue),
+                        spaceVariables.revenue,R.drawable.ic_price_outlined_24px,
+                        privacySetting.profilePrivacySetting.revenue)
+        );
+
+
+
+
+        return userProfileItemList;
+
+    }
+
+    private List<UserProfileItem> getExtraInfoList(){
+        UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
+        if(userProfileResult == null){
+            return new ArrayList<>();
+        }
+        List<UserProfileItem> userProfileItemList = new ArrayList<>();
+        UserProfileResult.SpaceVariables spaceVariables = userProfileResult.userProfileVariableResult.space;
+        UserProfileResult.PrivacySetting privacySetting = spaceVariables.privacySetting;
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.user_profile_homepage),
+                        spaceVariables.site,R.drawable.ic_personal_site_24px,
+                        privacySetting.profilePrivacySetting.site)
+        );
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.user_profile_interest),
+                        spaceVariables.interest,R.drawable.ic_flag_24px,
+                        privacySetting.profilePrivacySetting.interest)
+        );
+
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.user_profile_favorite_times),
+                        String.valueOf(spaceVariables.favtimes),R.drawable.ic_favorite_24px,
+                        0)
+        );
+
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.user_profile_share_times),
+                        String.valueOf(spaceVariables.sharetimes),R.drawable.ic_share_outlined_24px,
+                        0)
+        );
+
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.user_profile_last_visit),
+                        spaceVariables.lastvisit,R.drawable.vector_drawable_clock,
+                        0)
+        );
+
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.user_profile_last_post),
+                        spaceVariables.lastpost,R.drawable.vector_drawable_clock,
+                        0)
+        );
+
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.user_profile_last_activity),
+                        spaceVariables.lastactivity,R.drawable.vector_drawable_clock,
+                        0)
+        );
+
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.user_profile_last_send_mail),
+                        spaceVariables.lastsendmail,R.drawable.ic_email_24px,
+                        0)
+        );
+
+
+
+
+
+
+        return userProfileItemList;
+
     }
 
 
@@ -240,11 +582,8 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
         List<String> tabTitles = new ArrayList<>();
 
         personInfoTabLayout.setupWithViewPager(personInfoViewPager);
-        personalInfoViewPagerAdapter adapter  = new personalInfoViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        adapter  = new personalInfoViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         personInfoViewPager.setAdapter(adapter);
-        tabTitles.add(getString(R.string.bbs_user_friend)+String.format(" (%s)",friendNum));
-        tabTitles.add(getString(R.string.bbs_forum_thread)+String.format(" (%s)",threadNum));
-        tabTitles.add(getString(R.string.bbs_forum_post)+String.format(" (%s)",postsNum));
 
     }
 
@@ -266,18 +605,39 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
 
         public personalInfoViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
             super(fm, behavior);
+            Log.d(TAG,"refresh adapter");
         }
 
         @NonNull
         @Override
         public Fragment getItem(int position) {
+
             switch (position){
                 case 0:
                     return userFriendFragment.newInstance(userId);
                 case 1:
-                    return privacyProtectFragment.newInstance("","");
+                    return UserProfileInfoListFragment.newInstance(getString(R.string.user_profile_basic_information),
+                            getBasicInfoList());
                 case 2:
-                    return privacyProtectFragment.newInstance("","");
+                    return UserProfileInfoListFragment.newInstance(getString(R.string.user_profile_edu_information),
+                            getEducationInfoList());
+                case 3:
+                    return UserProfileInfoListFragment.newInstance(getString(R.string.user_profile_job),
+                            getOccupationInfoList());
+                case 4:
+                    return UserProfileInfoListFragment.newInstance(getString(R.string.user_profile_extra_information),
+                            getExtraInfoList());
+                case 5:
+                    UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
+                    if(userProfileResult!=null && userProfileResult.userProfileVariableResult!=null
+                    && userProfileResult.userProfileVariableResult.space !=null){
+                        return UserGroupInfoFragment.newInstance(userProfileResult.userProfileVariableResult.space.group,
+                                userProfileResult.userProfileVariableResult.space.adminGroup);
+                    }
+                    else {
+                        return UserGroupInfoFragment.newInstance(null,null);
+                    }
+
             }
             return userFriendFragment.newInstance(userId);
         }
@@ -285,13 +645,26 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
         @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
+            UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
             switch (position){
                 case 0:
-                    return getString(R.string.bbs_user_friend)+String.format(" (%s)",friendNum);
+                    if(userProfileResult !=null && userProfileResult.userProfileVariableResult!=null && userProfileResult.userProfileVariableResult.space!=null){
+                        return getString(R.string.user_profile_friend_number_template, userProfileResult.userProfileVariableResult.space.friends);
+                    }
+                    else {
+                        return getString(R.string.bbs_user_friend);
+                    }
+
                 case 1:
-                    return getString(R.string.bbs_forum_thread)+String.format(" (%s)",threadNum);
+                    return getString(R.string.user_profile_basic_information);
                 case 2:
-                    return getString(R.string.bbs_forum_post)+String.format(" (%s)",postsNum);
+                    return getString(R.string.user_profile_edu_information);
+                case 3:
+                    return getString(R.string.user_profile_job);
+                case 4:
+                    return getString(R.string.user_profile_extra_information);
+                case 5:
+                    return getString(R.string.profile_group_information);
                 default:
                     return "";
             }
@@ -299,7 +672,12 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
 
         @Override
         public int getCount() {
-            return 3;
+            return 6;
+        }
+
+        @Override
+        public int getItemPosition(@NonNull Object object) {
+            return POSITION_NONE;
         }
     }
 

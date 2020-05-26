@@ -26,7 +26,7 @@ public class UserProfileViewModel extends AndroidViewModel {
 
     private static final String TAG = UserProfileViewModel.class.getSimpleName();
     private MutableLiveData<UserProfileResult> userProfileResultMutableLiveData;
-    private MutableLiveData<Boolean> isLoading, isError;
+    public MutableLiveData<Boolean> isLoading, isError;
 
     private bbsInformation curBBS;
     private forumUserBriefInfo curUser;
@@ -71,8 +71,10 @@ public class UserProfileViewModel extends AndroidViewModel {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()&& response.body()!=null){
+
                     isError.postValue(false);
                     String s = response.body().string();
+                    Log.d(TAG,"Recv profile "+s);
                     UserProfileResult userProfileResult = bbsParseUtils.parseUserProfileResult(s);
                     userProfileResultMutableLiveData.postValue(userProfileResult);
 
