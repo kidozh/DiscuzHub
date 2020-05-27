@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".bbsService.bbsShowThreadActivity"
-        tools:showIn="@layout/activity_bbs_show_thread">
+        tools:showIn="@layout/activity_bbs_show_post">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"

@@ -136,7 +136,7 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:context=".bbsService.bbsShowThreadActivity"
-            tools:showIn="@layout/activity_bbs_show_thread">
+            tools:showIn="@layout/activity_bbs_show_post">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -158,7 +158,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         tools:itemCount="1"
-                        tools:listitem="@layout/item_bbs_thread_comment_detail">
+                        tools:listitem="@layout/item_bbs_post">
 
 
                     </androidx.recyclerview.widget.RecyclerView>

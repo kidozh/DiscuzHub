@@ -102,7 +102,7 @@ public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdap
                 Intent intent = new Intent(context, UserProfileActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
-                intent.putExtra("UID",String.valueOf(friend.uid));
+                intent.putExtra("UID",friend.uid);
                 VibrateUtils.vibrateForClick(context);
                 context.startActivity(intent);
             }

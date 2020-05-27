@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ThreadPostResult extends BaseResult {
     @JsonProperty("Variables")
     public ThreadPostVariable threadPostVariables;

@@ -107,7 +107,7 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
     @Override
     public ThreadPostsAdapter.bbsForumThreadCommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        int layoutIdForListItem = R.layout.item_bbs_thread_comment_detail;
+        int layoutIdForListItem = R.layout.item_bbs_post;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
         replyListener = (onAdapterReply) context;
@@ -122,9 +122,12 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
         holder.mThreadPublisher.setText(threadInfo.author);
         // parse status
         int status = threadInfo.status;
+        int BACKGROUND_ALPHA = 25;
         final int POST_HIDDEN = 1, POST_WARNED = 2, POST_REVISED = 4, POST_MOBILE = 8;
         if((status & POST_HIDDEN) != 0){
             holder.mPostStatusBlockedView.setVisibility(View.VISIBLE);
+            holder.mPostStatusBlockedView.setBackgroundColor(context.getColor(R.color.colorPomegranate));
+            holder.mPostStatusBlockedView.getBackground().setAlpha(BACKGROUND_ALPHA);
         }
         else {
             holder.mPostStatusBlockedView.setVisibility(View.GONE);
@@ -132,6 +135,8 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
 
         if((status & POST_WARNED) != 0){
             holder.mPostStatusWarnedView.setVisibility(View.VISIBLE);
+            holder.mPostStatusWarnedView.setBackgroundColor(context.getColor(R.color.colorOrange));
+            holder.mPostStatusWarnedView.getBackground().setAlpha(BACKGROUND_ALPHA);
         }
         else {
             holder.mPostStatusWarnedView.setVisibility(View.GONE);
@@ -139,6 +144,8 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
 
         if((status & POST_REVISED) != 0){
             holder.mPostStatusEditedView.setVisibility(View.VISIBLE);
+            holder.mPostStatusEditedView.setBackgroundColor(context.getColor(R.color.colorPrimary));
+            holder.mPostStatusEditedView.getBackground().setAlpha(BACKGROUND_ALPHA);
         }
         else {
             holder.mPostStatusEditedView.setVisibility(View.GONE);

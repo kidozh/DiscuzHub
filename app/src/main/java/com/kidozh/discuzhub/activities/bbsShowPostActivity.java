@@ -81,11 +81,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFragment.OnSmileyPressedInteraction,
+public class bbsShowPostActivity extends AppCompatActivity implements SmileyFragment.OnSmileyPressedInteraction,
         ThreadPostsAdapter.onFilterChanged,
         ThreadPostsAdapter.onAdapterReply,
         bbsPollFragment.OnFragmentInteractionListener{
-    private final static String TAG = bbsShowThreadActivity.class.getSimpleName();
+    private final static String TAG = bbsShowPostActivity.class.getSimpleName();
     @BindView(R.id.bbs_thread_detail_recyclerview)
     RecyclerView mRecyclerview;
 
@@ -150,7 +150,7 @@ public class bbsShowThreadActivity extends AppCompatActivity implements SmileyFr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bbs_show_thread);
+        setContentView(R.layout.activity_bbs_show_post);
         ButterKnife.bind(this);
         threadDetailViewModel = new ViewModelProvider(this).get(ThreadDetailViewModel.class);
         configureIntentData();

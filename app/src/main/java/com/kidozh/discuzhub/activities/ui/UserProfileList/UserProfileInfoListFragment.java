@@ -38,6 +38,8 @@ public class UserProfileInfoListFragment extends Fragment {
     TextView userProfileTitle;
     @BindView(R.id.user_profile_info_recyclerview)
     RecyclerView userProfileRecyclerview;
+    @BindView(R.id.user_profile_info_empty_view)
+    View userProfileEmptyView;
 
     UserProfileItemAdapter adapter;
 
@@ -91,6 +93,12 @@ public class UserProfileInfoListFragment extends Fragment {
         mViewModel.userProfileListMutableLiveData.observe(getViewLifecycleOwner(), new Observer<List<UserProfileItem>>() {
             @Override
             public void onChanged(List<UserProfileItem> userProfileItems) {
+                if(userProfileItems == null || userProfileItems.size() == 0){
+                    userProfileEmptyView.setVisibility(View.VISIBLE);
+                }
+                else {
+                    userProfileEmptyView.setVisibility(View.GONE);
+                }
                 adapter.setUserProfileItemList(userProfileItemList);
             }
         });

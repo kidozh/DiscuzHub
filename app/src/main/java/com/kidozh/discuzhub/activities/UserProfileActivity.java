@@ -32,6 +32,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.UserGroup.UserGroupInfoFragment;
+import com.kidozh.discuzhub.activities.ui.UserMedal.MedalFragment;
 import com.kidozh.discuzhub.activities.ui.UserProfileList.UserProfileInfoListFragment;
 import com.kidozh.discuzhub.activities.ui.userFriend.userFriendFragment;
 import com.kidozh.discuzhub.entities.UserProfileItem;
@@ -454,6 +455,21 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
             return new ArrayList<>();
         }
         List<UserProfileItem> userProfileItemList = new ArrayList<>();
+
+
+
+
+
+        return userProfileItemList;
+
+    }
+
+    private List<UserProfileItem> getEduOccupationInfoList(){
+        UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
+        if(userProfileResult == null){
+            return new ArrayList<>();
+        }
+        List<UserProfileItem> userProfileItemList = new ArrayList<>();
         UserProfileResult.SpaceVariables spaceVariables = userProfileResult.userProfileVariableResult.space;
         UserProfileResult.PrivacySetting privacySetting = spaceVariables.privacySetting;
         userProfileItemList.add(
@@ -467,21 +483,6 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
                         privacySetting.profilePrivacySetting.graduateschool)
         );
 
-
-
-
-        return userProfileItemList;
-
-    }
-
-    private List<UserProfileItem> getOccupationInfoList(){
-        UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
-        if(userProfileResult == null){
-            return new ArrayList<>();
-        }
-        List<UserProfileItem> userProfileItemList = new ArrayList<>();
-        UserProfileResult.SpaceVariables spaceVariables = userProfileResult.userProfileVariableResult.space;
-        UserProfileResult.PrivacySetting privacySetting = spaceVariables.privacySetting;
         userProfileItemList.add(
                 generateUserProfileItem(getString(R.string.user_profile_company),
                         spaceVariables.company,R.drawable.ic_company_24px,
@@ -611,24 +612,28 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
         @NonNull
         @Override
         public Fragment getItem(int position) {
-
+            UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
             switch (position){
                 case 0:
-                    return userFriendFragment.newInstance(userId);
+                    if(userProfileResult!=null && userProfileResult.userProfileVariableResult!=null
+                            && userProfileResult.userProfileVariableResult.space !=null){
+                        return MedalFragment.newInstance(userProfileResult.userProfileVariableResult.space.medals);
+                    }
+                    else {
+                        return MedalFragment.newInstance(null);
+                    }
                 case 1:
+                    return userFriendFragment.newInstance(userId);
+                case 2:
                     return UserProfileInfoListFragment.newInstance(getString(R.string.user_profile_basic_information),
                             getBasicInfoList());
-                case 2:
-                    return UserProfileInfoListFragment.newInstance(getString(R.string.user_profile_edu_information),
-                            getEducationInfoList());
                 case 3:
-                    return UserProfileInfoListFragment.newInstance(getString(R.string.user_profile_job),
-                            getOccupationInfoList());
+                    return UserProfileInfoListFragment.newInstance(getString(R.string.user_profile_edu_job),
+                            getEduOccupationInfoList());
                 case 4:
                     return UserProfileInfoListFragment.newInstance(getString(R.string.user_profile_extra_information),
                             getExtraInfoList());
                 case 5:
-                    UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
                     if(userProfileResult!=null && userProfileResult.userProfileVariableResult!=null
                     && userProfileResult.userProfileVariableResult.space !=null){
                         return UserGroupInfoFragment.newInstance(userProfileResult.userProfileVariableResult.space.group,
@@ -648,6 +653,8 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
             UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
             switch (position){
                 case 0:
+                    return getString(R.string.user_profile_medal);
+                case 1:
                     if(userProfileResult !=null && userProfileResult.userProfileVariableResult!=null && userProfileResult.userProfileVariableResult.space!=null){
                         return getString(R.string.user_profile_friend_number_template, userProfileResult.userProfileVariableResult.space.friends);
                     }
@@ -655,12 +662,10 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
                         return getString(R.string.bbs_user_friend);
                     }
 
-                case 1:
-                    return getString(R.string.user_profile_basic_information);
                 case 2:
-                    return getString(R.string.user_profile_edu_information);
+                    return getString(R.string.user_profile_basic_information);
                 case 3:
-                    return getString(R.string.user_profile_job);
+                    return getString(R.string.user_profile_edu_job);
                 case 4:
                     return getString(R.string.user_profile_extra_information);
                 case 5:

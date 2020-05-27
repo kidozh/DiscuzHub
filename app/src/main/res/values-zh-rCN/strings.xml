@@ -434,5 +434,10 @@
     <string name="group_begin_code">起始代码</string>
     <string name="profile_group_information">用户组</string>
     <string name="resident_location">居住地</string>
+    <string name="user_profile_edu_job">教育与工作</string>
+    <string name="user_profile_medal">奖项与荣誉</string>
+    <string name="profile_no_medal">向论坛做出贡献以获得荣誉</string>
+    <string name="profile_list_not_prepared">我们正在准备这个项目</string>
+    <string name="profile_user_group_empty">我们暂时还未收到你的群组信息，再等等一下？</string>
 
 </resources>

@@ -590,13 +590,18 @@
     <string name="user_profile_last_post">Last post at</string>
     <string name="user_profile_last_activity">Last activity at</string>
     <string name="user_profile_last_send_mail">Last mail</string>
-    <string name="group_get_attachment">Get attachments</string>
-    <string name="group_get_image">Get Images</string>
-    <string name="group_get_media_code">Use media code</string>
+    <string name="group_get_attachment">Attachment</string>
+    <string name="group_get_image">Image</string>
+    <string name="group_get_media_code">Media code</string>
     <string name="group_max_signature">Max signature Length: %1$d</string>
     <string name="group_begin_code">Begin code</string>
     <string name="profile_group_information">Group</string>
     <string name="resident_location">Resident location</string>
+    <string name="user_profile_edu_job">Education and Job</string>
+    <string name="user_profile_medal">Honors</string>
+    <string name="profile_no_medal">Contribute to bbs to get a medal?</string>
+    <string name="profile_list_not_prepared">We are preparing the profile details...</string>
+    <string name="profile_user_group_empty">Your group has not been assembled yet. Try later?</string>
 
 
 </resources>
