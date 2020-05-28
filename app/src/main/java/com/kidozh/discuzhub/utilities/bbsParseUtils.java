@@ -907,10 +907,10 @@ public class bbsParseUtils {
         public String stamp, icon, pushedaid, cover;
         @JsonProperty("replycredit")
         public String replyCredit;
-        public String relatebytag, maxposition, bgcolor;
+        public String relatebytag, bgcolor;
         @JsonProperty("maxposition")
         @JsonFormat(shape=JsonFormat.Shape.STRING)
-        public int maxPosition;
+        public long maxPosition;
         @JsonProperty("comments")
         @JsonFormat(shape= JsonFormat.Shape.STRING)
         public int comments;
