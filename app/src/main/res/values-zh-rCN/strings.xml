@@ -439,5 +439,7 @@
     <string name="profile_no_medal">向论坛做出贡献以获得荣誉</string>
     <string name="profile_list_not_prepared">我们正在准备这个项目</string>
     <string name="profile_user_group_empty">我们暂时还未收到你的群组信息，再等等一下？</string>
+    <string name="bbs_base_url_invalid">无效的网页地址</string>
+    <string name="captcha_required">需要验证码</string>
 
 </resources>

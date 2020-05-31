@@ -602,6 +602,8 @@
     <string name="profile_no_medal">Contribute to bbs to get a medal?</string>
     <string name="profile_list_not_prepared">We are preparing the profile details...</string>
     <string name="profile_user_group_empty">Your group has not been assembled yet. Try later?</string>
+    <string name="bbs_base_url_invalid">The URL is invalid</string>
+    <string name="captcha_required">Captcha required</string>
 
 
 </resources>

@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.Spannable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.loginBBSActivity;
+import com.kidozh.discuzhub.activities.LoginActivity;
 import com.kidozh.discuzhub.adapter.bbsPortalCategoryAdapter;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -138,7 +137,7 @@ public class HomeFragment extends Fragment {
                             .setPositiveButton(getString(R.string.user_relogin, curUser.username), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Intent intent = new Intent(getActivity(), loginBBSActivity.class);
+                                    Intent intent = new Intent(getActivity(), LoginActivity.class);
                                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
                                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
                                     startActivity(intent);

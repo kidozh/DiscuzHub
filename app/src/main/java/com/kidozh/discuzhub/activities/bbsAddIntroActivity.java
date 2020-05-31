@@ -33,10 +33,13 @@ import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.viewModels.AddBBSViewModel;
 
+import org.checkerframework.checker.formatter.FormatUtil;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.IllegalFormatException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -227,7 +230,21 @@ public class bbsAddIntroActivity extends AppCompatActivity
         URLUtils.setBaseUrl(base_url);
         String query_url = URLUtils.getBBSForumInformationUrl();
         OkHttpClient client = networkUtils.getPreferredClient(this,useSafeClient);
-        Request request = new Request.Builder().url(query_url).build();
+        Request request;
+        try{
+            URL url = new URL(query_url);
+//            if(url.getAuthority()!=null && url.getHost()!=null){
+//                throw new Exception();
+//            }
+            request = new Request.Builder().url(query_url).build();
+        }
+        catch (Exception e){
+            viewModel.isLoadingLiveData.postValue(false);
+            viewModel.errorTextLiveData.postValue(getString(R.string.bbs_base_url_invalid));
+            e.printStackTrace();
+            return;
+        }
+
         Call call = client.newCall(request);
         Log.d(TAG,"Query check URL "+query_url);
         Activity activity = this;

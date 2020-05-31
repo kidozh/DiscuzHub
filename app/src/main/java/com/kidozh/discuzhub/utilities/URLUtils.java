@@ -234,8 +234,9 @@ public class URLUtils {
         Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
                 .appendQueryParameter("version","4")
                 .appendQueryParameter("module","login")
-                .appendQueryParameter("lssubmit","yes")
+                .appendQueryParameter("action","login")
                 .appendQueryParameter("loginsubmit","yes")
+                //.appendQueryParameter("inajax","1")
                 .build();
         return uri.toString();
     }
@@ -480,6 +481,26 @@ public class URLUtils {
     public static String getPortalPageUrl(){
 
         Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
+                .build();
+        return uri.toString();
+    }
+
+    public static String getSecureParameterURL(String type){
+
+        Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","secure")
+                .appendQueryParameter("type",type)
+                .build();
+        return uri.toString();
+    }
+
+    public static String getSecCodeImageURL(String secHash){
+
+        Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","seccode")
+                .appendQueryParameter("sechash",secHash)
                 .build();
         return uri.toString();
     }

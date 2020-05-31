@@ -13,6 +13,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadPostResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -48,7 +49,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
     public MutableLiveData<URLUtils.ThreadStatus> threadStatusMutableLiveData;
     public MutableLiveData<bbsParseUtils.DetailedThreadInfo> detailedThreadInfoMutableLiveData;
     public MutableLiveData<ThreadPostResult> threadPostResultMutableLiveData;
-
+    private MutableLiveData<SecureInfoResult> secureInfoResultMutableLiveData;
 
     public ThreadDetailViewModel(@NonNull Application application) {
         super(application);
@@ -82,6 +83,42 @@ public class ThreadDetailViewModel extends AndroidViewModel {
 
 
         // bbsPersonInfoMutableLiveData.postValue(userBriefInfo);
+    }
+
+    public MutableLiveData<SecureInfoResult> getSecureInfoResultMutableLiveData(){
+        if(secureInfoResultMutableLiveData == null){
+            // load the secure info result
+            secureInfoResultMutableLiveData = new MutableLiveData<>(null);
+            // load the information
+            getSecureInfo();
+        }
+        return secureInfoResultMutableLiveData;
+    }
+
+    public void getSecureInfo(){
+        String url = URLUtils.getSecureParameterURL("post");
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        Log.d(TAG,"Send secure code to "+url);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                secureInfoResultMutableLiveData.postValue(null);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful() && response.body()!=null){
+                    String s= response.body().string();
+                    Log.d(TAG,"Recv secure code "+s);
+                    secureInfoResultMutableLiveData.postValue(bbsParseUtils.parseSecureInfoResult(s));
+                }
+                else {
+                    secureInfoResultMutableLiveData.postValue(null);
+                }
+            }
+        });
     }
 
     public void getThreadDetail(URLUtils.ThreadStatus threadStatus){

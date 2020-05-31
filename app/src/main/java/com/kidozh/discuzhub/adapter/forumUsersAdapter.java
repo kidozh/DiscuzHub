@@ -17,7 +17,7 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsShowPortalActivity;
-import com.kidozh.discuzhub.activities.loginBBSActivity;
+import com.kidozh.discuzhub.activities.LoginActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -89,7 +89,7 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
         holder.mUserCardview.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Intent intent = new Intent(context, loginBBSActivity.class);
+                Intent intent = new Intent(context, LoginActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userInfo);
                 context.startActivity(intent);

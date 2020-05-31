@@ -1,6 +1,8 @@
 package com.kidozh.discuzhub.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,17 +25,26 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.request.RequestOptions;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.BaseResult;
+import com.kidozh.discuzhub.results.LoginResult;
+import com.kidozh.discuzhub.results.SecureInfoResult;
+import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.viewModels.LoginViewModel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,9 +59,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class loginBBSActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
-    private String TAG = loginBBSActivity.class.getSimpleName();
+    private String TAG = LoginActivity.class.getSimpleName();
 
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
@@ -79,7 +90,13 @@ public class loginBBSActivity extends AppCompatActivity {
     TextInputLayout bbsAccountTextInputLayout;
     @BindView(R.id.login_bbs_password_textInputLayout)
     TextInputLayout bbsPasswordTextInputLayout;
-    private String formhash;
+    LoginViewModel viewModel;
+    @BindView(R.id.login_bbs_captcha_inputLayout)
+    TextInputLayout bbsCaptchaInputLayout;
+    @BindView(R.id.login_bbs_captcha_imageView)
+    ImageView bbsCaptchaImageview;
+    @BindView(R.id.login_bbs_captcha_editText)
+    EditText bbsCaptchaEditText;
 
     private OkHttpClient client;
 
@@ -88,12 +105,13 @@ public class loginBBSActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_bbs);
         ButterKnife.bind(this);
-
+        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         configureData();
         configureActionBar();
         setInformation();
         configureEditText();
         configureLoginBtn();
+        bindViewModel();
 
     }
 
@@ -137,6 +155,14 @@ public class loginBBSActivity extends AppCompatActivity {
     }
 
     void configureEditText(){
+        bbsCaptchaImageview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.getSecureInfo();
+                VibrateUtils.vibrateForClick(getApplication());
+            }
+        });
+
         bbsAccountInputEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -172,13 +198,118 @@ public class loginBBSActivity extends AppCompatActivity {
         });
     }
 
+    private boolean needCaptcha(){
+        if(viewModel == null
+                || viewModel.getSecureInfoResultMutableLiveData().getValue()==null
+                || viewModel.getSecureInfoResultMutableLiveData().getValue().secureVariables==null){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    void bindViewModel(){
+        viewModel.errorString.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if(s!=null && s.length()!=0){
+                    Toasty.error(getApplication(),s,Toast.LENGTH_LONG).show();
+                    VibrateUtils.vibrateForError(getApplication());
+                }
+            }
+        });
+        viewModel.getSecureInfoResultMutableLiveData().observe(this, new Observer<SecureInfoResult>() {
+            @Override
+            public void onChanged(SecureInfoResult secureInfoResult) {
+                if(secureInfoResult != null){
+
+                    if(secureInfoResult.secureVariables == null){
+                        bbsCaptchaInputLayout.setVisibility(View.GONE);
+                        bbsCaptchaImageview.setVisibility(View.GONE);
+                    }
+                    else {
+                        bbsCaptchaInputLayout.setVisibility(View.VISIBLE);
+                        bbsCaptchaImageview.setVisibility(View.VISIBLE);
+                        bbsCaptchaImageview.setImageDrawable(getDrawable(R.drawable.ic_captcha_placeholder_24px));
+                        // need a captcha
+                        String captchaURL = secureInfoResult.secureVariables.secCodeURL;
+                        String captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash);
+                        // load it
+                        Request captchaRequest = new Request.Builder()
+                                .url(captchaURL)
+                                .build();
+                        // get first
+                        client.newCall(captchaRequest).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    // get the session
+                                    bbsCaptchaImageview.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
+                                            Glide.get(getApplication()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+
+                                            // forbid cache captcha
+                                            RequestOptions options = new RequestOptions()
+                                                    .fitCenter()
+                                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                                    .placeholder(R.drawable.ic_captcha_placeholder_24px)
+                                                    .error(R.drawable.ic_post_status_warned_24px);
+                                            GlideUrl pictureGlideURL = new GlideUrl(captchaImageURL,
+                                                    new LazyHeaders.Builder()
+                                                            .addHeader("Referer",captchaURL)
+                                                            .build()
+                                            );
+
+                                            Glide.with(getApplication())
+                                                    .load(pictureGlideURL)
+                                                    .apply(options)
+                                                    .into(bbsCaptchaImageview);
+                                        }
+                                    });
+
+                                }
+
+                            }
+                        });
+
+
+                    }
+                }
+                else {
+                    bbsCaptchaInputLayout.setVisibility(View.GONE);
+                    bbsCaptchaImageview.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
     void configureLoginBtn(){
         bbsLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(bbsAccountInputEditText.getText()!=null && bbsPasswordInputEditText.getText()!=null){
+                if(bbsAccountInputEditText.getText()!=null && bbsPasswordInputEditText.getText()!=null && bbsCaptchaEditText.getText()!=null){
                     String account = bbsAccountInputEditText.getText().toString();
                     String password = bbsPasswordInputEditText.getText().toString();
+                    String captchaText = bbsCaptchaEditText.getText().toString();
+                    if(needCaptcha() && captchaText.length() == 0){
+                        bbsCaptchaInputLayout.setError(getString(R.string.field_required));
+                        bbsCaptchaInputLayout.setErrorEnabled(true);
+                        return;
+                    }
+                    else {
+                        bbsCaptchaInputLayout.setErrorEnabled(false);
+                    }
+
+
                     if(password.length()==0 || account.length() == 0){
                         if(account.length() == 0){
                             bbsPasswordTextInputLayout.setErrorEnabled(true);
@@ -215,10 +346,17 @@ public class loginBBSActivity extends AppCompatActivity {
     }
 
     void sendLoginRequest(){
-
-
+        viewModel.error.postValue(false);
+        if(viewModel.getSecureInfoResultMutableLiveData().getValue() == null){
+            return;
+        }
+        if(bbsAccountInputEditText.getText() == null
+                || bbsPasswordInputEditText.getText() == null){
+            return;
+        }
         String account = bbsAccountInputEditText.getText().toString();
         String password = bbsPasswordInputEditText.getText().toString();
+        String captcha = bbsCaptchaEditText.getText().toString();
         forumUserBriefInfo userBriefInfo = new forumUserBriefInfo("","","","","",50,"");
         Log.d(TAG,"Send user id "+userBriefInfo.getId());
         networkUtils.clearUserCookieInfo(getApplicationContext(),userBriefInfo);
@@ -228,25 +366,40 @@ public class loginBBSActivity extends AppCompatActivity {
         }
 
         // exact login url
+        // need formhash
+        SecureInfoResult secureInfoResult = viewModel.getSecureInfoResultMutableLiveData().getValue();
         String loginUrl = URLUtils.getLoginUrl();
 
-
-        FormBody formBody = new FormBody.Builder()
-                .add("fastloginfield", "username")
-                .add("cookietime", "2592000")
+        FormBody.Builder formBodyBuilder = new FormBody.Builder()
+                .add("loginfield", "username")
+                //.add("cookietime", "2592000")
                 .add("username", account)
                 .add("password", password)
                 .add("questionid",String.valueOf(bbsSecurityQuestionSpinner.getSelectedItemPosition()))
                 .add("answer",bbsSecurityAnswerEditText.getText().toString())
-                .add("quickforward", "yes")
-                .add("handlekey", "1s")
+
+                .add("referer",curBBS.base_url);
+
+        if(needCaptcha()){
+            Log.d(TAG,"Formhash "+secureInfoResult.secureVariables.formHash);
+            formBodyBuilder
+                    .add("seccodehash",secureInfoResult.secureVariables.secHash)
+                    .add("seccodemodid", "member::logging")
+                    //.add("formhash",secureInfoResult.secureVariables.formHash)
+                    .add("seccodeverify", captcha);
+        }
+
+        FormBody formBody = formBodyBuilder
                 .build();
 
-        Log.d(TAG,"send login url "+loginUrl);
+        Log.d(TAG,"send login url "+loginUrl+" form post "
+                +account + " "+password+" "
+                +" verify "+captcha);
         Request request = new Request.Builder()
                 .url(loginUrl)
                 .post(formBody)
                 .build();
+
         Handler mHandler = new Handler(Looper.getMainLooper());
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -267,58 +420,47 @@ public class loginBBSActivity extends AppCompatActivity {
                     String res = response.body().string();
                     // fetch the api URL
                     Log.d(TAG,"get result json "+res);
-                    String loginApiUrl = URLUtils.getLoginApiUrl();
-                    Request request = new Request.Builder()
-                            .url(loginApiUrl)
-                            .build();
-                    // secondary verification
-                    client.newCall(request).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            mHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toasty.error(getApplicationContext(),getString(R.string.network_failed),Toast.LENGTH_SHORT).show();
-                                    // showing error information
-                                }
-                            });
+                    ObjectMapper mapper = new ObjectMapper();
+                    LoginResult loginResult = null;
+                    try{
+                        loginResult = mapper.readValue(res, LoginResult.class);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    if(loginResult !=null && loginResult.variables !=null){
+                        forumUserBriefInfo parsedUserInfo = loginResult.variables.getUserBriefInfo();
+                        if(parsedUserInfo !=null && ! parsedUserInfo.uid.equals("0")){
+                            // successful
 
-                        }
-
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            if(response.body()!=null){
-                                String jsonString = response.body().string();
-                                // parse it
-                                Log.d(TAG,"get login API json "+jsonString);
-                                forumUserBriefInfo parsedUserInfo = bbsParseUtils.parseLoginBreifUserInfo(jsonString);
-
-                                if(parsedUserInfo!=null){
-                                    Log.d(TAG,"Parse user info "+parsedUserInfo.uid+ " "+parsedUserInfo.getId());
-                                    // save it to database
-                                    parsedUserInfo.belongedBBSID = curBBS.getId();
-                                    if(curUser !=null){
-                                        // relogin user
-                                        parsedUserInfo.setId(curUser.getId());
-                                    }
-                                    new saveUserToDatabaseAsyncTask(parsedUserInfo,client).execute();
-
-
-                                }
-                                else {
-                                    mHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toasty.error(getApplicationContext(),getString(R.string.bbs_login_user_null),Toast.LENGTH_SHORT).show();
-                                            // showing error information
-                                        }
-                                    });
-                                }
+                            parsedUserInfo.belongedBBSID = curBBS.getId();
+                            if(curUser !=null){
+                                // relogin user
+                                parsedUserInfo.setId(curUser.getId());
                             }
-
+                            new saveUserToDatabaseAsyncTask(parsedUserInfo,client).execute();
                         }
-                    });
-
+                        else {
+                            if(loginResult.message!=null){
+                                viewModel.error.postValue(true);
+                                viewModel.errorString.postValue(loginResult.message.content);
+                            }
+                            else {
+                                viewModel.error.postValue(true);
+                                viewModel.errorString.postValue(getString(R.string.parse_failed));
+                            }
+                        }
+                    }
+                    else {
+                        if(loginResult !=null && loginResult.message!=null){
+                            viewModel.error.postValue(true);
+                            viewModel.errorString.postValue(loginResult.message.content);
+                        }
+                        else {
+                            viewModel.error.postValue(true);
+                            viewModel.errorString.postValue(getString(R.string.parse_failed));
+                        }
+                    }
 
                 }
             }
@@ -379,6 +521,7 @@ public class loginBBSActivity extends AppCompatActivity {
         Intent intent = getIntent();
         curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        viewModel.setBBSInfo(curBBS,curUser);
         if(curBBS == null){
             finishAfterTransition();
         }
@@ -396,12 +539,9 @@ public class loginBBSActivity extends AppCompatActivity {
             }
 
             getSupportActionBar().setSubtitle(curBBS.site_name);
+            client = networkUtils.getPreferredClientWithCookieJar(getApplicationContext());
         }
 
-//        if(curUser !=null){
-//            // set client previously
-//            client = networkUtils.getPreferredClientWithCookieJarByUserWithDefaultHeader(this,curUser);
-//        }
     }
 
     @Override

@@ -43,7 +43,9 @@ public class PostInfo implements Serializable {
     @JsonProperty("authorid")
     public int authorId;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    public int attachment, status, replycredit, position, number;
+    public int attachment, status, replycredit, number;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    public long position;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonProperty("adminid")
     public int adminId;

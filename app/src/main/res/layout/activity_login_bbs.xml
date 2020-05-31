@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.loginBBSActivity">
+    tools:context=".activities.LoginActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -139,7 +139,36 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_bbs_security_question_spinner"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/login_bbs_captcha_inputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/login_bbs_captcha_imageView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login_bbs_security_answer_editText">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/login_bbs_captcha_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/captcha_required"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:id="@+id/login_bbs_captcha_imageView"
+            android:layout_width="64dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="@+id/login_bbs_captcha_inputLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login_bbs_security_answer_editText"
+            tools:src="@tools:sample/backgrounds/scenic" />
 
         <Button
             android:id="@+id/login_bbs_login_button"
@@ -152,7 +181,7 @@
             app:iconSize="16dp"
             app:layout_constraintEnd_toEndOf="@+id/login_bbs_password_textInputLayout"
             app:layout_constraintStart_toStartOf="@+id/login_bbs_password_textInputLayout"
-            app:layout_constraintTop_toBottomOf="@+id/login_bbs_security_answer_editText" />
+            app:layout_constraintTop_toBottomOf="@+id/login_bbs_captcha_inputLayout" />
 
         <Button
             android:id="@+id/login_bbs_login_in_web_button"

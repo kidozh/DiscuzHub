@@ -23,6 +23,7 @@ import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,10 +115,25 @@ public class IntroSuggestionAdapter extends RecyclerView.Adapter<IntroSuggestion
         holder.suggestionOKIcon.setVisibility(View.GONE);
         URLUtils.setBaseUrl(base_url);
         String query_url = URLUtils.getBBSForumInformationUrl();
+        // judge the url
         OkHttpClient client = networkUtils.getPreferredClient(context,useSafeClient);
-        Request request = new Request.Builder().url(query_url).build();
+        Request request;
+        try{
+            URL url = new URL(query_url);
+            if(url.getAuthority()!=null && url.getHost()!=null){
+                throw new Exception();
+            }
+            request = new Request.Builder().url(query_url).build();
+
+        }
+        catch (Exception e){
+            holder.checkProgressbar.setVisibility(View.GONE);
+            holder.suggestionOKIcon.setVisibility(View.VISIBLE);
+            holder.suggestionOKIcon.setImageDrawable(context.getDrawable(R.drawable.ic_suggestion_check_error_outline_24px));
+            e.printStackTrace();
+            return ;
+        }
         Call call = client.newCall(request);
-        Handler mHandler = new Handler(Looper.getMainLooper());
 
         Log.d(TAG,"Query check URL "+query_url);
         call.enqueue(new Callback() {

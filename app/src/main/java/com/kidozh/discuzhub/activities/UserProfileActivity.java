@@ -30,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.google.android.material.tabs.TabLayout;
+import com.kidozh.discuzhub.BuildConfig;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.UserGroup.UserGroupInfoFragment;
 import com.kidozh.discuzhub.activities.ui.UserMedal.MedalFragment;
@@ -158,6 +159,9 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
     }
 
     void configurePMBtn(){
+        if(BuildConfig.BUILD_TYPE.contentEquals("chinaEdition")){
+            personalInfoPMBtn.setVisibility(View.GONE);
+        }
         personalInfoPMBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

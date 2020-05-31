@@ -20,6 +20,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
+import com.kidozh.discuzhub.BuildConfig;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.UserNotification.UserNotificationFragment;
 import com.kidozh.discuzhub.activities.ui.bbsNotificationMessagePortalFragment;
@@ -129,13 +130,6 @@ public class NotificationsFragment extends Fragment {
 
 
     }
-
-    void updateTabAndFragment(){
-        // adapter.notifyDataSetChanged();
-        // refresh the fragment
-        fragmentNotificationViewPager.setAdapter(adapter);
-        setCustomViewToTabLayout();
-    }
     void updateTabAndFragment(int position){
         // adapter.notifyDataSetChanged();
         // refresh the fragment
@@ -152,8 +146,13 @@ public class NotificationsFragment extends Fragment {
         for(int i=0;i<fragmentNotificationTabLayout.getTabCount();i++){
 
             TabLayout.Tab tab = fragmentNotificationTabLayout.getTabAt(i);
+            int index = i;
+            if(BuildConfig.BUILD_TYPE.contentEquals("chinaEdition")){
+                // first is removed!!!
+                index += 1;
+            }
             if(tab!=null){
-                switch (i){
+                switch (index){
                     case 0:{
                         tab.setIcon(R.drawable.ic_message_24px);
                         switch (adapter.message_state){
@@ -270,6 +269,10 @@ public class NotificationsFragment extends Fragment {
         Log.d(TAG,"add popMenu to list "+index);
         PopupMenu popupMenu = new PopupMenu(getActivity().getApplicationContext(), messageTab.view);
         MenuInflater inflater = popupMenu.getMenuInflater();
+        if(BuildConfig.BUILD_TYPE.contentEquals("chinaEdition")){
+            // first is removed!!!
+            index += 1;
+        }
         switch (index){
             case 0:{
                 inflater.inflate(R.menu.menu_notification_message,popupMenu.getMenu());
@@ -421,7 +424,10 @@ public class NotificationsFragment extends Fragment {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-
+            if(BuildConfig.BUILD_TYPE.contentEquals("chinaEdition")){
+                // first is removed!!!
+                position += 1;
+            }
             switch (position){
                 case 0:{
                     Log.d(TAG,"Position "+position+" message "+message_state);
@@ -476,7 +482,12 @@ public class NotificationsFragment extends Fragment {
         @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
+            if(BuildConfig.BUILD_TYPE.contentEquals("chinaEdition")){
+                // first is removed!!!
+                position += 1;
+            }
             switch (position){
+
                 case 0:
                     return getString(R.string.bbs_notification_messages);
                 case 1:
@@ -494,7 +505,14 @@ public class NotificationsFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return 5;
+            if(BuildConfig.BUILD_TYPE.contentEquals("chinaEdition")){
+                // first is removed!!!
+                return 4;
+            }
+            else {
+                return 5;
+            }
+
         }
     }
 

@@ -25,6 +25,7 @@ import com.kidozh.discuzhub.results.AddCheckResult;
 import com.kidozh.discuzhub.results.BBSIndexResult;
 import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
+import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadPostParameterResult;
 import com.kidozh.discuzhub.results.ThreadPostResult;
 import com.kidozh.discuzhub.results.UserNoteListResult;
@@ -972,6 +973,18 @@ public class bbsParseUtils {
 
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(s, ThreadPostParameterResult.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static SecureInfoResult parseSecureInfoResult(String s) {
+        try {
+
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(s, SecureInfoResult.class);
 
         } catch (Exception e) {
             e.printStackTrace();

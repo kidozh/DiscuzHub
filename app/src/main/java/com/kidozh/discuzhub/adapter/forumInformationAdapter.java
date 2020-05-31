@@ -31,9 +31,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.MainActivity;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.LoginActivity;
 import com.kidozh.discuzhub.activities.ui.bbsDetailedInformation.bbsShowInformationActivity;
 import com.kidozh.discuzhub.activities.bbsShowPortalActivity;
-import com.kidozh.discuzhub.activities.loginBBSActivity;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -191,7 +191,7 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
         holder.addAnAccountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, loginBBSActivity.class);
+                Intent intent = new Intent(context, LoginActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,forumInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity,

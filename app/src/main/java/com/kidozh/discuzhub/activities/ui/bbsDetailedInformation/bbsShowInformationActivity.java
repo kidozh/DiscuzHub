@@ -29,7 +29,7 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.loginBBSActivity;
+import com.kidozh.discuzhub.activities.LoginActivity;
 import com.kidozh.discuzhub.adapter.bbsDetailInformationAdapter;
 import com.kidozh.discuzhub.adapter.forumUsersAdapter;
 import com.kidozh.discuzhub.callback.forumSwipeToDeleteUserCallback;
@@ -227,7 +227,7 @@ public class bbsShowInformationActivity extends AppCompatActivity implements for
         bbsInfoAddUserBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity, loginBBSActivity.class);
+                Intent intent = new Intent(activity, LoginActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity,

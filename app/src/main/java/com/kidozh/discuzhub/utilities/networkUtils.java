@@ -84,6 +84,10 @@ public class networkUtils {
     }
 
     public static OkHttpClient getSafeOkHttpClientWithCookieJar(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
         ClearableCookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
         cookieJar.clearSession();
@@ -94,7 +98,7 @@ public class networkUtils {
                 .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
 
 
-        return mBuilder.build();
+        return addUserAgent(context,mBuilder);
     }
 
     public static OkHttpClient getPreferredClientWithCookieJarByUser(Context context, forumUserBriefInfo briefInfo){
@@ -185,7 +189,6 @@ public class networkUtils {
 
                             Request request = original.newBuilder()
                                     .header("User-Agent", useragent)
-                                    .header("Accept", "application/vnd.yourapi.v1.full+json")
                                     .method(original.method(), original.body())
                                     .build();
 
@@ -206,7 +209,6 @@ public class networkUtils {
 
                             Request request = original.newBuilder()
                                     .header("User-Agent", useragent)
-                                    .header("Accept", "application/vnd.yourapi.v1.full+json")
                                     .method(original.method(), original.body())
                                     .build();
 
@@ -373,6 +375,10 @@ public class networkUtils {
     }
 
     public static OkHttpClient getUnsafeOkHttpClientWithCookieJar(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
         ClearableCookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
         cookieJar.clearSession();
@@ -390,47 +396,7 @@ public class networkUtils {
         return addUserAgent(context,mBuilder);
     }
 
-    public static class UserAgentInterceptor implements Interceptor {
 
-        private final String userAgent;
-
-        public UserAgentInterceptor(String userAgent) {
-            this.userAgent = userAgent;
-        }
-
-        @Override
-        public Response intercept(Chain chain) throws IOException {
-            Request originalRequest = chain.request();
-            Request requestWithUserAgent = originalRequest.newBuilder()
-                    .header("User-Agent", userAgent)
-                    .build();
-            return chain.proceed(requestWithUserAgent);
-        }
-    }
-
-    private static class CookiesManager implements CookieJar {
-        Context context;
-        CookiesManager(Context context){
-            this.context = context;
-        }
-
-        private final PersistentCookieStore cookieStore = new PersistentCookieStore(context);
-
-        @Override
-        public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-            if (cookies != null && cookies.size() > 0) {
-                for (Cookie item : cookies) {
-                    cookieStore.add(url, item);
-                }
-            }
-        }
-
-        @Override
-        public List<Cookie> loadForRequest(HttpUrl url) {
-            List<Cookie> cookies = cookieStore.get(url);
-            return cookies;
-        }
-    }
 
     public final static int NETWORK_STATUS_NO_CONNECTION = 0;
     public final static int NETWORK_STATUS_WIFI = 1;

@@ -295,7 +295,7 @@ public class bbsShowForumThreadActivity extends AppCompatActivity {
                     }
                     else {
                         Toasty.info(context,context.getString(R.string.bbs_require_login_to_comment), Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(context, loginBBSActivity.class);
+                        Intent intent = new Intent(context, LoginActivity.class);
                         intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                         intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                         startActivity(intent);

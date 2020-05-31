@@ -40,6 +40,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
@@ -54,6 +64,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadPostResult;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -65,6 +76,7 @@ import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.viewModels.ThreadDetailViewModel;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -77,6 +89,7 @@ import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -122,6 +135,11 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
     TextView mDetailThreadSubjectTextview;
     @BindView(R.id.bbs_thread_property_recyclerview)
     RecyclerView mDetailThreadPropertyRecyclerview;
+    @BindView(R.id.bbs_post_captcha_imageview)
+    ImageView mPostCaptchaImageview;
+    @BindView(R.id.bbs_post_captcha_editText)
+    EditText mPostCaptchaEditText;
+
     public String subject;
     public int tid, fid;
     private OkHttpClient client = new OkHttpClient();
@@ -508,6 +526,81 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
 
             }
         });
+
+        // for secure reason
+        threadDetailViewModel.getSecureInfoResultMutableLiveData().observe(this, new Observer<SecureInfoResult>() {
+            @Override
+            public void onChanged(SecureInfoResult secureInfoResult) {
+                if(secureInfoResult !=null){
+                    if(secureInfoResult.secureVariables == null){
+                        // don't need a code
+                        mPostCaptchaEditText.setVisibility(View.GONE);
+                        mPostCaptchaImageview.setVisibility(View.GONE);
+                    }
+                    else {
+                        mPostCaptchaEditText.setVisibility(View.VISIBLE);
+                        mPostCaptchaImageview.setVisibility(View.VISIBLE);
+                        mPostCaptchaImageview.setImageDrawable(getDrawable(R.drawable.ic_captcha_placeholder_24px));
+                        // need a captcha
+                        String captchaURL = secureInfoResult.secureVariables.secCodeURL;
+                        String captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash);
+                        // load it
+                        Request captchaRequest = new Request.Builder()
+                                .url(captchaURL)
+                                .build();
+                        // get first
+                        client.newCall(captchaRequest).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    // get the session
+
+
+                                    mPostCaptchaImageview.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
+                                            Glide.get(getApplication()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+
+                                            // forbid cache captcha
+                                            RequestOptions options = new RequestOptions()
+                                                    .fitCenter()
+                                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                                    .placeholder(R.drawable.ic_captcha_placeholder_24px)
+                                                    .error(R.drawable.ic_post_status_warned_24px);
+                                            GlideUrl pictureGlideURL = new GlideUrl(captchaImageURL,
+                                                    new LazyHeaders.Builder()
+                                                    .addHeader("Referer",captchaURL)
+                                                    .build()
+                                            );
+
+                                            Glide.with(getApplication())
+                                                    .load(pictureGlideURL)
+                                                    .apply(options)
+                                                    .into(mPostCaptchaImageview);
+                                        }
+                                    });
+
+                                }
+
+                            }
+                        });
+                    }
+
+                }
+                else {
+                    // don't know the situation
+                    mPostCaptchaEditText.setVisibility(View.GONE);
+                    mPostCaptchaImageview.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
 
@@ -531,11 +624,25 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
     }
 
     private void configureCommentBtn(){
+        // captcha
+        mPostCaptchaImageview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // update it
+                threadDetailViewModel.getSecureInfo();
+            }
+        });
+
         mCommentBtn.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
                 String commentMessage = mCommentEditText.getText().toString();
+                String captchaString = mPostCaptchaEditText.getText().toString();
+                if(needCaptcha() && captchaString.length() == 0){
+                    Toasty.warning(getApplicationContext(),getString(R.string.captcha_required),Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if(commentMessage.length() < 1){
                     Toasty.info(getApplicationContext(),getString(R.string.bbs_require_comment),Toast.LENGTH_SHORT).show();
                 }
@@ -781,8 +888,6 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
 
                     }
 
-                    // getThreadComment();
-
                 }
             }
 
@@ -809,15 +914,34 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
 
     }
 
+    private boolean needCaptcha(){
+        if(threadDetailViewModel == null
+                || threadDetailViewModel.getSecureInfoResultMutableLiveData().getValue()==null
+                || threadDetailViewModel.getSecureInfoResultMutableLiveData().getValue().secureVariables==null){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
     private void postCommentToThread(String message){
         Date timeGetTime = new Date();
-        FormBody formBody = new FormBody.Builder()
+        FormBody.Builder formBodyBuilder = new FormBody.Builder()
                 .add("message", message)
                 .add("subject", "")
                 .add("usesig", "1")
                 .add("posttime",String.valueOf(timeGetTime.getTime() / 1000 - 1))
-                .add("formhash",formHash)
-                .build();
+                .add("formhash",formHash);
+        if(needCaptcha()){
+            SecureInfoResult secureInfoResult = threadDetailViewModel.getSecureInfoResultMutableLiveData().getValue();
+
+            formBodyBuilder.add("seccodehash",secureInfoResult.secureVariables.secHash)
+                    .add("seccodemodid", "forum::viewthread")
+                    .add("seccodeverify", mPostCaptchaEditText.getText().toString());
+        }
+
+        FormBody formBody = formBodyBuilder.build();
         Log.d(TAG,"get Form "+message+" hash "
                 +formHash+" fid "+fid+" tid "+tid
                 + " API ->"+ URLUtils.getReplyThreadUrl(fid,tid)+" formbody "+formBody.toString());
@@ -925,7 +1049,7 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
             replyMessage += "...";
         }
 
-        FormBody formBody = new FormBody.Builder()
+        FormBody.Builder formBodyBuilder = new FormBody.Builder()
                 .add("formhash",formHash)
                 .add("handlekey","reply")
 
@@ -935,10 +1059,18 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
                 .add("message", message)
                 .add("noticeauthormsg",noticeAuthorMsg)
                 .add("noticetrimstr",String.format(discuz_reply_comment_template,
-                        replyUserName,publishAtString,replyMessage))
-//                .add("noticeauthor",noticeauthor)
-                //.add("subject", message)
-                .build();
+                        replyUserName,publishAtString,replyMessage));
+
+
+        if(needCaptcha()){
+            SecureInfoResult secureInfoResult = threadDetailViewModel.getSecureInfoResultMutableLiveData().getValue();
+
+            formBodyBuilder.add("seccodehash",secureInfoResult.secureVariables.secHash)
+                    .add("seccodemodid", "forum::viewthread")
+                    .add("seccodeverify", mPostCaptchaEditText.getText().toString());
+        }
+
+        FormBody formBody = formBodyBuilder.build();
         Request request = new Request.Builder()
                 .url(URLUtils.getReplyThreadUrl(fid,tid))
                 .post(formBody)
