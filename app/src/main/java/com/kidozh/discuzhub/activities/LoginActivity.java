@@ -48,6 +48,7 @@ import com.kidozh.discuzhub.viewModels.LoginViewModel;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -372,12 +373,13 @@ public class LoginActivity extends AppCompatActivity {
 
         FormBody.Builder formBodyBuilder = new FormBody.Builder()
                 .add("loginfield", "username")
-                //.add("cookietime", "2592000")
+                .add("cookietime", "2592000")
                 .add("username", account)
                 .add("password", password)
                 .add("questionid",String.valueOf(bbsSecurityQuestionSpinner.getSelectedItemPosition()))
                 .add("answer",bbsSecurityAnswerEditText.getText().toString())
-
+                .add("quickforward", "yes")
+                .add("handlekey", "1s")
                 .add("referer",curBBS.base_url);
 
         if(needCaptcha()){
@@ -416,7 +418,8 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.body()!=null){
+                if(response.isSuccessful() && response.body()!=null){
+
                     String res = response.body().string();
                     // fetch the api URL
                     Log.d(TAG,"get result json "+res);
@@ -430,9 +433,10 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     if(loginResult !=null && loginResult.variables !=null){
                         forumUserBriefInfo parsedUserInfo = loginResult.variables.getUserBriefInfo();
-                        if(parsedUserInfo !=null && ! parsedUserInfo.uid.equals("0")){
+                        if(parsedUserInfo !=null
+                                && loginResult.message!=null
+                                && loginResult.message.key.equals("login_succeed")){
                             // successful
-
                             parsedUserInfo.belongedBBSID = curBBS.getId();
                             if(curUser !=null){
                                 // relogin user
@@ -442,8 +446,13 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         else {
                             if(loginResult.message!=null){
+                                if(loginResult.message.key.equals("login_seccheck2")){
+                                    Log.d(TAG,"Need seccode to login ");
+                                    viewModel.getSecureInfo();
+                                }
                                 viewModel.error.postValue(true);
                                 viewModel.errorString.postValue(loginResult.message.content);
+
                             }
                             else {
                                 viewModel.error.postValue(true);
@@ -494,10 +503,20 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG,"save user to database id: "+userBriefInfo.getId()+"  "+insertedId);
             userBriefInfo.setId((int) insertedId);
             // transiting data
-            networkUtils.copySharedPrefence(
-                    context.getSharedPreferences("CookiePersistence",Context.MODE_PRIVATE),
-                    context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE)
-            );
+            if(curUser !=null){
+                // relogin user
+                networkUtils.copySharedPrefence(
+                        context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(curUser),Context.MODE_PRIVATE),
+                        context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE)
+                );
+            }
+            else {
+                networkUtils.copySharedPrefence(
+                        context.getSharedPreferences("CookiePersistence",Context.MODE_PRIVATE),
+                        context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE)
+                );
+            }
+
             Log.d(TAG, "Transiting data to preference "+networkUtils.getSharedPreferenceNameByUser(userBriefInfo));
 
             finishAfterTransition();

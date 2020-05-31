@@ -5,7 +5,11 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,6 +59,8 @@ import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
 import org.xml.sax.XMLReader;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -434,24 +440,59 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
 
         }
 
+        public Bitmap DrawableToBitmap(Drawable drawable) {
+
+            // 获取 drawable 长宽
+            int width = drawable.getIntrinsicWidth();
+            int heigh = drawable.getIntrinsicHeight();
+
+            drawable.setBounds(0, 0, width, heigh);
+
+            // 获取drawable的颜色格式
+            Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+                    : Bitmap.Config.RGB_565;
+            // 创建bitmap
+            Bitmap bitmap = Bitmap.createBitmap(width, heigh, config);
+            // 创建bitmap画布
+            Canvas canvas = new Canvas(bitmap);
+            // 将drawable 内容画到画布中
+            drawable.draw(canvas);
+            return bitmap;
+        }
+
         @Override
         public void onResourceReady(final Drawable resource, Transition<? super Drawable> transition) {
-            final Drawable drawable = resource;
+
             //获取原图大小
             textView.post(new Runnable() {
                 @Override
                 public void run() {
+                    Drawable drawable = resource;
                     int width=drawable.getIntrinsicWidth() ;
                     int height=drawable.getIntrinsicHeight();
+                    final int DRAWABLE_COMPRESS_THRESHOLD = 250000;
+                    final int DRAWABLE_SIMLEY_THRESHOLD = 10000;
                     // Rescale to image
-                    // int screenWidth = outMetrics.widthPixels - textView.getPaddingLeft() - textView.getPaddingRight();
-                    //int screenWidth =  textView.getWidth() - textView.getPaddingLeft() - textView.getPaddingRight();
                     int screenWidth = textView.getMeasuredWidth();
                     Log.d(TAG,"Screen width "+screenWidth+" image width "+width);
-                    if (screenWidth / width < 4 && screenWidth !=0 ){
+
+
+                    if (screenWidth !=0 && width * height > DRAWABLE_SIMLEY_THRESHOLD){
                         double rescaleFactor = ((double) screenWidth) / width;
                         int newHeight = (int) (height * rescaleFactor);
                         Log.d(TAG,"rescaleFactor "+rescaleFactor+" image new height "+newHeight);
+                        if(width * height > DRAWABLE_COMPRESS_THRESHOLD){
+                            // compress it for swift display
+                            Bitmap bitmap = DrawableToBitmap(drawable);
+                            // scale it first
+                            bitmap = Bitmap.createScaledBitmap(bitmap,screenWidth, newHeight, true);
+                            ByteArrayOutputStream out = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG,80, out);
+                            Bitmap compressedBitmap = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
+                            drawable =  new BitmapDrawable(context.getResources(), compressedBitmap);
+
+                        }
+
                         myDrawable.setBounds(0,0,screenWidth,newHeight);
                         drawable.setBounds(0,0,screenWidth,newHeight);
                         resource.setBounds(0,0,screenWidth,newHeight);
@@ -469,13 +510,10 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
                         resource.setBounds(0,0,width*2,height*2);
                     }
 
-                    //myDrawable.invalidateSelf();
                     myDrawable.setDrawable(drawable);
                     TextView tv = textView;
                     tv.setText(tv.getText());
                     tv.invalidate();
-                    //tv.setText(tv.getText(), TextView.BufferType.SPANNABLE);
-                    //tv.invalidate();
                 }
             });
 

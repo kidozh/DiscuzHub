@@ -290,7 +290,7 @@ public class bbsShowPortalActivity extends AppCompatActivity
 
     private void getNotificationInfo(){
         Request request = new Request.Builder()
-                .url(URLUtils.getLoginApiUrl())
+                .url(URLUtils.getLoginSecondaryUrl())
                 .build();
         Handler mHandler = new Handler(Looper.getMainLooper());
         client.newCall(request).enqueue(new Callback() {
@@ -337,7 +337,7 @@ public class bbsShowPortalActivity extends AppCompatActivity
                 Intent intent = new Intent(this, UserProfileActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
-                intent.putExtra("UID",String.valueOf(curUser.uid));
+                intent.putExtra("UID",curUser.uid);
                 startActivity(intent);
                 return true;
             }

@@ -185,7 +185,7 @@ public class loginByWebViewActivity extends AppCompatActivity {
         client.cookieJar().saveFromResponse(httpUrl,cookieList);
         // exact login url
 
-        String loginApiUrl = URLUtils.getLoginApiUrl();
+        String loginApiUrl = URLUtils.getLoginSecondaryUrl();
         Request request = new Request.Builder()
                 .url(loginApiUrl)
                 .build();

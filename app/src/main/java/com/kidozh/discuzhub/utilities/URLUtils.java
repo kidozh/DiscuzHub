@@ -236,7 +236,7 @@ public class URLUtils {
                 .appendQueryParameter("module","login")
                 .appendQueryParameter("action","login")
                 .appendQueryParameter("loginsubmit","yes")
-                //.appendQueryParameter("inajax","1")
+                .appendQueryParameter("inajax","1")
                 .build();
         return uri.toString();
     }
@@ -247,7 +247,7 @@ public class URLUtils {
         return BASE_URL+"/member.php?mod=logging&action=login";
     }
 
-    public static String getLoginApiUrl(){
+    public static String getLoginSecondaryUrl(){
         return BASE_URL + "/api/mobile/index.php?version=4&module=login&mod=logging&action=login";
     }
 

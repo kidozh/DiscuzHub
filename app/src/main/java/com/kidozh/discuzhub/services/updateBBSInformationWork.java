@@ -163,7 +163,7 @@ public class updateBBSInformationWork extends Worker {
         Set<String> notificationSituation = prefs.getStringSet(context.getString(R.string.preference_key_recv_notification_situation),new HashSet<>());
 
         Request request = new Request.Builder()
-                .url(URLUtils.getLoginApiUrl())
+                .url(URLUtils.getLoginSecondaryUrl())
                 .build();
 
         try{

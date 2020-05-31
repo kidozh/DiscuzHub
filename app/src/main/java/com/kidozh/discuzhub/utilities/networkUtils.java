@@ -84,10 +84,7 @@ public class networkUtils {
     }
 
     public static OkHttpClient getSafeOkHttpClientWithCookieJar(Context context){
-        SharedPreferences sharedPreferences = context.getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+
         ClearableCookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
         cookieJar.clearSession();
@@ -146,6 +143,7 @@ public class networkUtils {
         for(Map.Entry<String,?> entry : sp.getAll().entrySet()){
             Object v = entry.getValue();
             String key = entry.getKey();
+            Log.d(TAG,"Transition "+key+" val :"+v.toString());
             //Now we just figure out what type it is, so we can copy it.
             // Note that i am using Boolean and Integer instead of boolean and int.
             // That's because the Entry class can only hold objects and int and boolean are primatives.
@@ -162,7 +160,7 @@ public class networkUtils {
             else if(v instanceof String)
                 ed.putString(key, ((String)v));
         }
-        ed.commit(); //save it.
+        ed.apply(); //save it.
     }
 
     public static String getSharedPreferenceNameByUser(@NonNull forumUserBriefInfo briefInfo){
@@ -375,10 +373,6 @@ public class networkUtils {
     }
 
     public static OkHttpClient getUnsafeOkHttpClientWithCookieJar(Context context){
-        SharedPreferences sharedPreferences = context.getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
         ClearableCookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(context));
         cookieJar.clearSession();
