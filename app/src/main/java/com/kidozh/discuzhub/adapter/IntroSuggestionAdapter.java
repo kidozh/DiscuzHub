@@ -120,9 +120,7 @@ public class IntroSuggestionAdapter extends RecyclerView.Adapter<IntroSuggestion
         Request request;
         try{
             URL url = new URL(query_url);
-            if(url.getAuthority()!=null && url.getHost()!=null){
-                throw new Exception();
-            }
+
             request = new Request.Builder().url(query_url).build();
 
         }

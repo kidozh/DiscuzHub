@@ -944,7 +944,7 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
         FormBody formBody = formBodyBuilder.build();
         Log.d(TAG,"get Form "+message+" hash "
                 +formHash+" fid "+fid+" tid "+tid
-                + " API ->"+ URLUtils.getReplyThreadUrl(fid,tid)+" formbody "+formBody.toString());
+                + " API ->"+ URLUtils.getReplyThreadUrl(fid,tid)+" formhash "+formHash);
         Request request = new Request.Builder()
                 .url(URLUtils.getReplyThreadUrl(fid,tid))
                 .post(formBody)
@@ -969,7 +969,7 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(response.body()!=null){
+                if(response.isSuccessful() && response.body()!=null){
                     String s = response.body().string();
                     Log.d(TAG,"Recv comment info "+s);
                     bbsParseUtils.returnMessage returnedMessage = bbsParseUtils.parseReturnMessage(s);
