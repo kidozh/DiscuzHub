@@ -42,14 +42,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
-import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
@@ -89,7 +85,6 @@ import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -115,7 +110,7 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
     Chip mThreadReplyBadge;
     @BindView(R.id.bbs_thread_detail_reply_content)
     TextView mThreadReplyContent;
-    @BindView(R.id.bbs_thread_detail_no_more_item_found)
+    @BindView(R.id.bbs_post_error_textview)
     TextView noMoreThreadFound;
     @BindView(R.id.bbs_comment_smiley_constraintLayout)
     ConstraintLayout mCommentSmileyConstraintLayout;
@@ -139,6 +134,8 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
     ImageView mPostCaptchaImageview;
     @BindView(R.id.bbs_post_captcha_editText)
     EditText mPostCaptchaEditText;
+    @BindView(R.id.bbs_post_error_imageview)
+    ImageView errorPostImageview;
 
     public String subject;
     public int tid, fid;
@@ -518,9 +515,11 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
 
                         noMoreThreadFound.setVisibility(View.VISIBLE);
                         noMoreThreadFound.setText(threadPostResult.message.content);
+                        errorPostImageview.setVisibility(View.VISIBLE);
                     }
                     else {
                         noMoreThreadFound.setVisibility(View.GONE);
+                        errorPostImageview.setVisibility(View.GONE);
                     }
                 }
 

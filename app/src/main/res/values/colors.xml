@@ -2,7 +2,12 @@
 <resources>
     <color name="colorPrimary">@color/colorPeterRiver</color>
     <color name="colorPrimaryDark">@color/colorBelizahole</color>
-    <color name="colorAccent">@color/colorAlizarin</color>
+    <color name="colorAccent">@color/colorTurquoise</color>
+<!--    <color name="colorPrimary">#6200EE</color>-->
+<!--    <color name="colorPrimaryDark">#3700B3</color>-->
+<!--    <color name="colorAccent">#03DAC5</color>-->
+
+
 
     <color name="colorAlizarin">#E74C3C</color>
     <color name="colorPomegranate">#C0392B</color>
@@ -36,7 +41,7 @@
     <color name="colorSafeStatus">@color/colorTurquoise</color>
     <color name="colorUnSafeStatus">@color/colorAlizarin</color>
     <color name="colorWarn">@color/colorCarrot</color>
-    <color name="colorDanger">@color/colorUnSafeStatus</color>
+    <color name="colorDanger">@color/colorPomegranate</color>
 
     <color name="black_overlay">#66000000</color>
 

@@ -158,20 +158,27 @@
                         android:id="@+id/bbs_thread_detail_recyclerview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="visible"
                         tools:itemCount="1"
                         tools:listitem="@layout/item_bbs_post">
 
 
                     </androidx.recyclerview.widget.RecyclerView>
 
-                    <TextView
-                        android:id="@+id/bbs_thread_detail_no_more_item_found"
+                    <ImageView
+                        android:id="@+id/bbs_post_error_imageview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="16dp"
-                        android:paddingTop="32dp"
-                        android:paddingEnd="16dp"
-                        android:paddingBottom="16dp"
+                        android:layout_marginTop="16dp"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/ic_error_outline_24px"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/bbs_post_error_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:text="@string/bbs_no_thread_gotten"
                         android:textAlignment="center"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"

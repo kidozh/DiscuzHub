@@ -104,12 +104,12 @@
 
     <style name="primary_color_chip_style" parent="@style/Widget.MaterialComponents.Chip.Choice">
         <item name="chipBackgroundColor">@color/chip_background_select_state</item>
-        <item name="chipStrokeColor">@color/colorPrimary</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="chipStrokeColor">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
         <!--<item name="android:textColorHighlight">@color/colorCloud</item>-->
         <!--<item name="chipSurfaceColor">@color/colorPeterRiver</item>-->
-        <item name="android:shadowColor">@color/colorPrimaryDark</item>
-        <item name="rippleColor">@color/colorPrimaryDark</item>
+        <item name="android:shadowColor">?attr/colorPrimary</item>
+        <item name="rippleColor">?attr/colorPrimary</item>
         <item name="chipIconVisible">true</item>
     </style>
 
