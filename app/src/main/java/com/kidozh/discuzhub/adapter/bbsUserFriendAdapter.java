@@ -21,6 +21,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.UserFriendResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -36,27 +37,27 @@ import static com.kidozh.discuzhub.utilities.networkUtils.getPreferredClient;
 
 public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdapter.ViewHolder> {
     private final static String TAG = bbsUserFriendAdapter.class.getSimpleName();
-    private List<bbsParseUtils.userFriend> userFriendList;
+    private List<UserFriendResult.UserFriend> userFriendList;
     Context context;
     bbsInformation bbsInfo;
     forumUserBriefInfo curUser;
 
-    public bbsUserFriendAdapter(List<bbsParseUtils.userFriend> userFriendList, bbsInformation bbsInfo, forumUserBriefInfo curUser){
+    public bbsUserFriendAdapter(List<UserFriendResult.UserFriend> userFriendList, bbsInformation bbsInfo, forumUserBriefInfo curUser){
         this.userFriendList = userFriendList;
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
     }
 
-    public List<bbsParseUtils.userFriend> getUserFriendList() {
+    public List<UserFriendResult.UserFriend> getUserFriendList() {
         return userFriendList;
     }
 
-    public void setUserFriendList(List<bbsParseUtils.userFriend> userFriendList){
+    public void setUserFriendList(List<UserFriendResult.UserFriend> userFriendList){
         this.userFriendList = userFriendList;
         notifyDataSetChanged();
     }
 
-    public void addUserFriendList(List<bbsParseUtils.userFriend> userFriendList){
+    public void addUserFriendList(List<UserFriendResult.UserFriend> userFriendList){
         if(this.userFriendList == null){
             this.userFriendList = userFriendList;
         }
@@ -82,7 +83,7 @@ public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        bbsParseUtils.userFriend friend = userFriendList.get(position);
+        UserFriendResult.UserFriend friend = userFriendList.get(position);
         holder.name.setText(friend.username);
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(getPreferredClient(context));
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);

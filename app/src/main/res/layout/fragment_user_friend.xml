@@ -5,7 +5,7 @@
     android:id="@+id/user_friend_swipe_refreshLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".activities.ui.userFriend.userFriendFragment">
+    tools:context=".activities.ui.UserFriend.UserFriendFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -23,10 +23,10 @@
 
         <ImageView
             android:id="@+id/user_friend_empty_imageView"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:src="@drawable/vector_drawable_bbs_empty"
+            android:src="@drawable/ic_empty_friend_64px"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +34,7 @@
             tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/user_friend_no_item_textview"
+            android:id="@+id/user_friend_error_textview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"

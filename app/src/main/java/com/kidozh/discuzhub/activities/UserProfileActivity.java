@@ -35,7 +35,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.UserGroup.UserGroupInfoFragment;
 import com.kidozh.discuzhub.activities.ui.UserMedal.MedalFragment;
 import com.kidozh.discuzhub.activities.ui.UserProfileList.UserProfileInfoListFragment;
-import com.kidozh.discuzhub.activities.ui.userFriend.userFriendFragment;
+import com.kidozh.discuzhub.activities.ui.UserFriend.UserFriendFragment;
 import com.kidozh.discuzhub.entities.UserProfileItem;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -60,7 +60,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
 
-public class UserProfileActivity extends AppCompatActivity implements userFriendFragment.OnFragmentInteractionListener{
+public class UserProfileActivity extends AppCompatActivity implements UserFriendFragment.OnFragmentInteractionListener{
 
     private static final String TAG = UserProfileActivity.class.getSimpleName();
 
@@ -627,7 +627,14 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
                         return MedalFragment.newInstance(null);
                     }
                 case 1:
-                    return userFriendFragment.newInstance(userId);
+                    if(userProfileResult!=null && userProfileResult.userProfileVariableResult!=null
+                            && userProfileResult.userProfileVariableResult.space !=null){
+                        return UserFriendFragment.newInstance(userId,userProfileResult.userProfileVariableResult.space.friends);
+                    }
+                    else {
+                        return UserFriendFragment.newInstance(userId,0);
+                    }
+
                 case 2:
                     return UserProfileInfoListFragment.newInstance(getString(R.string.user_profile_basic_information),
                             getBasicInfoList());
@@ -648,7 +655,7 @@ public class UserProfileActivity extends AppCompatActivity implements userFriend
                     }
 
             }
-            return userFriendFragment.newInstance(userId);
+            return UserFriendFragment.newInstance(userId,0);
         }
 
         @Nullable

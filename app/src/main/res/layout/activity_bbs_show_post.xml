@@ -52,9 +52,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:fontFamily="serif"
                         android:textAlignment="viewStart"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textStyle="bold"
                         android:transitionName="bbs_thread_subject"
                         tools:text="@tools:sample/cities" />
                 </LinearLayout>

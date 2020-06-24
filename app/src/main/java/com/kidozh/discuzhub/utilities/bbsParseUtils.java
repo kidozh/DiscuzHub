@@ -28,6 +28,7 @@ import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadPostParameterResult;
 import com.kidozh.discuzhub.results.ThreadPostResult;
+import com.kidozh.discuzhub.results.UserFriendResult;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.results.UserProfileResult;
 
@@ -562,6 +563,18 @@ public class bbsParseUtils {
                 userFriendList.add(userFriend);
             }
             return userFriendList;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static UserFriendResult parseUserFriendsResult(String s) {
+        try {
+
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(s, UserFriendResult.class);
 
         } catch (Exception e) {
             e.printStackTrace();

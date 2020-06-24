@@ -382,20 +382,20 @@
     <string name="add_bbs_url_failed">%1$s并不是一个有效的链接</string>
     <string name="attachment_download_time">已下载%1$d次</string>
     <string name="thread_readperm">此贴阅读权限为 %1$d，您的阅读权限为%2$d。</string>
-    <string name="thread_anoymous_readperm">在匿名模式下，您无法查看本帖（需要%1$d阅读权限）</string>
-    <string name="post_block">此贴已被屏蔽</string>
-    <string name="post_warn">此贴已被警告</string>
-    <string name="post_revised">帖子审核后再编辑标记，用于防止重复加分</string>
-    <string name="post_mobile">此贴由手机发出</string>
-    <string name="thread_cache_location">本贴已经缓存</string>
+    <string name="thread_anoymous_readperm">在匿名模式下，您无法查看本帖（需要%1$d阅读权限）。</string>
+    <string name="post_block">此贴已被屏蔽。</string>
+    <string name="post_warn">此贴已被警告。</string>
+    <string name="post_revised">帖子审核后再编辑标记，用于防止重复加分。</string>
+    <string name="post_mobile">此贴由手机发出。</string>
+    <string name="thread_cache_location">本贴已经缓存。</string>
     <string name="thread_reply_only_see_by_poster">只有楼主和管理员才能查看回帖</string>
     <string name="thread_reward_lotto">本贴为抢楼贴，若你刚好发中了某个楼层，你可能会得到奖励</string>
     <string name="thread_notify_author">你的发言将会提醒作者</string>
-    <string name="post_is_blocked">帖子被屏蔽</string>
-    <string name="post_is_warned">帖子被警告</string>
+    <string name="post_is_blocked">帖子被屏蔽。</string>
+    <string name="post_is_warned">帖子被警告。</string>
     <string name="post_is_edited">帖子审核后再编辑标记，用于防止重复加分</string>
-    <string name="user_profile_privacy_hidden">因隐私设置而不可见</string>
-    <string name="user_profile_item_not_set">用户可能没有设置过此项</string>
+    <string name="user_profile_privacy_hidden">因隐私设置而不可见。</string>
+    <string name="user_profile_item_not_set">用户可能没有设置过此项。</string>
     <string name="user_profile_item_only_visible_to_friend">此项只对好友可见，加个好友？</string>
     <string name="gender">性别</string>
     <string name="gender_secret">TA</string>
@@ -436,10 +436,11 @@
     <string name="resident_location">居住地</string>
     <string name="user_profile_edu_job">教育与工作</string>
     <string name="user_profile_medal">奖项与荣誉</string>
-    <string name="profile_no_medal">向论坛做出贡献以获得荣誉</string>
-    <string name="profile_list_not_prepared">我们正在准备这个项目</string>
+    <string name="profile_no_medal">向论坛做出贡献以获得荣誉。</string>
+    <string name="profile_list_not_prepared">我们正在准备这个项目。。。</string>
     <string name="profile_user_group_empty">我们暂时还未收到你的群组信息，再等等一下？</string>
     <string name="bbs_base_url_invalid">无效的网页地址</string>
     <string name="captcha_required">需要验证码</string>
+    <string name="friend_privacy_hidden">由于此用户隐私设置，您无法查看该用户的好友。</string>
 
 </resources>

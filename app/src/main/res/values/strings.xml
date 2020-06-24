@@ -6,7 +6,7 @@
         <item>http://</item>
         <item>https://</item>
     </string-array>
-    <string name="add_a_forum_by_url_safe_client_check">Use safe client to ensure HTTPS integrity and migrate to HTTPS if possible</string>
+    <string name="add_a_forum_by_url_safe_client_check">Use safe client to ensure HTTPS integrity and migrate to HTTPS if possible.</string>
     <string name="bbs_anonymous">Incognito</string>
     <string name="bbs_register_an_account">Register</string>
     <string name="delete_forum_information">The forum is deleted</string>
@@ -558,7 +558,7 @@
     <string name="post_is_warned">The post is warned.</string>
     <string name="post_is_edited">The post is revised and edited to prevent duplicate credits.</string>
     <string name="user_profile_privacy_hidden">Hidden due to privacy settings.</string>
-    <string name="user_profile_item_not_set">The Item may not set</string>
+    <string name="user_profile_item_not_set">The Item may not set.</string>
     <string name="user_profile_item_only_visible_to_friend">The item is only visible to the friends.</string>
     <string name="gender">Gender</string>
     <string name="gender_secret">He / She / They / It / Whatever</string>
@@ -599,11 +599,12 @@
     <string name="resident_location">Resident location</string>
     <string name="user_profile_edu_job">Education and Job</string>
     <string name="user_profile_medal">Honors</string>
-    <string name="profile_no_medal">Contribute to bbs to get a medal?</string>
+    <string name="profile_no_medal">Contribute to bbs to get a medal.</string>
     <string name="profile_list_not_prepared">We are preparing the profile details...</string>
     <string name="profile_user_group_empty">Your group has not been assembled yet. Try later?</string>
     <string name="bbs_base_url_invalid">The URL is invalid</string>
     <string name="captcha_required">Captcha required</string>
+    <string name="friend_privacy_hidden">Due to user\'s privacy settings, you can\'t see the friend page.</string>
 
 
 </resources>

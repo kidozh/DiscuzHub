@@ -120,7 +120,6 @@ public class IntroSuggestionAdapter extends RecyclerView.Adapter<IntroSuggestion
         Request request;
         try{
             URL url = new URL(query_url);
-
             request = new Request.Builder().url(query_url).build();
 
         }

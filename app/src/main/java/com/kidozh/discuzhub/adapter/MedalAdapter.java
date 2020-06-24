@@ -50,7 +50,7 @@ public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.ViewHolder> 
         Glide.with(context)
                 .load(medal.getMedalImageURL())
                 .into(holder.medalAvatar);
-        holder.medalIndex.setText(String.valueOf(medal.medalId));
+        holder.medalIndex.setText(String.valueOf(position));
     }
 
     @Override
