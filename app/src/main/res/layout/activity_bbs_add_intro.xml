@@ -28,17 +28,21 @@
         android:layout_marginEnd="8dp"
         android:text="@string/bbs_add_intro_title"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/bbs_add_intro_subtitle"
+        android:id="@+id/bbs_add_guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/bbs_add_intro_subtitle"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/add_bbs_guide"
+        android:textColor="?attr/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bbs_add_intro_title" />
@@ -52,7 +56,7 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bbs_add_intro_subtitle">
+        app:layout_constraintTop_toBottomOf="@+id/bbs_add_guide">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/bbs_add_intro_url_edittext"

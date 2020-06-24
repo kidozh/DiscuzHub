@@ -605,6 +605,12 @@
     <string name="bbs_base_url_invalid">The URL is invalid</string>
     <string name="captcha_required">Captcha required</string>
     <string name="friend_privacy_hidden">Due to user\'s privacy settings, you can\'t see the friend page.</string>
+    <string name="add_bbs_guide">Add BBS guide(Website)</string>
+    <string name="empty_public_message">No public message is received. Just keep updated.</string>
+    <string name="empty_private_message">You haven\'t gotten a call. That\'s quiet.</string>
+    <string name="empty_post_list">You haven\'t post a thread.</string>
+    <string name="empty_hot_threads">The bbs haven\'t recommended a thread. Check out later?</string>
+    <string name="empty_notification">No notification found here.</string>
 
 
 </resources>

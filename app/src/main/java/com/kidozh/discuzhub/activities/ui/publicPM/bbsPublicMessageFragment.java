@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,6 +51,10 @@ public class bbsPublicMessageFragment extends Fragment {
     SwipeRefreshLayout publicMessageSwipeRefreshLayout;
     @BindView(R.id.fragment_public_message_empty_view)
     View publicMessageEmptyView;
+    @BindView(R.id.empty_bbs_information_imageview)
+    ImageView emptyImageview;
+    @BindView(R.id.empty_bbs_information_text)
+    TextView emptyTextview;
 
     private bbsPrivateMessageFragment.OnNewMessageChangeListener mListener;
 
@@ -75,8 +81,14 @@ public class bbsPublicMessageFragment extends Fragment {
         configureIntentData();
         configureRecyclerview();
         configureSwipeRefreshLayout();
+        configureEmptyView();
         getPublicMessage(1);
 
+    }
+
+    private void configureEmptyView(){
+        emptyImageview.setImageResource(R.drawable.ic_empty_public_message_64px);
+        emptyTextview.setText(R.string.empty_public_message);
     }
 
     void configureRecyclerview(){

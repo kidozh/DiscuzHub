@@ -84,6 +84,13 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="materialDrawerTheme" parent="AppTheme.NoActionBar">
+
+        <item name="materialDrawerStyle">@style/Widget.MaterialDrawerStyle</item>
+        <item name="materialDrawerHeaderStyle">@style/Widget.MaterialDrawerHeaderStyle</item>
+
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -112,5 +119,9 @@
         <item name="rippleColor">?attr/colorPrimary</item>
         <item name="chipIconVisible">true</item>
     </style>
+
+
+
+
 
 </resources>

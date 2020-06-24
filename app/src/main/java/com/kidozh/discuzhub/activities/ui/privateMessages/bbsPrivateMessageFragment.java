@@ -18,6 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.bbsPrivateMessageAdapter;
@@ -105,6 +107,10 @@ public class bbsPrivateMessageFragment extends Fragment {
     SwipeRefreshLayout privateMessageSwipeRefreshLayout;
     @BindView(R.id.fragment_private_message_empty_view)
     View privateMessageEmptyView;
+    @BindView(R.id.empty_bbs_information_imageview)
+    ImageView emptyImageview;
+    @BindView(R.id.empty_bbs_information_text)
+    TextView emptyTextview;
 
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
@@ -122,7 +128,7 @@ public class bbsPrivateMessageFragment extends Fragment {
         configureIntentData();
         configureRecyclerview();
         configureSwipeRefreshLayout();
-
+        configureEmptyView();
 
     }
 
@@ -132,6 +138,11 @@ public class bbsPrivateMessageFragment extends Fragment {
         // need to resume it
         globalPage = 1;
         getPrivateMessage(globalPage);
+    }
+
+    private void configureEmptyView(){
+        emptyImageview.setImageResource(R.drawable.ic_empty_private_messages_64px);
+        emptyTextview.setText(R.string.empty_private_message);
     }
 
     private void configureRecyclerview(){

@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
@@ -90,11 +91,14 @@ public class DashboardViewModel extends AndroidViewModel {
             @Override
             public void onFailure(Call call, IOException e) {
                 isLoading.postValue(false);
+                isError.postValue(true);
+                errorTextLiveData.postValue(getApplication().getString(R.string.network_failed));
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 isLoading.postValue(false);
+
                 if(response.isSuccessful()&& response.body()!=null){
                     String s = response.body().string();
                     DisplayThreadsResult threadsResult = bbsParseUtils.getThreadListInfo(s);
@@ -109,6 +113,7 @@ public class DashboardViewModel extends AndroidViewModel {
                         if(threadInfos != null){
                             currentThreadInfo.addAll(threadInfos);
                         }
+                        isError.postValue(false);
                     }
                     else {
                         isError.postValue(true);

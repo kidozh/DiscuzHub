@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -33,13 +36,10 @@ import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.viewModels.AddBBSViewModel;
 
-import org.checkerframework.checker.formatter.FormatUtil;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.IllegalFormatException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -66,6 +66,8 @@ public class bbsAddIntroActivity extends AppCompatActivity
     Button continueBtn;
     @BindView(R.id.bbs_add_intro_progressBar)
     ProgressBar progressBar;
+    @BindView(R.id.bbs_add_guide)
+    TextView addBBSGuideTextview;
 
     IntroSuggestionAdapter adapter;
 
@@ -83,6 +85,20 @@ public class bbsAddIntroActivity extends AppCompatActivity
         bindViewModel();
         configureUrlEditText();
         configureContinueBtn();
+        configureAddGuide();
+    }
+
+    private void configureAddGuide(){
+        addBBSGuideTextview.setPaintFlags(addBBSGuideTextview.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        addBBSGuideTextview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Uri uri = Uri.parse("https://discuzhub.kidozh.com/add-a-bbs-guide/");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
     }
 
     private void configureRecyclerview(){

@@ -17,6 +17,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.UserNotificationAdapter;
@@ -60,6 +62,10 @@ public class UserNotificationFragment extends Fragment {
     SwipeRefreshLayout bbsNotificationSwipeRefreshLayout;
     @BindView(R.id.fragment_bbs_notification_empty_view)
     View bbsNotificationEmptyView;
+    @BindView(R.id.empty_bbs_information_imageview)
+    ImageView emptyImageview;
+    @BindView(R.id.empty_bbs_information_text)
+    TextView emptyTextview;
 
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
@@ -89,6 +95,8 @@ public class UserNotificationFragment extends Fragment {
         return fragment;
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +123,12 @@ public class UserNotificationFragment extends Fragment {
         configureRecyclerview();
         configureSwipeRefreshLayout();
         bindViewModel();
+        configureEmptyView();
+    }
+
+    private void configureEmptyView(){
+        emptyImageview.setImageResource(R.drawable.ic_empty_notification_64px);
+        emptyTextview.setText(R.string.empty_notification);
     }
 
     private void configureIntentData(){

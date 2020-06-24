@@ -445,7 +445,7 @@ public class NotificationsFragment extends Fragment {
 
                 case 1:{
                     if(view == null || type == null){
-                        return UserNotificationFragment.newInstance("mypost","post");
+                        return UserNotificationFragment.newInstance("mypost","");
                     }
                     else {
                         return UserNotificationFragment.newInstance(view,type);
@@ -456,7 +456,7 @@ public class NotificationsFragment extends Fragment {
 
                 case 2:{
                     if(view == null || type == null){
-                        return UserNotificationFragment.newInstance("interactive","poke");
+                        return UserNotificationFragment.newInstance("interactive","");
                     }
                     else {
                         return UserNotificationFragment.newInstance(view,type);

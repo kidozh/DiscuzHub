@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,6 +41,8 @@ public class DashboardFragment extends Fragment {
     SwipeRefreshLayout dashboardSwipeRefreshLayout;
     @BindView(R.id.fragment_dashboard_no_item_textView)
     TextView noItemFoundTextview;
+    @BindView(R.id.fragment_dashboard_empty_icon)
+    ImageView emptyIconImageview;
     bbsForumThreadAdapter forumThreadAdapter;
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
@@ -133,7 +136,18 @@ public class DashboardFragment extends Fragment {
         dashboardViewModel.getThreadListLiveData().observe(getViewLifecycleOwner(), new Observer<List<ThreadInfo>>() {
             @Override
             public void onChanged(List<ThreadInfo> threadInfos) {
+
                 forumThreadAdapter.setThreadInfoList(threadInfos,null);
+                if(forumThreadAdapter.threadInfoList == null || forumThreadAdapter.threadInfoList.size() == 0){
+                    noItemFoundTextview.setVisibility(View.VISIBLE);
+                    emptyIconImageview.setVisibility(View.VISIBLE);
+                    noItemFoundTextview.setText(R.string.empty_hot_threads);
+                    emptyIconImageview.setImageResource(R.drawable.ic_empty_hot_thread_64px);
+                }
+                else {
+                    noItemFoundTextview.setVisibility(View.GONE);
+                    emptyIconImageview.setVisibility(View.GONE);
+                }
             }
         });
         dashboardViewModel.isLoading.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
@@ -148,9 +162,20 @@ public class DashboardFragment extends Fragment {
 
                 if(aBoolean){
                     noItemFoundTextview.setVisibility(View.VISIBLE);
+                    emptyIconImageview.setVisibility(View.VISIBLE);
+                    emptyIconImageview.setImageResource(R.drawable.ic_error_outline_24px);
+                    String errorText = dashboardViewModel.errorTextLiveData.getValue();
+                    if(errorText == null || errorText.length() == 0){
+                        noItemFoundTextview.setText(R.string.parse_failed);
+                    }
+                    else {
+                        noItemFoundTextview.setText(errorText);
+                    }
+
                 }
                 else {
-                    noItemFoundTextview.setVisibility(View.GONE);
+//                    noItemFoundTextview.setVisibility(View.GONE);
+//                    emptyIconImageview.setVisibility(View.GONE);
                 }
             }
         });

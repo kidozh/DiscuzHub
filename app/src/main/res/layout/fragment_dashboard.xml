@@ -30,13 +30,22 @@
 
             </androidx.recyclerview.widget.RecyclerView>
 
+            <ImageView
+                android:id="@+id/fragment_dashboard_empty_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_empty_hot_thread_64px"
+                tools:visibility="visible" />
+
             <TextView
                 android:id="@+id/fragment_dashboard_no_item_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="32dp"
+                android:layout_marginTop="8dp"
                 android:paddingBottom="8dp"
-                android:text="@string/bbs_no_thread_gotten"
+                android:text="@string/empty_hot_threads"
                 android:textAlignment="center"
                 android:visibility="gone"
                 tools:visibility="visible" />

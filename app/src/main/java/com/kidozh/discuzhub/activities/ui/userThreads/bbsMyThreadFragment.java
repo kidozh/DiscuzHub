@@ -18,6 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.bbsForumThreadAdapter;
@@ -58,6 +60,10 @@ public class bbsMyThreadFragment extends Fragment {
     SwipeRefreshLayout myThreadSwipeRefreshLayout;
     @BindView(R.id.fragment_my_thread_empty_view)
     View myThreadEmptyView;
+    @BindView(R.id.empty_bbs_information_imageview)
+    ImageView emptyImageview;
+    @BindView(R.id.empty_bbs_information_text)
+    TextView emptyTextview;
 
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
@@ -81,6 +87,7 @@ public class bbsMyThreadFragment extends Fragment {
         configureIntentData();
         configureRecyclerview();
         configureSwipeRefreshLayout();
+        configureEmptyView();
 
     }
 
@@ -90,6 +97,11 @@ public class bbsMyThreadFragment extends Fragment {
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+    }
+
+    private void configureEmptyView(){
+        emptyImageview.setImageResource(R.drawable.ic_empty_my_post_list);
+        emptyTextview.setText(R.string.empty_post_list);
     }
 
     private void configureRecyclerview(){
