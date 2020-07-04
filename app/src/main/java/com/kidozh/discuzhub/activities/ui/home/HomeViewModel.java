@@ -46,6 +46,7 @@ public class HomeViewModel extends AndroidViewModel {
         errorText = new MutableLiveData<String>();
         isLoading = new MutableLiveData<>(false);
         bbsIndexResultMutableLiveData = new MutableLiveData<>(null);
+        userBriefInfoMutableLiveData =  new MutableLiveData<>(null);
 
     }
 

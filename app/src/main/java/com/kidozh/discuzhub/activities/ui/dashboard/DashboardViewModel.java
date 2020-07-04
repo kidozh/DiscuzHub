@@ -17,6 +17,7 @@ import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +60,7 @@ public class DashboardViewModel extends AndroidViewModel {
     public void setBBSInfo(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
         this.curBBS = bbsInfo;
         this.curUser = userBriefInfo;
+        URLUtils.setBBS(bbsInfo);
         client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
     }
 

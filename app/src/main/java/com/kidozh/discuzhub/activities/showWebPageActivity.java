@@ -34,7 +34,7 @@ import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
-public class showWebPageActivity extends AppCompatActivity {
+public class showWebPageActivity extends BaseStatusActivity {
     private String TAG = showWebPageActivity.class.getSimpleName();
 
     forumUserBriefInfo userBriefInfo;

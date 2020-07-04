@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.IntroSuggestionAdapter;
-import com.kidozh.discuzhub.database.forumInformationDatabase;
+import com.kidozh.discuzhub.database.BBSInformationDatabase;
 import com.kidozh.discuzhub.entities.SuggestURLInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.results.AddCheckResult;
@@ -51,7 +51,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class bbsAddIntroActivity extends AppCompatActivity
+public class bbsAddIntroActivity extends BaseStatusActivity
         implements IntroSuggestionAdapter.OnClickSuggestionListener {
     private static final String TAG = bbsAddIntroActivity.class.getSimpleName();
     @BindView(R.id.bbs_add_intro_url_edittext)
@@ -307,7 +307,7 @@ public class bbsAddIntroActivity extends AppCompatActivity
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            forumInformationDatabase
+            BBSInformationDatabase
                     .getInstance(activity)
                     .getForumInformationDao().insert(forumInfo);
             Log.d(TAG, "add forum into database"+forumInfo.site_name);

@@ -20,7 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link } and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
@@ -50,7 +50,7 @@ public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.ViewHolder> 
         Glide.with(context)
                 .load(medal.getMedalImageURL())
                 .into(holder.medalAvatar);
-        holder.medalIndex.setText(String.valueOf(position));
+        holder.medalIndex.setText(String.valueOf(position+1));
     }
 
     @Override

@@ -6,10 +6,10 @@
     <string name="add_a_forum_by_url_safe_client_check">使用安全的认证方式以保护HTTPS通信安全</string>
     <string name="bbs_anonymous">匿名访问</string>
     <string name="bbs_register_an_account">注册</string>
-    <string name="delete_forum_information">已经删除了此论坛的所有信息</string>
+    <string name="delete_forum_information">已经删除了此论坛的所有信息。</string>
     <string name="bbs_undo_delete">撤销</string>
-    <string name="network_failed">由于网络问题无法获得论坛信息</string>
-    <string name="parse_failed">无法解析服务器发来的信息</string>
+    <string name="network_failed">由于网络问题无法获得论坛信息。</string>
+    <string name="parse_failed">无法解析服务器发来的信息。</string>
     <string name="add_a_forum_successfully">成功添加了一个论坛！</string>
     <string name="bbs_upgrade_to_https">升级到更安全的HTTPS协议。</string>
     <string name="bbs_input_a_base_url">论坛的基本URL（例如bbs.nwpu.edu.cn）</string>
@@ -89,11 +89,11 @@
     <string name="bbs_ucenter_url">UCenter 链接</string>
     <string name="messages_header">信息</string>
     <string name="signature_title">你的签名</string>
-    <string name="switch_bbs_sync_on_text">同步已打开，你可以获得该论坛的通知</string>
-    <string name="switch_bbs_sync_off_text">同步已关闭，你可能错过该论坛的通知</string>
+    <string name="switch_bbs_sync_on_text">同步已打开，你可以获得该论坛的通知。</string>
+    <string name="switch_bbs_sync_off_text">同步已关闭，你可能错过该论坛的通知。</string>
     <string name="bbs_basic_information">基本信息</string>
-    <string name="bbs_mobile_is_closed">Discuz!的移动API已经关闭</string>
-    <string name="bbs_user_banned">本论坛API拒绝来自您的访问</string>
+    <string name="bbs_mobile_is_closed">Discuz!的移动API已经关闭。</string>
+    <string name="bbs_user_banned">本论坛API拒绝来自您的访问。</string>
     <string name="bbs_read_access">阅读权限</string>
     <string name="bbs_user_id">账号</string>
     <string name="add_a_account">添加账号</string>
@@ -113,17 +113,17 @@
     <string name="bbs_login">登录</string>
     <string name="bbs_forget_password">忘记密码？</string>
     <string name="use_unsecure_http_warn">使用了不安全的HTTP协议或者HTTPS客户端设置不安全，在传输数据时您的账号密码可能会泄漏给第三方。</string>
-    <string name="bbs_login_account_password_required">需要账号以及密码</string>
-    <string name="field_required">这个字段是必填的</string>
+    <string name="bbs_login_account_password_required">需要账号以及密码。</string>
+    <string name="field_required">这个字段是必填的。</string>
     <string name="bbs_update_time">更新时间</string>
     <string name="save_user_to_bbs_successfully_template">用户%s成功登录%s论坛</string>
-    <string name="user_password_not_correct">用户账号和密码不正确</string>
+    <string name="user_password_not_correct">用户账号和密码不正确。</string>
     <string name="discuz_reply_message_template">[quote][size=2]%s 发表于 %s [/size]%s[/quote]</string>
     <string name="bbs_tap_to_enter_title">帖子主题</string>
     <string name="bbs_post_thread_message">帖子内容</string>
-    <string name="bbs_post_thread_subject_required">帖子需要有主题</string>
-    <string name="bbs_post_thread_message_required">帖子需要有内容</string>
-    <string name="bbs_post_thread_cannot_upload_picture">目前因为某些问题无法上传图片</string>
+    <string name="bbs_post_thread_subject_required">帖子需要有主题。</string>
+    <string name="bbs_post_thread_message_required">帖子需要有内容。</string>
+    <string name="bbs_post_thread_cannot_upload_picture">目前因为某些问题无法上传图片。</string>
     <string name="bbs_post_thread_choose_a_picture">插入一张图片</string>
     <string name="bbs_thread_uploading_files">上传文件中</string>
     <string name="bbs_thread_uploading_picture">上传照片中</string>
@@ -151,7 +151,7 @@
 
     </string-array>
     <string name="preference_title_use_browser_client">客户端用户标识符</string>
-    <string name="bbs_no_thread_gotten">找不到更多啦</string>
+    <string name="bbs_no_thread_gotten">找不到更多啦！</string>
     <string name="bbs_notification_public_pm">公共消息</string>
     <string name="bbs_notification_my_pm">私信</string>
     <string name="bbs_notification_my_thread">我的帖子</string>
@@ -193,7 +193,7 @@
     <string name="preference_summary_on_sync_at_night">应用在晚11点至早8点内不会同步消息。</string>
     <string name="bbs_user_list_recyclerview_header">用户列表</string>
     <string name="bbs_no_register_user_found">在本论坛下没有登录的用户。</string>
-    <string name="bbs_delete_user_info_template">从论坛(%2$s)中删除用户(%1$s)</string>
+    <string name="bbs_delete_user_info_template">从论坛(%2$s)中删除用户(%1$s)。</string>
     <string name="bbs_privacy_protect_alert">此内容由于隐私设置不予显示。</string>
     <string name="bbs_notification_system">系统通知</string>
     <string name="welcome">欢迎！</string>
@@ -202,7 +202,7 @@
     <string name="bbs_post_reply">回复</string>
     <string name="preference_summary_off_send_post_backup">应用不会备份你发的帖子。</string>
     <string name="preference_summary_on_send_post_backup">应用将会在你发贴时备份帖子。</string>
-    <string name="preference_title_send_post_backup">发送时备份内容</string>
+    <string name="preference_title_send_post_backup">发送时备份内容。</string>
     <string name="preference_summary_on_auto_post_backup">应用将会自动备份你发的帖子。</string>
     <string name="preference_title_auto_post_backup">自动发帖备份</string>
     <string name="preference_summary_off_auto_post_backup">仅当点击草稿图标时，你发的帖子才会存到草稿箱。</string>
@@ -336,20 +336,20 @@
     <string name="bbs_poll_see_picture">查看图片</string>
     <string name="preference_title_vibrate_when_load_all">振动提醒</string>
     <string name="thread_has_load_all">已加载所有的帖子了！</string>
-    <string name="preference_summary_on_vibrate_when_load_all">当加载完所有帖子时，发出振动提示</string>
+    <string name="preference_summary_on_vibrate_when_load_all">当加载完所有帖子时，发出振动提示。</string>
     <string name="bbs_thread_reply_number">回复 (%1$d)</string>
     <string name="bbs_forum_description_not_set">此区并没有介绍自己。</string>
     <string name="bbs_rule_not_set">此区没有说明。</string>
     <string name="bbs_post_image_name">图像_%1$s_</string>
     <string name="bbs_thread_encrypt">加密我的帖子</string>
-    <string name="bbs_post_thread_unprepared">并未完成初始化，请您等待后继续此操作</string>
-    <string name="vibrator_not_found">找不到振动设备，无法振动</string>
+    <string name="bbs_post_thread_unprepared">并未完成初始化，请您等待后继续此操作。</string>
+    <string name="vibrator_not_found">找不到振动设备，无法振动。</string>
     <string name="bbs_upload_an_attachment">上传一个附件</string>
     <string name="bbs_upload">上传%1$s</string>
-    <string name="can_not_find_the_file_resolver">无法找到对应的文件管理器</string>
-    <string name="can_not_find_a_file">没有选择文件</string>
-    <string name="upload_file_retrieve_failed">无法获得文件数据</string>
-    <string name="upload_attachment_error_1">内部服务器错误</string>
+    <string name="can_not_find_the_file_resolver">无法找到对应的文件管理器。</string>
+    <string name="can_not_find_a_file">没有选择文件。</string>
+    <string name="upload_file_retrieve_failed">无法获得文件数据。</string>
+    <string name="upload_attachment_error_1">内部服务器错误。</string>
     <string name="upload_attachment_error_2">服务器限制无法上传那么大的附件</string>
     <string name="upload_attachment_error_3">用户组限制无法上传那么大的附件</string>
     <string name="upload_attachment_error_4">不支持此文件类型</string>
@@ -388,8 +388,8 @@
     <string name="post_revised">帖子审核后再编辑标记，用于防止重复加分。</string>
     <string name="post_mobile">此贴由手机发出。</string>
     <string name="thread_cache_location">本贴已经缓存。</string>
-    <string name="thread_reply_only_see_by_poster">只有楼主和管理员才能查看回帖</string>
-    <string name="thread_reward_lotto">本贴为抢楼贴，若你刚好发中了某个楼层，你可能会得到奖励</string>
+    <string name="thread_reply_only_see_by_poster">只有楼主和管理员才能查看回帖。</string>
+    <string name="thread_reward_lotto">本贴为抢楼贴，若你刚好发中了某个楼层，你可能会得到奖励。</string>
     <string name="thread_notify_author">你的发言将会提醒作者</string>
     <string name="post_is_blocked">帖子被屏蔽。</string>
     <string name="post_is_warned">帖子被警告。</string>
@@ -439,8 +439,8 @@
     <string name="profile_no_medal">向论坛做出贡献以获得荣誉。</string>
     <string name="profile_list_not_prepared">我们正在准备这个项目。。。</string>
     <string name="profile_user_group_empty">我们暂时还未收到你的群组信息，再等等一下？</string>
-    <string name="bbs_base_url_invalid">无效的网页地址</string>
-    <string name="captcha_required">需要验证码</string>
+    <string name="bbs_base_url_invalid">无效的网页地址。</string>
+    <string name="captcha_required">需要验证码。</string>
     <string name="friend_privacy_hidden">由于此用户隐私设置，您无法查看该用户的好友。</string>
     <string name="add_bbs_guide">添加论坛指引（网页）</string>
     <string name="empty_public_message">论坛还没向你发布公共消息。</string>
@@ -448,5 +448,18 @@
     <string name="empty_post_list">你还没有在论坛里发表帖子。</string>
     <string name="empty_hot_threads">论坛还没有一个比较热门的帖子，不妨等等回来再看？</string>
     <string name="empty_notification">现在没有提醒消息，一会再来？</string>
+    <string name="parse_post_failed">无法解析帖子信息。</string>
+    <string name="bbs">论坛</string>
+    <string name="management">管理</string>
+    <string name="user_anonymous_description">在不登陆账号下访问论坛。</string>
+    <string name="user_id_description">用户编号: %1$s</string>
+    <string name="add_a_bbs">添加论坛</string>
+    <string name="manage_bbs">管理论坛</string>
+    <string name="manage_bbs_description">对现有的论坛进行排序或者删除操作。</string>
+    <string name="bbs_add_an_account_description">使用密码或者网页登录账号。</string>
+    <string name="bbs_manage_users">管理用户</string>
+    <string name="bbs_manage_users_description">对已登录的用户进行调整。</string>
+    <string name="register_an_account">注册</string>
+    <string name="register_an_account_description">在外部浏览器注册账号。</string>
 
 </resources>

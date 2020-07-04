@@ -48,7 +48,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.Cookie;
 
-public class loginByWebViewActivity extends AppCompatActivity {
+public class loginByWebViewActivity extends BaseStatusActivity {
     private static String TAG = loginByWebViewActivity.class.getSimpleName();
 
     @BindView(R.id.login_by_web_webview)

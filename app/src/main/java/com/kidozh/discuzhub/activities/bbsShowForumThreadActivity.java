@@ -56,7 +56,7 @@ import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import okhttp3.OkHttpClient;
 
-public class bbsShowForumThreadActivity extends AppCompatActivity {
+public class bbsShowForumThreadActivity extends BaseStatusActivity {
     private static final String TAG = bbsShowForumThreadActivity.class.getSimpleName();
 
 

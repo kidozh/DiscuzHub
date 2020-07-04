@@ -65,6 +65,15 @@ public class bbsPublicMessageFragment extends Fragment {
     bbsPublicMessageAdapter adapter;
     private int globalPage = 1;
 
+    public bbsPublicMessageFragment(){
+
+    }
+
+    public bbsPublicMessageFragment(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
+        this.bbsInfo= bbsInfo;
+        this.userBriefInfo = userBriefInfo;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -113,6 +122,9 @@ public class bbsPublicMessageFragment extends Fragment {
 
 
     private void configureIntentData(){
+        if(bbsInfo !=null){
+            return;
+        }
         Intent intent = getActivity().getIntent();
         forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);

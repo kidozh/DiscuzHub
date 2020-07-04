@@ -26,7 +26,7 @@ import java.util.List;
 
 import okhttp3.OkHttpClient;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends BaseStatusActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

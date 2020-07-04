@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.kidozh.discuzhub">
+    package="com.kidozh.discuzhub" >
 
     <dist:module dist:instant="true" />
 
@@ -21,8 +21,19 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.bbsAddIntroActivity" android:theme="@style/AppTheme.NoActionBar"/>
+        tools:ignore="GoogleAppIndexingWarning" >
+        <activity
+            android:name=".activities.NewMainDrawerActivity"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.bbsAddIntroActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.aboutAppActivity" />
         <activity android:name=".activities.showWebPageActivity" />
         <activity
@@ -48,20 +59,15 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_global_settings" />
-
         <activity android:name=".activities.bbsShowForumThreadActivity" />
         <activity android:name=".activities.bbsShowPostActivity" />
         <activity
             android:name=".activities.SplashScreenActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:label="@string/app_name" >
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".activities.bbsPostThreadActivity" />
 

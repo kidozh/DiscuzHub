@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.kidozh.discuzhub.MainActivity" >
-    <item android:id="@+id/action_user_status"
+    <item android:id="@+id/bbs_settings"
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item

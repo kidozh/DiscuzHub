@@ -60,7 +60,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseStatusActivity {
 
     private String TAG = LoginActivity.class.getSimpleName();
 

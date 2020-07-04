@@ -60,7 +60,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
 
-public class UserProfileActivity extends AppCompatActivity implements UserFriendFragment.OnFragmentInteractionListener{
+public class UserProfileActivity extends BaseStatusActivity implements UserFriendFragment.OnFragmentInteractionListener{
 
     private static final String TAG = UserProfileActivity.class.getSimpleName();
 

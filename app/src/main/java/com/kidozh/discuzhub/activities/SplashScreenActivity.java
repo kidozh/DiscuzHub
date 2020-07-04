@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SplashScreenActivity extends AppCompatActivity {
+public class SplashScreenActivity extends BaseStatusActivity {
     private static final String TAG = SplashScreenActivity.class.getSimpleName();
     @BindView(R.id.splash_screen_agreement_content)
     TextView splashScreenNotification;

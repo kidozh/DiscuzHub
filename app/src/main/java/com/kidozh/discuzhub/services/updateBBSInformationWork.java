@@ -19,7 +19,7 @@ import androidx.work.WorkerParameters;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsShowPortalActivity;
-import com.kidozh.discuzhub.database.forumInformationDatabase;
+import com.kidozh.discuzhub.database.BBSInformationDatabase;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -134,7 +134,7 @@ public class updateBBSInformationWork extends Worker {
         if(userBriefInfo == null){
             return Result.failure();
         }
-        bbsInformation = forumInformationDatabase
+        bbsInformation = BBSInformationDatabase
                 .getInstance(context)
                 .getForumInformationDao()
                 .getForumInformationById(userBriefInfo.belongedBBSID);

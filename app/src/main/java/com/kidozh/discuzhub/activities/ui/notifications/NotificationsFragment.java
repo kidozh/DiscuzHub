@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
@@ -26,6 +27,8 @@ import com.kidozh.discuzhub.activities.ui.UserNotification.UserNotificationFragm
 import com.kidozh.discuzhub.activities.ui.bbsNotificationMessagePortalFragment;
 import com.kidozh.discuzhub.activities.ui.privacyProtect.privacyProtectFragment;
 import com.kidozh.discuzhub.activities.ui.userThreads.bbsMyThreadFragment;
+import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 
 import butterknife.BindView;
@@ -46,13 +49,21 @@ public class NotificationsFragment extends Fragment {
     }
     private notificationViewPagerAdapter adapter;
 
+    bbsInformation bbsInformation;
+    forumUserBriefInfo userBriefInfo;
+
     public NotificationsFragment(){
+
+    }
+
+    public NotificationsFragment(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+        this.bbsInformation = bbsInformation;
+        this.userBriefInfo = userBriefInfo;
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        notificationsViewModel =
-                ViewModelProviders.of(this).get(NotificationsViewModel.class);
+        notificationsViewModel = new ViewModelProvider(this).get(NotificationsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_notifications, container, false);
         ButterKnife.bind(this,root);
 
@@ -433,11 +444,11 @@ public class NotificationsFragment extends Fragment {
                     Log.d(TAG,"Position "+position+" message "+message_state);
                     if(message_state.equals(bbsNotificationMessagePortalFragment.FILTER_PRIVATE_MESSAGE)){
                         Log.d(TAG,"GET PRIVATE MESSAGE STATE");
-                        return bbsNotificationMessagePortalFragment.newInstance(bbsNotificationMessagePortalFragment.FILTER_PRIVATE_MESSAGE);
+                        return bbsNotificationMessagePortalFragment.newInstance(bbsNotificationMessagePortalFragment.FILTER_PRIVATE_MESSAGE,bbsInformation,userBriefInfo);
                     }
                     else {
                         Log.d(TAG,"GET PUBLIC MESSAGE STATE");
-                        return bbsNotificationMessagePortalFragment.newInstance(bbsNotificationMessagePortalFragment.FILTER_PUBLIC_MESSAGE);
+                        return bbsNotificationMessagePortalFragment.newInstance(bbsNotificationMessagePortalFragment.FILTER_PUBLIC_MESSAGE,bbsInformation,userBriefInfo);
                     }
 
                 }

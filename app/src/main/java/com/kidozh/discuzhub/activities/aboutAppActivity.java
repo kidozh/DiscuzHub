@@ -17,7 +17,7 @@ import com.kidozh.discuzhub.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class aboutAppActivity extends AppCompatActivity {
+public class aboutAppActivity extends BaseStatusActivity {
     @BindView(R.id.about_app_version)
     TextView appVersionTextview;
     @BindView(R.id.about_contact_us)

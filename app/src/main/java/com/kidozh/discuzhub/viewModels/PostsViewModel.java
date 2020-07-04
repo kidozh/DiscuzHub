@@ -30,8 +30,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ThreadDetailViewModel extends AndroidViewModel {
-    private String TAG = ThreadDetailViewModel.class.getSimpleName();
+public class PostsViewModel extends AndroidViewModel {
+    private String TAG = PostsViewModel.class.getSimpleName();
 
 
 
@@ -51,7 +51,7 @@ public class ThreadDetailViewModel extends AndroidViewModel {
     public MutableLiveData<ThreadPostResult> threadPostResultMutableLiveData;
     private MutableLiveData<SecureInfoResult> secureInfoResultMutableLiveData;
 
-    public ThreadDetailViewModel(@NonNull Application application) {
+    public PostsViewModel(@NonNull Application application) {
         super(application);
         isLoading = new MutableLiveData<>(false);
         error = new MutableLiveData<>(false);
@@ -239,6 +239,10 @@ public class ThreadDetailViewModel extends AndroidViewModel {
                                 hasLoadAll.postValue(false);
                             }
                         }
+                    }
+                    else {
+                        error.postValue(true);
+                        errorText.postValue(getApplication().getString(R.string.parse_post_failed));
                     }
                 }
                 else {

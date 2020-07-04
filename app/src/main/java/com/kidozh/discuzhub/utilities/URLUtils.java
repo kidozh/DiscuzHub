@@ -48,6 +48,10 @@ public class URLUtils {
         return BASE_URL + "/static/image/common/logo.png";
     }
 
+    public static String getBBSLogoUrl(String baseURL){
+        return baseURL + "/static/image/common/logo.png";
+    }
+
 
 
     public static String getBBSForumInfoApi(){

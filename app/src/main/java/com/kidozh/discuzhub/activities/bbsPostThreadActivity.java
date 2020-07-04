@@ -40,6 +40,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.google.common.io.ByteStreams;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.uploadAttachment.UploadAttachmentDialogFragment;
@@ -94,7 +95,7 @@ import okhttp3.Response;
 import static java.text.DateFormat.getDateInstance;
 import static java.text.DateFormat.getDateTimeInstance;
 
-public class bbsPostThreadActivity extends AppCompatActivity implements View.OnClickListener,
+public class bbsPostThreadActivity extends BaseStatusActivity implements View.OnClickListener,
         PostThreadConfirmDialogFragment.ConfirmDialogListener,
         PostThreadPasswordDialogFragment.NoticeDialogListener {
     private static String TAG = bbsPostThreadActivity.class.getSimpleName();

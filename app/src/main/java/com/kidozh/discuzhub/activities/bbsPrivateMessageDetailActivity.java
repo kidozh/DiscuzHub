@@ -54,7 +54,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class bbsPrivateMessageDetailActivity extends AppCompatActivity implements SmileyFragment.OnSmileyPressedInteraction {
+public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implements SmileyFragment.OnSmileyPressedInteraction {
 
     private static final String TAG = bbsPrivateMessageDetailActivity.class.getSimpleName();
 

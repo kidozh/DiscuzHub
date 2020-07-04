@@ -72,7 +72,22 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    public HomeFragment(){
+
+    }
+
+    public HomeFragment(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+        curBBS = bbsInformation;
+        this.userBriefInfo = userBriefInfo;
+        curUser = userBriefInfo;
+    }
+
     private void getIntentInfo(){
+
+        if(curBBS != null){
+            homeViewModel.setBBSInfo(curBBS,curUser);
+            return;
+        }
         Intent intent = getActivity().getIntent();
         curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);

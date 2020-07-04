@@ -13,7 +13,9 @@
         <item name="android:windowTranslucentNavigation">false</item>
 
         <item name="android:statusBarColor">@color/colorBackgroundDefault</item>
+
         <item name="android:actionBarStyle">@style/LightActionBar</item>
+        <item name="android:toolbarStyle">@style/LightActionBar</item>
         <item name="actionBarStyle">@style/LightActionBar</item>
         <!-- navigation bar -->
         <item name="android:navigationBarColor">@color/colorBackgroundDefault</item>
@@ -37,14 +39,12 @@
         <item name="android:windowEnterTransition">@transition/activity_transition_fade</item>
         <item name="android:windowExitTransition">@transition/activity_transition_fade</item>
 
-        <!--        &lt;!&ndash; specify shared element transitions &ndash;&gt;-->
-        <!--        <item name="android:windowSharedElementEnterTransition">-->
-        <!--            @transition/change_image_transform</item>-->
-        <!--        <item name="android:windowSharedElementExitTransition">-->
-        <!--            @transition/change_image_transform</item>-->
+
 
 
     </style>
+
+
 
     <style name="CardView.DayNight" parent="CardView.Light">
         <!--        <item name="android:foreground">?android:attr/selectableItemBackground</item>-->
@@ -58,6 +58,7 @@
         <item name="android:backgroundStacked">@color/colorBackgroundDefault</item>
         <item name="android:titleTextStyle">@style/ActionBarTitle</item>
         <item name="android:titleTextColor">@color/colorTextDefault</item>
+        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>
 
         <item name="titleTextStyle">@style/ActionBarTitle</item>
         <item name="titleTextColor">@color/colorTextDefault</item>
@@ -84,12 +85,13 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="materialDrawerTheme" parent="AppTheme.NoActionBar">
-
-        <item name="materialDrawerStyle">@style/Widget.MaterialDrawerStyle</item>
-        <item name="materialDrawerHeaderStyle">@style/Widget.MaterialDrawerHeaderStyle</item>
+    <style name="MaterialDrawerTheme" parent="MaterialTheme.DayNight">
 
     </style>
+
+
+
+
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar" />
 

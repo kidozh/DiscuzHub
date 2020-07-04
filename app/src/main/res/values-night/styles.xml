@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
@@ -13,7 +13,7 @@
         <!--Android 5.x开始需要把颜色设置为指定的颜色，否则导航栏会呈现系统默认的浅灰色-->
         <item name="android:statusBarColor">@color/colorBackgroundDefault</item>
 
-        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
 
         <item name="android:actionBarStyle">@style/DarkActionBar</item>
         <item name="actionBarStyle">@style/DarkActionBar</item>

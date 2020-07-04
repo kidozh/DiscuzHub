@@ -69,7 +69,7 @@ import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
-import com.kidozh.discuzhub.viewModels.ThreadDetailViewModel;
+import com.kidozh.discuzhub.viewModels.PostsViewModel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,7 +89,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class bbsShowPostActivity extends AppCompatActivity implements SmileyFragment.OnSmileyPressedInteraction,
+public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFragment.OnSmileyPressedInteraction,
         ThreadPostsAdapter.onFilterChanged,
         ThreadPostsAdapter.onAdapterReply,
         bbsPollFragment.OnFragmentInteractionListener{
@@ -159,7 +159,7 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
     private bbsSmileyPicker smileyPicker;
     private EmotionInputHandler handler;
 
-    private ThreadDetailViewModel threadDetailViewModel;
+    private PostsViewModel threadDetailViewModel;
 
 
     @Override
@@ -167,7 +167,7 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bbs_show_post);
         ButterKnife.bind(this);
-        threadDetailViewModel = new ViewModelProvider(this).get(ThreadDetailViewModel.class);
+        threadDetailViewModel = new ViewModelProvider(this).get(PostsViewModel.class);
         configureIntentData();
         initThreadStatus();
         configureClient();
@@ -277,6 +277,16 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
                     Toasty.error(getApplication(), getString(R.string.network_failed), Toast.LENGTH_LONG).show();
+                    noMoreThreadFound.setVisibility(View.VISIBLE);
+                    errorPostImageview.setVisibility(View.VISIBLE);
+                    String errorText = threadDetailViewModel.errorText.getValue();
+                    if(errorText == null || errorText.length() == 0){
+                        noMoreThreadFound.setText(R.string.parse_post_failed);
+                    }
+                    else {
+                        noMoreThreadFound.setText(errorText);
+                    }
+
                 }
 
             }
@@ -544,6 +554,9 @@ public class bbsShowPostActivity extends AppCompatActivity implements SmileyFrag
                         String captchaURL = secureInfoResult.secureVariables.secCodeURL;
                         String captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash);
                         // load it
+                        if(captchaURL == null){
+                            return;
+                        }
                         Request captchaRequest = new Request.Builder()
                                 .url(captchaURL)
                                 .build();

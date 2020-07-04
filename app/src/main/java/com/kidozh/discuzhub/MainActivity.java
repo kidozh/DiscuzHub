@@ -12,7 +12,7 @@ import com.kidozh.discuzhub.activities.aboutAppActivity;
 import com.kidozh.discuzhub.activities.bbsAddIntroActivity;
 import com.kidozh.discuzhub.adapter.forumInformationAdapter;
 import com.kidozh.discuzhub.callback.forumSwipeToDeleteCallback;
-import com.kidozh.discuzhub.database.forumInformationDatabase;
+import com.kidozh.discuzhub.database.BBSInformationDatabase;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            forumInformationDatabase
+            BBSInformationDatabase
                     .getInstance(context)
                     .getForumInformationDao().insert(forumInfo);
             Log.d(TAG, "add forum into database"+forumInfo.site_name);
@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            forumInformationDatabase
+            BBSInformationDatabase
                     .getInstance(context)
                     .getForumInformationDao().update(forumInfo);
             Log.d(TAG, "add forum into database"+forumInfo.site_name);
@@ -303,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            forumInformationDatabase
+            BBSInformationDatabase
                     .getInstance(context)
                     .getForumInformationDao().delete(forumInfo);
             return null;
@@ -383,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id){
-            case R.id.action_user_status:{
+            case R.id.bbs_settings:{
                 Intent intent = new Intent(this,SettingsActivity.class);
                 startActivity(intent);
                 return true;

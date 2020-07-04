@@ -26,7 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
-public class showImageFullscreenActivity extends AppCompatActivity {
+public class showImageFullscreenActivity extends BaseStatusActivity {
     private static final String TAG = showImageFullscreenActivity.class.getSimpleName();
     @BindView(R.id.show_image_fullscreen_shown_imageview)
     PinchImageView pinchImageView;

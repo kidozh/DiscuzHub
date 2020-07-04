@@ -16,6 +16,9 @@ import android.view.ViewGroup;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
 import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment;
+import com.kidozh.discuzhub.database.BBSInformationDatabase;
+import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,11 +58,27 @@ public class bbsNotificationMessagePortalFragment extends Fragment {
         return fragment;
     }
 
+    bbsInformation bbsInfo;
+    forumUserBriefInfo userBriefInfo;
+    final static String BBSINFO = "BBSINFO", USERINFO = "USERINFO";
+
+    public static bbsNotificationMessagePortalFragment newInstance(String filterName, bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo) {
+        bbsNotificationMessagePortalFragment fragment = new bbsNotificationMessagePortalFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_FILTER, filterName);
+        args.putSerializable(BBSINFO,bbsInfo);
+        args.putSerializable(USERINFO,userBriefInfo);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             filter = getArguments().getString(ARG_FILTER);
+            bbsInfo = (bbsInformation) getArguments().getSerializable(BBSINFO);
+            userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(USERINFO);
         }
     }
 
@@ -91,11 +110,11 @@ public class bbsNotificationMessagePortalFragment extends Fragment {
         preLoadMessagesFragment();
         if(filter.equals("FILTER_PRIVATE_MESSAGE")){
             Log.d(TAG,"RENDER PRIVATE: "+filter);
-            fragmentTransaction.replace(R.id.fragment_notification_message_fragment, new bbsPrivateMessageFragment());
+            fragmentTransaction.replace(R.id.fragment_notification_message_fragment, new bbsPrivateMessageFragment(bbsInfo,userBriefInfo));
         }
         else {
             Log.d(TAG,"RENDER PUBLIC: "+filter);
-            fragmentTransaction.replace(R.id.fragment_notification_message_fragment, new bbsPublicMessageFragment());
+            fragmentTransaction.replace(R.id.fragment_notification_message_fragment, new bbsPublicMessageFragment(bbsInfo, userBriefInfo));
         }
         fragmentTransaction.commit();
     }

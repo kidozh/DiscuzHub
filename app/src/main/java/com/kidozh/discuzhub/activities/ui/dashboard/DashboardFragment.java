@@ -51,6 +51,18 @@ public class DashboardFragment extends Fragment {
     private static int globalPage = 1;
     private Boolean isClientRunning = false;
 
+    public DashboardFragment(){
+
+    }
+
+    public DashboardFragment(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+        curBBS = bbsInformation;
+        this.userBriefInfo = userBriefInfo;
+        curUser = userBriefInfo;
+        URLUtils.setBBS(curBBS);
+
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
@@ -118,7 +130,12 @@ public class DashboardFragment extends Fragment {
     }
 
     private void getIntentInfo(){
+        if(curBBS != null){
+            dashboardViewModel.setBBSInfo(curBBS,curUser);
+            return;
+        }
         Intent intent = getActivity().getIntent();
+
         curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);

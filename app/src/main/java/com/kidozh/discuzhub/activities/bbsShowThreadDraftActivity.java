@@ -43,7 +43,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
-public class bbsShowThreadDraftActivity extends AppCompatActivity implements recyclerViewSwipeToDeleteCallback.onRecyclerviewSwiped{
+public class bbsShowThreadDraftActivity extends BaseStatusActivity implements recyclerViewSwipeToDeleteCallback.onRecyclerviewSwiped{
     private final String TAG = bbsShowThreadDraftActivity.class.getSimpleName();
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;

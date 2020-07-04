@@ -47,7 +47,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class bbsShowPortalActivity extends AppCompatActivity
+public class bbsShowPortalActivity extends BaseStatusActivity
         implements bbsPrivateMessageFragment.OnNewMessageChangeListener,
         bbsPublicMessageFragment.OnNewMessageChangeListener,
         UserNotificationFragment.OnNewMessageChangeListener,
@@ -100,7 +100,7 @@ public class bbsShowPortalActivity extends AppCompatActivity
         }
     }
 
-    private class anonymousViewPagerAdapter extends FragmentStatePagerAdapter{
+    public class anonymousViewPagerAdapter extends FragmentStatePagerAdapter{
 
         public anonymousViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
             super(fm, behavior);
@@ -130,7 +130,7 @@ public class bbsShowPortalActivity extends AppCompatActivity
         }
     }
 
-    private class userViewPagerAdapter extends FragmentStatePagerAdapter{
+    public class userViewPagerAdapter extends FragmentStatePagerAdapter{
 
         public userViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
             super(fm, behavior);
@@ -325,6 +325,7 @@ public class bbsShowPortalActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
         String currentUrl = URLUtils.getPortalPageUrl();
 
         int id = item.getItemId();

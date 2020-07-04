@@ -67,6 +67,12 @@ public class bbsPrivateMessageFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public bbsPrivateMessageFragment(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
+        this.bbsInfo = bbsInfo;
+        this.userBriefInfo = userBriefInfo;
+
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -157,6 +163,10 @@ public class bbsPrivateMessageFragment extends Fragment {
     }
 
     private void configureIntentData(){
+        if(bbsInfo !=null){
+            URLUtils.setBBS(bbsInfo);
+            return;
+        }
         Intent intent = getActivity().getIntent();
         forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
@@ -178,6 +188,7 @@ public class bbsPrivateMessageFragment extends Fragment {
     }
 
     void getPrivateMessage(int page){
+        URLUtils.setBBS(bbsInfo);
         privateMessageSwipeRefreshLayout.setRefreshing(true);
         String apiStr = URLUtils.getPrivatePMApiUrl(page);
         Request request = new Request.Builder()
