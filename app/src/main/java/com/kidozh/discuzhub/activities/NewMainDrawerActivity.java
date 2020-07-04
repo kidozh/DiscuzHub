@@ -39,10 +39,8 @@ import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.viewModels.MainDrawerViewModel;
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.holder.ImageHolder;
+import com.mikepenz.materialdrawer.holder.StringHolder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
@@ -51,8 +49,12 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
+import com.mikepenz.materialdrawer.widget.AccountHeaderView;
+import com.mikepenz.materialdrawer.widget.MaterialDrawerSliderView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -73,6 +75,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import kotlin.jvm.functions.Function3;
 
 public class NewMainDrawerActivity extends BaseStatusActivity implements
         bbsPrivateMessageFragment.OnNewMessageChangeListener,
@@ -95,8 +98,8 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
 
     MainDrawerViewModel viewModel;
 
-    Drawer drawerResult;
-    AccountHeader drawerAccountHeader;
+//    Drawer drawerResult;
+//    AccountHeader drawerAccountHeader;
 
     final int MODE_USER_IGCONGTIVE = -18510478;
     final int FUNC_ADD_A_BBS = -2;
@@ -108,6 +111,13 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
     final int FOOTER_ABOUT = -964245451;
 
     Bundle savedInstanceState;
+
+    @BindView(R.id.drawer_root)
+    DrawerLayout drawerLayout;
+    @BindView(R.id.material_drawer_slider_view)
+    MaterialDrawerSliderView slider;
+
+    AccountHeaderView headerView;
 
 
     @Override
@@ -142,55 +152,63 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
         viewModel.allBBSInformationMutableLiveData.observe(this, new Observer<List<bbsInformation>>() {
             @Override
             public void onChanged(List<bbsInformation> bbsInformations) {
-                drawerAccountHeader.clear();
+                //slider.getItemAdapter().clear();
+
+                headerView.clear();
+                //drawerAccountHeader.clear();
                 if(bbsInformations == null || bbsInformations.size() == 0){
                     // empty
 
                 }
                 else {
+                    // bind to headview
 
-                    List<IProfile<?>> accountProfiles = new ArrayList<>();
+                    List<IProfile> accountProfiles = new ArrayList<>();
                     for(int i=0;i<bbsInformations.size(); i++){
                         bbsInformation currentBBSInfo = bbsInformations.get(i);
                         //URLUtils.setBBS(currentBBSInfo);
                         Log.d(TAG,"Load url "+URLUtils.getBBSLogoUrl(currentBBSInfo.base_url));
-                        ProfileDrawerItem bbsProfile = new ProfileDrawerItem()
-                                .withName(currentBBSInfo.site_name)
-                                .withNameShown(true)
-                                .withIdentifier(currentBBSInfo.getId())
-                                .withIcon(URLUtils.getBBSLogoUrl(currentBBSInfo.base_url))
-                                .withEmail(currentBBSInfo.base_url);
+                        ProfileDrawerItem bbsProfile = new ProfileDrawerItem();
+                        bbsProfile.setName(new StringHolder(currentBBSInfo.site_name));
+                        bbsProfile.setNameShown(true);
+                        bbsProfile.setIdentifier(currentBBSInfo.getId());
+                        bbsProfile.setIcon(new ImageHolder(URLUtils.getBBSLogoUrl(currentBBSInfo.base_url)));
+                        bbsProfile.setDescription(new StringHolder(currentBBSInfo.base_url));
                         accountProfiles.add(bbsProfile);
 
                     }
-                    drawerAccountHeader.setProfiles(accountProfiles);
+                    headerView.setProfiles(accountProfiles);
+                    // drawerAccountHeader.setProfiles(accountProfiles);
                     if(bbsInformations.size() > 0){
                         bbsInformation currentBBSInfo = bbsInformations.get(0);
-                        drawerAccountHeader.setActiveProfile(currentBBSInfo.getId(),true);
+                        headerView.setActiveProfile(currentBBSInfo.getId(),true);
                     }
 
                 }
-                drawerAccountHeader.addProfiles(
-                        new ProfileSettingDrawerItem()
-                                .withName(R.string.add_a_bbs)
-                        .withIdentifier(FUNC_ADD_A_BBS)
-                                .withDescription(R.string.title_add_a_forum_by_url)
-                                .withSelectable(false)
-                        .withIcon(R.drawable.ic_add_24px),
-                        new ProfileSettingDrawerItem()
-                                .withName(R.string.manage_bbs)
-                                .withIdentifier(FUNC_MANAGE_BBS)
-                                .withDescription(R.string.manage_bbs_description)
-                                .withIcon(R.drawable.ic_manage_bbs_24px)
-                                .withSelectable(false)
-                );
+                // add bbs
+                ProfileDrawerItem addBBSProfile = new ProfileDrawerItem();
+                addBBSProfile.setName(new StringHolder(getString(R.string.add_a_bbs)));
+                addBBSProfile.setIdentifier(FUNC_ADD_A_BBS);
+                addBBSProfile.setDescription(new StringHolder(getString(R.string.title_add_a_forum_by_url)));
+                addBBSProfile.setSelectable(false);
+                addBBSProfile.setIcon(new ImageHolder(R.drawable.ic_add_24px));
+                // manage bbs
+                ProfileDrawerItem manageBBSProfile = new ProfileDrawerItem();
+                manageBBSProfile.setName(new StringHolder(getString(R.string.manage_bbs)));
+                manageBBSProfile.setIdentifier(FUNC_MANAGE_BBS);
+                manageBBSProfile.setDescription(new StringHolder(getString(R.string.manage_bbs_description)));
+                manageBBSProfile.setSelectable(false);
+                manageBBSProfile.setIcon(new ImageHolder(R.drawable.ic_manage_bbs_24px));
+                headerView.addProfiles(addBBSProfile,manageBBSProfile);
+
             }
         });
         viewModel.forumUserListMutableLiveData.observe(this, new Observer<List<forumUserBriefInfo>>() {
             @Override
             public void onChanged(List<forumUserBriefInfo> forumUserBriefInfos) {
                 // clear it first
-                drawerResult.removeAllItems();
+                // drawerResult.removeAllItems();
+                slider.getItemAdapter().clear();
                 Log.d(TAG,"get forumUsers "+forumUserBriefInfos);
                 if(forumUserBriefInfos != null){
 
@@ -205,54 +223,59 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
 
                         int avatarResource = getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),
                                 "drawable",getPackageName());
-
-                        drawerResult.addItem(
-                                new ProfileDrawerItem().withSelectable(true)
-                                        .withName(userBriefInfo.username)
-                                        .withIcon(userBriefInfo.avatarUrl)
-                                        .withNameShown(true)
-                                        //.withIcon(avatarResource)
-                                        .withIdentifier(userBriefInfo.getId())
-                                        .withEmail(getString(R.string.user_id_description,userBriefInfo.uid))
-
-                        );
+                        ProfileDrawerItem userProfile = new ProfileDrawerItem();
+                        userProfile.setSelectable(true);
+                        userProfile.setName(new StringHolder(userBriefInfo.username));
+                        userProfile.setIcon(new ImageHolder(userBriefInfo.avatarUrl));
+                        userProfile.setNameShown(true);
+                        userProfile.setIdentifier(userBriefInfo.getId());
+                        userProfile.setDescription(new StringHolder(getString(R.string.user_id_description,userBriefInfo.uid)));
+                        slider.getItemAdapter().add(userProfile);
                     }
                     if(forumUserBriefInfos.size() > 0){
                         forumUserBriefInfo userBriefInfo = forumUserBriefInfos.get(0);
                         // get first
-                        drawerResult.setSelection(userBriefInfo.getId(),true);
+                        slider.setSelection(userBriefInfo.getId(),true);
                     }
 
                 }
+                PrimaryDrawerItem incognito = new PrimaryDrawerItem();
+                incognito.setName(new StringHolder(R.string.bbs_anonymous));
+                incognito.setIcon(new ImageHolder(R.drawable.ic_incognito_user_24px));
+                incognito.setSelectable(true);
+                incognito.setIdentifier(MODE_USER_IGCONGTIVE);
+                incognito.setDescription(new StringHolder(R.string.user_anonymous_description));
+                slider.getItemAdapter().add(incognito);
+                // other profiles
+                ProfileSettingDrawerItem addAccount = new ProfileSettingDrawerItem();
+                addAccount.setName(new StringHolder(R.string.add_a_account));
+                addAccount.setSelectable(true);
+                addAccount.setIcon(new ImageHolder(R.drawable.ic_person_add_24px));
+                addAccount.setIdentifier(FUNC_ADD_AN_ACCOUNT);
+                addAccount.setDescription(new StringHolder(R.string.bbs_add_an_account_description));
+                ProfileSettingDrawerItem registerAccount = new ProfileSettingDrawerItem();
+                registerAccount.setName(new StringHolder(R.string.register_an_account));
+                registerAccount.setSelectable(true);
+                registerAccount.setIcon(new ImageHolder(R.drawable.ic_register_account_24px));
+                registerAccount.setIdentifier(FUNC_REGISTER_ACCOUNT);
+                registerAccount.setDescription(new StringHolder(R.string.register_an_account_description));
+                // manage
+                ProfileSettingDrawerItem manageAccount = new ProfileSettingDrawerItem();
+                manageAccount.setName(new StringHolder(R.string.bbs_manage_users));
+                manageAccount.setSelectable(true);
+                manageAccount.setIcon(new ImageHolder(R.drawable.ic_manage_user_24px));
+                manageAccount.setIdentifier(FUNC_MANAGE_ACCOUNT);
+                manageAccount.setDescription(new StringHolder(R.string.bbs_manage_users_description));
 
-                drawerResult.addItem(
-                        new PrimaryDrawerItem().withSelectable(true)
-                        .withName(R.string.bbs_anonymous)
-                        .withIcon(R.drawable.ic_incognito_user_24px)
-                        .withIdentifier(MODE_USER_IGCONGTIVE)
-                        .withDescription(R.string.user_anonymous_description));
-
-                drawerResult.addItems(
+                slider.getItemAdapter().add(
                         new DividerDrawerItem(),
-                        new ProfileSettingDrawerItem().withSelectable(false)
-                                .withName(R.string.add_a_account)
-                                .withIcon(R.drawable.ic_person_add_24px)
-                                .withIdentifier(FUNC_ADD_AN_ACCOUNT)
-                                .withDescription(R.string.bbs_add_an_account_description),
-                        new ProfileSettingDrawerItem().withSelectable(false)
-                                .withName(R.string.register_an_account)
-                                .withIcon(R.drawable.ic_register_account_24px)
-                                .withIdentifier(FUNC_REGISTER_ACCOUNT)
-                                .withDescription(R.string.register_an_account_description),
-                        new ProfileSettingDrawerItem().withSelectable(false)
-                                .withName(R.string.bbs_manage_users)
-                                .withIcon(R.drawable.ic_manage_user_24px)
-                                .withIdentifier(FUNC_MANAGE_ACCOUNT)
-                                .withDescription(R.string.bbs_manage_users_description)
+                        addAccount,
+                        registerAccount,
+                        manageAccount
                 );
                 if(forumUserBriefInfos == null || forumUserBriefInfos.size() == 0){
                     Log.d(TAG,"Trigger igcontive mode");
-                    drawerResult.setSelection(MODE_USER_IGCONGTIVE,true);
+                    slider.setSelection(MODE_USER_IGCONGTIVE,true);
                 }
 
 
@@ -306,157 +329,152 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
         Activity activity = this;
 
         // account header
-        drawerAccountHeader = new AccountHeaderBuilder()
-                .withActivity(this)
-                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
-                    @Override
-                    public boolean onProfileChanged(View view, IProfile profile, boolean current) {
-                        int bbsId = (int) profile.getIdentifier();
-                        Log.d(TAG,"profile changed "+bbsId+ " name " + profile.getName());
-                        if(bbsId > 0){
-                            // change view model
-                            List<bbsInformation> allBBSList = viewModel.allBBSInformationMutableLiveData.getValue();
-                            if(allBBSList !=null && allBBSList.size()>0){
-                                for(int i=0 ;i< allBBSList.size(); i++){
-                                    bbsInformation curBBS = allBBSList.get(i);
-                                    if(curBBS.getId() == bbsId){
-                                        viewModel.currentBBSInformationMutableLiveData.setValue(curBBS);
-                                        return false;
-                                    }
-                                }
-
-                            }
-                        }
-                        else {
-                            switch (bbsId){
-                                case FUNC_ADD_A_BBS:{
-                                    Intent intent = new Intent(activity, bbsAddIntroActivity.class);
-                                    startActivity(intent);
-                                    return true;
-                                }
-                            }
-                        }
-
-
-                        return false;
-                    }
-                })
-                .build();
-
-
-
-
-        Context context = this;
-        drawerResult = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .withAccountHeader(drawerAccountHeader)
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        int id = (int) drawerItem.getIdentifier();
-                        Log.d(TAG,"Drawer id "+id);
-                        if(id > 0){
-                            List<forumUserBriefInfo> userBriefInfos = viewModel.forumUserListMutableLiveData.getValue();
-                            if(userBriefInfos == null){
-                                viewModel.currentForumUserBriefInfoMutableLiveData.postValue(null);
+        headerView = new AccountHeaderView(activity);
+        headerView.setOnAccountHeaderListener(new Function3<View, IProfile, Boolean, Boolean>() {
+            @Override
+            public Boolean invoke(View view, IProfile iProfile, Boolean aBoolean) {
+                int bbsId = (int) iProfile.getIdentifier();
+                Log.d(TAG,"profile changed "+bbsId+ " name " + iProfile.getName());
+                if(bbsId > 0){
+                    // change view model
+                    List<bbsInformation> allBBSList = viewModel.allBBSInformationMutableLiveData.getValue();
+                    if(allBBSList !=null && allBBSList.size()>0){
+                        for(int i=0 ;i< allBBSList.size(); i++){
+                            bbsInformation curBBS = allBBSList.get(i);
+                            if(curBBS.getId() == bbsId){
+                                viewModel.currentBBSInformationMutableLiveData.setValue(curBBS);
                                 return false;
                             }
-                            for(int i=0;i<userBriefInfos.size();i++){
-                                forumUserBriefInfo userBriefInfo = userBriefInfos.get(i);
-                                int userId = userBriefInfo.getId();
-                                if(userId == id){
-                                    viewModel.currentForumUserBriefInfoMutableLiveData.postValue(userBriefInfo);
-                                    return false;
-                                }
-                            }
-                            // not an account
-                            viewModel.currentForumUserBriefInfoMutableLiveData.postValue(null);
-                            return false;
                         }
-                        else {
-                            switch (id){
-                                case (MODE_USER_IGCONGTIVE):{
-                                    viewModel.currentForumUserBriefInfoMutableLiveData.postValue(null);
-                                    return false;
 
-                                }
-                                case (FUNC_ADD_AN_ACCOUNT):{
-
-                                    Intent intent = new Intent(context, LoginActivity.class);
-
-                                    bbsInformation forumInfo = viewModel.currentBBSInformationMutableLiveData.getValue();
-                                    Log.d(TAG,"ADD A account "+forumInfo);
-                                    if(forumInfo !=null){
-                                        intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,forumInfo);
-                                        intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
-                                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity);
-
-                                        Bundle bundle = options.toBundle();
-                                        context.startActivity(intent,bundle);
-                                    }
-
-
-                                    return true;
-                                }
-                                case (FUNC_REGISTER_ACCOUNT):{
-                                    bbsInformation forumInfo = viewModel.currentBBSInformationMutableLiveData.getValue();
-                                    if(forumInfo!=null){
-                                        new MaterialAlertDialogBuilder(context)
-                                                .setTitle(context.getString(R.string.bbs_register_an_account)+" "+forumInfo.site_name)
-                                                //setMessage是用来显示字符串的
-                                                .setMessage(R.string.bbs_register_account_notification)
-                                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        URLUtils.setBBS(forumInfo);
-                                                        Uri uri = Uri.parse(URLUtils.getBBSRegisterUrl(forumInfo.register_name));
-                                                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                                        context.startActivity(intent);
-                                                    }
-                                                })
-                                                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-
-                                                    }
-                                                })
-                                                .show();
-                                        return true;
-                                    }
-
-                                }
-                                case (FOOTER_ABOUT):{
-                                    Intent intent = new Intent(activity,aboutAppActivity.class);
-                                    startActivity(intent);
-                                    return true;
-                                }
-                                case (FOOTER_SETTINGS):{
-                                    Intent intent = new Intent(activity,SettingsActivity.class);
-                                    startActivity(intent);
-                                    return true;
-                                }
-
-                            }
+                    }
+                }
+                else {
+                    switch (bbsId){
+                        case FUNC_ADD_A_BBS:{
+                            Intent intent = new Intent(activity, bbsAddIntroActivity.class);
+                            startActivity(intent);
+                            return true;
                         }
+                    }
+                }
+
+
+                return false;
+            }
+        });
+        headerView.attachToSliderView(slider);
+
+        slider.setOnDrawerItemClickListener(new Function3<View, IDrawerItem<?>, Integer, Boolean>() {
+            @Override
+            public Boolean invoke(View view, IDrawerItem<?> iDrawerItem, Integer integer) {
+                int id = (int) iDrawerItem.getIdentifier();
+                Log.d(TAG,"Drawer id "+id);
+                if(id > 0){
+                    List<forumUserBriefInfo> userBriefInfos = viewModel.forumUserListMutableLiveData.getValue();
+                    if(userBriefInfos == null){
+                        viewModel.currentForumUserBriefInfoMutableLiveData.postValue(null);
                         return false;
                     }
-                })
-                .withSavedInstance(savedInstanceState)
-                .build();
+                    for(int i=0;i<userBriefInfos.size();i++){
+                        forumUserBriefInfo userBriefInfo = userBriefInfos.get(i);
+                        int userId = userBriefInfo.getId();
+                        if(userId == id){
+                            viewModel.currentForumUserBriefInfoMutableLiveData.postValue(userBriefInfo);
+                            return false;
+                        }
+                    }
+                    // not an account
+                    viewModel.currentForumUserBriefInfoMutableLiveData.postValue(null);
+                    return false;
+                }
+                else {
+                    switch (id){
+                        case (MODE_USER_IGCONGTIVE):{
+                            viewModel.currentForumUserBriefInfoMutableLiveData.postValue(null);
+                            return false;
 
-        drawerResult.addStickyFooterItem(
-                new PrimaryDrawerItem()
-                .withName(getString(R.string.action_settings))
-                        .withIcon(R.drawable.ic_settings_24px)
-                        .withIdentifier(FOOTER_SETTINGS)
-                .withSelectable(false));
-        drawerResult.addStickyFooterItem(
-                new PrimaryDrawerItem()
-                .withName(R.string.bbs_app_about)
-                        .withIdentifier(FOOTER_ABOUT)
-                        .withIcon(R.drawable.ic_info_24px)
-                .withSelectable(false));
+                        }
+                        case (FUNC_ADD_AN_ACCOUNT):{
+
+                            Intent intent = new Intent(activity, LoginActivity.class);
+
+                            bbsInformation forumInfo = viewModel.currentBBSInformationMutableLiveData.getValue();
+                            Log.d(TAG,"ADD A account "+forumInfo);
+                            if(forumInfo !=null){
+                                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,forumInfo);
+                                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
+                                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity);
+
+                                Bundle bundle = options.toBundle();
+                                activity.startActivity(intent,bundle);
+                            }
+
+
+                            return true;
+                        }
+                        case (FUNC_REGISTER_ACCOUNT):{
+                            bbsInformation forumInfo = viewModel.currentBBSInformationMutableLiveData.getValue();
+                            if(forumInfo!=null){
+                                new MaterialAlertDialogBuilder(activity)
+                                        .setTitle(getString(R.string.bbs_register_an_account)+" "+forumInfo.site_name)
+                                        //setMessage是用来显示字符串的
+                                        .setMessage(R.string.bbs_register_account_notification)
+                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                URLUtils.setBBS(forumInfo);
+                                                Uri uri = Uri.parse(URLUtils.getBBSRegisterUrl(forumInfo.register_name));
+                                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                                activity.startActivity(intent);
+                                            }
+                                        })
+                                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        })
+                                        .show();
+                                return true;
+                            }
+
+                        }
+                        case (FOOTER_ABOUT):{
+                            Intent intent = new Intent(activity,aboutAppActivity.class);
+                            startActivity(intent);
+                            return true;
+                        }
+                        case (FOOTER_SETTINGS):{
+                            Intent intent = new Intent(activity,SettingsActivity.class);
+                            startActivity(intent);
+                            return true;
+                        }
+
+                    }
+                }
+                return false;
+            }
+        });
+
+        slider.setSavedInstance(savedInstanceState);
+        PrimaryDrawerItem settingsFooterItem = new PrimaryDrawerItem();
+        settingsFooterItem.setName(new StringHolder(R.string.action_settings));
+        settingsFooterItem.setIcon(new ImageHolder(R.drawable.ic_settings_24px));
+        settingsFooterItem.setIdentifier(FOOTER_SETTINGS);
+        settingsFooterItem.setSelectable(false);
+        slider.getFooterAdapter().add(settingsFooterItem);
+        PrimaryDrawerItem aboutFooterItem = new PrimaryDrawerItem();
+        aboutFooterItem.setName(new StringHolder(R.string.bbs_app_about));
+        aboutFooterItem.setIcon(new ImageHolder(R.drawable.ic_info_24px));
+        aboutFooterItem.setIdentifier(FOOTER_ABOUT);
+        aboutFooterItem.setSelectable(false);
+        slider.getFooterAdapter().add(aboutFooterItem);
+
+        ActionBarDrawerToggle actionBarDrawerToggle =
+                new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_closed);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+
 
 
 

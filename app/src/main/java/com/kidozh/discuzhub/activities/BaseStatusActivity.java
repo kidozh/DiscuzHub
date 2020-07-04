@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +37,7 @@ public class BaseStatusActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //getIntentInfo();
-        configureDisplayMode();
+        configureDarkMode();
     }
 
     private void getIntentInfo(){
@@ -60,10 +61,11 @@ public class BaseStatusActivity extends AppCompatActivity {
 
     }
 
-    private void configureDisplayMode(){
-        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_key_display_mode),MODE_PRIVATE);
-        String displayMode = sharedPreferences.getString(getString(R.string.preference_key_display_mode),"");
-        switch (displayMode){
+    private void configureDarkMode(){
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this) ;
+        String dark_mode_settings = prefs.getString(getString(R.string.preference_key_display_mode),"");
+        switch (dark_mode_settings){
             case "MODE_NIGHT_NO":
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 return;
@@ -76,8 +78,9 @@ public class BaseStatusActivity extends AppCompatActivity {
             case "MODE_NIGHT_AUTO_BATTERY":
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY);
                 return;
+
             default:
-                // no change
+                ;
 
         }
     }

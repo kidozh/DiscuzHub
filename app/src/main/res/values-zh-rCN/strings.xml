@@ -461,5 +461,7 @@
     <string name="bbs_manage_users_description">对已登录的用户进行调整。</string>
     <string name="register_an_account">注册</string>
     <string name="register_an_account_description">在外部浏览器注册账号。</string>
+    <string name="drawer_open">打开菜单抽屉</string>
+    <string name="drawer_closed">关闭菜单抽屉</string>
 
 </resources>

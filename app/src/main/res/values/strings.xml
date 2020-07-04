@@ -634,6 +634,8 @@
     <string name="bbs_manage_users_description">Sort, manage or logout users in bbs.</string>
     <string name="register_an_account">Sign up</string>
     <string name="register_an_account_description">Register in external browser.</string>
+    <string name="drawer_open">Open the drawer</string>
+    <string name="drawer_closed">Close the drawer.</string>
 
 
 </resources>

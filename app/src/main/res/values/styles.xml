@@ -40,6 +40,9 @@
         <item name="android:windowExitTransition">@transition/activity_transition_fade</item>
 
 
+        <item name="materialDrawerStyle">@style/Widget.MaterialDrawerStyle</item>
+        <item name="materialDrawerHeaderStyle">@style/Widget.MaterialDrawerHeaderStyle</item>
+
 
 
     </style>
@@ -83,10 +86,6 @@
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="MaterialDrawerTheme" parent="MaterialTheme.DayNight">
-
     </style>
 
 
