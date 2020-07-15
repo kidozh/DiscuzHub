@@ -46,9 +46,7 @@ import okhttp3.OkHttpClient;
 public class UserNotificationFragment extends Fragment {
     private static final String TAG = UserNotificationFragment.class.getSimpleName();
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    public static final String ARG_TYPE = "TYPE";
-    public static final String ARG_VIEW = "VIEW";
+
 
     private OnNewMessageChangeListener mListener;
 
@@ -85,11 +83,17 @@ public class UserNotificationFragment extends Fragment {
      * @return A new instance of fragment bbsNotificationFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static UserNotificationFragment newInstance(String view, String type) {
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    public static final String ARG_TYPE = "TYPE";
+    public static final String ARG_VIEW = "VIEW", ARG_BBS = "ARG_BBS", ARG_USER= "ARG_USER";
+
+    public static UserNotificationFragment newInstance(String view, String type,bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo) {
         UserNotificationFragment fragment = new UserNotificationFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TYPE, type);
         args.putString(ARG_VIEW, view);
+        args.putSerializable(ARG_BBS,bbsInformation);
+        args.putSerializable(ARG_USER, userBriefInfo);
 
         fragment.setArguments(args);
         return fragment;
@@ -103,6 +107,8 @@ public class UserNotificationFragment extends Fragment {
         if (getArguments() != null) {
             type = getArguments().getString(ARG_TYPE);
             view = getArguments().getString(ARG_VIEW);
+            bbsInfo = (bbsInformation) getArguments().getSerializable(ARG_BBS);
+            userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(ARG_USER);
         }
 
     }
@@ -132,11 +138,12 @@ public class UserNotificationFragment extends Fragment {
     }
 
     private void configureIntentData(){
-        Intent intent = getActivity().getIntent();
-        forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+//        Intent intent = getActivity().getIntent();
+//        forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
+//        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+//        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+        Log.d(TAG,"recv user "+userBriefInfo);
         viewModel.setBBSInfo(bbsInfo,userBriefInfo);
     }
 

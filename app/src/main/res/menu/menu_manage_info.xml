@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.kidozh.discuzhub.MainActivity" >
+    <item
+        android:id="@+id/add_item"
+        android:icon="@drawable/ic_add_24px"
+        android:title="@string/help"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/show_help_info"
+        android:icon="@drawable/ic_help_outline_24px"
+        android:title="@string/help"
+        app:showAsAction="always" />
+
+</menu>

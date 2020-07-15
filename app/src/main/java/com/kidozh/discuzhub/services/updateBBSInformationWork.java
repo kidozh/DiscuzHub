@@ -105,18 +105,18 @@ public class updateBBSInformationWork extends Worker {
         Log.d(TAG,"WORK HAS BEEN STARTED");
         // check if settings allow sync
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        Boolean allowSync = prefs.getBoolean(context.getString(R.string.preference_key_sync_information),false);
-        Boolean autoPostBackup = prefs.getBoolean(context.getString(R.string.preference_key_auto_post_backup),false);
+        boolean allowSync = prefs.getBoolean(context.getString(R.string.preference_key_sync_information),false);
+        boolean autoPostBackup = prefs.getBoolean(context.getString(R.string.preference_key_auto_post_backup),false);
         Log.d(TAG,"allow sync permit "+allowSync + " "+autoPostBackup);
         if(!allowSync){
             return Result.success();
         }
         // check the time
-        boolean dontDisturbAtNight = prefs.getBoolean(context.getString(R.string.preference_key_dont_distrub_at_night),true);
-        if(dontDisturbAtNight && isMidNight()){
-            Log.d(TAG,"dontDisturb "+dontDisturbAtNight);
-            return Result.success();
-        }
+//        boolean dontDisturbAtNight = prefs.getBoolean(context.getString(R.string.preference_key_dont_distrub_at_night),true);
+//        if(dontDisturbAtNight && isMidNight()){
+//            Log.d(TAG,"dontDisturb "+dontDisturbAtNight);
+//            return Result.success();
+//        }
 
         int fetchInfoUserId = getInputData().getInt(bbsConstUtils.WORK_MANAGER_PASS_USER_ID_KEY,-1);
         Log.d(TAG,"GET FETCH USER ID "+fetchInfoUserId);

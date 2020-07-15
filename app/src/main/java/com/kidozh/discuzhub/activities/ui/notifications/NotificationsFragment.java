@@ -456,10 +456,10 @@ public class NotificationsFragment extends Fragment {
 
                 case 1:{
                     if(view == null || type == null){
-                        return UserNotificationFragment.newInstance("mypost","");
+                        return UserNotificationFragment.newInstance("mypost","",bbsInformation,userBriefInfo);
                     }
                     else {
-                        return UserNotificationFragment.newInstance(view,type);
+                        return UserNotificationFragment.newInstance(view,type,bbsInformation,userBriefInfo);
                     }
 
                 }
@@ -467,15 +467,15 @@ public class NotificationsFragment extends Fragment {
 
                 case 2:{
                     if(view == null || type == null){
-                        return UserNotificationFragment.newInstance("interactive","");
+                        return UserNotificationFragment.newInstance("interactive","",bbsInformation,userBriefInfo);
                     }
                     else {
-                        return UserNotificationFragment.newInstance(view,type);
+                        return UserNotificationFragment.newInstance(view,type,bbsInformation,userBriefInfo);
                     }
 
                 }
                 case 3:{
-                    return UserNotificationFragment.newInstance("system","system");
+                    return UserNotificationFragment.newInstance("system","system",bbsInformation,userBriefInfo);
 
                 }
 

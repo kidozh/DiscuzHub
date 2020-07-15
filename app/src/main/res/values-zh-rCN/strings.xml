@@ -463,5 +463,20 @@
     <string name="register_an_account_description">在外部浏览器注册账号。</string>
     <string name="drawer_open">打开菜单抽屉</string>
     <string name="drawer_closed">关闭菜单抽屉</string>
+    <string name="no_bbs_found_in_db">没有添加任何一个论坛</string>
+    <string name="blank_bbs_notification">你还没有添加一个论坛，不妨现在开始添加一个论坛吧。</string>
+    <string name="manage_bbs_title">管理论坛</string>
+    <string name="delete_bbs_template">已从你的设备中移除论坛%1$s。</string>
+    <string name="help">帮助</string>
+    <string name="swipe_to_delete">移除某个论坛</string>
+    <string name="swipe_to_delete_description">左右滑动条目以移除某个论坛。</string>
+    <string name="swap_item">重排</string>
+    <string name="swap_description">长按后拖动条目以对论坛进行重新排序。</string>
+    <string name="manage_bbs_help_text">删除或者重排论坛</string>
+    <string name="manage_help_text">管理条目</string>
+    <string name="relogin_user">重新登录</string>
+    <string name="swipe_to_relogin_description">向行首滑动以重新登录此用户。</string>
+    <string name="swipe_to_delete_user">向行末滑动以删除此用户。</string>
+    <string name="swap_users_description">长按后拖动条目以对论坛的用户进行重新排序。</string>
 
 </resources>

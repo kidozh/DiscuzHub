@@ -68,7 +68,7 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
         holder.mUserName.setText(userInfo.username);
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(context));
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-
+        holder.mUserIdx.setText(String.valueOf(position+1));
         Glide.with(context)
                 .load(userInfo.avatarUrl)
                 .error(R.drawable.avatar_person_male)
@@ -86,21 +86,21 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
                 context.startActivity(intent);
             }
         });
-        holder.mUserCardview.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Intent intent = new Intent(context, LoginActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userInfo);
-                context.startActivity(intent);
-                VibrateUtils.vibrateForNotice(context);
-                return true;
-            }
-        });
+//        holder.mUserCardview.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                Intent intent = new Intent(context, LoginActivity.class);
+//                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+//                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userInfo);
+//                context.startActivity(intent);
+//                VibrateUtils.vibrateForNotice(context);
+//                return true;
+//            }
+//        });
 
-        List<Integer> colorStateResourceList = colorUtils.colorStateList;
-        int resourceListLength = colorStateResourceList.size();
-        holder.mUserCardview.setBackgroundColor(context.getColor(colorStateResourceList.get(position % resourceListLength)));
+        //List<Integer> colorStateResourceList = colorUtils.colorStateList;
+        //int resourceListLength = colorStateResourceList.size();
+        //holder.mUserCardview.setBackgroundColor(context.getColor(colorStateResourceList.get(position % resourceListLength)));
 
     }
 
@@ -123,6 +123,8 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
         TextView mUserName;
         @BindView(R.id.forum_user_cardview)
         CardView mUserCardview;
+        @BindView(R.id.forum_user_index)
+        TextView mUserIdx;
 
         ViewHolder(View view){
             super(view);

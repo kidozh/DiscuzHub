@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.kidozh.discuzhub" >
+    package="com.kidozh.discuzhub">
 
     <dist:module dist:instant="true" />
 
@@ -21,10 +21,11 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning" >
+        tools:ignore="GoogleAppIndexingWarning">
+
         <activity
             android:name=".activities.NewMainDrawerActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -66,10 +67,11 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
-
-        </activity>
+            android:label="@string/app_name"/>
         <activity android:name=".activities.bbsPostThreadActivity" />
+
+        <activity android:name=".activities.ManageUserActivity"/>
+        <activity android:name=".activities.ManageBBSActivity"/>
 
         <meta-data
             android:name="preloaded_fonts"

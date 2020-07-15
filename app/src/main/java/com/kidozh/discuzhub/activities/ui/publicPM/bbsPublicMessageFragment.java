@@ -122,13 +122,13 @@ public class bbsPublicMessageFragment extends Fragment {
 
 
     private void configureIntentData(){
-        if(bbsInfo !=null){
-            return;
-        }
-        Intent intent = getActivity().getIntent();
-        forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+//        if(bbsInfo !=null){
+//            return;
+//        }
+//        Intent intent = getActivity().getIntent();
+//        forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
+//        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+//        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
     }
 

@@ -636,6 +636,21 @@
     <string name="register_an_account_description">Register in external browser.</string>
     <string name="drawer_open">Open the drawer</string>
     <string name="drawer_closed">Close the drawer.</string>
+    <string name="no_bbs_found_in_db">No BBS added</string>
+    <string name="blank_bbs_notification">No bbs is currently added, please add a bbs pressing left drawer.</string>
+    <string name="manage_bbs_title">Manage BBS</string>
+    <string name="delete_bbs_template">Deleted bbs %1$s from your device.</string>
+    <string name="help">Help</string>
+    <string name="swipe_to_delete">Delete</string>
+    <string name="swipe_to_delete_description">Swipe left or right on a bbs to delete it.</string>
+    <string name="swap_item">Resort</string>
+    <string name="swap_description">Long press then drag it up or down to resort bbs.</string>
+    <string name="manage_bbs_help_text">Delete or resort bbs</string>
+    <string name="manage_help_text">Manage items</string>
+    <string name="relogin_user">Relogin</string>
+    <string name="swipe_to_relogin_description">Swipe item to line start to relogin the user.</string>
+    <string name="swipe_to_delete_user">Swipe right to line end to delete the user.</string>
+    <string name="swap_users_description">Long press then drag it up or down to resort users.</string>
 
 
 </resources>

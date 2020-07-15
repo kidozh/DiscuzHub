@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/swipe_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/swipe_description"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/swipe_title"
+        app:srcCompat="@drawable/ic_arrow_forward_24px" />
+
+    <TextView
+        android:id="@+id/swipe_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/swipe_to_delete"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintStart_toEndOf="@+id/swipe_icon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/swipe_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/swipe_to_delete_user"
+        android:textAlignment="viewStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/swipe_icon"
+        app:layout_constraintTop_toBottomOf="@+id/swipe_title" />
+
+    <ImageView
+        android:id="@+id/long_touch_item"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/swap_vert_description"
+        app:layout_constraintStart_toStartOf="@+id/swipe_icon"
+        app:layout_constraintTop_toTopOf="@+id/swap_vert_title"
+        app:srcCompat="@drawable/ic_long_touch_item_24px" />
+
+    <ImageView
+        android:id="@+id/swap_vert_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/long_touch_item"
+        app:layout_constraintStart_toEndOf="@+id/long_touch_item"
+        app:layout_constraintTop_toTopOf="@+id/long_touch_item"
+        app:srcCompat="@drawable/ic_swap_vert_24px" />
+
+    <TextView
+        android:id="@+id/swap_vert_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/swap_item"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintStart_toEndOf="@+id/swap_vert_icon"
+        app:layout_constraintTop_toBottomOf="@+id/relogin_description" />
+
+    <TextView
+        android:id="@+id/swap_vert_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/swap_users_description"
+        android:textAlignment="viewStart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/swap_vert_title"
+        app:layout_constraintTop_toBottomOf="@+id/swap_vert_title" />
+
+    <ImageView
+        android:id="@+id/swipe_to_change"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/relogin_description"
+        app:layout_constraintStart_toStartOf="@+id/swipe_icon"
+        app:layout_constraintTop_toTopOf="@+id/relogin_title"
+        app:srcCompat="@drawable/ic_arrow_back_24px" />
+
+    <TextView
+        android:id="@+id/relogin_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/relogin_user"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintStart_toEndOf="@+id/swipe_to_change"
+        app:layout_constraintTop_toBottomOf="@+id/swipe_description" />
+
+    <TextView
+        android:id="@+id/relogin_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/swipe_to_relogin_description"
+        android:textAlignment="viewStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/relogin_title"
+        app:layout_constraintTop_toBottomOf="@+id/relogin_title" />
+</androidx.constraintlayout.widget.ConstraintLayout>

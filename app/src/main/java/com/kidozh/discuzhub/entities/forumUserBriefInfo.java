@@ -4,6 +4,8 @@ package com.kidozh.discuzhub.entities;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 @Entity
@@ -14,6 +16,9 @@ public class forumUserBriefInfo implements Serializable {
     public String auth,saltkey,uid,username,avatarUrl, groupId;
     public int readPerm;
     public int belongedBBSID;
+    @JsonIgnore
+    public int position = 0;
+
     public forumUserBriefInfo(String auth, String saltkey, String uid, String username, String avatarUrl, int readPerm, String groupId){
         this.auth = auth;
         this.saltkey = saltkey;

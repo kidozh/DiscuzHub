@@ -14,7 +14,7 @@ import java.util.List;
 @Dao
 public interface forumInformationDao {
 
-    @Query("SELECT * FROM bbsInformation")
+    @Query("SELECT * FROM bbsInformation ORDER BY position,id ASC")
     LiveData<List<bbsInformation>> getAllForumInformations();
 
     @Query("SELECT * FROM bbsInformation WHERE id=:id")
@@ -31,6 +31,9 @@ public interface forumInformationDao {
 
     @Update
     void update(bbsInformation... bbsInformations);
+
+    @Update
+    void update(List<bbsInformation> bbsInformations);
 
     @Delete
     void delete(bbsInformation... bbsInformations);

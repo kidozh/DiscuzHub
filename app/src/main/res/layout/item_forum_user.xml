@@ -10,11 +10,8 @@
         android:id="@+id/forum_user_cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
-        app:cardBackgroundColor="@color/colorPrimaryDark"
         app:cardCornerRadius="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,16 +22,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <TextView
+                android:id="@+id/forum_user_index"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@color/colorPrimaryDark"
+                android:padding="4dp"
+                android:textColor="@color/colorPureWhite"
+                app:layout_constraintBottom_toBottomOf="@+id/forum_user_avatar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/forum_user_avatar"
+                tools:text="@tools:sample/lorem" />
+
             <ImageView
                 android:id="@+id/forum_user_avatar"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:elevation="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/forum_user_index"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@tools:sample/avatars" />
 
@@ -46,7 +56,6 @@
                 android:singleLine="true"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="@color/colorCloud"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/forum_user_avatar"

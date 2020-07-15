@@ -163,14 +163,7 @@ public class bbsPrivateMessageFragment extends Fragment {
     }
 
     private void configureIntentData(){
-        if(bbsInfo !=null){
-            URLUtils.setBBS(bbsInfo);
-            return;
-        }
-        Intent intent = getActivity().getIntent();
-        forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        Log.d(TAG,"Recv user"+userBriefInfo);
         client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
     }
 

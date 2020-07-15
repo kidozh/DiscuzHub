@@ -320,7 +320,7 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
 
     private UserProfileItem generateUserProfileItem(String title, String content, int iconId, int privateStatus){
         Log.d(TAG,"title "+title+" content "+content);
-        if(content.length() !=0){
+        if(content == null || content.length() !=0){
             return new UserProfileItem(title,content,iconId);
         }
         else {

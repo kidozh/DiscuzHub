@@ -17,7 +17,7 @@ import java.util.List;
 @Dao
 public interface forumUserBriefInfoDao {
 
-    @Query("SELECT * FROM forumUserBriefInfo WHERE belongedBBSID=:bbs_id")
+    @Query("SELECT * FROM forumUserBriefInfo WHERE belongedBBSID=:bbs_id ORDER BY position,id ASC")
     LiveData<List<forumUserBriefInfo>> getAllUserByBBSID(int bbs_id);
 
     @Query("SELECT * FROM forumUserBriefInfo")
@@ -43,6 +43,8 @@ public interface forumUserBriefInfoDao {
 
     @Update
     void update(forumUserBriefInfo... forumUserBriefInfos);
+    @Update
+    void update(List<forumUserBriefInfo> forumUserBriefInfos);
 
     @Delete
     void delete(forumUserBriefInfo... forumUserBriefInfos);

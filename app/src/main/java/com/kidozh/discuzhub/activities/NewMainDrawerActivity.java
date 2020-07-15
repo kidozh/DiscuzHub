@@ -24,7 +24,9 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.kidozh.discuzhub.MainActivity;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ui.BlankBBSFragment.BlankBBSFragment;
 import com.kidozh.discuzhub.activities.ui.UserNotification.UserNotificationFragment;
 import com.kidozh.discuzhub.activities.ui.dashboard.DashboardFragment;
 import com.kidozh.discuzhub.activities.ui.home.HomeFragment;
@@ -54,6 +56,8 @@ import com.mikepenz.materialdrawer.widget.MaterialDrawerSliderView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -132,18 +136,26 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
         initBBSDrawer();
         bindViewModel();
         initFragments();
+        checkTermOfUse();
 
 
 
+    }
+
+    private void checkTermOfUse(){
+        Intent intent = new Intent(this, SplashScreenActivity.class);
+        startActivity(intent);
     }
 
     private void configureToolbar(){
         setSupportActionBar(toolbar);
 
         if(getSupportActionBar()!=null){
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            //getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
         }
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_menu_24px));
 
 
     }
@@ -158,6 +170,9 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                 //drawerAccountHeader.clear();
                 if(bbsInformations == null || bbsInformations.size() == 0){
                     // empty
+                    // show bbs page
+
+
 
                 }
                 else {
@@ -191,15 +206,22 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                 addBBSProfile.setIdentifier(FUNC_ADD_A_BBS);
                 addBBSProfile.setDescription(new StringHolder(getString(R.string.title_add_a_forum_by_url)));
                 addBBSProfile.setSelectable(false);
+                addBBSProfile.setNameShown(true);
                 addBBSProfile.setIcon(new ImageHolder(R.drawable.ic_add_24px));
+                headerView.addProfiles(addBBSProfile);
+                Log.d(TAG,"Add a bbs profile");
                 // manage bbs
-                ProfileDrawerItem manageBBSProfile = new ProfileDrawerItem();
-                manageBBSProfile.setName(new StringHolder(getString(R.string.manage_bbs)));
-                manageBBSProfile.setIdentifier(FUNC_MANAGE_BBS);
-                manageBBSProfile.setDescription(new StringHolder(getString(R.string.manage_bbs_description)));
-                manageBBSProfile.setSelectable(false);
-                manageBBSProfile.setIcon(new ImageHolder(R.drawable.ic_manage_bbs_24px));
-                headerView.addProfiles(addBBSProfile,manageBBSProfile);
+                if(bbsInformations !=null && bbsInformations.size() > 0){
+                    ProfileDrawerItem manageBBSProfile = new ProfileDrawerItem();
+                    manageBBSProfile.setName(new StringHolder(getString(R.string.manage_bbs)));
+                    manageBBSProfile.setIdentifier(FUNC_MANAGE_BBS);
+                    manageBBSProfile.setDescription(new StringHolder(getString(R.string.manage_bbs_description)));
+                    manageBBSProfile.setSelectable(false);
+                    manageBBSProfile.setNameShown(true);
+                    manageBBSProfile.setIcon(new ImageHolder(R.drawable.ic_manage_bbs_24px));
+                    headerView.addProfiles(manageBBSProfile);
+                }
+
 
             }
         });
@@ -239,44 +261,61 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                     }
 
                 }
-                PrimaryDrawerItem incognito = new PrimaryDrawerItem();
-                incognito.setName(new StringHolder(R.string.bbs_anonymous));
-                incognito.setIcon(new ImageHolder(R.drawable.ic_incognito_user_24px));
-                incognito.setSelectable(true);
-                incognito.setIdentifier(MODE_USER_IGCONGTIVE);
-                incognito.setDescription(new StringHolder(R.string.user_anonymous_description));
-                slider.getItemAdapter().add(incognito);
-                // other profiles
-                ProfileSettingDrawerItem addAccount = new ProfileSettingDrawerItem();
-                addAccount.setName(new StringHolder(R.string.add_a_account));
-                addAccount.setSelectable(true);
-                addAccount.setIcon(new ImageHolder(R.drawable.ic_person_add_24px));
-                addAccount.setIdentifier(FUNC_ADD_AN_ACCOUNT);
-                addAccount.setDescription(new StringHolder(R.string.bbs_add_an_account_description));
-                ProfileSettingDrawerItem registerAccount = new ProfileSettingDrawerItem();
-                registerAccount.setName(new StringHolder(R.string.register_an_account));
-                registerAccount.setSelectable(true);
-                registerAccount.setIcon(new ImageHolder(R.drawable.ic_register_account_24px));
-                registerAccount.setIdentifier(FUNC_REGISTER_ACCOUNT);
-                registerAccount.setDescription(new StringHolder(R.string.register_an_account_description));
-                // manage
-                ProfileSettingDrawerItem manageAccount = new ProfileSettingDrawerItem();
-                manageAccount.setName(new StringHolder(R.string.bbs_manage_users));
-                manageAccount.setSelectable(true);
-                manageAccount.setIcon(new ImageHolder(R.drawable.ic_manage_user_24px));
-                manageAccount.setIdentifier(FUNC_MANAGE_ACCOUNT);
-                manageAccount.setDescription(new StringHolder(R.string.bbs_manage_users_description));
-
-                slider.getItemAdapter().add(
-                        new DividerDrawerItem(),
-                        addAccount,
-                        registerAccount,
-                        manageAccount
-                );
-                if(forumUserBriefInfos == null || forumUserBriefInfos.size() == 0){
-                    Log.d(TAG,"Trigger igcontive mode");
-                    slider.setSelection(MODE_USER_IGCONGTIVE,true);
+                List<bbsInformation> bbsInformationList = viewModel.allBBSInformationMutableLiveData.getValue();
+                if(bbsInformationList == null || bbsInformationList.size() == 0){
+                    // add bbs
+                    ProfileDrawerItem addBBSProfile = new ProfileDrawerItem();
+                    addBBSProfile.setName(new StringHolder(getString(R.string.add_a_bbs)));
+                    addBBSProfile.setIdentifier(FUNC_ADD_A_BBS);
+                    addBBSProfile.setDescription(new StringHolder(getString(R.string.title_add_a_forum_by_url)));
+                    addBBSProfile.setSelectable(false);
+                    addBBSProfile.setNameShown(true);
+                    addBBSProfile.setIcon(new ImageHolder(R.drawable.ic_add_24px));
+                    slider.getItemAdapter().add(addBBSProfile);
                 }
+                else {
+                    PrimaryDrawerItem incognito = new PrimaryDrawerItem();
+                    incognito.setName(new StringHolder(R.string.bbs_anonymous));
+                    incognito.setIcon(new ImageHolder(R.drawable.ic_incognito_user_24px));
+                    incognito.setSelectable(true);
+                    incognito.setIdentifier(MODE_USER_IGCONGTIVE);
+                    incognito.setDescription(new StringHolder(R.string.user_anonymous_description));
+                    slider.getItemAdapter().add(incognito);
+                    // other profiles
+                    ProfileSettingDrawerItem addAccount = new ProfileSettingDrawerItem();
+                    addAccount.setName(new StringHolder(R.string.add_a_account));
+                    addAccount.setSelectable(false);
+                    addAccount.setIcon(new ImageHolder(R.drawable.ic_person_add_24px));
+                    addAccount.setIdentifier(FUNC_ADD_AN_ACCOUNT);
+                    addAccount.setDescription(new StringHolder(R.string.bbs_add_an_account_description));
+                    ProfileSettingDrawerItem registerAccount = new ProfileSettingDrawerItem();
+                    registerAccount.setName(new StringHolder(R.string.register_an_account));
+                    registerAccount.setSelectable(false);
+                    registerAccount.setIcon(new ImageHolder(R.drawable.ic_register_account_24px));
+                    registerAccount.setIdentifier(FUNC_REGISTER_ACCOUNT);
+                    registerAccount.setDescription(new StringHolder(R.string.register_an_account_description));
+                    // manage
+                    ProfileSettingDrawerItem manageAccount = new ProfileSettingDrawerItem();
+                    manageAccount.setName(new StringHolder(R.string.bbs_manage_users));
+                    manageAccount.setSelectable(false);
+                    manageAccount.setIcon(new ImageHolder(R.drawable.ic_manage_user_24px));
+                    manageAccount.setIdentifier(FUNC_MANAGE_ACCOUNT);
+                    manageAccount.setDescription(new StringHolder(R.string.bbs_manage_users_description));
+
+                    slider.getItemAdapter().add(
+                            new DividerDrawerItem(),
+                            addAccount,
+                            registerAccount,
+                            manageAccount
+                    );
+
+                    if(forumUserBriefInfos == null || forumUserBriefInfos.size() == 0){
+                        Log.d(TAG,"Trigger igcontive mode");
+                        slider.setSelection(MODE_USER_IGCONGTIVE,true);
+                    }
+                }
+
+
 
 
             }
@@ -305,6 +344,9 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                     });
 
                 }
+                else {
+                    toolbarTitleTextview.setText(R.string.no_bbs_found_in_db);
+                }
 
             }
         });
@@ -313,8 +355,6 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
             public void onChanged(forumUserBriefInfo forumUserBriefInfo) {
                 if(forumUserBriefInfo == null){
                     toolbarSubtitleTextview.setText(R.string.bbs_anonymous);
-
-
                 }
                 else {
                     toolbarSubtitleTextview.setText(forumUserBriefInfo.username);
@@ -353,6 +393,11 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                     switch (bbsId){
                         case FUNC_ADD_A_BBS:{
                             Intent intent = new Intent(activity, bbsAddIntroActivity.class);
+                            startActivity(intent);
+                            return true;
+                        }
+                        case (FUNC_MANAGE_BBS):{
+                            Intent intent = new Intent(activity, ManageBBSActivity.class);
                             startActivity(intent);
                             return true;
                         }
@@ -418,7 +463,6 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                             if(forumInfo!=null){
                                 new MaterialAlertDialogBuilder(activity)
                                         .setTitle(getString(R.string.bbs_register_an_account)+" "+forumInfo.site_name)
-                                        //setMessage是用来显示字符串的
                                         .setMessage(R.string.bbs_register_account_notification)
                                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                             @Override
@@ -439,6 +483,24 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                                 return true;
                             }
 
+                        }
+                        case FUNC_ADD_A_BBS:{
+                            Intent intent = new Intent(activity, bbsAddIntroActivity.class);
+                            startActivity(intent);
+                            return true;
+                        }
+                        case (FUNC_MANAGE_ACCOUNT):{
+                            bbsInformation forumInfo = viewModel.currentBBSInformationMutableLiveData.getValue();
+                            Intent intent = new Intent(activity, ManageUserActivity.class);
+                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,forumInfo);
+                            startActivity(intent);
+                            return true;
+                        }
+
+                        case (FUNC_MANAGE_BBS):{
+                            Intent intent = new Intent(activity, ManageBBSActivity.class);
+                            startActivity(intent);
+                            return true;
                         }
                         case (FOOTER_ABOUT):{
                             Intent intent = new Intent(activity,aboutAppActivity.class);
@@ -524,6 +586,26 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
         }
     }
 
+    // fragment adapter
+    public class EmptyViewPagerAdapter extends FragmentStatePagerAdapter{
+
+        public EmptyViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
+            super(fm, behavior);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+
+            return BlankBBSFragment.newInstance();
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+    }
+
     public class userViewPagerAdapter extends FragmentStatePagerAdapter{
 
         public userViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
@@ -581,6 +663,10 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
         // detecting current bbs
         bbsInformation bbsInformation = viewModel.currentBBSInformationMutableLiveData.getValue();
         if(bbsInformation == null){
+            // judge the
+            portalViewPager.setAdapter(new EmptyViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
+            navView.getMenu().clear();
+            navView.inflateMenu(R.menu.bottom_incognitive_nav_menu);
             return;
         }
 
@@ -745,6 +831,17 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
     }
 
     @Override
+    public void onBackPressed() {
+        if(drawerLayout.isDrawerOpen(slider)){
+            drawerLayout.closeDrawer(slider);
+        }
+        else {
+            super.onBackPressed();
+        }
+
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         int id = item.getItemId();
@@ -764,5 +861,13 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+
+        slider.saveInstanceState(outState);
+        headerView.saveInstanceState(outState);
+        super.onSaveInstanceState(outState);
     }
 }

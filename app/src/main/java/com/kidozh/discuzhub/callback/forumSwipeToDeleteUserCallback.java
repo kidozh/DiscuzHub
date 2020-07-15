@@ -87,12 +87,7 @@ public class forumSwipeToDeleteUserCallback extends ItemTouchHelper.SimpleCallba
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
         // get forum first
-        Log.d(TAG,"Swipe view "+position + " "+forumInfoAdapter.getUserList()+" Size ");
-        if(forumInfoAdapter.getUserList() !=null && forumInfoAdapter.getUserList().size()!=0){
-//            forumUser deletedForumInfo = forumInfoAdapter.getUserList().get(position);
-//            forumInfoAdapter.deleteItem(position);
-//            forumInfoAdapter.showUndoSnackbar(deletedForumInfo,position);
-        }
+        //Log.d(TAG,"Swipe view "+position + " "+forumInfoAdapter.getUserList()+" Size ");
 
         onRecyclerViewSwiped(position);
 
