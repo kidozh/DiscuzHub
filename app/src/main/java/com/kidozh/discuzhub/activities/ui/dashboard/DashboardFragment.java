@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,8 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.adapter.bbsForumThreadAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -55,7 +58,27 @@ public class DashboardFragment extends Fragment {
 
     }
 
-    public DashboardFragment(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+    public static DashboardFragment newInstance(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+        DashboardFragment fragment = new DashboardFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
+        args.putSerializable(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            curBBS = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+            URLUtils.setBBS(curBBS);
+            userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
+            client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+        }
+    }
+
+    private DashboardFragment(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
         curBBS = bbsInformation;
         this.userBriefInfo = userBriefInfo;
         curUser = userBriefInfo;

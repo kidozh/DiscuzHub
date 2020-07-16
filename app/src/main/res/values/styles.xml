@@ -44,9 +44,7 @@
         <item name="materialDrawerHeaderStyle">@style/Widget.MaterialDrawerHeaderStyle</item>
 
 
-
     </style>
-
 
 
     <style name="CardView.DayNight" parent="CardView.Light">
@@ -89,9 +87,6 @@
     </style>
 
 
-
-
-
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -109,7 +104,6 @@
     </style>
 
 
-
     <style name="primary_color_chip_style" parent="@style/Widget.MaterialComponents.Chip.Choice">
         <item name="chipBackgroundColor">@color/chip_background_select_state</item>
         <item name="chipStrokeColor">?attr/colorPrimary</item>
@@ -120,9 +114,6 @@
         <item name="rippleColor">?attr/colorPrimary</item>
         <item name="chipIconVisible">true</item>
     </style>
-
-
-
 
 
 </resources>

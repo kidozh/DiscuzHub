@@ -1,7 +1,9 @@
 package com.kidozh.discuzhub.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
@@ -36,7 +38,9 @@ import com.kidozh.discuzhub.activities.ui.UserGroup.UserGroupInfoFragment;
 import com.kidozh.discuzhub.activities.ui.UserMedal.MedalFragment;
 import com.kidozh.discuzhub.activities.ui.UserProfileList.UserProfileInfoListFragment;
 import com.kidozh.discuzhub.activities.ui.UserFriend.UserFriendFragment;
+import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.entities.UserProfileItem;
+import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.UserProfileResult;
@@ -114,6 +118,7 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
     String username;
     private UserProfileViewModel viewModel;
     personalInfoViewPagerAdapter adapter;
+    boolean fromViewHistory = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,6 +196,7 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
         curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userId = intent.getIntExtra("UID",0);
+        fromViewHistory = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
         if(curBBS == null){
             finishAfterTransition();
         }
@@ -209,6 +215,8 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
         }
 
     }
+
+
 
     private void bindViewModel(){
         viewModel.getUserProfileResultLiveData().observe(this, new Observer<UserProfileResult>() {
@@ -297,6 +305,21 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
                         personalInfoGroupIcon.setVisibility(View.GONE);
                     }
                     // for detailed information
+
+                    SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    boolean recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history),false);
+                    if(recordHistory && !fromViewHistory){
+                        new InsertViewHistory(new ViewHistory(
+                                URLUtils.getDefaultAvatarUrlByUid(uid),
+                                username,
+                                curBBS.getId(),
+                                userProfileResult.userProfileVariableResult.space.sigatureHtml,
+                                ViewHistory.VIEW_TYPE_USER_PROFILE,
+                                uid,
+                                0,
+                                new Date()
+                        )).execute();
+                    }
 
                 }
                 personInfoViewPager.invalidate();
@@ -707,6 +730,21 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
             }
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public class InsertViewHistory extends AsyncTask<Void,Void,Void> {
+
+        ViewHistory viewHistory;
+
+        public InsertViewHistory(ViewHistory viewHistory){
+            this.viewHistory = viewHistory;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            ViewHistoryDatabase.getInstance(getApplicationContext()).getDao().insert(viewHistory);
+            return null;
         }
     }
 

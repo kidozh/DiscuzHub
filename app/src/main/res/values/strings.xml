@@ -651,6 +651,23 @@
     <string name="swipe_to_relogin_description">Swipe item to line start to relogin the user.</string>
     <string name="swipe_to_delete_user">Swipe right to line end to delete the user.</string>
     <string name="swap_users_description">Long press then drag it up or down to resort users.</string>
+    <string name="settings_security">Security</string>
+    <string name="settings_post_header">Post</string>
+    <string name="settings_vibrate_header">Vibrate</string>
+    <string name="preference_key_record_history" translatable="false">preference_key_record_history</string>
+    <string name="preference_title_record_history">Record view history</string>
+    <string name="preference_summary_on_record_history">Your view on forum, thread, post will be recorded locally.</string>
+    <string name="preference_summary_off_record_history">Your view history will not be recorded.</string>
+    <string name="title_activity_view_history">ScrollingActivity</string>
+    <string name="view_history_not_found">No view history is recorded.</string>
+    <string name="view_history_record_not_open">View history is not opened and no history is found.</string>
+    <string name="view_history">View history</string>
+    <string name="delete_all_view_history">Deleting all view histories</string>
+    <string name="delete_all_view_history_description">All view histories in the bbs will be wiped out and this operation is irrevocable. Are you sure to delete them?</string>
+    <string name="have_deleted_all_view_history">All view histories has been wiped out.</string>
+    <string name="delete_view_history_item">Deleted the view history:%1$s.</string>
+    <string name="setting_delete_all_view_history_title">Hi, we just found that you don\'t want your view to be recorded. You can clear all history records in the database and it\\\'s irrecoverable. Do you want to do it now?</string>
+    <string name="clear_all_history">Clear all histories</string>
 
 
 </resources>

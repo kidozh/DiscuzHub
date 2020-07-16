@@ -17,7 +17,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory android:title="@string/global_default_bbs_setting">
+    <PreferenceCategory android:title="@string/settings_security">
 
         <SwitchPreference
             android:defaultValue="true"
@@ -27,16 +27,34 @@
             android:summaryOn="@string/preference_summary_on_use_safer_client"
             android:title="@string/preference_title_use_safer_client" />
         <ListPreference
-            android:defaultValue="NONE"
+            android:defaultValue="Android default"
             android:entries="@array/preference_entries_use_browser_client"
             android:entryValues="@array/preference_entry_values_use_browser_client"
             android:icon="@drawable/vector_drawable_fingerprint_24px"
             android:key="@string/preference_key_use_browser_client"
             android:summary="%s"
             android:title="@string/preference_title_use_browser_client" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/ic_history_24px"
+            android:key="@string/preference_key_record_history"
+            android:summaryOff="@string/preference_summary_off_record_history"
+            android:summaryOn="@string/preference_summary_on_record_history"
+            android:title="@string/preference_title_record_history" />
 
 
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preference_title_display">
+        <ListPreference
+            android:defaultValue="@string/preference_default_display_mode"
+            android:entries="@array/string_dark_mode_night_shift"
+            android:entryValues="@array/dark_mode_night_shift"
+            android:icon="@drawable/vector_drawable_style_24px"
+            android:key="@string/preference_key_display_mode"
+            android:summary="%s"
+            android:title="@string/preference_title_display_mode" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/preference_group_title_network">
 
         <SwitchPreference
@@ -46,8 +64,18 @@
             android:summaryOff="@string/preference_summary_off_data_save"
             android:summaryOn="@string/preference_summary_on_data_save"
             android:title="@string/preference_title_data_save_mode" />
+
+        <SwitchPreferenceCompat
+            android:icon="@drawable/vector_drawable_attachment"
+            app:dependency="@string/preference_key_sync_information"
+            app:icon="@drawable/vector_drawable_attachment"
+            app:key="attachment"
+            app:summaryOff="@string/attachment_summary_off"
+            app:summaryOn="@string/attachment_summary_on"
+            app:title="@string/attachment_title" />
+
     </PreferenceCategory>
-    <PreferenceCategory app:title="@string/messages_header">
+    <PreferenceCategory app:title="@string/settings_post_header">
 
         <EditTextPreference
             android:icon="@drawable/vector_drawable_attachment"
@@ -114,26 +142,14 @@
             android:key="@string/preference_key_recv_notification_situation"
             android:title="@string/preference_title_recv_notification_situation"
             app:dependency="@string/preference_key_sync_information" />
-        <SwitchPreferenceCompat
-            android:icon="@drawable/vector_drawable_attachment"
-            app:dependency="@string/preference_key_sync_information"
-            app:icon="@drawable/vector_drawable_attachment"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
+
 
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preference_title_display">
 
-        <ListPreference
-            android:defaultValue="@string/preference_default_display_mode"
-            android:entries="@array/string_dark_mode_night_shift"
-            android:entryValues="@array/dark_mode_night_shift"
-            android:icon="@drawable/vector_drawable_style_24px"
-            android:key="@string/preference_key_display_mode"
-            android:summary="%s"
-            android:title="@string/preference_title_display_mode" />
+
+    <PreferenceCategory android:title="@string/settings_vibrate_header">
+
+
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_vibration_24px"
             app:icon="@drawable/ic_vibration_24px"

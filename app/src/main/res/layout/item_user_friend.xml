@@ -48,6 +48,19 @@
                 app:layout_constraintTop_toTopOf="@+id/user_friend_avatar"
                 tools:text="@tools:sample/cities" />
 
+            <TextView
+                android:id="@+id/user_friend_idx"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryDark"
+                android:padding="2dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/colorCloud"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/user_friend_avatar"
+                app:layout_constraintEnd_toEndOf="@+id/user_friend_avatar"
+                tools:text="1" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

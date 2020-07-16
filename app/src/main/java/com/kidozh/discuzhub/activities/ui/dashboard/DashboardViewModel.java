@@ -33,7 +33,7 @@ public class DashboardViewModel extends AndroidViewModel {
 
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
-    private OkHttpClient client;
+    private OkHttpClient client = new OkHttpClient();
 
     public MutableLiveData<Integer> pageNum;
     public MutableLiveData<Boolean> isLoading, isError;
@@ -83,6 +83,9 @@ public class DashboardViewModel extends AndroidViewModel {
 
     private void getThreadList(int page){
         // init page
+        if(URLUtils.getBaseUrl() == null){
+            return;
+        }
         isLoading.postValue(true);
         isError.postValue(false);
         Request request = new Request.Builder()

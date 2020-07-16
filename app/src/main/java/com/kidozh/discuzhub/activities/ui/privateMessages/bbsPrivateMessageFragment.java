@@ -67,7 +67,7 @@ public class bbsPrivateMessageFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public bbsPrivateMessageFragment(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
+    private bbsPrivateMessageFragment(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
 
@@ -82,11 +82,13 @@ public class bbsPrivateMessageFragment extends Fragment {
      * @return A new instance of fragment bbsPrivateMessageFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static bbsPrivateMessageFragment newInstance(String param1, String param2) {
+    private static String ARG_BBS = "ARG_BBS", ARG_USER = "ARG_USER";
+
+    public static bbsPrivateMessageFragment newInstance(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo) {
         bbsPrivateMessageFragment fragment = new bbsPrivateMessageFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(ARG_BBS, bbsInfo);
+        args.putSerializable(ARG_USER, userBriefInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -95,8 +97,8 @@ public class bbsPrivateMessageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            bbsInfo = (bbsInformation) getArguments().getSerializable(ARG_BBS);
+            userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(ARG_USER);
         }
     }
 

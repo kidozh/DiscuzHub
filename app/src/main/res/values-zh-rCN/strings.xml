@@ -478,5 +478,20 @@
     <string name="swipe_to_relogin_description">向行首滑动以重新登录此用户。</string>
     <string name="swipe_to_delete_user">向行末滑动以删除此用户。</string>
     <string name="swap_users_description">长按后拖动条目以对论坛的用户进行重新排序。</string>
+    <string name="settings_security">安全</string>
+    <string name="settings_post_header">发帖</string>
+    <string name="settings_vibrate_header">振动</string>
+    <string name="preference_title_record_history">记录历史记录</string>
+    <string name="preference_summary_on_record_history">论坛、帖子的浏览都会被记录于本地以供查看。</string>
+    <string name="preference_summary_off_record_history">你的浏览记录不会被记录。</string>
+    <string name="view_history_not_found">设备未记录到任何浏览历史。</string>
+    <string name="view_history_record_not_open">你还没有打开浏览历史记录功能。</string>
+    <string name="view_history">浏览记录</string>
+    <string name="delete_all_view_history">删除所有历史浏览记录</string>
+    <string name="delete_all_view_history_description">论坛下的所有的历史记录都会被删除。这个操作也是不可撤销的。是否确定删除所有历史记录？</string>
+    <string name="have_deleted_all_view_history">已经移除所有的历史浏览记录。</string>
+    <string name="delete_view_history_item">已经删除了%1$s的历史记录。</string>
+    <string name="setting_delete_all_view_history_title">我们注意到您不希望被记录历史信息。您是否想清空此设备上所有的历史记录？该操作是永久且不可恢复的。</string>
+    <string name="clear_all_history">清空浏览记录</string>
 
 </resources>

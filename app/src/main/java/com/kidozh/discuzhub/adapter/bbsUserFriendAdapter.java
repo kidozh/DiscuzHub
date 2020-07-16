@@ -88,7 +88,7 @@ public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdap
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(getPreferredClient(context));
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
         int avatar_num = position % 16;
-
+        holder.idx.setText(String.valueOf(position+1));
         int avatarResource = context.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",context.getPackageName());
 
         Glide.with(context)
@@ -126,6 +126,8 @@ public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdap
         ImageView avatar;
         @BindView(R.id.user_friend_username)
         TextView name;
+        @BindView(R.id.user_friend_idx)
+        TextView idx;
         @BindView(R.id.user_friend_cardview)
         CardView cardView;
         public ViewHolder(@NonNull View itemView) {

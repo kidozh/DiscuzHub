@@ -34,6 +34,7 @@ import com.kidozh.discuzhub.activities.ui.notifications.NotificationsFragment;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
 import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
+import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -113,6 +114,7 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
     final int FUNC_REGISTER_ACCOUNT = -6;
     final int FOOTER_SETTINGS = -955415674;
     final int FOOTER_ABOUT = -964245451;
+    final int FUNC_VIEW_HISTORY = -85642154;
 
     Bundle savedInstanceState;
 
@@ -301,12 +303,21 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                     manageAccount.setIcon(new ImageHolder(R.drawable.ic_manage_user_24px));
                     manageAccount.setIdentifier(FUNC_MANAGE_ACCOUNT);
                     manageAccount.setDescription(new StringHolder(R.string.bbs_manage_users_description));
+                    // history
+                    ProfileSettingDrawerItem viewHistory = new ProfileSettingDrawerItem();
+                    viewHistory.setName(new StringHolder(R.string.view_history));
+                    viewHistory.setSelectable(false);
+                    viewHistory.setIcon(new ImageHolder(R.drawable.ic_history_24px));
+                    viewHistory.setIdentifier(FUNC_VIEW_HISTORY);
+                    viewHistory.setDescription(new StringHolder(R.string.preference_summary_on_record_history));
 
                     slider.getItemAdapter().add(
                             new DividerDrawerItem(),
                             addAccount,
                             registerAccount,
-                            manageAccount
+                            manageAccount,
+                            viewHistory,
+                            new DividerDrawerItem()
                     );
 
                     if(forumUserBriefInfos == null || forumUserBriefInfos.size() == 0){
@@ -502,6 +513,15 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                             startActivity(intent);
                             return true;
                         }
+                        case (FUNC_VIEW_HISTORY):{
+                            bbsInformation forumInfo = viewModel.currentBBSInformationMutableLiveData.getValue();
+                            forumUserBriefInfo userBriefInfo = viewModel.currentForumUserBriefInfoMutableLiveData.getValue();
+                            Intent intent = new Intent(activity, ViewHistoryActivity.class);
+                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,forumInfo);
+                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
+                            startActivity(intent);
+                            return true;
+                        }
                         case (FOOTER_ABOUT):{
                             Intent intent = new Intent(activity,aboutAppActivity.class);
                             startActivity(intent);
@@ -574,7 +594,7 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
 
                     return homeFragment;
                 case 1:
-                    DashboardFragment dashboardFragment = new DashboardFragment(bbsInfo,userBriefInfo);
+                    DashboardFragment dashboardFragment = DashboardFragment.newInstance(bbsInfo,userBriefInfo);
                     return dashboardFragment;
             }
             return new HomeFragment(bbsInfo,userBriefInfo);
@@ -622,7 +642,7 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                     homeFragment = new HomeFragment(bbsInfo, userBriefInfo);
                     return homeFragment;
                 case 1:
-                    dashboardFragment = new DashboardFragment(bbsInfo, userBriefInfo);
+                    dashboardFragment = DashboardFragment.newInstance(bbsInfo, userBriefInfo);
                     return dashboardFragment;
                 case 2:
                     notificationsFragment = new NotificationsFragment(bbsInfo, userBriefInfo);

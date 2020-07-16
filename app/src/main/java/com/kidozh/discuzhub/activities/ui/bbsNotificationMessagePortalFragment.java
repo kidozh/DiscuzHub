@@ -110,11 +110,11 @@ public class bbsNotificationMessagePortalFragment extends Fragment {
         preLoadMessagesFragment();
         if(filter.equals("FILTER_PRIVATE_MESSAGE")){
             Log.d(TAG,"RENDER PRIVATE: "+filter);
-            fragmentTransaction.replace(R.id.fragment_notification_message_fragment, new bbsPrivateMessageFragment(bbsInfo,userBriefInfo));
+            fragmentTransaction.replace(R.id.fragment_notification_message_fragment, bbsPrivateMessageFragment.newInstance(bbsInfo,userBriefInfo));
         }
         else {
             Log.d(TAG,"RENDER PUBLIC: "+filter);
-            fragmentTransaction.replace(R.id.fragment_notification_message_fragment, new bbsPublicMessageFragment(bbsInfo, userBriefInfo));
+            fragmentTransaction.replace(R.id.fragment_notification_message_fragment, bbsPublicMessageFragment.newInstance(bbsInfo, userBriefInfo));
         }
         fragmentTransaction.commit();
     }

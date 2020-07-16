@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
@@ -33,7 +34,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.bbsForumThreadAdapter;
+import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -47,7 +50,9 @@ import com.kidozh.discuzhub.utilities.numberFormatUtils;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.viewModels.ForumThreadViewModel;
 
+import java.nio.channels.AsynchronousByteChannel;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -97,6 +102,7 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
     //MutableLiveData<bbsURLUtils.ForumStatus> forumStatusMutableLiveData;
 
     ForumThreadViewModel forumThreadViewModel;
+    private boolean hasLoadOnce = false;
 
 
 
@@ -119,6 +125,7 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
         configureRecyclerview();
         configureSwipeRefreshLayout();
 
+
         //getThreadInfo();
         configurePostThreadBtn();
         configureChipGroupFilter();
@@ -133,6 +140,7 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
         URLUtils.setBBS(bbsInfo);
         fid = String.valueOf(forum.fid);
         forumThreadViewModel.setBBSInfo(bbsInfo,userBriefInfo,forum);
+        hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
     }
 
     private void bindViewModel(){
@@ -199,12 +207,17 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
                     moreThreadBtn.setVisibility(View.VISIBLE);
                 }
             }
+
         });
 
         forumThreadViewModel.forumDetailedInfoMutableLiveData.observe(this, new Observer<ForumInfo>() {
             @Override
             public void onChanged(ForumInfo forumInfo) {
                 // for rules
+                if(!hasLoadOnce){
+                    recordViewHistory(forumInfo);
+                    hasLoadOnce = true;
+                }
 
                 if(! mForumRule.getText().equals(forumInfo.rules)){
                     String s = forumInfo.rules;
@@ -250,6 +263,23 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
         URLUtils.ForumStatus forumStatus = new URLUtils.ForumStatus(forum.fid,1);
         forumThreadViewModel.forumStatusMutableLiveData.setValue(forumStatus);
 
+    }
+
+    private void recordViewHistory(ForumInfo forumInfo){
+        SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        boolean recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history),false);
+        if(recordHistory){
+            new InsertViewHistory(new ViewHistory(
+                    forum.iconUrl,
+                    forum.name,
+                    bbsInfo.getId(),
+                    forum.description,
+                    ViewHistory.VIEW_TYPE_FORUM,
+                    forum.fid,
+                    0,
+                    new Date()
+            )).execute();
+        }
     }
 
     private void reConfigureAndRefreshPage(URLUtils.ForumStatus status){
@@ -594,6 +624,21 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
             }
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public class InsertViewHistory extends AsyncTask<Void,Void,Void>{
+
+        ViewHistory viewHistory;
+
+        public InsertViewHistory(ViewHistory viewHistory){
+            this.viewHistory = viewHistory;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            ViewHistoryDatabase.getInstance(getApplicationContext()).getDao().insert(viewHistory);
+            return null;
         }
     }
 

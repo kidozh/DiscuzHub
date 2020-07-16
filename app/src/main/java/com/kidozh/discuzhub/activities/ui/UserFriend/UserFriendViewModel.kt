@@ -96,12 +96,11 @@ class UserFriendViewModel(application: Application) : AndroidViewModel(applicati
 
                         var currentFriendNum  = currentFriendList?.size ?: 0
                         var totalFriendNum = max(friendsResult.friendVariables.count,friendCounts)
-
                         if(totalFriendNum >= currentFriendNum ){
-                            loadAllMutableLiveData.postValue(true)
+                            loadAllMutableLiveData.postValue(false)
                         }
                         else{
-                            loadAllMutableLiveData.postValue(false)
+                            loadAllMutableLiveData.postValue(true)
                             page += 1
                         }
 

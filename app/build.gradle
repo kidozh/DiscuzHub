@@ -135,6 +135,9 @@ dependencies {
     // Add for Android-Iconics support
     implementation "com.mikepenz:materialdrawer-iconics:${lastestMaterialDrawerRelease}"
 
+    def paging_version = "2.1.2"
+    implementation "androidx.paging:paging-runtime:$paging_version"
+
 
 }
 repositories {

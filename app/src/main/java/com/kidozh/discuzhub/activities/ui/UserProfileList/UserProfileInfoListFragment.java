@@ -43,6 +43,10 @@ public class UserProfileInfoListFragment extends Fragment {
 
     UserProfileItemAdapter adapter;
 
+    public UserProfileInfoListFragment(){
+
+    }
+
 
 
     public static UserProfileInfoListFragment newInstance(String title, List<UserProfileItem> userProfileItemList) {

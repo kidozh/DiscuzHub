@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -54,8 +55,10 @@ import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
 import com.kidozh.discuzhub.adapter.ThreadPostsAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadNotificationAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadPropertiesAdapter;
+import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
@@ -148,6 +151,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
     bbsInformation bbsInfo;
     ForumInfo forum;
     ThreadInfo threadInfo;
+    private boolean hasLoadOnce = false;
 
     List<bbsParseUtils.smileyInfo> allSmileyInfos;
     int smileyCateNum;
@@ -192,6 +196,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         tid = intent.getIntExtra("TID",0);
         fid = intent.getIntExtra("FID",0);
         subject = intent.getStringExtra("SUBJECT");
+        hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
         URLUtils.setBBS(bbsInfo);
         threadDetailViewModel.setBBSInfo(bbsInfo, userBriefInfo, forum, tid);
         if(threadInfo!=null){
@@ -340,6 +345,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
             public void onChanged(bbsParseUtils.DetailedThreadInfo detailedThreadInfo) {
                 // closed situation
                 // prepare notification list
+
                 List<bbsThreadNotificationAdapter.threadNotification> threadNotificationList = new ArrayList<>();
                 List<bbsThreadNotificationAdapter.threadNotification> threadPropertyList = new ArrayList<>();
                 if(detailedThreadInfo.subject!=null){
@@ -423,7 +429,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 }
 
                 // need another
-                if(!detailedThreadInfo.highlight.equals("0")){
+                if(detailedThreadInfo.highlight !=null && !detailedThreadInfo.highlight.equals("0")){
                     threadPropertyList.add(
                             new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_highlight_outlined_24px,
                                     getString(R.string.thread_is_highlighted),getColor(R.color.colorPrimary))
@@ -516,10 +522,35 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         threadDetailViewModel.threadPostResultMutableLiveData.observe(this, new Observer<ThreadPostResult>() {
             @Override
             public void onChanged(ThreadPostResult threadPostResult) {
-                if(threadPostResult!=null){
-                    Spanned sp = Html.fromHtml(threadPostResult.threadPostVariables.detailedThreadInfo.subject);
-                    SpannableString spannableString = new SpannableString(sp);
-                    mDetailThreadSubjectTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
+                if(threadPostResult!=null ){
+                    if(threadPostResult.threadPostVariables !=null
+                            && threadPostResult.threadPostVariables.detailedThreadInfo !=null
+                            && threadPostResult.threadPostVariables.detailedThreadInfo.subject !=null){
+
+                        Spanned sp = Html.fromHtml(threadPostResult.threadPostVariables.detailedThreadInfo.subject);
+                        SpannableString spannableString = new SpannableString(sp);
+                        mDetailThreadSubjectTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
+                        bbsParseUtils.DetailedThreadInfo detailedThreadInfo = threadPostResult.threadPostVariables.detailedThreadInfo;
+                        if(detailedThreadInfo !=null && hasLoadOnce == false){
+                            hasLoadOnce = true;
+                            SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                            boolean recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history),false);
+                            if(recordHistory){
+                                new InsertViewHistory(new ViewHistory(
+                                        URLUtils.getDefaultAvatarUrlByUid(detailedThreadInfo.authorId),
+                                        detailedThreadInfo.author,
+                                        bbsInfo.getId(),
+                                        detailedThreadInfo.subject,
+                                        ViewHistory.VIEW_TYPE_THREAD,
+                                        detailedThreadInfo.fid,
+                                        tid,
+                                        new Date()
+                                )).execute();
+
+                            }
+                        }
+                    }
+
                     Log.d(TAG,"Thread post result error "+threadPostResult.isError()+" "+ threadPostResult.threadPostVariables.message);
                     if(threadPostResult.isError()){
 
@@ -1300,5 +1331,20 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
             // invalidateOptionsMenu();
         }
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    public class InsertViewHistory extends AsyncTask<Void,Void,Void> {
+
+        ViewHistory viewHistory;
+
+        public InsertViewHistory(ViewHistory viewHistory){
+            this.viewHistory = viewHistory;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            ViewHistoryDatabase.getInstance(getApplicationContext()).getDao().insert(viewHistory);
+            return null;
+        }
     }
 }

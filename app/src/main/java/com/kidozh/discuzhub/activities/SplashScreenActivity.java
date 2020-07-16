@@ -200,6 +200,7 @@ public class SplashScreenActivity extends BaseStatusActivity {
 
 
         if(agreedVersion.equals(currentVersion)){
+            Log.d(TAG,"ARGEEMENT EQUALS "+agreedVersion);
             enterMainActivity();
         }
 

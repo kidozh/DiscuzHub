@@ -69,9 +69,29 @@ public class bbsPublicMessageFragment extends Fragment {
 
     }
 
-    public bbsPublicMessageFragment(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
+    private bbsPublicMessageFragment(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
         this.bbsInfo= bbsInfo;
         this.userBriefInfo = userBriefInfo;
+    }
+
+    private static String ARG_BBS = "ARG_BBS", ARG_USER = "ARG_USER";
+
+    public static bbsPublicMessageFragment newInstance(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo) {
+        bbsPublicMessageFragment fragment = new bbsPublicMessageFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_BBS, bbsInfo);
+        args.putSerializable(ARG_USER, userBriefInfo);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            bbsInfo = (bbsInformation) getArguments().getSerializable(ARG_BBS);
+            userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(ARG_USER);
+        }
     }
 
     @Nullable
