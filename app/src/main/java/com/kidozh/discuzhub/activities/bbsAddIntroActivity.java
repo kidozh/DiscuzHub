@@ -304,12 +304,15 @@ public class bbsAddIntroActivity extends BaseStatusActivity
         public addNewForumInformationTask(bbsInformation bbsInformation, Activity activity){
             this.forumInfo = bbsInformation;
             this.activity = activity;
+            forumInfo.position = 9999999;
         }
         @Override
         protected Void doInBackground(Void... voids) {
             BBSInformationDatabase
                     .getInstance(activity)
                     .getForumInformationDao().insert(forumInfo);
+
+
             Log.d(TAG, "add forum into database"+forumInfo.site_name);
             return null;
         }

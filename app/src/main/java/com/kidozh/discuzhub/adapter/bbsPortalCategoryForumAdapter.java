@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsShowForumThreadActivity;
@@ -77,6 +78,7 @@ public class bbsPortalCategoryForumAdapter extends RecyclerView.Adapter<bbsPorta
             holder.mForumName.setText(sp, TextView.BufferType.SPANNABLE);
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(getPreferredClient(this.mContext));
             Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+
             Glide.with(mContext)
                     .load(forum.iconUrl)
                     .apply(RequestOptions

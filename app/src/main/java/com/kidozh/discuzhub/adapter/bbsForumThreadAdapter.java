@@ -26,6 +26,7 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
@@ -183,9 +184,12 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
 
                 .priority(Priority.HIGH);
+        GlideUrl glideUrl = new GlideUrl(source,
+                new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
+        );
 
         Glide.with(mContext)
-                .load(source)
+                .load(glideUrl)
                 .apply(options)
                 .into(holder.mAvatarImageview);
         // set short reply

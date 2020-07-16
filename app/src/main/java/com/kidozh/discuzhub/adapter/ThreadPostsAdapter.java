@@ -41,6 +41,7 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -208,9 +209,12 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
                 .error(mContext.getDrawable(avatarResource))
                 //.diskCacheStrategy(DiskCacheStrategy.ALL)
                 ;
+        GlideUrl glideUrl = new GlideUrl(source,
+                new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
+                );
 
         Glide.with(mContext)
-                .load(source)
+                .load(glideUrl)
                 .apply(options)
                 .into(holder.mAvatarImageview);
         holder.mAvatarImageview.setOnClickListener(new View.OnClickListener() {
@@ -391,16 +395,22 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
             }
             if(networkUtils.canDownloadImageOrFile(mContext)){
                 Log.d(TAG,"load the picture from network "+source);
+                GlideUrl glideUrl = new GlideUrl(source,
+                        new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
+                );
                 Glide.with(mContext)
-                        .load(source)
+                        .load(glideUrl)
                         .error(R.drawable.vector_drawable_image_crash)
                         .placeholder(R.drawable.ic_loading_picture)
                         .into(currentDrawable);
             }
             else {
                 Log.d(TAG,"load the picture from cache "+source);
+                GlideUrl glideUrl = new GlideUrl(source,
+                        new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
+                );
                 Glide.with(mContext)
-                        .load(source)
+                        .load(glideUrl)
                         .error(R.drawable.vector_drawable_image_wider_placeholder)
                         .placeholder(R.drawable.ic_loading_picture)
                         .onlyRetrieveFromCache(true)
@@ -587,8 +597,11 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
                 if(urlDrawableMapper.containsKey(url) && urlDrawableMapper.get(url)!=null){
                     List<drawableTarget> drawableTargetList = urlDrawableMapper.get(url);
                     // update all target
+                    GlideUrl glideUrl = new GlideUrl(url,
+                            new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
+                    );
                     Glide.with(mContext)
-                            .load(url)
+                            .load(glideUrl)
                             .error(R.drawable.vector_drawable_image_failed)
                             .placeholder(R.drawable.vector_drawable_loading_image)
                             .onlyRetrieveFromCache(true)
@@ -603,8 +616,11 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
                                         handler.post(new Runnable() {
                                             @Override
                                             public void run() {
+                                                GlideUrl glideUrl = new GlideUrl(url,
+                                                        new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
+                                                );
                                                 Glide.with(mContext)
-                                                        .load(url)
+                                                        .load(glideUrl)
                                                         .error(R.drawable.vector_drawable_image_failed)
                                                         .placeholder(R.drawable.vector_drawable_loading_image)
                                                         .into(drawTarget);
@@ -637,8 +653,11 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
                 else {
 
                     drawableTarget target = new drawableTarget(myDrawable, textView);
+                    GlideUrl glideUrl = new GlideUrl(url,
+                            new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
+                    );
                     Glide.with(mContext)
-                            .load(url)
+                            .load(glideUrl)
                             .error(R.drawable.vector_drawable_image_failed)
                             .placeholder(R.drawable.vector_drawable_loading_image)
                             .onlyRetrieveFromCache(true)
@@ -647,8 +666,11 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
                                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                     // load from network
                                     isLoading = false;
+                                    GlideUrl glideUrl = new GlideUrl(url,
+                                            new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
+                                    );
                                     Glide.with(mContext)
-                                            .load(url)
+                                            .load(glideUrl)
                                             .error(R.drawable.vector_drawable_image_failed)
                                             .placeholder(R.drawable.vector_drawable_loading_image)
                                             .listener(new RequestListener<Drawable>() {

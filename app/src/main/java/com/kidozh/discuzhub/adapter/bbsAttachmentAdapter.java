@@ -24,6 +24,7 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
@@ -72,9 +73,12 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
                 //.centerCrop()
                 .placeholder(R.drawable.vector_drawable_image_wider_placeholder)
                 .error(R.drawable.vector_drawable_image_crash);
+        GlideUrl glideUrl = new GlideUrl(source,
+                new LazyHeaders.Builder().addHeader("referer",source).build()
+        );
 
         Glide.with(mContext)
-                .load(source)
+                .load(glideUrl)
                 .apply(options)
                 .centerInside()
                 .listener(new RequestListener<Drawable>() {
@@ -121,10 +125,13 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
                     .placeholder(R.drawable.vector_drawable_image_wider_placeholder)
                     .fallback(R.drawable.vector_drawable_image_wider_placeholder)
                     .error(R.drawable.vector_drawable_image_wider_placeholder);
+            GlideUrl glideUrl = new GlideUrl(source,
+                    new LazyHeaders.Builder().addHeader("referer",source).build()
+            );
 
             Glide.with(mContext)
                     .asBitmap()
-                    .load(source)
+                    .load(glideUrl)
                     .apply(options)
                     .onlyRetrieveFromCache(true)
                     .fitCenter()

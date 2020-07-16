@@ -974,6 +974,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 .add("message", message)
                 .add("subject", "")
                 .add("usesig", "1")
+                .add("file","")
                 .add("posttime",String.valueOf(timeGetTime.getTime() / 1000 - 1))
                 .add("formhash",formHash);
         if(needCaptcha()){
@@ -991,6 +992,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         Request request = new Request.Builder()
                 .url(URLUtils.getReplyThreadUrl(fid,tid))
                 .post(formBody)
+                .addHeader("referer",URLUtils.getViewThreadUrl(tid,"1"))
                 .build();
         Handler mHandler = new Handler(Looper.getMainLooper());
         // UI Change

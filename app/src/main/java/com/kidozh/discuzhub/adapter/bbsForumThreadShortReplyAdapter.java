@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.results.DisplayForumResult;
@@ -62,9 +63,17 @@ public class bbsForumThreadShortReplyAdapter extends RecyclerView.Adapter<bbsFor
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
         String source = URLUtils.getSmallAvatarUrlByUid(replyInfo.authorId);
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+        GlideUrl glideUrl = new GlideUrl(source,
+                new LazyHeaders.Builder().addHeader("referer",source).build()
+        );
+        int avatar_num = replyInfo.authorId % 16;
+        if(avatar_num < 0){
+            avatar_num = -avatar_num;
+        }
+        int avatarResource = context.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",context.getPackageName());
         Glide.with(context)
-                .load(source)
-                .apply(RequestOptions.placeholderOf(R.drawable.ic_account_circle_24px).error(R.drawable.ic_account_circle_24px))
+                .load(glideUrl)
+                .apply(RequestOptions.placeholderOf(avatarResource).error(avatarResource))
                 .into(holder.mReplyerAvatar);
     }
 
