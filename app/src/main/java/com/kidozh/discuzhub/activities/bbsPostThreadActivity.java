@@ -1355,8 +1355,14 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
                 }
                 if(checkIfThreadCanBePosted()){
                     // ensure whether user is agreed to publish
-                    PostThreadConfirmDialogFragment fragment = new PostThreadConfirmDialogFragment(postThreadViewModel);
-                    fragment.show(getSupportFragmentManager(),PostThreadConfirmDialogFragment.class.getSimpleName());
+                    if(!isAPostReply()){
+                        PostThreadConfirmDialogFragment fragment = new PostThreadConfirmDialogFragment(postThreadViewModel);
+                        fragment.show(getSupportFragmentManager(),PostThreadConfirmDialogFragment.class.getSimpleName());
+                    }
+                    else {
+                        new publishThreadTask().execute();
+                    }
+
 
                 }
                 else {
