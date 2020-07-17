@@ -228,16 +228,27 @@
                         tools:text="@tools:sample/lorem/random"
                         tools:visibility="visible" />
 
+                    <ImageView
+                        android:id="@+id/advance_post_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="8dp"
+                        android:clickable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:layout_constraintBottom_toBottomOf="@+id/bbs_thread_detail_comment_editText"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/bbs_thread_detail_comment_editText"
+                        app:srcCompat="@drawable/ic_advance_post_24px" />
+
                     <EditText
                         android:id="@+id/bbs_thread_detail_comment_editText"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:hint="@string/bbs_thread_say_something"
                         android:inputType="textMultiLine"
                         android:maxLines="3"
                         app:layout_constraintEnd_toStartOf="@+id/bbs_thread_detail_emoij_button"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/advance_post_icon"
                         app:layout_constraintTop_toBottomOf="@+id/bbs_thread_detail_reply_chip" />
 
                     <Button

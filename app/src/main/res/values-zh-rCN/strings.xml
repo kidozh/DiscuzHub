@@ -158,7 +158,7 @@
     <string name="bbs_explore_thread">探索</string>
     <string name="bbs_login_by_browser">在网页中登录（XSS风险）</string>
     <string name="bbs_login_in_web_finished">完成登录</string>
-    <string name="bbs_login_in_browser_notification">如果本论坛在登陆时有自己的认证方式（如验证码），或者您需要使用第三方账号登录，请选择在“网页中登录”。</string>
+    <string name="bbs_login_in_browser_notification">如果本论坛在登陆时有自己的认证方式（Discuz自带验证码除外），或者您需要使用第三方账号登录，请选择在“网页中登录”。</string>
     <string name="bbs_login_in_webpage_alert">在网页中登录提醒</string>
     <string name="bbs_login_in_webpage_content">请在登录界面之中完成登录操作，然后轻触“完成登录”以将用户录入应用之中。</string>
     <string name="bbs_no_item_found">没有信息</string>
@@ -493,5 +493,10 @@
     <string name="delete_view_history_item">已经删除了%1$s的历史记录。</string>
     <string name="setting_delete_all_view_history_title">我们注意到您不希望被记录历史信息。您是否想清空此设备上所有的历史记录？该操作是永久且不可恢复的。</string>
     <string name="clear_all_history">清空浏览记录</string>
+    <string name="reply_post_title">向%1$s回复消息，pid为%2$d</string>
+    <string name="bbs_reply_notice_author_string">[quote][size=2][url=%1$s][color=#999999]%2$s 发表于 %3$s[/color][/url][/size] %4$s[/quote]</string>
+    <string name="bbs_reply_thread">回复一个帖子</string>
+    <string name="bbs_save_draft_not_support_when_replying">目前还无法将回复某个帖子的内容存储到数据库之中，我们会在未来版本中支持这个功能。</string>
+    <string name="reply_password_not_set">在回复时，您无法设置密码。</string>
 
 </resources>

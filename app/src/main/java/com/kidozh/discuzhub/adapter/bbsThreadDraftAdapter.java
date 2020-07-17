@@ -91,6 +91,7 @@ public class bbsThreadDraftAdapter extends RecyclerView.Adapter<bbsThreadDraftAd
                 intent.putExtra(bbsConstUtils.PASS_THREAD_DRAFT_KEY,threadDraft);
                 intent.putExtra("fid",threadDraft.fid);
                 intent.putExtra("fid_name",threadDraft.forumName);
+                intent.putExtra(bbsConstUtils.PASS_POST_TYPE,bbsConstUtils.TYPE_POST_DRAFT);
                 VibrateUtils.vibrateForClick(context);
                 context.startActivity(intent);
             }

@@ -318,6 +318,7 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
                         intent.putExtra("fid_name",forum.name);
                         intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                         intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                        intent.putExtra(bbsConstUtils.PASS_POST_TYPE,bbsConstUtils.TYPE_POST_THREAD);
 
                         Log.d(TAG,"You pass fid name"+forum.name);
                         intent.putExtra("api_result",returned_res_json);

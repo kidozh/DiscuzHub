@@ -315,6 +315,16 @@ public class bbsParseUtils {
         }
     }
 
+    public static Boolean isPostReplySuccessful(String s) {
+        try {
+            JSONObject jsonObject = new JSONObject(s);
+            JSONObject message = jsonObject.getJSONObject("Message");
+            return message.getString("messageval").equals("post_reply_succeed");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public static String parsePostThreadInfo(String s) {
         try {
             JSONObject jsonObject = new JSONObject(s);

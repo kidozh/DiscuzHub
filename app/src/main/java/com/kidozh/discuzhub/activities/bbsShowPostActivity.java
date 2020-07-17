@@ -139,6 +139,8 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
     EditText mPostCaptchaEditText;
     @BindView(R.id.bbs_post_error_imageview)
     ImageView errorPostImageview;
+    @BindView(R.id.advance_post_icon)
+    ImageView mAdvancePostIcon;
 
     public String subject;
     public int tid, fid;
@@ -667,6 +669,29 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
     }
 
     private void configureCommentBtn(){
+        // advance post
+        Context context  =this;
+        mAdvancePostIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String message = mCommentEditText.getText().toString();
+                Intent intent = new Intent(context,bbsPostThreadActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forum);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
+                intent.putExtra(bbsConstUtils.PASS_POST_TYPE,bbsConstUtils.TYPE_POST_REPLY);
+                intent.putExtra(bbsConstUtils.PASS_POST_MESSAGE, message);
+                intent.putExtra(bbsConstUtils.PASS_REPLY_POST,selectedThreadComment);
+                intent.putExtra("tid",tid);
+                intent.putExtra("fid",String.valueOf(fid));
+                if(forum !=null){
+                    intent.putExtra("fid_name",forum.name);
+                }
+
+                context.startActivity(intent);
+            }
+        });
+
         // captcha
         mPostCaptchaImageview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -974,7 +999,6 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 .add("message", message)
                 .add("subject", "")
                 .add("usesig", "1")
-                .add("file","")
                 .add("posttime",String.valueOf(timeGetTime.getTime() / 1000 - 1))
                 .add("formhash",formHash);
         if(needCaptcha()){
@@ -1081,9 +1105,9 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.FULL, Locale.getDefault());
         String publishAtString = df.format(selectedThreadComment.publishAt);
         int MAX_CHAR_LENGTH = 300;
-        // int trimEnd = Math.min(MAX_CHAR_LENGTH,noticeAuthorMsg.length());
+        int trimEnd = Math.min(MAX_CHAR_LENGTH,noticeAuthorMsg.length());
         // not to trim
-        int trimEnd = noticeAuthorMsg.length();
+        //int trimEnd = noticeAuthorMsg.length();
         Log.d(TAG,"get Reply Form "+message+" hash "
                 +formHash+" reppid "+replyPid+" tid "+tid
                 + " API ->"+ URLUtils.getReplyThreadUrl(fid,tid)+
@@ -1103,8 +1127,15 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 .add("reppost", String.valueOf(replyPid))
                 .add("message", message)
                 .add("noticeauthormsg",noticeAuthorMsg)
-                .add("noticetrimstr",String.format(discuz_reply_comment_template,
-                        replyUserName,publishAtString,replyMessage));
+                .add("noticetrimstr",getString(R.string.bbs_reply_notice_author_string,
+                        URLUtils.getReplyPostURLInLabel(selectedThreadComment.pid, selectedThreadComment.tid),
+                        selectedThreadComment.author,
+                        publishAtString,
+                        replyMessage
+
+                ));
+//                .add("noticetrimstr",String.format(discuz_reply_comment_template,
+//                        replyUserName,publishAtString,replyMessage));
 
 
         if(needCaptcha()){

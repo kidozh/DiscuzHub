@@ -34,13 +34,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 
-import com.fasterxml.jackson.databind.ser.Serializers;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.common.io.ByteStreams;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.uploadAttachment.UploadAttachmentDialogFragment;
@@ -48,11 +52,13 @@ import com.kidozh.discuzhub.database.UploadAttachmentDatabase;
 import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
 import com.kidozh.discuzhub.dialogs.PostThreadConfirmDialogFragment;
 import com.kidozh.discuzhub.dialogs.PostThreadPasswordDialogFragment;
+import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.UploadAttachment;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadPostParameterResult;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -124,6 +130,10 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
     ImageView actionPassword;
     @BindView(R.id.action_upload_attachment)
     ImageView actionUploadAttachment;
+    @BindView(R.id.bbs_post_captcha_imageview)
+    ImageView mPostCaptchaImageview;
+    @BindView(R.id.bbs_post_captcha_editText)
+    EditText mPostCaptchaEditText;
 
     private String fid, forumApiString,forumName, uploadHash, formHash;
     private ProgressDialog uploadDialog;
@@ -140,6 +150,9 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
 
 
     private PostThreadViewModel postThreadViewModel;
+    int postType = 0, tid;
+    String replyMessage = "";
+    PostInfo replyPost = null;
 
     LiveData<List<UploadAttachment>> uploadAttachmentLiveData;
 
@@ -151,13 +164,14 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
         ButterKnife.bind(this);
         postThreadViewModel = new ViewModelProvider(this).get(PostThreadViewModel.class);
         configureIntentData();
+        configureToolbar();
         configureClient();
         bindViewModel();
 
         //editBar = (HorizontalScrollView) bbsPostThreadEditorBarInclude;
 
 
-        configureToolbar();
+
         bbsPersonInfo = bbsParseUtils.parseBreifUserInfo(forumApiString);
         // parse api result
         Map<String,String> threadTypeMapper = bbsParseUtils.parseThreadType(forumApiString);
@@ -178,6 +192,10 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
 
     }
 
+    private boolean isAPostReply(){
+        return postType == bbsConstUtils.TYPE_POST_REPLY;
+    }
+
     private void configureIntentData(){
         Intent intent = getIntent();
         forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
@@ -187,6 +205,14 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
         bbsThreadDraft threadDraft = (bbsThreadDraft) intent.getSerializableExtra(bbsConstUtils.PASS_THREAD_DRAFT_KEY);
         postThreadViewModel.bbsThreadDraftMutableLiveData.setValue(threadDraft);
         URLUtils.setBBS(bbsInfo);
+        // check the type
+        postType = intent.getIntExtra(bbsConstUtils.PASS_POST_TYPE,0);
+        replyMessage = intent.getStringExtra(bbsConstUtils.PASS_POST_MESSAGE);
+        replyPost = (PostInfo) intent.getSerializableExtra(bbsConstUtils.PASS_REPLY_POST);
+        tid = intent.getIntExtra("tid",-1);
+        if(isAPostReply() && tid == -1){
+            finishAfterTransition();
+        }
 
         if(threadDraft!=null){
             bbsThreadSubjectEditText.setText(threadDraft.subject);
@@ -197,8 +223,18 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
             forumApiString = threadDraft.apiString;
 
         }
+        else if(replyMessage !=null){
+            bbsThreadMessageEditText.setText(replyMessage);
+        }
+
+        if(isAPostReply()){
+            mCategorySpinner.setVisibility(View.GONE);
+            bbsThreadSubjectEditText.setVisibility(View.GONE);
+            actionPassword.setVisibility(View.GONE);
+        }
 
         fid = intent.getStringExtra("fid");
+
         postThreadViewModel.setBBSInfo(bbsInfo,userBriefInfo,fid);
         forumName = intent.getStringExtra("fid_name");
         if(forumApiString==null){
@@ -271,6 +307,94 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
                 }
             }
         });
+
+        // for secure reason
+        postThreadViewModel.getSecureInfoResultMutableLiveData().observe(this, new Observer<SecureInfoResult>() {
+            @Override
+            public void onChanged(SecureInfoResult secureInfoResult) {
+                if(secureInfoResult !=null){
+                    if(secureInfoResult.secureVariables == null){
+                        // don't need a code
+                        mPostCaptchaEditText.setVisibility(View.GONE);
+                        mPostCaptchaImageview.setVisibility(View.GONE);
+                    }
+                    else {
+                        mPostCaptchaEditText.setVisibility(View.VISIBLE);
+                        mPostCaptchaImageview.setVisibility(View.VISIBLE);
+                        mPostCaptchaImageview.setImageDrawable(getDrawable(R.drawable.ic_captcha_placeholder_24px));
+                        // need a captcha
+                        String captchaURL = secureInfoResult.secureVariables.secCodeURL;
+                        String captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash);
+                        // load it
+                        if(captchaURL == null){
+                            return;
+                        }
+                        Request captchaRequest = new Request.Builder()
+                                .url(captchaURL)
+                                .build();
+                        // get first
+                        client.newCall(captchaRequest).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    // get the session
+
+
+                                    mPostCaptchaImageview.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
+                                            Glide.get(getApplication()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+
+                                            // forbid cache captcha
+                                            RequestOptions options = new RequestOptions()
+                                                    .fitCenter()
+                                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                                    .placeholder(R.drawable.ic_captcha_placeholder_24px)
+                                                    .error(R.drawable.ic_post_status_warned_24px);
+                                            GlideUrl pictureGlideURL = new GlideUrl(captchaImageURL,
+                                                    new LazyHeaders.Builder()
+                                                            .addHeader("Referer",captchaURL)
+                                                            .build()
+                                            );
+
+                                            Glide.with(getApplication())
+                                                    .load(pictureGlideURL)
+                                                    .apply(options)
+                                                    .into(mPostCaptchaImageview);
+                                        }
+                                    });
+
+                                }
+
+                            }
+                        });
+                    }
+
+                }
+                else {
+                    // don't know the situation
+                    mPostCaptchaEditText.setVisibility(View.GONE);
+                    mPostCaptchaImageview.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        // captcha
+        mPostCaptchaImageview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // update it
+                postThreadViewModel.getSecureInfo();
+            }
+        });
+
         bbsThreadDraft draft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
         if(draft!=null){
             uploadAttachmentLiveData = UploadAttachmentDatabase.getInstance(this).getUploadAttachmentDao().getAllUploadAttachmentFromDraft(draft.getId());
@@ -286,6 +410,7 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
                 }
             });
         }
+
 
     }
 
@@ -307,9 +432,16 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
 
         actionPassword.setOnClickListener(view -> {
             // trigger dialog
+            if(isAPostReply()){
+                Toasty.warning(getApplicationContext(),getString(R.string.reply_password_not_set),Toast.LENGTH_SHORT).show();
+                return;
+            }
             bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
-            PostThreadPasswordDialogFragment postThreadPasswordDialogFragment = new PostThreadPasswordDialogFragment(threadDraft.password);
-            postThreadPasswordDialogFragment.show(getSupportFragmentManager(),PostThreadPasswordDialogFragment.class.getSimpleName());
+            if(threadDraft !=null){
+                PostThreadPasswordDialogFragment postThreadPasswordDialogFragment = new PostThreadPasswordDialogFragment(threadDraft.password);
+                postThreadPasswordDialogFragment.show(getSupportFragmentManager(),PostThreadPasswordDialogFragment.class.getSimpleName());
+            }
+
         });
 
         actionUploadAttachment.setOnClickListener(view ->{
@@ -414,11 +546,15 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
     }
 
     private void configureSyncDraft(){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this) ;
-        Boolean autoPostBackup = prefs.getBoolean(getString(R.string.preference_key_auto_post_backup),true);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        boolean autoPostBackup = prefs.getBoolean(getString(R.string.preference_key_auto_post_backup),true);
+        if(isAPostReply()){
+            autoPostBackup = false;
+        }
         bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
         // create an initial backup
-        if(threadDraft == null){
+        if(threadDraft == null && !isAPostReply()){
             if(mCategorySpinner.getSelectedItem()!=null){
 
                 threadDraft = new bbsThreadDraft(bbsThreadSubjectEditText.getText().toString(),
@@ -799,8 +935,14 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
                             // need to add to viewModel
                             bbsThreadDraft draft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
                             UploadAttachment uploadAttachment = new UploadAttachment(resCode,filename);
-                            uploadAttachment.setEmpId(draft.getId());
-                            Log.d(TAG,"Insert attachment "+draft.getId());
+                            if(draft!=null){
+                                uploadAttachment.setEmpId(draft.getId());
+                                Log.d(TAG,"Insert attachment "+draft.getId());
+                            }
+                            else {
+                                uploadAttachment.setEmpId(1);
+                            }
+
                             List<UploadAttachment> uploadAttachmentList = postThreadViewModel.uploadAttachmentListLiveData.getValue();
                             uploadAttachmentList.add(uploadAttachment);
                             postThreadViewModel.uploadAttachmentListLiveData.postValue(uploadAttachmentList);
@@ -990,12 +1132,38 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.bbs_post_thread));
         getSupportActionBar().setSubtitle(forumName);
+        Log.d(TAG,"is a post ?"+postType+" "+replyPost);
+        if(isAPostReply()){
+            if(replyPost !=null){
+                getSupportActionBar().setTitle(getString(R.string.reply_post_title,replyPost.author,replyPost.pid));
+                getSupportActionBar().setSubtitle(replyPost.message);
+            }
+            else {
+                getSupportActionBar().setTitle(getString(R.string.bbs_reply_thread));
+                getSupportActionBar().setSubtitle("# "+tid);
+            }
+
+        }
 
 
     }
 
     private Boolean checkIfThreadCanBePosted(){
-        if(uploadHash == null ||TextUtils.isEmpty(bbsThreadSubjectEditText.getText().toString().trim())){
+        if(uploadHash == null){
+            return false;
+        }
+        else if(!isAPostReply() && TextUtils.isEmpty(bbsThreadSubjectEditText.getText().toString().trim())){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    private boolean needCaptcha(){
+        if(postThreadViewModel == null
+                || postThreadViewModel.getSecureInfoResultMutableLiveData().getValue()==null
+                || postThreadViewModel.getSecureInfoResultMutableLiveData().getValue().secureVariables==null){
             return false;
         }
         else {
@@ -1025,15 +1193,25 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
             List<String> aids = handler.getImagesAids();
             // check password
             bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
-            String password = threadDraft.password;
+            String password;
+            if(threadDraft == null){
+                password = "";
+            }
+            else {
+                password = threadDraft.password;
+            }
+
             if(password.length()>0){
                 message += String.format(Locale.US,"[password]%s[/password]",password);
             }
+            if(!isAPostReply()){
+                formBody.add("topicsubmit", "yes");
+            }
 
             formBody
-                    .add("topicsubmit", "yes")
                     .add("subject",subject)
                     .add("formhash",formHash)
+                    .add("usesig","1")
                     .add("message",message);
             if(numKeys!=null && numKeys.size() >0){
                 String typeId = numKeys.get(selectPos);
@@ -1051,13 +1229,59 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
                 }
             }
 
+            // if notify someone
+            if(isAPostReply() && replyPost !=null){
+                DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.FULL, Locale.getDefault());
+                String publishAtString = df.format(replyPost.publishAt);
+                final int MAX_CHAR_LENGTH = 300;
+                int trimEnd = Math.min(MAX_CHAR_LENGTH,replyPost.message.length());
+                String replyMessage = replyPost.message.substring(0,trimEnd);
+                formBody.add("reppid", String.valueOf(replyPost.pid))
+                        .add("reppost", String.valueOf(replyPost.pid))
+                        .add("noticeauthormsg",replyPost.author)
+                        .add("noticetrimstr",getString(R.string.bbs_reply_notice_author_string,
+                                URLUtils.getReplyPostURLInLabel(replyPost.pid, replyPost.tid),
+                                replyPost.author,
+                                publishAtString,
+                                replyMessage
+
+                        ))
+                ;
+            }
+
+            // captcha
+            if(needCaptcha()){
+                SecureInfoResult secureInfoResult = postThreadViewModel.getSecureInfoResultMutableLiveData().getValue();
+                if(secureInfoResult !=null){
+                    formBody.add("seccodehash",secureInfoResult.secureVariables.secHash)
+
+                            .add("seccodeverify", mPostCaptchaEditText.getText().toString());
+                    if(isAPostReply()){
+                        formBody.add("seccodemodid", "forum::viewthread");
+                    }
+                    else {
+                        formBody.add("seccodemodid", "forum::post");
+                    }
+                }
+
+            }
+
+
+
+
+
 
             FormBody form = formBody.build();
+            Request.Builder builder = new Request.Builder().post(form);
+            if(!isAPostReply()){
+                builder.url(URLUtils.getPostThreadUrl(fid));
+            }
+            else {
+                int fidInt = Integer.parseInt(fid);
+                builder.url(URLUtils.getReplyThreadUrl(fidInt,tid));
 
-            request = new Request.Builder()
-                    .url(URLUtils.getPostThreadUrl(fid))
-                    .post(form)
-                    .build();
+            }
+            request = builder.build();
         }
 
         @Override
@@ -1083,9 +1307,9 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
             super.onPostExecute(s);
             // auto backup ?
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()) ;
-            Boolean autoPostBackup = prefs.getBoolean(getString(R.string.preference_key_send_post_backup),true);
+            boolean autoPostBackup = prefs.getBoolean(getString(R.string.preference_key_send_post_backup),true);
             bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
-            if(autoPostBackup){
+            if(autoPostBackup && !isAPostReply()){
                 new addThreadDraftTask(getApplicationContext(),threadDraft).execute();
             }
 
@@ -1094,13 +1318,22 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
             if(message == null){
                 message = getString(R.string.not_known);
             }
-            if(bbsParseUtils.isPostThreadSuccessful(s)){
+
+
+            if(!isAPostReply() && bbsParseUtils.isPostThreadSuccessful(s)){
+                Toasty.success(getApplicationContext(),message,Toast.LENGTH_LONG).show();
+                finishAfterTransition();
+            }
+            else if(isAPostReply() && bbsParseUtils.isPostReplySuccessful(s)){
                 Toasty.success(getApplicationContext(),message,Toast.LENGTH_LONG).show();
                 finishAfterTransition();
             }
             else {
                 Toasty.error(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
-                new addThreadDraftTask(getApplicationContext(),threadDraft).execute();
+                if(!isAPostReply()){
+                    new addThreadDraftTask(getApplicationContext(),threadDraft).execute();
+                }
+
             }
 
 
@@ -1116,6 +1349,10 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
                 return false;
             }
             case R.id.bbs_toolbar_send_item:{
+                if(needCaptcha() && TextUtils.isEmpty(mPostCaptchaEditText.getText())){
+                    Toasty.warning(getApplicationContext(),getString(R.string.captcha_required),Toast.LENGTH_SHORT).show();
+                    return true;
+                }
                 if(checkIfThreadCanBePosted()){
                     // ensure whether user is agreed to publish
                     PostThreadConfirmDialogFragment fragment = new PostThreadConfirmDialogFragment(postThreadViewModel);
@@ -1132,9 +1369,15 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
 
             }
             case R.id.bbs_post_thread_toolbar_save_draft:{
-                bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
-                addThreadDraftTask task = new addThreadDraftTask(this,threadDraft,true);
-                task.execute();
+                if(!isAPostReply()){
+                    bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+                    addThreadDraftTask task = new addThreadDraftTask(this,threadDraft,true);
+                    task.execute();
+                }
+                else {
+                    Toasty.info(getApplicationContext(),getString(R.string.bbs_save_draft_not_support_when_replying),Toast.LENGTH_LONG).show();
+                }
+
                 return true;
 
             }

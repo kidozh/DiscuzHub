@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 
+import java.util.Locale;
+
 public class URLUtils {
     public static String TAG = URLUtils.class.getSimpleName();
     public static String BASE_URL;
@@ -507,6 +509,10 @@ public class URLUtils {
                 .appendQueryParameter("sechash",secHash)
                 .build();
         return uri.toString();
+    }
+
+    public static String getReplyPostURLInLabel(int pid, int ptid){
+        return "forum.php?mod=redirect&goto=findpost&pid="+pid+"&ptid="+ptid;
     }
 
 

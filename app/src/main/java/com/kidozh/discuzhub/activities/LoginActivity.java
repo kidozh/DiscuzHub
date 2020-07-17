@@ -125,9 +125,11 @@ public class LoginActivity extends BaseStatusActivity {
             bbsBaseUrl.setText(getString(R.string.user_relogin,curUser.username));
         }
 
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(this,curBBS.useSafeClient));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+        if(curUser == null){
 
+        }
         Glide.with(this)
                 .load(URLUtils.getBBSLogoUrl())
                 .error(R.drawable.vector_drawable_bbs)
@@ -361,7 +363,7 @@ public class LoginActivity extends BaseStatusActivity {
         forumUserBriefInfo userBriefInfo = new forumUserBriefInfo("","","","","",50,"");
         Log.d(TAG,"Send user id "+userBriefInfo.getId());
         networkUtils.clearUserCookieInfo(getApplicationContext(),userBriefInfo);
-        //OkHttpClient client = networkUtils.getPreferredClientWithCookieJarByUser(getApplicationContext(),userBriefInfo);
+
         if(client ==null){
             client = networkUtils.getPreferredClientWithCookieJar(getApplicationContext());
         }
@@ -558,6 +560,8 @@ public class LoginActivity extends BaseStatusActivity {
             }
 
             getSupportActionBar().setSubtitle(curBBS.site_name);
+            // clear it first
+            getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE).edit().clear().commit();
             client = networkUtils.getPreferredClientWithCookieJar(getApplicationContext());
         }
 

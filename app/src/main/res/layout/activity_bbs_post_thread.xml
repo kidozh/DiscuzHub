@@ -87,7 +87,32 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.6"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_backup_icon" />
+            app:layout_constraintTop_toBottomOf="@+id/bbs_post_captcha_editText" />
+
+        <EditText
+            android:id="@+id/bbs_post_captcha_editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:hint="@string/captcha_required"
+            android:singleLine="true"
+            app:layout_constraintEnd_toStartOf="@+id/bbs_post_captcha_imageview"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_backup_info_textview" />
+
+        <ImageView
+            android:id="@+id/bbs_post_captcha_imageview"
+            android:layout_width="64dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:foreground="?attr/selectableItemBackground"
+            app:layout_constraintBottom_toTopOf="@+id/bbs_post_thread_message"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_backup_info_textview"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
