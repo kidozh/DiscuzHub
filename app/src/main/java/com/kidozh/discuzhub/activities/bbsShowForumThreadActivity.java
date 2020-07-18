@@ -24,6 +24,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -33,6 +34,7 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.adapter.SubForumAdapter;
 import com.kidozh.discuzhub.adapter.bbsForumThreadAdapter;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.entities.ThreadInfo;
@@ -91,11 +93,14 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
     TextView errorTextview;
     @BindView(R.id.bbs_forum_error_layout)
     View errorLayout;
+    @BindView(R.id.bbs_forum_sublist)
+    RecyclerView subForumRecyclerview;
     private ForumInfo forum;
     private bbsInformation bbsInfo;
     private forumUserBriefInfo userBriefInfo;
     private OkHttpClient client = new OkHttpClient();
     private bbsForumThreadAdapter adapter;
+    private SubForumAdapter subForumAdapter;
     boolean isTaskRunning;
     String fid;
     String returned_res_json;
@@ -205,6 +210,11 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
                 else {
                     errorLayout.setVisibility(View.GONE);
                     moreThreadBtn.setVisibility(View.VISIBLE);
+                }
+
+                // deal with sublist
+                if(displayForumResult!=null && displayForumResult.forumVariables!=null){
+                    subForumAdapter.setSubForumInfoList(displayForumResult.forumVariables.subForumLists);
                 }
             }
 
@@ -426,6 +436,11 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
     }
 
     private void configureRecyclerview(){
+        subForumRecyclerview.setHasFixedSize(true);
+        subForumRecyclerview.setLayoutManager(new GridLayoutManager(this,4));
+        subForumAdapter = new SubForumAdapter(bbsInfo,userBriefInfo);
+        subForumRecyclerview.setAdapter(subForumAdapter);
+
         mRecyclerview.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 

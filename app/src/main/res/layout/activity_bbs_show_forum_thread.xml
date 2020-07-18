@@ -131,6 +131,15 @@
                         app:layout_constraintTop_toTopOf="@+id/bbs_forum_thread" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/bbs_forum_sublist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/bbs_forum_thread_type_chipgroup"
                     android:layout_width="match_parent"

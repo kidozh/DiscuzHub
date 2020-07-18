@@ -102,7 +102,7 @@ public class bbsPortalCategoryForumAdapter extends RecyclerView.Adapter<bbsPorta
                 holder.mTodayPosts.setVisibility(View.VISIBLE);
                 if(forum.todayPosts >= 100){
                     holder.mTodayPosts.setText(R.string.forum_today_posts_over_much);
-                    holder.mTodayPosts.setBackgroundColor(mContext.getColor(R.color.colorAccent));
+                    holder.mTodayPosts.setBackgroundColor(mContext.getColor(R.color.colorPomegranate));
                 }
                 else {
                     holder.mTodayPosts.setText(String.valueOf(forum.todayPosts));
