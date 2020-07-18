@@ -60,7 +60,7 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
     @Override
     public SubForumViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        int layoutIdForListItem = R.layout.item_bbs_category_forum;
+        int layoutIdForListItem = R.layout.item_sub_forum;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
