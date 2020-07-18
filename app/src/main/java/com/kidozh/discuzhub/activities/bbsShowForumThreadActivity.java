@@ -437,7 +437,7 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
 
     private void configureRecyclerview(){
         subForumRecyclerview.setHasFixedSize(true);
-        subForumRecyclerview.setLayoutManager(new GridLayoutManager(this,5));
+        subForumRecyclerview.setLayoutManager(new GridLayoutManager(this,4));
         subForumAdapter = new SubForumAdapter(bbsInfo,userBriefInfo);
         subForumRecyclerview.setAdapter(subForumAdapter);
 
