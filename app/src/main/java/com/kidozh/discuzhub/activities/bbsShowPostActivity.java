@@ -373,6 +373,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                     mCommentBtn.setEnabled(false);
                     mCommentEditText.setHint(R.string.thread_is_closed);
                     mCommentEmoijBtn.setClickable(false);
+                    mAdvancePostIcon.setVisibility(View.GONE);
                     if(detailedThreadInfo.closed == 1){
                         threadPropertyList.add(
                                 new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_highlight_off_outlined_24px,
@@ -382,6 +383,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
 
                 }
                 else {
+                    mAdvancePostIcon.setVisibility(View.VISIBLE);
                     mCommentEditText.setEnabled(true);
                     mCommentBtn.setEnabled(true);
                     mCommentEditText.setHint(R.string.bbs_thread_say_something);
