@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
@@ -37,6 +38,7 @@ import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.ThreadPostResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -80,6 +82,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 import kotlin.jvm.functions.Function3;
 
 public class NewMainDrawerActivity extends BaseStatusActivity implements
@@ -878,6 +881,24 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                 Intent intent = new Intent(this,aboutAppActivity.class);
                 startActivity(intent);
                 return true;
+            }
+            case R.id.bbs_share:{
+                bbsInformation bbsInfo = viewModel.currentBBSInformationMutableLiveData.getValue();
+                if(bbsInfo !=null){
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_template,
+                            bbsInfo.site_name,bbsInfo.base_url));
+                    sendIntent.setType("text/plain");
+
+                    Intent shareIntent = Intent.createChooser(sendIntent, null);
+                    startActivity(shareIntent);
+                }
+                else {
+                    Toasty.info(this,getString(R.string.no_bbs_found_in_db), Toast.LENGTH_SHORT).show();
+                }
+                return true;
+
             }
         }
         return super.onOptionsItemSelected(item);

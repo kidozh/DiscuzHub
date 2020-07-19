@@ -216,6 +216,14 @@ public class bbsShowForumThreadActivity
                 // deal with sublist
                 if(displayForumResult!=null && displayForumResult.forumVariables!=null){
                     subForumAdapter.setSubForumInfoList(displayForumResult.forumVariables.subForumLists);
+                    if(displayForumResult.forumVariables.forumInfo !=null){
+                        ForumInfo forumInfo = displayForumResult.forumVariables.forumInfo;
+                        forum = forumInfo;
+                        if(getSupportActionBar()!=null){
+                            getSupportActionBar().setTitle(forumInfo.name);
+                            getSupportActionBar().setSubtitle(forumInfo.description);
+                        }
+                    }
                 }
             }
 
@@ -648,6 +656,25 @@ public class bbsShowForumThreadActivity
                 Intent intent = new Intent(this,aboutAppActivity.class);
                 startActivity(intent);
                 return true;
+            }
+            case R.id.bbs_share:{
+                DisplayForumResult result = forumThreadViewModel.displayForumResultMutableLiveData.getValue();
+                if(result!=null && result.forumVariables!=null && result.forumVariables.forumInfo!=null){
+                    ForumInfo forumInfo = result.forumVariables.forumInfo;
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_template,
+                            forumInfo.name,URLUtils.getForumDisplayUrl(String.valueOf(forum.fid),"1")));
+                    sendIntent.setType("text/plain");
+
+                    Intent shareIntent = Intent.createChooser(sendIntent, null);
+                    startActivity(shareIntent);
+                }
+                else {
+                    Toasty.info(this,getString(R.string.share_not_prepared),Toast.LENGTH_SHORT).show();
+                }
+                return true;
+
             }
             default:
                 return super.onOptionsItemSelected(item);

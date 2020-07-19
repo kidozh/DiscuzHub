@@ -680,6 +680,9 @@
     <string name="scroll_to_pid_failed">Currently, post #%1$s is not loaded.</string>
     <string name="scroll_to_pid_successfully">Go to #%1$s.</string>
     <string name="close_webview">Close</string>
+    <string name="share">Share</string>
+    <string name="share_template">%1$s (via link:%2$s)</string>
+    <string name="share_not_prepared">Sharing is not prepared, please wait until content is loaded.</string>
 
 
 </resources>

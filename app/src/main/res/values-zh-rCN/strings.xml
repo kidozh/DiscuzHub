@@ -504,5 +504,8 @@
     <string name="scroll_to_pid_failed">发言 #%1$s 还未被加载，无法滚动到那个条目上。</string>
     <string name="scroll_to_pid_successfully">跳转到%1$s楼。</string>
     <string name="close_webview">关闭</string>
+    <string name="share">分享</string>
+    <string name="share_template">分享%1$s （链接：%2$s）</string>
+    <string name="share_not_prepared">分享功能还没有准备好，请等待页面加载完毕后分享。</string>
 
 </resources>

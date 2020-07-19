@@ -71,6 +71,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadPostResult;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
@@ -547,6 +548,9 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                         Spanned sp = Html.fromHtml(threadPostResult.threadPostVariables.detailedThreadInfo.subject);
                         SpannableString spannableString = new SpannableString(sp);
                         mDetailThreadSubjectTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
+                        if(getSupportActionBar()!=null){
+                            getSupportActionBar().setTitle(threadPostResult.threadPostVariables.detailedThreadInfo.subject);
+                        }
                         bbsParseUtils.DetailedThreadInfo detailedThreadInfo = threadPostResult.threadPostVariables.detailedThreadInfo;
                         if(detailedThreadInfo !=null && hasLoadOnce == false){
                             hasLoadOnce = true;
@@ -1625,6 +1629,26 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
 
                 }
                 return true;
+            }
+            case R.id.bbs_share:{
+                ThreadPostResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
+                if(result!=null && result.threadPostVariables!=null && result.threadPostVariables.detailedThreadInfo!=null){
+                    bbsParseUtils.DetailedThreadInfo detailedThreadInfo = result.threadPostVariables.detailedThreadInfo;
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_template,
+                            detailedThreadInfo.subject,currentUrl));
+                    sendIntent.setType("text/plain");
+
+                    Intent shareIntent = Intent.createChooser(sendIntent, null);
+                    startActivity(shareIntent);
+                    return true;
+                }
+                else {
+                    Toasty.info(this,getString(R.string.share_not_prepared),Toast.LENGTH_SHORT).show();
+                }
+                return true;
+
             }
             case R.id.bbs_about_app:{
                 Intent intent = new Intent(this,aboutAppActivity.class);
