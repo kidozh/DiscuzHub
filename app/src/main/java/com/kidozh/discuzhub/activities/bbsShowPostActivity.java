@@ -1,20 +1,26 @@
 package com.kidozh.discuzhub.activities;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,12 +48,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
@@ -81,6 +89,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -95,6 +107,7 @@ import okhttp3.Response;
 public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFragment.OnSmileyPressedInteraction,
         ThreadPostsAdapter.onFilterChanged,
         ThreadPostsAdapter.onAdapterReply,
+        ThreadPostsAdapter.OnLinkClicked,
         bbsPollFragment.OnFragmentInteractionListener{
     private final static String TAG = bbsShowPostActivity.class.getSimpleName();
     @BindView(R.id.bbs_thread_detail_recyclerview)
@@ -201,7 +214,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
         URLUtils.setBBS(bbsInfo);
         threadDetailViewModel.setBBSInfo(bbsInfo, userBriefInfo, forum, tid);
-        if(threadInfo!=null){
+        if(threadInfo!=null && threadInfo.subject !=null){
             Spanned sp = Html.fromHtml(threadInfo.subject);
             SpannableString spannableString = new SpannableString(sp);
             mDetailThreadSubjectTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
@@ -887,6 +900,294 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         // refresh it
         threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
         // getThreadComment();
+    }
+
+    private void parseURLAndOpen(String url){
+        Log.d(TAG,"Parse and open URL "+url);
+        Uri uri = Uri.parse(url);
+        if(uri !=null && uri.getPath() !=null){
+            if(uri.getQueryParameter("mod")!=null
+                    && uri.getQueryParameter("mod").equals("redirect")
+                    && uri.getQueryParameter("goto")!=null
+                    && uri.getQueryParameter("goto").equals("findpost")
+                    && uri.getQueryParameter("pid")!=null
+                    && uri.getQueryParameter("ptid")!=null){
+                String pidString = uri.getQueryParameter("pid");
+                String tidString = uri.getQueryParameter("ptid");
+                int redirectTid = Integer.parseInt(tidString);
+                int redirectPid = Integer.parseInt(pidString);
+                Log.d(TAG,"Find the current "+redirectPid+" tid "+redirectTid);
+                if(redirectTid != tid){
+                    ThreadInfo putThreadInfo = new ThreadInfo();
+                    putThreadInfo.tid = redirectTid;
+                    Intent intent = new Intent(this, bbsShowPostActivity.class);
+                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                    intent.putExtra("FID",fid);
+                    intent.putExtra("TID",redirectTid);
+                    intent.putExtra("SUBJECT",url);
+                    VibrateUtils.vibrateForClick(this);
+
+                    startActivity(intent);
+                    return;
+                }
+                else {
+                    // scroll it
+                    List<PostInfo> postInfos = adapter.getThreadInfoList();
+                    if(postInfos !=null){
+                        for(int i=0; i<postInfos.size(); i++){
+                            PostInfo curPost = postInfos.get(i);
+                            if(curPost.pid == redirectPid){
+                                mRecyclerview.scrollToPosition(i);
+                                VibrateUtils.vibrateForClick(this);
+                                Toasty.success(this,getString(R.string.scroll_to_pid_successfully,pidString),Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                        Toasty.info(this,getString(R.string.scroll_to_pid_failed,pidString),Toast.LENGTH_SHORT).show();
+
+                    }
+
+                }
+            }
+            else if(uri.getQueryParameter("mod")!=null
+                    && uri.getQueryParameter("mod").equals("viewthread")
+                    && uri.getQueryParameter("tid")!=null){
+                String tidString = uri.getQueryParameter("tid");
+                int redirectTid = Integer.parseInt(tidString);
+                ThreadInfo putThreadInfo = new ThreadInfo();
+                putThreadInfo.tid = redirectTid;
+                Intent intent = new Intent(this, bbsShowPostActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                intent.putExtra("FID",fid);
+                intent.putExtra("TID",redirectTid);
+                intent.putExtra("SUBJECT",url);
+                VibrateUtils.vibrateForClick(this);
+
+                startActivity(intent);
+                return;
+
+            }
+            else if(uri.getQueryParameter("mod")!=null
+                    && uri.getQueryParameter("mod").equals("forumdisplay")
+                    && uri.getQueryParameter("fid")!=null){
+                String fidString = uri.getQueryParameter("fid");
+                int fid = Integer.parseInt(fidString);
+                Intent intent = new Intent(this, bbsShowForumThreadActivity.class);
+                ForumInfo clickedForum = new ForumInfo();
+                clickedForum.fid = fid;
+
+                intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forum);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                Log.d(TAG,"put base url "+bbsInfo.base_url);
+                VibrateUtils.vibrateForClick(this);
+                startActivity(intent);
+                return;
+
+            }
+            Intent intent = new Intent(this, showWebPageActivity.class);
+            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(bbsConstUtils.PASS_URL_KEY,url);
+            Log.d(TAG,"Inputted URL "+url);
+            startActivity(intent);
+
+        }
+        else {
+            Intent intent = new Intent(this, showWebPageActivity.class);
+            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(bbsConstUtils.PASS_URL_KEY,url);
+            Log.d(TAG,"Inputted URL "+url);
+            startActivity(intent);
+        }
+    }
+
+
+
+
+
+    @Override
+    public void onLinkClicked(String url) {
+        Context context = this;
+        String unescapedURL = url
+                .replace("&amp;","&")
+                .replace("&lt;","<")
+                .replace("&gt;",">")
+                .replace("&nbsp;"," ")
+                ;
+        // judge the host
+        String baseURL = URLUtils.getBaseUrl();
+        Uri baseUri = Uri.parse(baseURL);
+        Uri clickedUri = Uri.parse(unescapedURL);
+        if(clickedUri.getHost() == null || clickedUri.getHost().equals(baseUri.getHost())){
+            // internal link
+            ThreadPostResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
+
+            if(result !=null && result.threadPostVariables!=null ){
+                if(result.threadPostVariables.rewriteRule!=null){
+                    Map<String,String> rewriteRules = result.threadPostVariables.rewriteRule;
+
+                    String clickedURLPath = clickedUri.getPath();
+                    if(clickedURLPath == null){
+                        parseURLAndOpen(unescapedURL);
+                    }
+                    String basedURLPath = baseUri.getPath();
+                    if(clickedURLPath !=null && basedURLPath!=null){
+                        if(clickedURLPath.matches("^"+basedURLPath+".*")){
+                            clickedURLPath = clickedURLPath.substring(basedURLPath.length());
+                        }
+                    }
+                    // only catch two type : forum_forumdisplay & forum_viewthread
+                    // only 8.0+ support reverse copy
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+
+                        if(rewriteRules.containsKey("forum_forumdisplay") ){
+                            String rewriteRule = rewriteRules.get("forum_forumdisplay");
+                            if(rewriteRule == null || clickedURLPath == null){
+                                parseURLAndOpen(unescapedURL);
+                                return;
+                            }
+                            // match template such as f{fid}-{page}
+                            // crate reverse copy
+                            rewriteRule = rewriteRule.replace("{fid}","(?<fid>\\d+)");
+                            rewriteRule = rewriteRule.replace("{page}","(?<page>\\d+)");
+                            Pattern pattern = Pattern.compile(rewriteRule);
+                            Matcher matcher = pattern.matcher(clickedURLPath);
+                            if(matcher.find()){
+
+                                String fidStr = matcher.group("fid");
+                                String pageStr = matcher.group("page");
+                                // handle it
+                                if(fidStr !=null){
+                                    int fid = Integer.parseInt(fidStr);
+//                                    int page = Integer.parseInt(pageStr);
+                                    Intent intent = new Intent(context, bbsShowForumThreadActivity.class);
+                                    ForumInfo clickedForum = new ForumInfo();
+                                    clickedForum.fid = fid;
+
+                                    intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forum);
+                                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                                    Log.d(TAG,"put base url "+bbsInfo.base_url);
+                                    VibrateUtils.vibrateForClick(context);
+                                    context.startActivity(intent);
+                                    return;
+                                }
+
+                            }
+
+                        }
+                        if(rewriteRules.containsKey("forum_viewthread")){
+                            // match template such as t{tid}-{page}-{prevpage}
+                            String rewriteRule = rewriteRules.get("forum_viewthread");
+                            if(rewriteRule == null || clickedURLPath == null){
+                                parseURLAndOpen(unescapedURL);
+                                return;
+                            }
+                            // match template such as f{fid}-{page}
+                            // crate reverse copy
+                            rewriteRule = rewriteRule.replace("{tid}","(?<tid>\\d+)");
+                            rewriteRule = rewriteRule.replace("{page}","(?<page>\\d+)");
+                            rewriteRule = rewriteRule.replace("{prevpage}","(?<prevpage>\\d+)");
+                            Pattern pattern = Pattern.compile(rewriteRule);
+                            Matcher matcher = pattern.matcher(clickedURLPath);
+                            if(matcher.find()){
+
+                                String tidStr = matcher.group("tid");
+                                String pageStr = matcher.group("page");
+                                // handle it
+                                if(tidStr !=null){
+                                    ThreadInfo putThreadInfo = new ThreadInfo();
+                                    putThreadInfo.tid = tid;
+                                    Intent intent = new Intent(context, bbsShowPostActivity.class);
+                                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                                    intent.putExtra("FID",fid);
+                                    intent.putExtra("TID",tid);
+                                    intent.putExtra("SUBJECT",url);
+                                    VibrateUtils.vibrateForClick(context);
+                                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context);
+
+                                    Bundle bundle = options.toBundle();
+                                    context.startActivity(intent,bundle);
+                                    return;
+                                }
+
+                            }
+                        }
+                        parseURLAndOpen(unescapedURL);
+                    }
+                    else {
+
+                        parseURLAndOpen(unescapedURL);
+                    }
+
+
+
+                }
+                else {
+                    parseURLAndOpen(unescapedURL);
+                }
+            }
+            else {
+                // parse the URL
+                parseURLAndOpen(unescapedURL);
+            }
+
+        }
+        else {
+            SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
+            boolean outLinkWarn = prefs.getBoolean(getString(R.string.preference_key_outlink_warn),true);
+            if(outLinkWarn){
+
+                new MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.outlink_warn_title)
+                        .setMessage(getString(R.string.outlink_warn_message,clickedUri.getHost(),baseUri.getHost()))
+                        .setNeutralButton(R.string.bbs_show_in_internal_browser, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(context, showWebPageActivity.class);
+                                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                                intent.putExtra(bbsConstUtils.PASS_URL_KEY,unescapedURL);
+                                Log.d(TAG,"Inputted URL "+unescapedURL);
+                                startActivity(intent);
+                            }
+                        })
+                        .setPositiveButton(R.string.bbs_show_in_external_browser, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(unescapedURL));
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .show();
+            }
+            else {
+                Intent intent = new Intent(this, showWebPageActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(bbsConstUtils.PASS_URL_KEY,unescapedURL);
+                Log.d(TAG,"Inputted URL "+unescapedURL);
+                startActivity(intent);
+            }
+
+
+        }
+
+        Log.d(TAG,"You click "+unescapedURL);
     }
 
     public class smileyViewPagerAdapter extends FragmentStatePagerAdapter{

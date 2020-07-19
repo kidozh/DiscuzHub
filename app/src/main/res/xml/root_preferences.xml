@@ -41,6 +41,11 @@
             android:summaryOff="@string/preference_summary_off_record_history"
             android:summaryOn="@string/preference_summary_on_record_history"
             android:title="@string/preference_title_record_history" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:icon="@drawable/ic_open_in_new_24px"
+            android:key="@string/preference_key_outlink_warn"
+            android:title="@string/preference_title_outlink_warn"/>
 
 
     </PreferenceCategory>

@@ -279,13 +279,14 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
         SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
         boolean recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history),false);
         if(recordHistory){
+
             new InsertViewHistory(new ViewHistory(
-                    forum.iconUrl,
-                    forum.name,
+                    forumInfo.iconUrl,
+                    forumInfo.name,
                     bbsInfo.getId(),
-                    forum.description,
+                    forumInfo.description,
                     ViewHistory.VIEW_TYPE_FORUM,
-                    forum.fid,
+                    forumInfo.fid,
                     0,
                     new Date()
             )).execute();
@@ -359,7 +360,10 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(bbsInfo.site_name);
-        getSupportActionBar().setSubtitle(forum.name);
+        if(forum.name !=null){
+            getSupportActionBar().setSubtitle(forum.name);
+        }
+
 
 
     }

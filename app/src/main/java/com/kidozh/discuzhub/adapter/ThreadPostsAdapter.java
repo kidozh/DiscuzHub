@@ -16,11 +16,16 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.Html;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.style.BulletSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
+import android.text.style.LeadingMarginSpan;
+import android.text.style.StrikethroughSpan;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,6 +60,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
+import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
@@ -63,11 +69,13 @@ import org.xml.sax.XMLReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Vector;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,6 +95,7 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
 
     private AdapterView.OnItemClickListener listener;
     private onAdapterReply replyListener;
+    private OnLinkClicked onLinkClickedListener;
 
 
 
@@ -118,6 +127,7 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
         replyListener = (onAdapterReply) context;
+        onLinkClickedListener = (OnLinkClicked) context;
 
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
         return new bbsForumThreadCommentViewHolder(view);
@@ -172,14 +182,33 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
         if(decodeString == null){
             return;
         }
-        MyTagHandler myTagHandler = new MyTagHandler(mContext,holder.mContent);
-        Spanned sp = Html.fromHtml(decodeString,new MyImageGetter(holder.mContent),myTagHandler);
+        HtmlTagHandler HtmlTagHandler = new HtmlTagHandler(mContext,holder.mContent);
+        Spanned sp = Html.fromHtml(decodeString,new MyImageGetter(holder.mContent),HtmlTagHandler);
         SpannableString spannableString = new SpannableString(sp);
 
         holder.mContent.setText(spannableString, TextView.BufferType.SPANNABLE);
         holder.mContent.setFocusable(true);
         holder.mContent.setTextIsSelectable(true);
-        holder.mContent.setMovementMethod(LinkMovementMethod.getInstance());
+        // handle links
+        holder.mContent.setMovementMethod(new bbsLinkMovementMethod(new bbsLinkMovementMethod.OnLinkClickedListener() {
+            @Override
+            public boolean onLinkClicked(String url) {
+                if(onLinkClickedListener !=null){
+                    if(url.toLowerCase().startsWith("http://") || url.toLowerCase().startsWith("https://")){
+                        onLinkClickedListener.onLinkClicked(url);
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+
+
+                }
+                else {
+                    return false;
+                }
+            }
+        }));
 
 
         //DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
@@ -537,12 +566,15 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
     }
 
     // make image clickable
-    public class MyTagHandler implements Html.TagHandler {
+    public class HtmlTagHandler implements Html.TagHandler {
 
         private Context mContext;
         TextView textView;
 
-        public MyTagHandler(Context context, TextView textView) {
+        private int mListItemCount = 0;
+        private Vector<String> mListParents = new Vector<String>();
+
+        public HtmlTagHandler(Context context, TextView textView) {
             mContext = context.getApplicationContext();
             this.textView = textView;
         }
@@ -551,7 +583,7 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
         public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
 
             // 处理标签<img>
-            if (tag.toLowerCase(Locale.getDefault()).equals("img")) {
+            if (tag.equalsIgnoreCase("img")) {
                 // 获取长度
                 int len = output.length();
                 // 获取图片地址
@@ -561,6 +593,16 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
                 // 使图片可点击并监听点击事件
                 output.setSpan(new ClickableImage(mContext, imgURL), len - 1, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
+            else if (tag.equalsIgnoreCase("del")){
+                int startTag = 0, endTag = 0;
+                if(opening){
+                    startTag = output.length();
+                }else{
+                    endTag = output.length();
+                    output.setSpan(new StrikethroughSpan(),startTag,endTag, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+            }
+
         }
 
         private class ClickableImage extends ClickableSpan {
@@ -712,6 +754,10 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
 
     public interface onAdapterReply{
         public void replyToSomeOne(int position);
+    }
+
+    public interface OnLinkClicked{
+        public void onLinkClicked(String url);
     }
     
 

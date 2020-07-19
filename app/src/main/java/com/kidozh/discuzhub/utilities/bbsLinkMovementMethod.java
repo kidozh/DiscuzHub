@@ -2,6 +2,7 @@ package com.kidozh.discuzhub.utilities;
 
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.TextView;
@@ -14,17 +15,12 @@ import android.text.method.MovementMethod;
 
 public class bbsLinkMovementMethod extends LinkMovementMethod {
     private static LinkMovementMethod sInstance;
-    private  Handler handler = null;
-    private  Class spanClass = null;
 
-    public static  MovementMethod getInstance(Handler _handler,Class _spanClass) {
-        if (sInstance == null) {
-            sInstance = new bbsLinkMovementMethod();
-            ((bbsLinkMovementMethod)sInstance).handler = _handler;
-            ((bbsLinkMovementMethod)sInstance).spanClass = _spanClass;
-        }
 
-        return sInstance;
+    private OnLinkClickedListener mOnLinkClickedListener;
+
+    public bbsLinkMovementMethod(OnLinkClickedListener onLinkClickedListener){
+        mOnLinkClickedListener = onLinkClickedListener;
     }
 
     int x1;
@@ -37,12 +33,12 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                                 MotionEvent event) {
         int action = event.getAction();
 
-        if (event.getAction() == MotionEvent.ACTION_DOWN){
+        if (action == MotionEvent.ACTION_DOWN){
             x1 = (int) event.getX();
             y1 = (int) event.getY();
         }
 
-        if (event.getAction() == MotionEvent.ACTION_UP) {
+        if (action == MotionEvent.ACTION_UP) {
             x2 = (int) event.getX();
             y2 = (int) event.getY();
 
@@ -60,23 +56,15 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                 /**
                  * get you interest span
                  */
-                Object[] spans = buffer.getSpans(off, off, spanClass);
+                URLSpan[] spans = buffer.getSpans(off, off, URLSpan.class);
                 if (spans.length != 0) {
-                    if(action == MotionEvent.ACTION_DOWN){
-
+                    String url = spans[0].getURL();
+                    boolean handled = mOnLinkClickedListener.onLinkClicked(url);
+                    if(handled){
+                        return true;
                     }
 
-                    Selection.setSelection(buffer,
-                            buffer.getSpanStart(spans[0]),
-                            buffer.getSpanEnd(spans[0]));
-                    MessageSpan obj = new MessageSpan();
-                    obj.setObj(spans);
-                    obj.setView(widget);
-                    Message message = handler.obtainMessage();
-                    message.obj = obj;
-                    message.what = 200;
-                    message.sendToTarget();
-                    return true;
+                    return super.onTouchEvent(widget, buffer, event);
                 }
             }
         }
@@ -91,4 +79,9 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                            KeyEvent event) {
         return false;
     }
+
+    public interface OnLinkClickedListener {
+        boolean onLinkClicked(String url);
+    }
+
 }
