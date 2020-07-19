@@ -679,6 +679,7 @@
     <string name="outlink_warn_message">Outlink \"%1$s\" is different from current bbs \"%2$s\". Please be careful.</string>
     <string name="scroll_to_pid_failed">Currently, post #%1$s is not loaded.</string>
     <string name="scroll_to_pid_successfully">Go to #%1$s.</string>
+    <string name="close_webview">Close</string>
 
 
 </resources>

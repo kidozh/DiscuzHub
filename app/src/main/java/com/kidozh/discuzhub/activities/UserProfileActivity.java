@@ -47,6 +47,7 @@ import com.kidozh.discuzhub.results.UserProfileResult;
 import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -64,7 +65,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
 
-public class UserProfileActivity extends BaseStatusActivity implements UserFriendFragment.OnFragmentInteractionListener{
+public class UserProfileActivity extends BaseStatusActivity implements
+        UserFriendFragment.OnFragmentInteractionListener,
+        bbsLinkMovementMethod.OnLinkClickedListener
+{
 
     private static final String TAG = UserProfileActivity.class.getSimpleName();
 
@@ -259,7 +263,7 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
                     SpannableString spannableString = new SpannableString(sp);
 
                     personalInfoSignatureTextView.setText(spannableString, TextView.BufferType.SPANNABLE);
-                    personalInfoSignatureTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                    personalInfoSignatureTextView.setMovementMethod(new bbsLinkMovementMethod(UserProfileActivity.this));
                     if(userProfileResult.userProfileVariableResult.space.bio.length()!=0){
                         userBioTextview.setText(userProfileResult.userProfileVariableResult.space.bio);
                     }
@@ -625,6 +629,12 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
         Log.d(TAG,"Redraw view pager");
         personInfoViewPager.invalidate();
         personInfoViewPager.requestLayout();
+    }
+
+    @Override
+    public boolean onLinkClicked(String url) {
+        bbsLinkMovementMethod.parseURLAndOpen(this,curBBS,userBriefInfo,url);
+        return true;
     }
 
 

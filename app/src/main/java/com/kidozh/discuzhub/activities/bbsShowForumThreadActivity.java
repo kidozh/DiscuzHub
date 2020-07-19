@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +45,7 @@ import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
@@ -63,7 +63,8 @@ import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import okhttp3.OkHttpClient;
 
-public class bbsShowForumThreadActivity extends BaseStatusActivity {
+public class bbsShowForumThreadActivity
+        extends BaseStatusActivity implements bbsLinkMovementMethod.OnLinkClickedListener{
     private static final String TAG = bbsShowForumThreadActivity.class.getSimpleName();
 
 
@@ -237,7 +238,7 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
                         Spanned sp = Html.fromHtml(s,myImageGetter,myTagHandler);
                         SpannableString spannableString = new SpannableString(sp);
                         // mForumAlert.setAutoLinkMask(Linkify.ALL);
-                        mForumRule.setMovementMethod(LinkMovementMethod.getInstance());
+                        mForumRule.setMovementMethod(new bbsLinkMovementMethod(bbsShowForumThreadActivity.this));
                         mForumRule.setText(spannableString, TextView.BufferType.SPANNABLE);
                     }
                     else {
@@ -255,7 +256,7 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
                         Spanned sp = Html.fromHtml(s,myImageGetter,myTagHandler);
                         SpannableString spannableString = new SpannableString(sp);
                         // mForumAlert.setAutoLinkMask(Linkify.ALL);
-                        mForumAlert.setMovementMethod(LinkMovementMethod.getInstance());
+                        mForumAlert.setMovementMethod(new bbsLinkMovementMethod(bbsShowForumThreadActivity.this));
                         mForumAlert.setText(spannableString, TextView.BufferType.SPANNABLE);
                     }
                     else {
@@ -538,6 +539,12 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
         chip.setClickable(true);
         mForumThreadTypeChipGroup.addView(chip);
         ChoiceResList.add(chip.getId());
+    }
+
+    @Override
+    public boolean onLinkClicked(String url) {
+        bbsLinkMovementMethod.parseURLAndOpen(this,bbsInfo,userBriefInfo,url);
+        return true;
     }
 
 

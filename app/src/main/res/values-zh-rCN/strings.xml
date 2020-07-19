@@ -503,5 +503,6 @@
     <string name="outlink_warn_message">外链 \"%1$s\" 与当前论坛 \"%2$s\"不一致，其很有可能不是论坛所拥有的。请您小心点击以确保您的信息安全，谨防诈骗等信息。</string>
     <string name="scroll_to_pid_failed">发言 #%1$s 还未被加载，无法滚动到那个条目上。</string>
     <string name="scroll_to_pid_successfully">跳转到%1$s楼。</string>
+    <string name="close_webview">关闭</string>
 
 </resources>

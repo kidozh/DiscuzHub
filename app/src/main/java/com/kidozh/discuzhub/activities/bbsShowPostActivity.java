@@ -982,11 +982,26 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 ForumInfo clickedForum = new ForumInfo();
                 clickedForum.fid = fid;
 
-                intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forum);
+                intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,clickedForum);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
                 Log.d(TAG,"put base url "+bbsInfo.base_url);
                 VibrateUtils.vibrateForClick(this);
+                startActivity(intent);
+                return;
+
+            }
+            else if(uri.getQueryParameter("mod")!=null
+                    && uri.getQueryParameter("mod").equals("space")
+                    && uri.getQueryParameter("uid")!=null){
+                String uidStr = uri.getQueryParameter("uid");
+                int uid = Integer.parseInt(uidStr);
+                Intent intent = new Intent(this, UserProfileActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                intent.putExtra("UID",uid);
+
+
                 startActivity(intent);
                 return;
 
@@ -1105,6 +1120,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                                 // handle it
                                 if(tidStr !=null){
                                     ThreadInfo putThreadInfo = new ThreadInfo();
+                                    int tid = Integer.parseInt(tidStr);
                                     putThreadInfo.tid = tid;
                                     Intent intent = new Intent(context, bbsShowPostActivity.class);
                                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
@@ -1184,6 +1200,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 intent.putExtra(bbsConstUtils.PASS_URL_KEY,unescapedURL);
                 Log.d(TAG,"Inputted URL "+unescapedURL);
                 startActivity(intent);
+                return;
             }
 
 
