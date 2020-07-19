@@ -37,6 +37,7 @@ import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
+import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
 import org.jsoup.Jsoup;
@@ -196,12 +197,14 @@ public class UserNotificationAdapter extends RecyclerView.Adapter<UserNotificati
                             int itemId = item.getItemId();
                             int position = itemId - Menu.FIRST;
                             String urlLink = urlLinkString.get(position);
-                            Intent intent = new Intent(context, showWebPageActivity.class);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
-                            intent.putExtra(bbsConstUtils.PASS_URL_KEY,urlLink);
-                            //Log.d(TAG,"Inputted URL "+currentUrl);
-                            context.startActivity(intent);
+                            bbsLinkMovementMethod.parseURLAndOpen(context,bbsInfo,curUser,urlLink);
+
+//                            Intent intent = new Intent(context, showWebPageActivity.class);
+//                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+//                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+//                            intent.putExtra(bbsConstUtils.PASS_URL_KEY,urlLink);
+//                            //Log.d(TAG,"Inputted URL "+currentUrl);
+//                            context.startActivity(intent);
                             return true;
                         }
                     });
