@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
@@ -22,23 +21,19 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.google.android.material.badge.BadgeDrawable;
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.kidozh.discuzhub.MainActivity;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.BlankBBSFragment.BlankBBSFragment;
+import com.kidozh.discuzhub.activities.ui.HotThreads.HotThreadsFragment;
 import com.kidozh.discuzhub.activities.ui.UserNotification.UserNotificationFragment;
-import com.kidozh.discuzhub.activities.ui.dashboard.DashboardFragment;
 import com.kidozh.discuzhub.activities.ui.home.HomeFragment;
 import com.kidozh.discuzhub.activities.ui.notifications.NotificationsFragment;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
 import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
-import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.results.ThreadPostResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -60,7 +55,6 @@ import com.mikepenz.materialdrawer.widget.MaterialDrawerSliderView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -69,12 +63,8 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -597,8 +587,8 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
 
                     return homeFragment;
                 case 1:
-                    DashboardFragment dashboardFragment = DashboardFragment.newInstance(bbsInfo,userBriefInfo);
-                    return dashboardFragment;
+                    HotThreadsFragment hotThreadsFragment = HotThreadsFragment.newInstance(bbsInfo,userBriefInfo);
+                    return hotThreadsFragment;
             }
             return new HomeFragment(bbsInfo,userBriefInfo);
         }
@@ -645,8 +635,8 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                     homeFragment = new HomeFragment(bbsInfo, userBriefInfo);
                     return homeFragment;
                 case 1:
-                    dashboardFragment = DashboardFragment.newInstance(bbsInfo, userBriefInfo);
-                    return dashboardFragment;
+                    hotThreadsFragment = HotThreadsFragment.newInstance(bbsInfo, userBriefInfo);
+                    return hotThreadsFragment;
                 case 2:
                     notificationsFragment = new NotificationsFragment(bbsInfo, userBriefInfo);
 //                    if(noticeNumInfo !=null){
@@ -666,7 +656,7 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
     // BBS Render variables
 
     HomeFragment homeFragment;
-    DashboardFragment dashboardFragment;
+    HotThreadsFragment hotThreadsFragment;
     NotificationsFragment notificationsFragment;
     final String HOME_FRAGMENT_KEY = "HOME_FRAGMENT_KEY",
             DASHBOARD_FRAGMENT_KEY = "DASHBOARD_FRAGMENT_KEY",
@@ -767,7 +757,7 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
         }
         homeFragment = (HomeFragment) getSupportFragmentManager().getFragment(savedInstanceState,HOME_FRAGMENT_KEY);
         notificationsFragment = (NotificationsFragment) getSupportFragmentManager().getFragment(savedInstanceState,NOTIFICATION_FRAGMENT_KEY);
-        dashboardFragment = (DashboardFragment) getSupportFragmentManager().getFragment(savedInstanceState,DASHBOARD_FRAGMENT_KEY);
+        hotThreadsFragment = (HotThreadsFragment) getSupportFragmentManager().getFragment(savedInstanceState,DASHBOARD_FRAGMENT_KEY);
     }
 
     @Override
@@ -776,8 +766,8 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
         if(homeFragment !=null){
             getSupportFragmentManager().putFragment(outState,HOME_FRAGMENT_KEY,homeFragment);
         }
-        if(dashboardFragment !=null){
-            getSupportFragmentManager().putFragment(outState,DASHBOARD_FRAGMENT_KEY,dashboardFragment);
+        if(hotThreadsFragment !=null){
+            getSupportFragmentManager().putFragment(outState,DASHBOARD_FRAGMENT_KEY, hotThreadsFragment);
         }
         if(notificationsFragment!=null){
             getSupportFragmentManager().putFragment(outState,NOTIFICATION_FRAGMENT_KEY,notificationsFragment);
@@ -790,8 +780,8 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
         if(homeFragment == null && fragment instanceof HomeFragment){
             homeFragment = (HomeFragment) fragment;
         }
-        else if(dashboardFragment == null && fragment instanceof DashboardFragment){
-            dashboardFragment = (DashboardFragment) fragment;
+        else if(hotThreadsFragment == null && fragment instanceof HotThreadsFragment){
+            hotThreadsFragment = (HotThreadsFragment) fragment;
         }
         else if(notificationsFragment == null && fragment instanceof NotificationsFragment){
             notificationsFragment = (NotificationsFragment) fragment;

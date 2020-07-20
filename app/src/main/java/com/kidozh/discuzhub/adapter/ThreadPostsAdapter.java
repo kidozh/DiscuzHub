@@ -182,6 +182,11 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
         if(decodeString == null){
             return;
         }
+        decodeString = decodeString.replace("&amp;","&")
+                .replace("&lt;","<")
+                .replace("&gt;",">")
+                .replace("&nbsp;"," ");
+
         HtmlTagHandler HtmlTagHandler = new HtmlTagHandler(mContext,holder.mContent);
         Spanned sp = Html.fromHtml(decodeString,new MyImageGetter(holder.mContent),HtmlTagHandler);
         SpannableString spannableString = new SpannableString(sp);

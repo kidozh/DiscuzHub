@@ -35,6 +35,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.SubForumAdapter;
 import com.kidozh.discuzhub.adapter.bbsForumThreadAdapter;
+import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.ViewHistory;
@@ -146,7 +147,7 @@ public class bbsShowForumThreadActivity
         URLUtils.setBBS(bbsInfo);
         fid = String.valueOf(forum.fid);
         forumThreadViewModel.setBBSInfo(bbsInfo,userBriefInfo,forum);
-        hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
+        // hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
     }
 
     private void bindViewModel(){
@@ -551,8 +552,7 @@ public class bbsShowForumThreadActivity
 
     @Override
     public boolean onLinkClicked(String url) {
-        bbsLinkMovementMethod.parseURLAndOpen(this,bbsInfo,userBriefInfo,url);
-        return true;
+        return bbsLinkMovementMethod.parseURLAndOpen(this,bbsInfo,userBriefInfo,url);
     }
 
 
@@ -684,6 +684,7 @@ public class bbsShowForumThreadActivity
     public class InsertViewHistory extends AsyncTask<Void,Void,Void>{
 
         ViewHistory viewHistory;
+        ViewHistoryDao dao;
 
         public InsertViewHistory(ViewHistory viewHistory){
             this.viewHistory = viewHistory;
@@ -691,7 +692,23 @@ public class bbsShowForumThreadActivity
 
         @Override
         protected Void doInBackground(Void... voids) {
-            ViewHistoryDatabase.getInstance(getApplicationContext()).getDao().insert(viewHistory);
+            dao = ViewHistoryDatabase
+                    .getInstance(getApplicationContext())
+                    .getDao();
+            List<ViewHistory> viewHistories = dao
+                    .getViewHistoryByBBSIdAndFid(viewHistory.belongedBBSId,viewHistory.fid);
+            if(viewHistories ==null || viewHistories.size() == 0){
+                dao.insert(viewHistory);
+            }
+            else {
+
+                for(int i=0 ;i<viewHistories.size();i++){
+                    ViewHistory updatedViewHistory = viewHistories.get(i);
+                    updatedViewHistory.recordAt = new Date();
+                }
+                dao.insert(viewHistories);
+            }
+
             return null;
         }
     }

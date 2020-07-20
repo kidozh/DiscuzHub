@@ -45,12 +45,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.common.io.ByteStreams;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.uploadAttachment.UploadAttachmentDialogFragment;
 import com.kidozh.discuzhub.database.UploadAttachmentDatabase;
 import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
 import com.kidozh.discuzhub.dialogs.PostThreadConfirmDialogFragment;
+import com.kidozh.discuzhub.dialogs.PostThreadInsertLinkDialogFragment;
 import com.kidozh.discuzhub.dialogs.PostThreadPasswordDialogFragment;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.UploadAttachment;
@@ -103,7 +105,8 @@ import static java.text.DateFormat.getDateTimeInstance;
 
 public class bbsPostThreadActivity extends BaseStatusActivity implements View.OnClickListener,
         PostThreadConfirmDialogFragment.ConfirmDialogListener,
-        PostThreadPasswordDialogFragment.NoticeDialogListener {
+        PostThreadPasswordDialogFragment.NoticeDialogListener,
+        PostThreadInsertLinkDialogFragment.NoticeDialogListener {
     private static String TAG = bbsPostThreadActivity.class.getSimpleName();
 
     @BindView(R.id.bbs_post_thread_subject_editText)
@@ -133,7 +136,7 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
     @BindView(R.id.bbs_post_captcha_imageview)
     ImageView mPostCaptchaImageview;
     @BindView(R.id.bbs_post_captcha_editText)
-    EditText mPostCaptchaEditText;
+    TextInputEditText mPostCaptchaEditText;
 
     private String fid, forumApiString,forumName, uploadHash, formHash;
     private ProgressDialog uploadDialog;
@@ -523,6 +526,11 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
                     startActivityForResult(getPickImageChooserIntent(), bbsConstUtils.REQUEST_CODE_PICK_A_PICTURE);
                 }
                 break;
+            case R.id.action_insert_link:{
+                PostThreadInsertLinkDialogFragment fragment = new PostThreadInsertLinkDialogFragment();
+                fragment.show(getSupportFragmentManager(),PostThreadPasswordDialogFragment.class.getSimpleName());
+                break;
+            }
 //            case R.id.action_backspace:
 //                int start = edContent.getSelectionStart();
 //                int end = edContent.getSelectionEnd();
@@ -656,6 +664,11 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
     @Override
     public void onPositveBtnClicked() {
         new publishThreadTask().execute();
+    }
+
+    @Override
+    public void onLinkSubmit(String link) {
+        handleInsert("[url="+link+"][/url]");
     }
 
 

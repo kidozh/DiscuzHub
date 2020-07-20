@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.entities;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -11,11 +12,13 @@ import java.util.Objects;
 public class ViewHistory {
     @PrimaryKey(autoGenerate = true)
     private int id;
-
-    public String avatarURL;
-    public String name;
+    @NonNull
+    public String avatarURL = "";
+    @NonNull
+    public String name ="";
     public int belongedBBSId;
-    public String description;
+    @NonNull
+    public String description ="";
     public int type;
     public int fid;
     public int tid;
@@ -54,7 +57,8 @@ public class ViewHistory {
                 type == that.type &&
                 fid == that.fid &&
                 tid == that.tid &&
-                avatarURL.equals(that.avatarURL) &&
+                ((avatarURL == null && that.avatarURL == null) ||
+                avatarURL.equals(that.avatarURL)) &&
                 name.equals(that.name) &&
                 description.equals(that.description) &&
                 recordAt.equals(that.recordAt);

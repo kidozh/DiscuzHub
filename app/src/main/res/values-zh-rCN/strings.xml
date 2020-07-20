@@ -507,5 +507,6 @@
     <string name="share">分享</string>
     <string name="share_template">分享%1$s （链接：%2$s）</string>
     <string name="share_not_prepared">分享功能还没有准备好，请等待页面加载完毕后分享。</string>
+    <string name="insert_link">插入一个链接</string>
 
 </resources>

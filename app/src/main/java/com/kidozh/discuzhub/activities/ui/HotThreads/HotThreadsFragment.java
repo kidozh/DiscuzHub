@@ -1,4 +1,4 @@
-package com.kidozh.discuzhub.activities.ui.dashboard;
+package com.kidozh.discuzhub.activities.ui.HotThreads;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,10 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.adapter.bbsForumThreadAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -35,9 +33,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
 
-public class DashboardFragment extends Fragment {
-    private static final String TAG = DashboardFragment.class.getSimpleName();
-    private DashboardViewModel dashboardViewModel;
+public class HotThreadsFragment extends Fragment {
+    private static final String TAG = HotThreadsFragment.class.getSimpleName();
+    private HotThreadsViewModel hotThreadsViewModel;
     @BindView(R.id.fragment_dashboard_recyclerview)
     RecyclerView dashboardRecyclerview;
     @BindView(R.id.fragment_dashboard_swipeRefreshLayout)
@@ -54,12 +52,12 @@ public class DashboardFragment extends Fragment {
     private static int globalPage = 1;
     private Boolean isClientRunning = false;
 
-    public DashboardFragment(){
+    public HotThreadsFragment(){
 
     }
 
-    public static DashboardFragment newInstance(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
-        DashboardFragment fragment = new DashboardFragment();
+    public static HotThreadsFragment newInstance(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+        HotThreadsFragment fragment = new HotThreadsFragment();
         Bundle args = new Bundle();
         args.putSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
         args.putSerializable(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
@@ -78,7 +76,7 @@ public class DashboardFragment extends Fragment {
         }
     }
 
-    private DashboardFragment(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+    private HotThreadsFragment(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
         curBBS = bbsInformation;
         this.userBriefInfo = userBriefInfo;
         curUser = userBriefInfo;
@@ -88,7 +86,7 @@ public class DashboardFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
+        hotThreadsViewModel = new ViewModelProvider(this).get(HotThreadsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
         ButterKnife.bind(this,root);
         getIntentInfo();
@@ -115,11 +113,11 @@ public class DashboardFragment extends Fragment {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if(isScrollAtEnd()){
-                    if(dashboardViewModel.pageNum.getValue() == null){
-                        dashboardViewModel.setPageNumAndFetchThread(1);
+                    if(hotThreadsViewModel.pageNum.getValue() == null){
+                        hotThreadsViewModel.setPageNumAndFetchThread(1);
                     }
                     else {
-                        dashboardViewModel.setPageNumAndFetchThread(dashboardViewModel.pageNum.getValue()+1);
+                        hotThreadsViewModel.setPageNumAndFetchThread(hotThreadsViewModel.pageNum.getValue()+1);
                     }
                     // getPageInfo(globalPage);
 
@@ -144,7 +142,7 @@ public class DashboardFragment extends Fragment {
         dashboardSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                dashboardViewModel.setPageNumAndFetchThread(1);
+                hotThreadsViewModel.setPageNumAndFetchThread(1);
                 //globalPage = 1;
                 //getPageInfo(globalPage);
 
@@ -154,7 +152,7 @@ public class DashboardFragment extends Fragment {
 
     private void getIntentInfo(){
         if(curBBS != null){
-            dashboardViewModel.setBBSInfo(curBBS,curUser);
+            hotThreadsViewModel.setBBSInfo(curBBS,curUser);
             return;
         }
         Intent intent = getActivity().getIntent();
@@ -168,12 +166,12 @@ public class DashboardFragment extends Fragment {
         else {
             Log.d(TAG,"get bbs name "+curBBS.site_name);
             URLUtils.setBBS(curBBS);
-            dashboardViewModel.setBBSInfo(curBBS,curUser);
+            hotThreadsViewModel.setBBSInfo(curBBS,curUser);
         }
     }
 
     private void bindVieModel(){
-        dashboardViewModel.getThreadListLiveData().observe(getViewLifecycleOwner(), new Observer<List<ThreadInfo>>() {
+        hotThreadsViewModel.getThreadListLiveData().observe(getViewLifecycleOwner(), new Observer<List<ThreadInfo>>() {
             @Override
             public void onChanged(List<ThreadInfo> threadInfos) {
 
@@ -190,13 +188,13 @@ public class DashboardFragment extends Fragment {
                 }
             }
         });
-        dashboardViewModel.isLoading.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        hotThreadsViewModel.isLoading.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 dashboardSwipeRefreshLayout.setRefreshing(aBoolean);
             }
         });
-        dashboardViewModel.isError.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        hotThreadsViewModel.isError.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
 
@@ -204,7 +202,7 @@ public class DashboardFragment extends Fragment {
                     noItemFoundTextview.setVisibility(View.VISIBLE);
                     emptyIconImageview.setVisibility(View.VISIBLE);
                     emptyIconImageview.setImageResource(R.drawable.ic_error_outline_24px);
-                    String errorText = dashboardViewModel.errorTextLiveData.getValue();
+                    String errorText = hotThreadsViewModel.errorTextLiveData.getValue();
                     if(errorText == null || errorText.length() == 0){
                         noItemFoundTextview.setText(R.string.parse_failed);
                     }

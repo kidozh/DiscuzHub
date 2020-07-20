@@ -683,6 +683,7 @@
     <string name="share">Share</string>
     <string name="share_template">%1$s (via link:%2$s)</string>
     <string name="share_not_prepared">Sharing is not prepared, please wait until content is loaded.</string>
+    <string name="insert_link">Insert a link</string>
 
 
 </resources>

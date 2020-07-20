@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.kidozh.discuzhub.activities.ui.dashboard.DashboardFragment"
+        android:name="com.kidozh.discuzhub.activities.ui.HotThreads.HotThreadsFragment"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment

@@ -6,13 +6,15 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.daos.forumInformationDao;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
-@Database(entities = {ViewHistory.class}, version = 1, exportSchema = false)
+@Database(entities = {ViewHistory.class}, version = 2, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class ViewHistoryDatabase extends RoomDatabase {
     private static final String DB_NAME = "ViewHistory.db";
@@ -24,6 +26,8 @@ public abstract class ViewHistoryDatabase extends RoomDatabase {
         }
         return instance;
     }
+
+
 
     private static ViewHistoryDatabase getDatabase(final Context context){
         return Room.databaseBuilder(context, ViewHistoryDatabase.class,DB_NAME)

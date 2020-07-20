@@ -38,6 +38,7 @@ import com.kidozh.discuzhub.activities.ui.UserGroup.UserGroupInfoFragment;
 import com.kidozh.discuzhub.activities.ui.UserMedal.MedalFragment;
 import com.kidozh.discuzhub.activities.ui.UserProfileList.UserProfileInfoListFragment;
 import com.kidozh.discuzhub.activities.ui.UserFriend.UserFriendFragment;
+import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.entities.UserProfileItem;
 import com.kidozh.discuzhub.entities.ViewHistory;
@@ -122,7 +123,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
     String username;
     private UserProfileViewModel viewModel;
     personalInfoViewPagerAdapter adapter;
-    boolean fromViewHistory = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,7 +201,6 @@ public class UserProfileActivity extends BaseStatusActivity implements
         curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userId = intent.getIntExtra("UID",0);
-        fromViewHistory = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
         if(curBBS == null){
             finishAfterTransition();
         }
@@ -312,7 +312,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
                     SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     boolean recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history),false);
-                    if(recordHistory && !fromViewHistory){
+                    if(recordHistory){
                         new InsertViewHistory(new ViewHistory(
                                 URLUtils.getDefaultAvatarUrlByUid(uid),
                                 username,
@@ -746,6 +746,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
     public class InsertViewHistory extends AsyncTask<Void,Void,Void> {
 
         ViewHistory viewHistory;
+        ViewHistoryDao dao;
 
         public InsertViewHistory(ViewHistory viewHistory){
             this.viewHistory = viewHistory;
@@ -753,7 +754,21 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
         @Override
         protected Void doInBackground(Void... voids) {
-            ViewHistoryDatabase.getInstance(getApplicationContext()).getDao().insert(viewHistory);
+            dao = ViewHistoryDatabase.getInstance(getApplicationContext()).getDao();
+            List<ViewHistory> viewHistories = dao
+                    .getViewHistoryByBBSIdAndFid(viewHistory.belongedBBSId,viewHistory.fid);
+            if(viewHistories ==null || viewHistories.size() == 0){
+                dao.insert(viewHistory);
+            }
+            else {
+
+                for(int i=0 ;i<viewHistories.size();i++){
+                    ViewHistory updatedViewHistory = viewHistories.get(i);
+                    updatedViewHistory.recordAt = new Date();
+                }
+                dao.insert(viewHistories);
+            }
+            // dao.insert(viewHistory);
             return null;
         }
     }

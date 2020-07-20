@@ -63,6 +63,7 @@ import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
 import com.kidozh.discuzhub.adapter.ThreadPostsAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadNotificationAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadPropertiesAdapter;
+import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
@@ -208,11 +209,12 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        curUser = userBriefInfo;
         threadInfo = (ThreadInfo) intent.getSerializableExtra(bbsConstUtils.PASS_THREAD_KEY);
         tid = intent.getIntExtra("TID",0);
         fid = intent.getIntExtra("FID",0);
         subject = intent.getStringExtra("SUBJECT");
-        hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
+        // hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
         URLUtils.setBBS(bbsInfo);
         threadDetailViewModel.setBBSInfo(bbsInfo, userBriefInfo, forum, tid);
         if(threadInfo!=null && threadInfo.subject !=null){
@@ -947,7 +949,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                             if(curPost.pid == redirectPid){
                                 mRecyclerview.scrollToPosition(i);
                                 VibrateUtils.vibrateForClick(this);
-                                Toasty.success(this,getString(R.string.scroll_to_pid_successfully,pidString),Toast.LENGTH_SHORT).show();
+                                Toasty.success(this,getString(R.string.scroll_to_pid_successfully,String.valueOf(i+1)),Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }
@@ -988,7 +990,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
 
                 intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,clickedForum);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 Log.d(TAG,"put base url "+bbsInfo.base_url);
                 VibrateUtils.vibrateForClick(this);
                 startActivity(intent);
@@ -1002,7 +1004,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 int uid = Integer.parseInt(uidStr);
                 Intent intent = new Intent(this, UserProfileActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra("UID",uid);
 
 
@@ -1093,7 +1095,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
 
                                     intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forum);
                                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                                     Log.d(TAG,"put base url "+bbsInfo.base_url);
                                     VibrateUtils.vibrateForClick(context);
                                     context.startActivity(intent);
@@ -1123,12 +1125,13 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                                 String pageStr = matcher.group("page");
                                 // handle it
                                 if(tidStr !=null){
+
                                     ThreadInfo putThreadInfo = new ThreadInfo();
                                     int tid = Integer.parseInt(tidStr);
                                     putThreadInfo.tid = tid;
                                     Intent intent = new Intent(context, bbsShowPostActivity.class);
                                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
                                     intent.putExtra("FID",fid);
                                     intent.putExtra("TID",tid);
@@ -1423,20 +1426,16 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
     }
 
     private void postReplyToSomeoneInThread(int replyPid,String message,String noticeAuthorMsg){
+        // remove noticeAuthorMsg <>
+        noticeAuthorMsg = noticeAuthorMsg.replaceAll("<.*>","");
 
-        String discuz_reply_comment_template = getString(R.string.discuz_reply_message_template);
-        String replyUserName = selectedThreadComment.author;
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.FULL, Locale.getDefault());
         String publishAtString = df.format(selectedThreadComment.publishAt);
         int MAX_CHAR_LENGTH = 300;
         int trimEnd = Math.min(MAX_CHAR_LENGTH,noticeAuthorMsg.length());
         // not to trim
         //int trimEnd = noticeAuthorMsg.length();
-        Log.d(TAG,"get Reply Form "+message+" hash "
-                +formHash+" reppid "+replyPid+" tid "+tid
-                + " API ->"+ URLUtils.getReplyThreadUrl(fid,tid)+
-                " noticeTriStr "+String.format(discuz_reply_comment_template,
-                replyUserName,publishAtString,noticeAuthorMsg.substring(0,trimEnd)));
+        Log.d(TAG,"Reply msg "+noticeAuthorMsg);
         String replyMessage = noticeAuthorMsg.substring(0,trimEnd);
         if(noticeAuthorMsg.length()>MAX_CHAR_LENGTH){
             replyMessage += "...";
@@ -1458,8 +1457,6 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                         replyMessage
 
                 ));
-//                .add("noticetrimstr",String.format(discuz_reply_comment_template,
-//                        replyUserName,publishAtString,replyMessage));
 
 
         if(needCaptcha()){
@@ -1713,14 +1710,30 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
     public class InsertViewHistory extends AsyncTask<Void,Void,Void> {
 
         ViewHistory viewHistory;
+        ViewHistoryDao dao;
 
         public InsertViewHistory(ViewHistory viewHistory){
+
             this.viewHistory = viewHistory;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            ViewHistoryDatabase.getInstance(getApplicationContext()).getDao().insert(viewHistory);
+            dao = ViewHistoryDatabase.getInstance(getApplicationContext()).getDao();
+            List<ViewHistory> viewHistories = dao
+                    .getViewHistoryByBBSIdAndTid(viewHistory.belongedBBSId,viewHistory.tid);
+            if(viewHistories ==null || viewHistories.size() == 0){
+                dao.insert(viewHistory);
+            }
+            else {
+
+                for(int i=0 ;i<viewHistories.size();i++){
+                    ViewHistory updatedViewHistory = viewHistories.get(i);
+                    updatedViewHistory.recordAt = new Date();
+                }
+                dao.insert(viewHistories);
+            }
+            // dao.insert(viewHistory);
             return null;
         }
     }

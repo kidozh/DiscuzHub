@@ -14,7 +14,7 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.UserNotification.UserNotificationFragment;
-import com.kidozh.discuzhub.activities.ui.dashboard.DashboardFragment;
+import com.kidozh.discuzhub.activities.ui.HotThreads.HotThreadsFragment;
 import com.kidozh.discuzhub.activities.ui.home.HomeFragment;
 import com.kidozh.discuzhub.activities.ui.notifications.NotificationsFragment;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
@@ -28,7 +28,6 @@ import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -59,7 +58,7 @@ public class bbsShowPortalActivity extends BaseStatusActivity
     @BindView(R.id.bbs_portal_nav_viewpager)
     ViewPager portalViewPager;
     HomeFragment homeFragment;
-    DashboardFragment dashboardFragment;
+    HotThreadsFragment hotThreadsFragment;
     NotificationsFragment notificationsFragment;
     bbsParseUtils.noticeNumInfo noticeNumInfo;
 
@@ -88,7 +87,7 @@ public class bbsShowPortalActivity extends BaseStatusActivity
         }
         homeFragment = (HomeFragment) getSupportFragmentManager().getFragment(savedInstanceState,HOME_FRAGMENT_KEY);
         notificationsFragment = (NotificationsFragment) getSupportFragmentManager().getFragment(savedInstanceState,NOTIFICATION_FRAGMENT_KEY);
-        dashboardFragment = (DashboardFragment) getSupportFragmentManager().getFragment(savedInstanceState,DASHBOARD_FRAGMENT_KEY);
+        hotThreadsFragment = (HotThreadsFragment) getSupportFragmentManager().getFragment(savedInstanceState,DASHBOARD_FRAGMENT_KEY);
     }
 
     private void configureActionBar(){
@@ -116,10 +115,10 @@ public class bbsShowPortalActivity extends BaseStatusActivity
                     }
                     return homeFragment;
                 case 1:
-                    if(dashboardFragment == null){
-                        dashboardFragment = new DashboardFragment();
+                    if(hotThreadsFragment == null){
+                        hotThreadsFragment = new HotThreadsFragment();
                     }
-                    return dashboardFragment;
+                    return hotThreadsFragment;
             }
             return new HomeFragment();
         }
@@ -146,10 +145,10 @@ public class bbsShowPortalActivity extends BaseStatusActivity
                     }
                     return homeFragment;
                 case 1:
-                    if(dashboardFragment == null){
-                        dashboardFragment = new DashboardFragment();
+                    if(hotThreadsFragment == null){
+                        hotThreadsFragment = new HotThreadsFragment();
                     }
-                    return dashboardFragment;
+                    return hotThreadsFragment;
                 case 2:
                     if(notificationsFragment == null){
                         notificationsFragment = new NotificationsFragment();
@@ -244,8 +243,8 @@ public class bbsShowPortalActivity extends BaseStatusActivity
         if(homeFragment !=null){
             getSupportFragmentManager().putFragment(outState,HOME_FRAGMENT_KEY,homeFragment);
         }
-        if(dashboardFragment !=null){
-            getSupportFragmentManager().putFragment(outState,DASHBOARD_FRAGMENT_KEY,dashboardFragment);
+        if(hotThreadsFragment !=null){
+            getSupportFragmentManager().putFragment(outState,DASHBOARD_FRAGMENT_KEY, hotThreadsFragment);
         }
         if(notificationsFragment!=null){
             getSupportFragmentManager().putFragment(outState,NOTIFICATION_FRAGMENT_KEY,notificationsFragment);
@@ -258,8 +257,8 @@ public class bbsShowPortalActivity extends BaseStatusActivity
         if(homeFragment == null && fragment instanceof HomeFragment){
             homeFragment = (HomeFragment) fragment;
         }
-        else if(dashboardFragment == null && fragment instanceof DashboardFragment){
-            dashboardFragment = (DashboardFragment) fragment;
+        else if(hotThreadsFragment == null && fragment instanceof HotThreadsFragment){
+            hotThreadsFragment = (HotThreadsFragment) fragment;
         }
         else if(notificationsFragment == null && fragment instanceof NotificationsFragment){
             notificationsFragment = (NotificationsFragment) fragment;

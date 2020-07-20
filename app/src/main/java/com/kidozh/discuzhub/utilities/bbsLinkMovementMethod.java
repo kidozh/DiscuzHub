@@ -52,6 +52,8 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
     int y1;
     int y2;
 
+
+
     @Override
     public boolean onTouchEvent(TextView widget, Spannable buffer,
                                 MotionEvent event) {
@@ -108,7 +110,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
         boolean onLinkClicked(String url);
     }
 
-    public static void parseURLAndOpen(Context context,
+    public static boolean parseURLAndOpen(Context context,
                                  bbsInformation bbsInfo,
                                  forumUserBriefInfo userBriefInfo,
                                  String url) {
@@ -149,7 +151,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                     VibrateUtils.vibrateForClick(context);
 
                     context.startActivity(intent);
-                    return;
+                    return true;
                 } else if (uri.getQueryParameter("mod") != null
                         && uri.getQueryParameter("mod").equals("viewthread")
                         && uri.getQueryParameter("tid") != null) {
@@ -167,7 +169,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                     VibrateUtils.vibrateForClick(context);
 
                     context.startActivity(intent);
-                    return;
+                    return true;
 
                 } else if (uri.getQueryParameter("mod") != null
                         && uri.getQueryParameter("mod").equals("forumdisplay")
@@ -184,7 +186,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                     Log.d(TAG, "put base url " + bbsInfo.base_url);
                     VibrateUtils.vibrateForClick(context);
                     context.startActivity(intent);
-                    return;
+                    return true;
 
                 }
                 else if(uri.getQueryParameter("mod")!=null
@@ -199,7 +201,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
 
 
                     context.startActivity(intent);
-                    return;
+                    return true;
                 }
 
                 Intent intent = new Intent(context, showWebPageActivity.class);
@@ -208,7 +210,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                 intent.putExtra(bbsConstUtils.PASS_URL_KEY, url);
                 Log.d(TAG, "Inputted URL " + url);
                 context.startActivity(intent);
-                return;
+                return true;
 
             }
             else {
@@ -218,7 +220,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                 intent.putExtra(bbsConstUtils.PASS_URL_KEY, url);
                 Log.d(TAG, "Inputted URL " + url);
                 context.startActivity(intent);
-                return;
+                return true;
             }
 
         }
@@ -255,15 +257,17 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                             }
                         })
                         .show();
+                return true;
             }
             else {
+
                 Intent intent = new Intent(context, showWebPageActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_URL_KEY,url);
                 Log.d(TAG,"Inputted URL "+url);
                 context.startActivity(intent);
-                return;
+                return true;
             }
         }
     }

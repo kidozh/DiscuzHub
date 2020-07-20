@@ -15,9 +15,9 @@ import java.util.List;
 public class ForumInfo implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public int fid, fup, threads, posts;
-    public String description, rules, name, password;
+    public String description = "", rules = "", name = "", password="";
     @JsonProperty("picstyle")
-    public String picStyle;
+    public String picStyle= "";
     @JsonProperty("autoclose")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public int autoClose;
@@ -25,7 +25,7 @@ public class ForumInfo implements Serializable {
     @JsonProperty("threadcount")
     public int threadCount;
     @JsonProperty("icon")
-    public String iconUrl;
+    public String iconUrl = "";
     @JsonProperty("todayposts")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public int todayPosts = 0;
@@ -33,6 +33,6 @@ public class ForumInfo implements Serializable {
     @JsonProperty("sublist")
     public List<ForumInfo> subForumList;
     @JsonProperty("redirect")
-    public String redirectURL;
+    public String redirectURL= "";
 
 }
