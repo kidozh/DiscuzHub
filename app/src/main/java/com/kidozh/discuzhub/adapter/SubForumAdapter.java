@@ -108,7 +108,7 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
             holder.mTodayPosts.setVisibility(View.VISIBLE);
             if(forum.todayPosts >= 100){
                 holder.mTodayPosts.setText(R.string.forum_today_posts_over_much);
-                holder.mTodayPosts.setBackgroundColor(context.getColor(R.color.colorPomegranate));
+                holder.mTodayPosts.setBackgroundColor(context.getColor(R.color.colorAlizarin));
             }
             else {
                 holder.mTodayPosts.setText(String.valueOf(forum.todayPosts));

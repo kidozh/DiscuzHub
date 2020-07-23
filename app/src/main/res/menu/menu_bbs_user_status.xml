@@ -9,6 +9,11 @@
         android:title="@string/action_bbs_user_status"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/bbs_share"
+        android:icon="@drawable/ic_share_24px"
+        android:title="@string/share"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/bbs_forum_nav_show_in_webview"
         android:title="@string/bbs_show_in_internal_browser"
         app:showAsAction="never|withText" />

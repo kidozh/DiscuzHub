@@ -52,6 +52,8 @@ public class NotificationsFragment extends Fragment {
     bbsInformation bbsInformation;
     forumUserBriefInfo userBriefInfo;
 
+    PopupMenu popupMenu;
+
     public NotificationsFragment(){
 
     }
@@ -278,7 +280,7 @@ public class NotificationsFragment extends Fragment {
             return;
         }
         Log.d(TAG,"add popMenu to list "+index);
-        PopupMenu popupMenu = new PopupMenu(getActivity().getApplicationContext(), messageTab.view);
+        popupMenu = new PopupMenu(getActivity().getApplicationContext(), messageTab.view);
         MenuInflater inflater = popupMenu.getMenuInflater();
         if(BuildConfig.BUILD_TYPE.contentEquals("chinaEdition")){
             // first is removed!!!
@@ -409,8 +411,14 @@ public class NotificationsFragment extends Fragment {
         popupMenu.show();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(popupMenu !=null){
+            popupMenu.dismiss();
+        }
 
-
+    }
 
     public class notificationViewPagerAdapter extends FragmentStatePagerAdapter {
         public String message_state = bbsNotificationMessagePortalFragment.FILTER_PRIVATE_MESSAGE;

@@ -38,6 +38,7 @@ import com.kidozh.discuzhub.activities.ui.UserGroup.UserGroupInfoFragment;
 import com.kidozh.discuzhub.activities.ui.UserMedal.MedalFragment;
 import com.kidozh.discuzhub.activities.ui.UserProfileList.UserProfileInfoListFragment;
 import com.kidozh.discuzhub.activities.ui.UserFriend.UserFriendFragment;
+import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.entities.UserProfileItem;
 import com.kidozh.discuzhub.entities.ViewHistory;
@@ -47,6 +48,7 @@ import com.kidozh.discuzhub.results.UserProfileResult;
 import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -64,7 +66,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
 
-public class UserProfileActivity extends BaseStatusActivity implements UserFriendFragment.OnFragmentInteractionListener{
+public class UserProfileActivity extends BaseStatusActivity implements
+        UserFriendFragment.OnFragmentInteractionListener,
+        bbsLinkMovementMethod.OnLinkClickedListener
+{
 
     private static final String TAG = UserProfileActivity.class.getSimpleName();
 
@@ -118,7 +123,7 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
     String username;
     private UserProfileViewModel viewModel;
     personalInfoViewPagerAdapter adapter;
-    boolean fromViewHistory = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,7 +201,6 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
         curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userId = intent.getIntExtra("UID",0);
-        fromViewHistory = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
         if(curBBS == null){
             finishAfterTransition();
         }
@@ -259,7 +263,7 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
                     SpannableString spannableString = new SpannableString(sp);
 
                     personalInfoSignatureTextView.setText(spannableString, TextView.BufferType.SPANNABLE);
-                    personalInfoSignatureTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                    personalInfoSignatureTextView.setMovementMethod(new bbsLinkMovementMethod(UserProfileActivity.this));
                     if(userProfileResult.userProfileVariableResult.space.bio.length()!=0){
                         userBioTextview.setText(userProfileResult.userProfileVariableResult.space.bio);
                     }
@@ -308,7 +312,7 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
 
                     SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     boolean recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history),false);
-                    if(recordHistory && !fromViewHistory){
+                    if(recordHistory){
                         new InsertViewHistory(new ViewHistory(
                                 URLUtils.getDefaultAvatarUrlByUid(uid),
                                 username,
@@ -627,6 +631,12 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
         personInfoViewPager.requestLayout();
     }
 
+    @Override
+    public boolean onLinkClicked(String url) {
+        bbsLinkMovementMethod.parseURLAndOpen(this,curBBS,userBriefInfo,url);
+        return true;
+    }
+
 
     public class personalInfoViewPagerAdapter extends FragmentStatePagerAdapter {
 
@@ -736,6 +746,7 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
     public class InsertViewHistory extends AsyncTask<Void,Void,Void> {
 
         ViewHistory viewHistory;
+        ViewHistoryDao dao;
 
         public InsertViewHistory(ViewHistory viewHistory){
             this.viewHistory = viewHistory;
@@ -743,7 +754,21 @@ public class UserProfileActivity extends BaseStatusActivity implements UserFrien
 
         @Override
         protected Void doInBackground(Void... voids) {
-            ViewHistoryDatabase.getInstance(getApplicationContext()).getDao().insert(viewHistory);
+            dao = ViewHistoryDatabase.getInstance(getApplicationContext()).getDao();
+            List<ViewHistory> viewHistories = dao
+                    .getViewHistoryByBBSIdAndFid(viewHistory.belongedBBSId,viewHistory.fid);
+            if(viewHistories ==null || viewHistories.size() == 0){
+                dao.insert(viewHistory);
+            }
+            else {
+
+                for(int i=0 ;i<viewHistories.size();i++){
+                    ViewHistory updatedViewHistory = viewHistories.get(i);
+                    updatedViewHistory.recordAt = new Date();
+                }
+                dao.insert(viewHistories);
+            }
+            // dao.insert(viewHistory);
             return null;
         }
     }

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,6 +35,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.SubForumAdapter;
 import com.kidozh.discuzhub.adapter.bbsForumThreadAdapter;
+import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.ViewHistory;
@@ -46,6 +46,7 @@ import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
@@ -63,7 +64,8 @@ import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import okhttp3.OkHttpClient;
 
-public class bbsShowForumThreadActivity extends BaseStatusActivity {
+public class bbsShowForumThreadActivity
+        extends BaseStatusActivity implements bbsLinkMovementMethod.OnLinkClickedListener{
     private static final String TAG = bbsShowForumThreadActivity.class.getSimpleName();
 
 
@@ -145,7 +147,7 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
         URLUtils.setBBS(bbsInfo);
         fid = String.valueOf(forum.fid);
         forumThreadViewModel.setBBSInfo(bbsInfo,userBriefInfo,forum);
-        hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
+        // hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
     }
 
     private void bindViewModel(){
@@ -215,6 +217,14 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
                 // deal with sublist
                 if(displayForumResult!=null && displayForumResult.forumVariables!=null){
                     subForumAdapter.setSubForumInfoList(displayForumResult.forumVariables.subForumLists);
+                    if(displayForumResult.forumVariables.forumInfo !=null){
+                        ForumInfo forumInfo = displayForumResult.forumVariables.forumInfo;
+                        forum = forumInfo;
+                        if(getSupportActionBar()!=null){
+                            getSupportActionBar().setTitle(forumInfo.name);
+                            getSupportActionBar().setSubtitle(forumInfo.description);
+                        }
+                    }
                 }
             }
 
@@ -237,7 +247,7 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
                         Spanned sp = Html.fromHtml(s,myImageGetter,myTagHandler);
                         SpannableString spannableString = new SpannableString(sp);
                         // mForumAlert.setAutoLinkMask(Linkify.ALL);
-                        mForumRule.setMovementMethod(LinkMovementMethod.getInstance());
+                        mForumRule.setMovementMethod(new bbsLinkMovementMethod(bbsShowForumThreadActivity.this));
                         mForumRule.setText(spannableString, TextView.BufferType.SPANNABLE);
                     }
                     else {
@@ -255,7 +265,7 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
                         Spanned sp = Html.fromHtml(s,myImageGetter,myTagHandler);
                         SpannableString spannableString = new SpannableString(sp);
                         // mForumAlert.setAutoLinkMask(Linkify.ALL);
-                        mForumAlert.setMovementMethod(LinkMovementMethod.getInstance());
+                        mForumAlert.setMovementMethod(new bbsLinkMovementMethod(bbsShowForumThreadActivity.this));
                         mForumAlert.setText(spannableString, TextView.BufferType.SPANNABLE);
                     }
                     else {
@@ -279,13 +289,14 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
         SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
         boolean recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history),false);
         if(recordHistory){
+
             new InsertViewHistory(new ViewHistory(
-                    forum.iconUrl,
-                    forum.name,
+                    forumInfo.iconUrl,
+                    forumInfo.name,
                     bbsInfo.getId(),
-                    forum.description,
+                    forumInfo.description,
                     ViewHistory.VIEW_TYPE_FORUM,
-                    forum.fid,
+                    forumInfo.fid,
                     0,
                     new Date()
             )).execute();
@@ -359,7 +370,10 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(bbsInfo.site_name);
-        getSupportActionBar().setSubtitle(forum.name);
+        if(forum.name !=null){
+            getSupportActionBar().setSubtitle(forum.name);
+        }
+
 
 
     }
@@ -536,6 +550,11 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
         ChoiceResList.add(chip.getId());
     }
 
+    @Override
+    public boolean onLinkClicked(String url) {
+        return bbsLinkMovementMethod.parseURLAndOpen(this,bbsInfo,userBriefInfo,url);
+    }
+
 
     private class ChoiceChipInfo{
         public String filterType,name,filterName;
@@ -638,6 +657,25 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
                 startActivity(intent);
                 return true;
             }
+            case R.id.bbs_share:{
+                DisplayForumResult result = forumThreadViewModel.displayForumResultMutableLiveData.getValue();
+                if(result!=null && result.forumVariables!=null && result.forumVariables.forumInfo!=null){
+                    ForumInfo forumInfo = result.forumVariables.forumInfo;
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_template,
+                            forumInfo.name,URLUtils.getForumDisplayUrl(String.valueOf(forum.fid),"1")));
+                    sendIntent.setType("text/plain");
+
+                    Intent shareIntent = Intent.createChooser(sendIntent, null);
+                    startActivity(shareIntent);
+                }
+                else {
+                    Toasty.info(this,getString(R.string.share_not_prepared),Toast.LENGTH_SHORT).show();
+                }
+                return true;
+
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -646,6 +684,7 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
     public class InsertViewHistory extends AsyncTask<Void,Void,Void>{
 
         ViewHistory viewHistory;
+        ViewHistoryDao dao;
 
         public InsertViewHistory(ViewHistory viewHistory){
             this.viewHistory = viewHistory;
@@ -653,7 +692,23 @@ public class bbsShowForumThreadActivity extends BaseStatusActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            ViewHistoryDatabase.getInstance(getApplicationContext()).getDao().insert(viewHistory);
+            dao = ViewHistoryDatabase
+                    .getInstance(getApplicationContext())
+                    .getDao();
+            List<ViewHistory> viewHistories = dao
+                    .getViewHistoryByBBSIdAndFid(viewHistory.belongedBBSId,viewHistory.fid);
+            if(viewHistories ==null || viewHistories.size() == 0){
+                dao.insert(viewHistory);
+            }
+            else {
+
+                for(int i=0 ;i<viewHistories.size();i++){
+                    ViewHistory updatedViewHistory = viewHistories.get(i);
+                    updatedViewHistory.recordAt = new Date();
+                }
+                dao.insert(viewHistories);
+            }
+
             return null;
         }
     }

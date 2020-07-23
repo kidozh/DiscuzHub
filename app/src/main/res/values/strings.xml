@@ -669,10 +669,21 @@
     <string name="setting_delete_all_view_history_title">Hi, we just found that you don\'t want your view to be recorded. You can clear all history records in the database and it\\\'s irrecoverable. Do you want to do it now?</string>
     <string name="clear_all_history">Clear all histories</string>
     <string name="reply_post_title">Reply post to %1$s in pid :%2$d</string>
-    <string name="bbs_reply_notice_author_string">[quote][size=2][url=%1$s][color=#999999]%2$s posted at %3$s[/color][/url][/size] %4$s[/quote]</string>
+    <string name="bbs_reply_notice_author_string">[quote][size=2][url=%1$s][color=#999999]%2$s posted at %3$s[/color][/url][/size]\n %4$s[/quote]</string>
     <string name="bbs_reply_thread">Reply to a thread</string>
     <string name="bbs_save_draft_not_support_when_replying">Replying content can\'t be saved to database. We will support soon.</string>
     <string name="reply_password_not_set">You can\'t set a password when posting a reply.</string>
+    <string name="preference_key_outlink_warn" translatable="false">preference_key_outlink_warn</string>
+    <string name="preference_title_outlink_warn">Outer link notification</string>
+    <string name="outlink_warn_title">You are browsing outer link</string>
+    <string name="outlink_warn_message">Outlink \"%1$s\" is different from current bbs \"%2$s\". Please be careful.</string>
+    <string name="scroll_to_pid_failed">Currently, post #%1$s is not loaded.</string>
+    <string name="scroll_to_pid_successfully">Go to #%1$s.</string>
+    <string name="close_webview">Close</string>
+    <string name="share">Share</string>
+    <string name="share_template">%1$s (via link:%2$s)</string>
+    <string name="share_not_prepared">Sharing is not prepared, please wait until content is loaded.</string>
+    <string name="insert_link">Insert a link</string>
 
 
 </resources>

@@ -3,13 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/bbs_forum_nav_draft_box"
-        android:icon="@drawable/vector_drawable_drafts_24px"
-        android:title="@string/bbs_draft_box"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/bbs_forum_nav_dateline_sort"
         android:icon="@drawable/vector_drawable_arrow_upward_24px"
+        android:title="@string/bbs_draft_box"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/bbs_share"
+        android:icon="@drawable/ic_share_24px"
+        android:title="@string/share"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/bbs_forum_nav_draft_box"
+        android:icon="@drawable/vector_drawable_drafts_24px"
         android:title="@string/bbs_draft_box"
         app:showAsAction="ifRoom" />
     <item

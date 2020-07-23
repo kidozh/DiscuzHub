@@ -494,9 +494,19 @@
     <string name="setting_delete_all_view_history_title">我们注意到您不希望被记录历史信息。您是否想清空此设备上所有的历史记录？该操作是永久且不可恢复的。</string>
     <string name="clear_all_history">清空浏览记录</string>
     <string name="reply_post_title">向%1$s回复消息，pid为%2$d</string>
-    <string name="bbs_reply_notice_author_string">[quote][size=2][url=%1$s][color=#999999]%2$s 发表于 %3$s[/color][/url][/size] %4$s[/quote]</string>
+    <string name="bbs_reply_notice_author_string">[quote][size=2][url=%1$s][color=#999999]%2$s 发表于 %3$s[/color][/url][/size]\n %4$s[/quote]</string>
     <string name="bbs_reply_thread">回复一个帖子</string>
     <string name="bbs_save_draft_not_support_when_replying">目前还无法将回复某个帖子的内容存储到数据库之中，我们会在未来版本中支持这个功能。</string>
     <string name="reply_password_not_set">在回复时，您无法设置密码。</string>
+    <string name="preference_title_outlink_warn">外链跳转提醒</string>
+    <string name="outlink_warn_title">你正要访问外链</string>
+    <string name="outlink_warn_message">外链 \"%1$s\" 与当前论坛 \"%2$s\"不一致，其很有可能不是论坛所拥有的。请您小心点击以确保您的信息安全，谨防诈骗等信息。</string>
+    <string name="scroll_to_pid_failed">发言 #%1$s 还未被加载，无法滚动到那个条目上。</string>
+    <string name="scroll_to_pid_successfully">跳转到%1$s楼。</string>
+    <string name="close_webview">关闭</string>
+    <string name="share">分享</string>
+    <string name="share_template">分享%1$s （链接：%2$s）</string>
+    <string name="share_not_prepared">分享功能还没有准备好，请等待页面加载完毕后分享。</string>
+    <string name="insert_link">插入一个链接</string>
 
 </resources>

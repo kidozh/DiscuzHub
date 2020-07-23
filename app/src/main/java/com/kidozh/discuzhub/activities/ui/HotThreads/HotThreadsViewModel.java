@@ -1,4 +1,4 @@
-package com.kidozh.discuzhub.activities.ui.dashboard;
+package com.kidozh.discuzhub.activities.ui.HotThreads;
 
 import android.app.Application;
 import android.util.Log;
@@ -17,7 +17,6 @@ import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +26,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class DashboardViewModel extends AndroidViewModel {
-    private String TAG = DashboardViewModel.class.getSimpleName();
+public class HotThreadsViewModel extends AndroidViewModel {
+    private String TAG = HotThreadsViewModel.class.getSimpleName();
     private MutableLiveData<String> mText;
 
     bbsInformation curBBS;
@@ -43,7 +42,7 @@ public class DashboardViewModel extends AndroidViewModel {
 
 
 
-    public DashboardViewModel(Application application) {
+    public HotThreadsViewModel(Application application) {
         super(application);
         mText = new MutableLiveData<>();
         mText.setValue("This is dashboard fragment");

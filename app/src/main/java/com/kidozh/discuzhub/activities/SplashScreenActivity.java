@@ -45,6 +45,8 @@ public class SplashScreenActivity extends BaseStatusActivity {
     CardView privacyPolicyCardView;
     @BindView(R.id.splash_screen_privacy_policy_card)
     CardView termsOfUseCardView;
+    @BindView(R.id.splash_screen_version)
+    TextView versionTextView;
 
     String AGREEMENT_VERSION_PREFERENCE = "AGREEMENT_VERSION_PREFERENCE";
 
@@ -173,6 +175,7 @@ public class SplashScreenActivity extends BaseStatusActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String agreedVersion = prefs.getString(AGREEMENT_VERSION_PREFERENCE,"");
         String currentVersion = getVersionName();
+        versionTextView.setText(getString(R.string.app_version_template,currentVersion));
         agreeToContinueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -220,7 +220,7 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
                 }
             });
         }
-        if(attachmentInfo.attachSize.length()!=0){
+        if(attachmentInfo.attachSize!=null && attachmentInfo.attachSize.length()!=0){
             holder.mAttachmentSize.setText(attachmentInfo.attachSize);
             holder.mAttachmentSize.setVisibility(View.VISIBLE);
         }

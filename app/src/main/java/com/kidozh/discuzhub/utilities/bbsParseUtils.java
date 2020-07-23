@@ -892,10 +892,10 @@ public class bbsParseUtils {
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         public int fid;
         @JsonProperty("posttableid")
-        public String postableId;
+        public String postableId= "";
         @JsonProperty("typeid")
-        public String typeId;
-        public String author, subject;
+        public String typeId= "";
+        public String author= "", subject= "";
         @JsonProperty("authorid")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         public int authorId;
@@ -905,7 +905,7 @@ public class bbsParseUtils {
         @JsonProperty("lastpost")
         @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="s")
         public Date lastPostTime;
-        public String lastposter;
+        public String lastposter= "";
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("displayorder")
         public int displayOrder;

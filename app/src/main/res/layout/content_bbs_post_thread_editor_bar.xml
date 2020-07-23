@@ -69,6 +69,15 @@
             android:src="@drawable/ic_insert_photo_24dp" />
 
         <ImageView
+            android:id="@+id/action_insert_link"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:padding="8dp"
+            app:srcCompat="@drawable/ic_insert_link_24px" />
+
+        <ImageView
             android:id="@+id/action_set_password"
             android:layout_width="40dp"
             android:layout_height="40dp"
