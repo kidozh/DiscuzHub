@@ -25,8 +25,7 @@ public class MainDrawerViewModel extends AndroidViewModel {
     private static final String TAG = MainDrawerViewModel.class.getSimpleName();
     public MutableLiveData<bbsInformation> currentBBSInformationMutableLiveData =
             new MutableLiveData<>(null);
-    public LiveData<List<bbsInformation>> allBBSInformationMutableLiveData =
-            new MutableLiveData<>(new ArrayList<>());
+    public LiveData<List<bbsInformation>> allBBSInformationMutableLiveData;
     public MutableLiveData<forumUserBriefInfo> currentForumUserBriefInfoMutableLiveData =
             new MutableLiveData<>(null);
     public MutableLiveData<List<forumUserBriefInfo>> forumUserListMutableLiveData =
