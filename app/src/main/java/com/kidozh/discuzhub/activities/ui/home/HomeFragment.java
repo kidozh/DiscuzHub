@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -76,10 +77,23 @@ public class HomeFragment extends Fragment {
 
     }
 
-    public HomeFragment(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
-        curBBS = bbsInformation;
-        this.userBriefInfo = userBriefInfo;
-        curUser = userBriefInfo;
+    public static HomeFragment newInstance(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+        HomeFragment homeFragment = new HomeFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
+        args.putSerializable(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+        homeFragment.setArguments(args);
+        return homeFragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            curBBS = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+            userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
+            curUser = userBriefInfo;
+        }
     }
 
     private void getIntentInfo(){

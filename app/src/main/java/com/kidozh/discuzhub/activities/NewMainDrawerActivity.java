@@ -2,7 +2,6 @@ package com.kidozh.discuzhub.activities;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -132,9 +131,6 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
         bindViewModel();
         initFragments();
         checkTermOfUse();
-
-
-
     }
 
     private void checkTermOfUse(){
@@ -156,69 +152,63 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
     }
 
     private void bindViewModel(){
-        viewModel.allBBSInformationMutableLiveData.observe(this, new Observer<List<bbsInformation>>() {
-            @Override
-            public void onChanged(List<bbsInformation> bbsInformations) {
-                //slider.getItemAdapter().clear();
+        viewModel.allBBSInformationMutableLiveData.observe(this, bbsInformations -> {
+            //slider.getItemAdapter().clear();
 
-                headerView.clear();
-                //drawerAccountHeader.clear();
-                if(bbsInformations == null || bbsInformations.size() == 0){
-                    // empty
-                    // show bbs page
+            headerView.clear();
+            //drawerAccountHeader.clear();
+            if(bbsInformations == null || bbsInformations.size() == 0){
+                // empty
+                // show bbs page
 
+            } else {
+                // bind to headview
 
-
-                }
-                else {
-                    // bind to headview
-
-                    List<IProfile> accountProfiles = new ArrayList<>();
-                    for(int i=0;i<bbsInformations.size(); i++){
-                        bbsInformation currentBBSInfo = bbsInformations.get(i);
-                        //URLUtils.setBBS(currentBBSInfo);
-                        Log.d(TAG,"Load url "+URLUtils.getBBSLogoUrl(currentBBSInfo.base_url));
-                        ProfileDrawerItem bbsProfile = new ProfileDrawerItem();
-                        bbsProfile.setName(new StringHolder(currentBBSInfo.site_name));
-                        bbsProfile.setNameShown(true);
-                        bbsProfile.setIdentifier(currentBBSInfo.getId());
-                        bbsProfile.setIcon(new ImageHolder(URLUtils.getBBSLogoUrl(currentBBSInfo.base_url)));
-                        bbsProfile.setDescription(new StringHolder(currentBBSInfo.base_url));
-                        accountProfiles.add(bbsProfile);
-
-                    }
-                    headerView.setProfiles(accountProfiles);
-                    // drawerAccountHeader.setProfiles(accountProfiles);
-                    if(bbsInformations.size() > 0){
-                        bbsInformation currentBBSInfo = bbsInformations.get(0);
-                        headerView.setActiveProfile(currentBBSInfo.getId(),true);
-                    }
+                List<IProfile> accountProfiles = new ArrayList<>();
+                for(int i=0;i<bbsInformations.size(); i++){
+                    bbsInformation currentBBSInfo = bbsInformations.get(i);
+                    //URLUtils.setBBS(currentBBSInfo);
+                    Log.d(TAG,"Load url "+URLUtils.getBBSLogoUrl(currentBBSInfo.base_url));
+                    ProfileDrawerItem bbsProfile = new ProfileDrawerItem();
+                    bbsProfile.setName(new StringHolder(currentBBSInfo.site_name));
+                    bbsProfile.setNameShown(true);
+                    bbsProfile.setIdentifier(currentBBSInfo.getId());
+                    bbsProfile.setIcon(new ImageHolder(URLUtils.getBBSLogoUrl(currentBBSInfo.base_url)));
+                    bbsProfile.setDescription(new StringHolder(currentBBSInfo.base_url));
+                    accountProfiles.add(bbsProfile);
 
                 }
-                // add bbs
-                ProfileDrawerItem addBBSProfile = new ProfileDrawerItem();
-                addBBSProfile.setName(new StringHolder(getString(R.string.add_a_bbs)));
-                addBBSProfile.setIdentifier(FUNC_ADD_A_BBS);
-                addBBSProfile.setDescription(new StringHolder(getString(R.string.title_add_a_forum_by_url)));
-                addBBSProfile.setSelectable(false);
-                addBBSProfile.setNameShown(true);
-                addBBSProfile.setIcon(new ImageHolder(R.drawable.ic_add_24px));
-                headerView.addProfiles(addBBSProfile);
-                Log.d(TAG,"Add a bbs profile");
-                // manage bbs
-                if(bbsInformations !=null && bbsInformations.size() > 0){
-                    ProfileDrawerItem manageBBSProfile = new ProfileDrawerItem();
-                    manageBBSProfile.setName(new StringHolder(getString(R.string.manage_bbs)));
-                    manageBBSProfile.setIdentifier(FUNC_MANAGE_BBS);
-                    manageBBSProfile.setDescription(new StringHolder(getString(R.string.manage_bbs_description)));
-                    manageBBSProfile.setSelectable(false);
-                    manageBBSProfile.setNameShown(true);
-                    manageBBSProfile.setIcon(new ImageHolder(R.drawable.ic_manage_bbs_24px));
-                    headerView.addProfiles(manageBBSProfile);
+                headerView.setProfiles(accountProfiles);
+                // drawerAccountHeader.setProfiles(accountProfiles);
+                if(bbsInformations.size() > 0){
+                    bbsInformation currentBBSInfo = bbsInformations.get(0);
+                    headerView.setActiveProfile(currentBBSInfo.getId(),true);
                 }
-
 
             }
+            // add bbs
+            ProfileDrawerItem addBBSProfile = new ProfileDrawerItem();
+            addBBSProfile.setName(new StringHolder(getString(R.string.add_a_bbs)));
+            addBBSProfile.setIdentifier(FUNC_ADD_A_BBS);
+            addBBSProfile.setDescription(new StringHolder(getString(R.string.title_add_a_forum_by_url)));
+            addBBSProfile.setSelectable(false);
+            addBBSProfile.setNameShown(true);
+            addBBSProfile.setIcon(new ImageHolder(R.drawable.ic_add_24px));
+            headerView.addProfiles(addBBSProfile);
+            Log.d(TAG,"Add a bbs profile");
+            // manage bbs
+            if(bbsInformations !=null && bbsInformations.size() > 0){
+                ProfileDrawerItem manageBBSProfile = new ProfileDrawerItem();
+                manageBBSProfile.setName(new StringHolder(getString(R.string.manage_bbs)));
+                manageBBSProfile.setIdentifier(FUNC_MANAGE_BBS);
+                manageBBSProfile.setDescription(new StringHolder(getString(R.string.manage_bbs_description)));
+                manageBBSProfile.setSelectable(false);
+                manageBBSProfile.setNameShown(true);
+                manageBBSProfile.setIcon(new ImageHolder(R.drawable.ic_manage_bbs_24px));
+                headerView.addProfiles(manageBBSProfile);
+            }
+
+
         });
         viewModel.forumUserListMutableLiveData.observe(this, new Observer<List<forumUserBriefInfo>>() {
             @Override
@@ -324,47 +314,35 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
 
             }
         });
-        Context context = this;
-        viewModel.currentBBSInformationMutableLiveData.observe(this, new Observer<bbsInformation>() {
-            @Override
-            public void onChanged(bbsInformation bbsInformation) {
-                if(bbsInformation != null){
-                    toolbarTitleTextview.setText(bbsInformation.site_name);
-                    if(getSupportActionBar() !=null){
-                        getSupportActionBar().setTitle(bbsInformation.site_name);
-                    }
-
-                    int id = bbsInformation.getId();
-                    LiveData<List<forumUserBriefInfo>> allUsersInCurrentBBSLiveData = forumUserBriefInfoDatabase.getInstance(getApplication())
-                            .getforumUserBriefInfoDao()
-                            .getAllUserByBBSID(id);
-
-                    allUsersInCurrentBBSLiveData.observe((LifecycleOwner) context, new Observer<List<forumUserBriefInfo>>() {
-                        @Override
-                        public void onChanged(List<forumUserBriefInfo> forumUserBriefInfos) {
-                            Log.d(TAG,"Updating "+id+ " users information "+forumUserBriefInfos.size());
-                            viewModel.forumUserListMutableLiveData.postValue(forumUserBriefInfos);
-                        }
-                    });
-
-                }
-                else {
-                    toolbarTitleTextview.setText(R.string.no_bbs_found_in_db);
+        viewModel.currentBBSInformationMutableLiveData.observe(this, bbsInformation -> {
+            if(bbsInformation != null){
+                toolbarTitleTextview.setText(bbsInformation.site_name);
+                if(getSupportActionBar() !=null){
+                    getSupportActionBar().setTitle(bbsInformation.site_name);
                 }
 
+                int id = bbsInformation.getId();
+                LiveData<List<forumUserBriefInfo>> allUsersInCurrentBBSLiveData = forumUserBriefInfoDatabase.getInstance(getApplication())
+                        .getforumUserBriefInfoDao()
+                        .getAllUserByBBSID(id);
+
+                allUsersInCurrentBBSLiveData.observe(this, forumUserBriefInfos -> {
+                    Log.d(TAG,"Updating "+id+ " users information "+forumUserBriefInfos.size());
+                    viewModel.forumUserListMutableLiveData.postValue(forumUserBriefInfos);
+                });
+
+            } else {
+                toolbarTitleTextview.setText(R.string.no_bbs_found_in_db);
             }
+
         });
-        viewModel.currentForumUserBriefInfoMutableLiveData.observe(this, new Observer<forumUserBriefInfo>() {
-            @Override
-            public void onChanged(forumUserBriefInfo forumUserBriefInfo) {
-                if(forumUserBriefInfo == null){
-                    toolbarSubtitleTextview.setText(R.string.bbs_anonymous);
-                }
-                else {
-                    toolbarSubtitleTextview.setText(forumUserBriefInfo.username);
-                }
-                renderViewPageAndBtmView();
+        viewModel.currentForumUserBriefInfoMutableLiveData.observe(this, forumUserBriefInfo -> {
+            if(forumUserBriefInfo == null){
+                toolbarSubtitleTextview.setText(R.string.bbs_anonymous);
+            } else {
+                toolbarSubtitleTextview.setText(forumUserBriefInfo.username);
             }
+            renderViewPageAndBtmView();
         });
     }
 
@@ -583,14 +561,13 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
             forumUserBriefInfo userBriefInfo = viewModel.currentForumUserBriefInfoMutableLiveData.getValue();
             switch (position){
                 case 0:
-                    homeFragment = new HomeFragment(bbsInfo,userBriefInfo);
+                    homeFragment = HomeFragment.newInstance(bbsInfo,userBriefInfo);
 
                     return homeFragment;
                 case 1:
-                    HotThreadsFragment hotThreadsFragment = HotThreadsFragment.newInstance(bbsInfo,userBriefInfo);
-                    return hotThreadsFragment;
+                    return HotThreadsFragment.newInstance(bbsInfo,userBriefInfo);
             }
-            return new HomeFragment(bbsInfo,userBriefInfo);
+            return HomeFragment.newInstance(bbsInfo,userBriefInfo);
         }
 
         @Override
@@ -632,7 +609,7 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
             forumUserBriefInfo userBriefInfo = viewModel.currentForumUserBriefInfoMutableLiveData.getValue();
             switch (position){
                 case 0:
-                    homeFragment = new HomeFragment(bbsInfo, userBriefInfo);
+                    homeFragment = HomeFragment.newInstance(bbsInfo, userBriefInfo);
                     return homeFragment;
                 case 1:
                     hotThreadsFragment = HotThreadsFragment.newInstance(bbsInfo, userBriefInfo);
@@ -644,7 +621,7 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
 //                    }
                     return notificationsFragment;
             }
-            return new HomeFragment(bbsInfo,userBriefInfo);
+            return HomeFragment.newInstance(bbsInfo,userBriefInfo);
         }
 
         @Override
@@ -690,8 +667,7 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
             portalViewPager.setAdapter(new anonymousViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
             navView.getMenu().clear();
             navView.inflateMenu(R.menu.bottom_incognitive_nav_menu);
-        }
-        else {
+        } else {
             // use fragment transaction instead
             Log.d(TAG, "Current incognitive user "+curUser.username);
             portalViewPager.setAdapter(new userViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
@@ -744,9 +720,6 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
 
             }
         });
-
-
-
     }
 
     // fragment lifecyle
