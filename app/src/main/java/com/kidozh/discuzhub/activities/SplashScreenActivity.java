@@ -168,7 +168,7 @@ public class SplashScreenActivity extends BaseStatusActivity {
 
         //Intent intent = new Intent(this, MainActivity.class);
         //startActivity(intent);
-        finish();
+        finishAfterTransition();
     }
 
     private void renderPage(){

@@ -13,7 +13,7 @@
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.kidozh.discuzhub.activities.ui.HotThreads.HotThreadsFragment"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_hot_thread" />
 
     <fragment
         android:id="@+id/navigation_notifications"

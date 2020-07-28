@@ -684,6 +684,13 @@
     <string name="share_template">%1$s (via link:%2$s)</string>
     <string name="share_not_prepared">Sharing is not prepared, please wait until content is loaded.</string>
     <string name="insert_link">Insert a link</string>
+    <string name="hot_thread">Hot threads</string>
+    <string name="hot_forum">Hot forums</string>
+    <string name="marked_thread">Marked thread</string>
+    <string name="marked_forum">Marked forum</string>
+    <string name="empty_hot_forum">No hot forum is currently provided. Check out later?</string>
+    <string name="parse_hot_forum_list_null">We have received the response but got false hot forum content.</string>
+    <string name="unset">”unset“</string>
 
 
 </resources>

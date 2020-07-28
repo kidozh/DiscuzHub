@@ -25,6 +25,7 @@ import com.kidozh.discuzhub.results.AddCheckResult;
 import com.kidozh.discuzhub.results.BBSIndexResult;
 import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
+import com.kidozh.discuzhub.results.HotForumsResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadPostParameterResult;
 import com.kidozh.discuzhub.results.ThreadPostResult;
@@ -339,6 +340,18 @@ public class bbsParseUtils {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(s, DisplayThreadsResult.class);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static HotForumsResult getHotForumsResult(String s) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(s, HotForumsResult.class);
 
 
         } catch (Exception e) {

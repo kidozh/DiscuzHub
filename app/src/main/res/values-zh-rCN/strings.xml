@@ -508,5 +508,12 @@
     <string name="share_template">分享%1$s （链接：%2$s）</string>
     <string name="share_not_prepared">分享功能还没有准备好，请等待页面加载完毕后分享。</string>
     <string name="insert_link">插入一个链接</string>
+    <string name="hot_thread">热门帖子</string>
+    <string name="hot_forum">热门论坛</string>
+    <string name="marked_thread">收藏帖子</string>
+    <string name="marked_forum">收藏论坛</string>
+    <string name="empty_hot_forum">还没有一个比较热门的分论坛，不妨等等回来再看？</string>
+    <string name="parse_hot_forum_list_null">尽管我们已经收到了服务器的回复，然而回复的热门论坛列表为空的。</string>
+    <string name="unset">“未设置”</string>
 
 </resources>

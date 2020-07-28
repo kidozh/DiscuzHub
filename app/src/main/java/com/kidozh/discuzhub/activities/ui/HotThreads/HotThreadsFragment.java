@@ -36,13 +36,13 @@ import okhttp3.OkHttpClient;
 public class HotThreadsFragment extends Fragment {
     private static final String TAG = HotThreadsFragment.class.getSimpleName();
     private HotThreadsViewModel hotThreadsViewModel;
-    @BindView(R.id.fragment_dashboard_recyclerview)
+    @BindView(R.id.fragment_hot_thread_recyclerview)
     RecyclerView dashboardRecyclerview;
     @BindView(R.id.fragment_dashboard_swipeRefreshLayout)
     SwipeRefreshLayout dashboardSwipeRefreshLayout;
-    @BindView(R.id.fragment_dashboard_no_item_textView)
+    @BindView(R.id.fragment_hot_thread_no_item_textView)
     TextView noItemFoundTextview;
-    @BindView(R.id.fragment_dashboard_empty_icon)
+    @BindView(R.id.fragment_hot_thread_empty_icon)
     ImageView emptyIconImageview;
     bbsForumThreadAdapter forumThreadAdapter;
     bbsInformation curBBS;
@@ -87,7 +87,7 @@ public class HotThreadsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         hotThreadsViewModel = new ViewModelProvider(this).get(HotThreadsViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        View root = inflater.inflate(R.layout.fragment_hot_thread, container, false);
         ButterKnife.bind(this,root);
         getIntentInfo();
 

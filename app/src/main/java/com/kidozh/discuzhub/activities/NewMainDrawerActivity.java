@@ -641,9 +641,6 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
 
 
     private void initFragments(){
-//        homeFragment = (HomeFragment) getSupportFragmentManager().getFragment(savedInstanceState,HOME_FRAGMENT_KEY);
-//        notificationsFragment = (NotificationsFragment) getSupportFragmentManager().getFragment(savedInstanceState,NOTIFICATION_FRAGMENT_KEY);
-//        dashboardFragment = (DashboardFragment) getSupportFragmentManager().getFragment(savedInstanceState,DASHBOARD_FRAGMENT_KEY);
     }
 
 
