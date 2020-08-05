@@ -524,6 +524,17 @@ public class URLUtils {
         return "forum.php?mod=redirect&goto=findpost&pid="+pid+"&ptid="+ptid;
     }
 
+    public static String getFavoriteThreadListURL(int page, int perpage){
+
+        Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","myfavthread")
+                .appendQueryParameter("page",String.valueOf(page))
+                .appendQueryParameter("perpage",String.valueOf(perpage))
+                .build();
+        return uri.toString();
+    }
+
 
 
 

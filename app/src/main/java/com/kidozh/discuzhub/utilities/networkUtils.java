@@ -42,6 +42,9 @@ public class networkUtils {
     public final static int CONNECT_TIMEOUT =5;
     public final static int READ_TIMEOUT=5;
     public final static int WRITE_TIMEOUT=5;
+
+
+
     private static String preferenceName = "use_safe_https_client";
 
     public static OkHttpClient getPreferredClientWithCookieJar(Context context){

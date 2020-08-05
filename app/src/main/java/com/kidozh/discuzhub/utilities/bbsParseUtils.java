@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -25,6 +26,7 @@ import com.kidozh.discuzhub.results.AddCheckResult;
 import com.kidozh.discuzhub.results.BBSIndexResult;
 import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
+import com.kidozh.discuzhub.results.FavoriteThreadResult;
 import com.kidozh.discuzhub.results.HotForumsResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadPostParameterResult;
@@ -1021,6 +1023,18 @@ public class bbsParseUtils {
 
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(s, SecureInfoResult.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static FavoriteThreadResult getFavoriteThreadResult(String s) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(s, FavoriteThreadResult.class);
+
 
         } catch (Exception e) {
             e.printStackTrace();

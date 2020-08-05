@@ -28,4 +28,8 @@ public class bbsConstUtils {
     public static final int TYPE_POST_REPLY = 2;
     public static final int TYPE_POST_THREAD = 0;
     public static final int TYPE_POST_DRAFT = 1;
+
+    public final static int NETWORK_STATUS_LOADING = 0;
+    public final static int NETWORK_STATUS_SUCCESSFULLY = 1;
+    public final static int NETWORK_STATUS_FAILED = 2;
 }

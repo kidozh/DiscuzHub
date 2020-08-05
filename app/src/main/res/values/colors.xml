@@ -45,4 +45,27 @@
 
     <color name="black_overlay">#66000000</color>
 
+    <color name="MaterialColorRed">#f44336</color>
+    <color name="MaterialColorPink">#E91E63</color>
+    <color name="MaterialColorPurple">#9C27B0</color>
+    <color name="MaterialColorDeepPurple">#673AB7</color>
+    <color name="MaterialColorIndigo">#3F51B5</color>
+    <color name="MaterialColorBlue">#2196F3</color>
+    <color name="MaterialColorLightBlue">#03A9F4</color>
+    <color name="MaterialColorCyan">#00BCD4</color>
+    <color name="MaterialColorTeal">#009688</color>
+    <color name="MaterialColorGreen">#4CAF50</color>
+    <color name="MaterialColorLightGreen">#8BC34A</color>
+    <color name="MaterialColorLime">#CDDC39</color>
+    <color name="MaterialColorYellow">#CDDC39</color>
+    <color name="MaterialColorAmber">#FFC107</color>
+    <color name="MaterialColorOrange">#FF9800</color>
+    <color name="MaterialColorDeepOrange">#FF5722</color>
+    <color name="MaterialColorBrown">#795548</color>
+    <color name="MaterialColorGrey">#9E9E9E</color>
+    <color name="MaterialColorBlueGrey">#607D8B</color>
+
+
+
+
 </resources>

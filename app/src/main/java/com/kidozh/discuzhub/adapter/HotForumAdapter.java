@@ -62,7 +62,15 @@ public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotFor
     public void onBindViewHolder(@NonNull HotForumViewHolder holder, int position) {
         HotForum hotForum = hotForumList.get(position);
         holder.hotForumName.setText(hotForum.name);
-        holder.hotForumTodayPosts.setText(String.valueOf(hotForum.todayPosts));
+        if(hotForum.todayPosts >= 100){
+            holder.hotForumTodayPosts.setText(R.string.forum_today_posts_over_much);
+            holder.hotForumTodayPosts.setBackgroundColor(context.getColor(R.color.colorAlizarin));
+        }
+        else {
+            holder.hotForumTodayPosts.setText(String.valueOf(hotForum.todayPosts));
+            holder.hotForumTodayPosts.setBackgroundColor(context.getColor(R.color.colorPrimary));
+        }
+
         if(hotForum.lastPoster.length() == 0){
             holder.lastPoster.setText(R.string.unset);
         }

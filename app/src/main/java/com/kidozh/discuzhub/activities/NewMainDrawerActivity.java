@@ -24,6 +24,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.BlankBBSFragment.BlankBBSFragment;
+import com.kidozh.discuzhub.activities.ui.DashBoard.DashBoardFragment;
 import com.kidozh.discuzhub.activities.ui.HotThreads.HotThreadsFragment;
 import com.kidozh.discuzhub.activities.ui.UserNotification.UserNotificationFragment;
 import com.kidozh.discuzhub.activities.ui.home.HomeFragment;
@@ -565,7 +566,7 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
 
                     return homeFragment;
                 case 1:
-                    return HotThreadsFragment.newInstance(bbsInfo,userBriefInfo);
+                    return DashBoardFragment.newInstance(bbsInfo,userBriefInfo);
             }
             return HomeFragment.newInstance(bbsInfo,userBriefInfo);
         }
@@ -612,8 +613,7 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                     homeFragment = HomeFragment.newInstance(bbsInfo, userBriefInfo);
                     return homeFragment;
                 case 1:
-                    hotThreadsFragment = HotThreadsFragment.newInstance(bbsInfo, userBriefInfo);
-                    return hotThreadsFragment;
+                    return DashBoardFragment.newInstance(bbsInfo, userBriefInfo);
                 case 2:
                     notificationsFragment = new NotificationsFragment(bbsInfo, userBriefInfo);
 //                    if(noticeNumInfo !=null){
