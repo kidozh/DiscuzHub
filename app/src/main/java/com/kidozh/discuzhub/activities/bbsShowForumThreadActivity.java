@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -34,7 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.SubForumAdapter;
-import com.kidozh.discuzhub.adapter.bbsForumThreadAdapter;
+import com.kidozh.discuzhub.adapter.ThreadAdapter;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.entities.ThreadInfo;
@@ -53,7 +52,6 @@ import com.kidozh.discuzhub.utilities.numberFormatUtils;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.viewModels.ForumThreadViewModel;
 
-import java.nio.channels.AsynchronousByteChannel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -101,7 +99,7 @@ public class bbsShowForumThreadActivity
     private bbsInformation bbsInfo;
     private forumUserBriefInfo userBriefInfo;
     private OkHttpClient client = new OkHttpClient();
-    private bbsForumThreadAdapter adapter;
+    private ThreadAdapter adapter;
     private SubForumAdapter subForumAdapter;
     boolean isTaskRunning;
     String fid;
@@ -460,7 +458,7 @@ public class bbsShowForumThreadActivity
 
         mRecyclerview.setLayoutManager(linearLayoutManager);
 
-        adapter = new bbsForumThreadAdapter(this,null,fid,bbsInfo,userBriefInfo);
+        adapter = new ThreadAdapter(this,null,fid,bbsInfo,userBriefInfo);
         mRecyclerview.setAdapter(adapter);
         mRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

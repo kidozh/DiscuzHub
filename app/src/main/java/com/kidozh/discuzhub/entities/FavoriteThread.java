@@ -82,4 +82,14 @@ public class FavoriteThread implements Serializable {
     public int hashCode() {
         return Objects.hash(id, favid, uid, idKey, idType, spaceUid, title, description, author, date, iconLabel, url, replies);
     }
+
+    public ThreadInfo toThread(){
+        ThreadInfo threadInfo = new ThreadInfo();
+        threadInfo.tid = idKey;
+        threadInfo.publishAt = date;
+        threadInfo.subject = title;
+        threadInfo.author = author;
+        threadInfo.replies = String.valueOf(replies);
+        return threadInfo;
+    }
 }

@@ -51,8 +51,8 @@ import butterknife.ButterKnife;
 import cn.gavinliu.android.lib.shapedimageview.ShapedImageView;
 
 
-public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAdapter.bbsForumThreadViewHolder> {
-    private static final String TAG = bbsForumThreadAdapter.class.getSimpleName();
+public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.bbsForumThreadViewHolder> {
+    private static final String TAG = ThreadAdapter.class.getSimpleName();
     public List<ThreadInfo> threadInfoList;
     Context mContext;
     public String fid;
@@ -60,7 +60,7 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
     forumUserBriefInfo curUser;
     Map<String,String> threadType;
 
-    public bbsForumThreadAdapter(Context context, Map<String,String> threadType, String fid, bbsInformation bbsInfo, forumUserBriefInfo curUser){
+    public ThreadAdapter(Context context, Map<String,String> threadType, String fid, bbsInformation bbsInfo, forumUserBriefInfo curUser){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
         this.mContext = context;
@@ -89,9 +89,9 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
 
     @NonNull
     @Override
-    public bbsForumThreadAdapter.bbsForumThreadViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ThreadAdapter.bbsForumThreadViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.item_bbs_forum_thread;
+        int layoutIdForListItem = R.layout.item_thread;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
@@ -100,7 +100,7 @@ public class bbsForumThreadAdapter extends RecyclerView.Adapter<bbsForumThreadAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull bbsForumThreadAdapter.bbsForumThreadViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ThreadAdapter.bbsForumThreadViewHolder holder, int position) {
         ThreadInfo threadInfo = threadInfoList.get(position);
 
         holder.mContent.setVisibility(View.GONE);

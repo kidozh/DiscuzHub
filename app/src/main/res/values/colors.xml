@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">@color/colorPeterRiver</color>
     <color name="colorPrimaryDark">@color/colorBelizahole</color>
-    <color name="colorAccent">@color/colorTurquoise</color>
+    <color name="colorAccent">@color/colorPumpkin</color>
 <!--    <color name="colorPrimary">#6200EE</color>-->
 <!--    <color name="colorPrimaryDark">#3700B3</color>-->
 <!--    <color name="colorAccent">#03DAC5</color>-->

@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
 
                 tools:itemCount="1"
-                tools:listitem="@layout/item_bbs_forum_thread">
+                tools:listitem="@layout/item_thread">
 
             </androidx.recyclerview.widget.RecyclerView>
 

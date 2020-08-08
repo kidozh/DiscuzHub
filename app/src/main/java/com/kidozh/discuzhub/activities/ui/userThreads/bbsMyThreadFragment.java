@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.bbsForumThreadAdapter;
+import com.kidozh.discuzhub.adapter.ThreadAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -69,7 +69,7 @@ public class bbsMyThreadFragment extends Fragment {
     bbsInformation bbsInfo;
     ForumInfo forum;
     private OkHttpClient client = new OkHttpClient();
-    bbsForumThreadAdapter adapter;
+    ThreadAdapter adapter;
     private int globalPage = 1;
 
 
@@ -110,7 +110,7 @@ public class bbsMyThreadFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 linearLayoutManager.getOrientation());
         myThreadRecyclerview.addItemDecoration(dividerItemDecoration);
-        adapter = new bbsForumThreadAdapter(getContext(),null,"",bbsInfo,userBriefInfo);
+        adapter = new ThreadAdapter(getContext(),null,"",bbsInfo,userBriefInfo);
         myThreadRecyclerview.setAdapter(adapter);
 
     }

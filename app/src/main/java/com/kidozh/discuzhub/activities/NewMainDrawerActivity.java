@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
@@ -31,6 +32,7 @@ import com.kidozh.discuzhub.activities.ui.home.HomeFragment;
 import com.kidozh.discuzhub.activities.ui.notifications.NotificationsFragment;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
 import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment;
+import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -39,6 +41,8 @@ import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.viewModels.MainDrawerViewModel;
+import com.mikepenz.materialdrawer.holder.BadgeStyle;
+import com.mikepenz.materialdrawer.holder.ColorHolder;
 import com.mikepenz.materialdrawer.holder.ImageHolder;
 import com.mikepenz.materialdrawer.holder.StringHolder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -51,6 +55,7 @@ import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.mikepenz.materialdrawer.widget.AccountHeaderView;
 import com.mikepenz.materialdrawer.widget.MaterialDrawerSliderView;
+import com.mikepenz.materialdrawer.util.MaterialDrawerSliderViewExtensionsKt;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -64,6 +69,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.appcompat.widget.Toolbar;
+import androidx.paging.PagedListAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import java.io.InputStream;
@@ -294,7 +300,9 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                     viewHistory.setIcon(new ImageHolder(R.drawable.ic_history_24px));
                     viewHistory.setIdentifier(FUNC_VIEW_HISTORY);
                     viewHistory.setDescription(new StringHolder(R.string.preference_summary_on_record_history));
+                    BadgeStyle viewHistoryBadgeStyle = new BadgeStyle(R.color.colorPrimary,R.color.colorPrimaryDark);
 
+                    viewHistory.setBadgeStyle(viewHistoryBadgeStyle);
                     slider.getItemAdapter().add(
                             new DividerDrawerItem(),
                             addAccount,
@@ -303,6 +311,8 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                             viewHistory,
                             new DividerDrawerItem()
                     );
+
+
 
                     if(forumUserBriefInfos == null || forumUserBriefInfos.size() == 0){
                         Log.d(TAG,"Trigger igcontive mode");
@@ -331,6 +341,7 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                     Log.d(TAG,"Updating "+id+ " users information "+forumUserBriefInfos.size());
                     viewModel.forumUserListMutableLiveData.postValue(forumUserBriefInfos);
                 });
+                new QueryCurrentViewHistoryCountAsyncTask().execute();
 
             } else {
                 toolbarTitleTextview.setText(R.string.no_bbs_found_in_db);
@@ -870,5 +881,45 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
         slider.saveInstanceState(outState);
         headerView.saveInstanceState(outState);
         super.onSaveInstanceState(outState);
+    }
+
+    private class QueryCurrentViewHistoryCountAsyncTask extends AsyncTask<Void,Void,Integer>{
+
+        private int CURRENT_BBS_NULL = -8541;
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            if(viewModel.currentBBSInformationMutableLiveData !=null){
+                return ViewHistoryDatabase.getInstance(getApplication()).getDao().getViewHistoryCount();
+            }
+            else{
+                return CURRENT_BBS_NULL;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            Log.d(TAG,"view histories number @@@ "+integer+" identifier "+FUNC_VIEW_HISTORY);
+            if(integer !=CURRENT_BBS_NULL){
+                ProfileSettingDrawerItem viewHistory = new ProfileSettingDrawerItem();
+                viewHistory.setName(new StringHolder(R.string.view_history));
+                viewHistory.setSelectable(false);
+                viewHistory.setIcon(new ImageHolder(R.drawable.ic_history_24px));
+                viewHistory.setIdentifier(FUNC_VIEW_HISTORY);
+                viewHistory.setDescription(new StringHolder(R.string.preference_summary_on_record_history));
+                viewHistory.setBadge(new StringHolder(String.valueOf(integer)));
+
+                MaterialDrawerSliderViewExtensionsKt.updateItem(slider,viewHistory);
+                if(slider.getItemAdapter().getFastAdapter() !=null){
+                    slider.getItemAdapter().getFastAdapter().notifyAdapterDataSetChanged();
+                }
+
+                //MaterialDrawerSliderViewExtensionsKt.updateBadge(slider,FUNC_VIEW_HISTORY,new StringHolder(String.valueOf(integer)));
+            }
+
+
+        }
     }
 }

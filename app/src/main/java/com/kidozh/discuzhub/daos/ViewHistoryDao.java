@@ -60,4 +60,13 @@ public interface ViewHistoryDao {
 
     @Delete
     public void delete(ViewHistory... viewHistories);
+
+    @Query("SELECT COUNT(id) FROM VIEWHISTORY")
+    public LiveData<Integer> getViewHistoryCountLiveData();
+
+    @Query("SELECT COUNT(id) FROM VIEWHISTORY")
+    public Integer getViewHistoryCount();
+
+    @Query("SELECT COUNT(id) FROM VIEWHISTORY where belongedBBSId=:belongBBSId")
+    public Integer getViewHistoryCount(int belongBBSId);
 }

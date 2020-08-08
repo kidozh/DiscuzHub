@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.bbsForumThreadAdapter;
+import com.kidozh.discuzhub.adapter.ThreadAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
@@ -44,7 +44,7 @@ public class HotThreadsFragment extends Fragment {
     TextView noItemFoundTextview;
     @BindView(R.id.fragment_hot_thread_empty_icon)
     ImageView emptyIconImageview;
-    bbsForumThreadAdapter forumThreadAdapter;
+    ThreadAdapter forumThreadAdapter;
     bbsInformation curBBS;
     forumUserBriefInfo curUser;
     private forumUserBriefInfo userBriefInfo;
@@ -106,7 +106,7 @@ public class HotThreadsFragment extends Fragment {
     private void configureThreadRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         dashboardRecyclerview.setLayoutManager(linearLayoutManager);
-        forumThreadAdapter = new bbsForumThreadAdapter(getContext(),null,null,curBBS,userBriefInfo);
+        forumThreadAdapter = new ThreadAdapter(getContext(),null,null,curBBS,userBriefInfo);
         dashboardRecyclerview.setAdapter(forumThreadAdapter);
         dashboardRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
