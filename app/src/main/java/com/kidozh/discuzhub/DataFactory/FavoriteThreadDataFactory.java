@@ -17,7 +17,7 @@ public class FavoriteThreadDataFactory extends DataSource.Factory {
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
     private MutableLiveData<FavoriteThreadDataSource> favoriteThreadDataSourceMutableLiveData;
-    private FavoriteThreadDataSource favoriteThreadDataSource;
+    public FavoriteThreadDataSource favoriteThreadDataSource;
     public MutableLiveData<Integer> networkStateLiveData = new MutableLiveData<>(bbsConstUtils.NETWORK_STATUS_SUCCESSFULLY);
 
     public FavoriteThreadDataFactory(@NonNull Context context,@NonNull bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo) {
@@ -36,5 +36,11 @@ public class FavoriteThreadDataFactory extends DataSource.Factory {
 
     public MutableLiveData<FavoriteThreadDataSource> getFavoriteThreadDataSourceMutableLiveData() {
         return favoriteThreadDataSourceMutableLiveData;
+    }
+
+    public void invalidate(){
+        if(favoriteThreadDataSource !=null){
+            favoriteThreadDataSource.invalidate();
+        }
     }
 }

@@ -5,9 +5,13 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.daos.FavoriteThreadDao;
+import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
+import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
@@ -50,6 +54,8 @@ public class PostsViewModel extends AndroidViewModel {
     public MutableLiveData<bbsParseUtils.DetailedThreadInfo> detailedThreadInfoMutableLiveData;
     public MutableLiveData<ThreadPostResult> threadPostResultMutableLiveData;
     private MutableLiveData<SecureInfoResult> secureInfoResultMutableLiveData;
+    public LiveData<Boolean> isFavoriteThreadMutableLiveData;
+    FavoriteThreadDao dao;
 
     public PostsViewModel(@NonNull Application application) {
         super(application);
@@ -64,6 +70,8 @@ public class PostsViewModel extends AndroidViewModel {
         errorText = new MutableLiveData<>("");
         detailedThreadInfoMutableLiveData = new MutableLiveData<>();
         threadPostResultMutableLiveData = new MutableLiveData<>();
+        dao = FavoriteThreadDatabase.getInstance(application).getDao();
+
     }
 
     public void setBBSInfo(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, ForumInfo forum, int tid){
@@ -79,6 +87,7 @@ public class PostsViewModel extends AndroidViewModel {
             URLUtils.ThreadStatus threadStatus = new URLUtils.ThreadStatus(tid,1);
             threadStatusMutableLiveData.setValue(threadStatus);
         }
+        isFavoriteThreadMutableLiveData = dao.isFavoriteThread(bbsInfo.getId(),tid);
 
 
 

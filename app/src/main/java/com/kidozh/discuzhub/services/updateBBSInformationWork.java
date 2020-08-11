@@ -167,6 +167,7 @@ public class updateBBSInformationWork extends Worker {
                 .build();
 
         try{
+
             Response response = client.newCall(request).execute();
             if(response.isSuccessful() && response.body()!=null){
 

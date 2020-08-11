@@ -691,6 +691,10 @@
     <string name="empty_hot_forum">No hot forum is currently provided. Check out later?</string>
     <string name="parse_hot_forum_list_null">We have received the response but got false hot forum content.</string>
     <string name="unset">”unset“</string>
+    <string name="favorite_thread_not_found">No thread is marked.</string>
+    <string name="favorite">Favorite</string>
+    <string name="unfavorite">Unfavorite</string>
+    <string name="favorite_thread_not_prepared">Favoriting or unfavoriting the thread is not prepared. Please wait util the thread is loaded.</string>
 
 
 </resources>

@@ -515,5 +515,9 @@
     <string name="empty_hot_forum">还没有一个比较热门的分论坛，不妨等等回来再看？</string>
     <string name="parse_hot_forum_list_null">尽管我们已经收到了服务器的回复，然而回复的热门论坛列表为空的。</string>
     <string name="unset">“未设置”</string>
+    <string name="favorite_thread_not_found">你还没有收藏一个帖子呢。</string>
+    <string name="favorite">收藏</string>
+    <string name="unfavorite">取消收藏</string>
+    <string name="favorite_thread_not_prepared">还没有完全加载这个帖子，您目前无法收藏或者取消收藏这个帖子。</string>
 
 </resources>

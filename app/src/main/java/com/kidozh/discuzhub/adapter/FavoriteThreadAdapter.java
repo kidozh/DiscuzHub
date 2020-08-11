@@ -38,13 +38,14 @@ import java.net.CacheRequest;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.OkHttpClient;
 
 public class FavoriteThreadAdapter extends PagedListAdapter<FavoriteThread, FavoriteThreadAdapter.FavoriteThreadViewHolder> {
     Context context;
     bbsInformation bbsInfo;
     forumUserBriefInfo curUser;
 
-    protected FavoriteThreadAdapter(@NonNull DiffUtil.ItemCallback<FavoriteThread> diffCallback) {
+    public FavoriteThreadAdapter() {
         super(FavoriteThread.DIFF_CALLBACK);
     }
 

@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 import android.text.Html;
 import android.text.SpannableString;
@@ -63,8 +64,11 @@ import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
 import com.kidozh.discuzhub.adapter.ThreadPostsAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadNotificationAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadPropertiesAdapter;
+import com.kidozh.discuzhub.daos.FavoriteThreadDao;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
+import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
+import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.ViewHistory;
@@ -666,6 +670,10 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                     mPostCaptchaImageview.setVisibility(View.GONE);
                 }
             }
+        });
+
+        threadDetailViewModel.isFavoriteThreadMutableLiveData.observe(this,aBoolean -> {
+            invalidateOptionsMenu();
         });
     }
 
@@ -1555,8 +1563,9 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         else {
             currentUrl = URLUtils.getViewThreadUrl(tid,String.valueOf(threadStatus.page));
         }
-
+        Log.d(TAG,"You just input "+item.getItemId()+" "+R.id.bbs_favorite);
         switch (item.getItemId()) {
+
             case android.R.id.home:   //返回键的id
                 this.finishAfterTransition();
                 return false;
@@ -1647,6 +1656,24 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 return true;
 
             }
+            case R.id.bbs_favorite:{
+                ThreadPostResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
+                if(result!=null && result.threadPostVariables!=null && result.threadPostVariables.detailedThreadInfo!=null){
+                    bbsParseUtils.DetailedThreadInfo detailedThreadInfo = result.threadPostVariables.detailedThreadInfo;
+                    FavoriteThread favoriteThread = detailedThreadInfo.toFavoriteThread(bbsInfo.getId());
+                    // save it to the database
+                    boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
+                    Log.d(TAG,"is Favorite "+isFavorite);
+                    new FavoritingThreadAsyncTask(favoriteThread,!isFavorite).execute();
+
+                    return true;
+                }
+                else {
+                    Toasty.info(this,getString(R.string.favorite_thread_not_prepared),Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
+            }
             case R.id.bbs_about_app:{
                 Intent intent = new Intent(this,aboutAppActivity.class);
                 startActivity(intent);
@@ -1675,13 +1702,26 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 if(ThreadStatus !=null){
                     Log.d(TAG,"ON CREATE GET ascend mode in menu "+ThreadStatus.datelineAscend);
                     if(ThreadStatus.datelineAscend){
-                        menu.findItem(R.id.bbs_forum_nav_dateline_sort).setIcon(getDrawable(R.drawable.vector_drawable_arrow_upward_24px));
+                        menu.findItem(R.id.bbs_forum_nav_dateline_sort).setIcon(ContextCompat.getDrawable(getApplication(),R.drawable.vector_drawable_arrow_upward_24px));
                     }
                     else {
-                        menu.findItem(R.id.bbs_forum_nav_dateline_sort).setIcon(getDrawable(R.drawable.vector_drawable_arrow_downward_24px));
+                        menu.findItem(R.id.bbs_forum_nav_dateline_sort).setIcon(ContextCompat.getDrawable(getApplication(),R.drawable.vector_drawable_arrow_downward_24px));
                     }
 
+
                 }
+
+                boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
+                Log.d(TAG,"Triggering favorite status "+isFavorite);
+                if(!isFavorite){
+                    menu.findItem(R.id.bbs_favorite).setIcon(ContextCompat.getDrawable(getApplication(),R.drawable.ic_not_favorite_24px));
+                    menu.findItem(R.id.bbs_favorite).setTitle(R.string.favorite);
+                }
+                else {
+                    menu.findItem(R.id.bbs_favorite).setIcon(ContextCompat.getDrawable(getApplication(),R.drawable.ic_favorite_24px));
+                    menu.findItem(R.id.bbs_favorite).setTitle(R.string.unfavorite);
+                }
+
 
             }
         }
@@ -1702,6 +1742,14 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
             else {
                 menu.findItem(R.id.bbs_forum_nav_dateline_sort).setIcon(getDrawable(R.drawable.vector_drawable_arrow_downward_24px));
             }
+//            boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
+
+//            if(!isFavorite){
+//                menu.findItem(R.id.bbs_favorite).setIcon(ContextCompat.getDrawable(getApplication(),R.drawable.ic_not_favorite_24px)).setTitle(R.string.favorite);
+//            }
+//            else {
+//                menu.findItem(R.id.bbs_favorite).setIcon(ContextCompat.getDrawable(getApplication(),R.drawable.ic_favorite_24px)).setTitle(R.string.favorite);
+//            }
             // invalidateOptionsMenu();
         }
         return super.onPrepareOptionsMenu(menu);
@@ -1735,6 +1783,48 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
             }
             // dao.insert(viewHistory);
             return null;
+        }
+    }
+
+    public class FavoritingThreadAsyncTask extends AsyncTask<Void,Void,Boolean> {
+
+        FavoriteThread favoriteThread;
+        FavoriteThreadDao dao;
+        boolean favorite;
+
+        public FavoritingThreadAsyncTask(FavoriteThread favoriteThread, boolean favorite){
+
+            this.favoriteThread = favoriteThread;
+            this.favorite = favorite;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            dao = FavoriteThreadDatabase.getInstance(getApplicationContext()).getDao();
+            Log.d(TAG,"Favorite thread "+favoriteThread.title+" "+favorite);
+            if(favorite){
+                dao.insert(favoriteThread);
+
+            }
+            else {
+                // clear potential
+                dao.delete(bbsInfo.getId(),tid);
+
+            }
+            return true;
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean favorite) {
+            super.onPostExecute(favorite);
+            if(!favorite){
+                Toasty.success(getApplication(),getString(R.string.favorite),Toast.LENGTH_SHORT).show();
+
+            }
+            else {
+                Toasty.success(getApplication(),getString(R.string.unfavorite),Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

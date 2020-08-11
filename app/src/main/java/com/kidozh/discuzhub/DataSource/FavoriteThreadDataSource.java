@@ -53,6 +53,7 @@ public class FavoriteThreadDataSource extends PageKeyedDataSource<Integer, Favor
         Request request = new Request.Builder()
                 .url(url)
                 .build();
+        URLUtils.setBBS(bbsInfo);
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -96,6 +97,7 @@ public class FavoriteThreadDataSource extends PageKeyedDataSource<Integer, Favor
         Request request = new Request.Builder()
                 .url(url)
                 .build();
+        URLUtils.setBBS(bbsInfo);
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

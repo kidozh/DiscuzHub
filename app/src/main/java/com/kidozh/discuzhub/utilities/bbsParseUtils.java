@@ -974,6 +974,20 @@ public class bbsParseUtils {
         public String freeMessage;
         @JsonProperty("replycredit_rule")
         public replyCreditRule creditRule;
+
+        public FavoriteThread toFavoriteThread(int bbsId){
+            FavoriteThread favoriteThread = new FavoriteThread();
+            favoriteThread.belongedBBSId = bbsId;
+            favoriteThread.uid = this.authorId;
+            favoriteThread.idKey = this.tid;
+            favoriteThread.idType = "tid";
+            favoriteThread.title = this.subject;
+            favoriteThread.description = this.freeMessage == null ?"":this.freeMessage;
+            favoriteThread.author = this.author;
+            favoriteThread.date = this.lastPostTime;
+            favoriteThread.replies = this.replies;
+            return favoriteThread;
+        }
     }
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class replyCreditRule{

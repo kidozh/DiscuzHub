@@ -20,7 +20,7 @@ import java.util.Objects;
 public class FavoriteThread implements Serializable {
     @PrimaryKey(autoGenerate = true)
     @JsonIgnore
-    private int id;
+    public int id;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public int favid, uid;
     @JsonProperty("id")
@@ -33,7 +33,7 @@ public class FavoriteThread implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public int spaceUid;
     @NonNull
-    public String title, description, author;
+    public String title, description = "", author;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="s")
     @JsonProperty("dateline")
     public Date date;
@@ -45,6 +45,8 @@ public class FavoriteThread implements Serializable {
     public String url = "";
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public int replies;
+    @JsonIgnore
+    public int belongedBBSId;
 
     public static DiffUtil.ItemCallback<FavoriteThread> DIFF_CALLBACK = new DiffUtil.ItemCallback<FavoriteThread>() {
         @Override

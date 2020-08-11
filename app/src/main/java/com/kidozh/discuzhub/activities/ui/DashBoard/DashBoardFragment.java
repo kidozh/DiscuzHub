@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ui.FavoriteThread.FavoriteThreadFragment;
 import com.kidozh.discuzhub.activities.ui.HotForums.HotForumsFragment;
 import com.kidozh.discuzhub.activities.ui.HotThreads.HotThreadsFragment;
 import com.kidozh.discuzhub.entities.HotForum;
@@ -110,22 +111,22 @@ public class DashBoardFragment extends Fragment {
             switch (position){
                 case 0:{
                     tab.setText(R.string.hot_thread);
-                    tab.setIcon(R.drawable.ic_thread_24px);
+//                    tab.setIcon(R.drawable.ic_thread_24px);
                     break;
                 }
                 case 1:{
                     tab.setText(R.string.hot_forum);
-                    tab.setIcon(R.drawable.ic_dashboard_forum_24px);
+//                    tab.setIcon(R.drawable.ic_dashboard_forum_24px);
                     break;
                 }
                 case 2:{
                     tab.setText(R.string.marked_thread);
-                    tab.setIcon(R.drawable.ic_mark_thread_24px);
+//                    tab.setIcon(R.drawable.ic_mark_thread_24px);
                     break;
                 }
                 case 3:{
                     tab.setText(R.string.marked_forum);
-                    tab.setIcon(R.drawable.ic_mark_forum_24px);
+//                    tab.setIcon(R.drawable.ic_mark_forum_24px);
                     break;
                 }
 
@@ -191,6 +192,9 @@ public class DashBoardFragment extends Fragment {
                 }
                 case 1:{
                     return HotForumsFragment.newInstance(bbsInfo,userBriefInfo);
+                }
+                case 2:{
+                    return FavoriteThreadFragment.newInstance(bbsInfo,userBriefInfo);
                 }
             }
             return HotThreadsFragment.newInstance(bbsInfo,userBriefInfo);

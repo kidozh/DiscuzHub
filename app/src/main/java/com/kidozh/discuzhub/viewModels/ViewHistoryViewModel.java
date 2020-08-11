@@ -23,7 +23,7 @@ public class ViewHistoryViewModel extends AndroidViewModel {
     private ViewHistoryDao viewHistoryDao;
     PagedList.Config myPagingConfig = new PagedList.Config.Builder()
             .setEnablePlaceholders(true)
-            .setPageSize(20)
+            .setPageSize(10)
             .build();
     private bbsInformation bbsInfo;
 
