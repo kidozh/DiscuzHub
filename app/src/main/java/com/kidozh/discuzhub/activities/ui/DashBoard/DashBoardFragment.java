@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.activities.ui.DashBoard;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -22,9 +24,12 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.FavoriteThread.FavoriteThreadFragment;
 import com.kidozh.discuzhub.activities.ui.HotForums.HotForumsFragment;
 import com.kidozh.discuzhub.activities.ui.HotThreads.HotThreadsFragment;
+import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
 import com.kidozh.discuzhub.entities.HotForum;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,6 +53,8 @@ public class DashBoardFragment extends Fragment {
 
     private bbsInformation bbsInfo;
     private forumUserBriefInfo userBriefInfo;
+
+    DashBoardViewModel viewModel;
 
     public DashBoardFragment() {
         // Required empty public constructor
@@ -95,6 +102,7 @@ public class DashBoardFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this,view);
+        viewModel = new ViewModelProvider(this).get(DashBoardViewModel.class);
         bindTabLayoutAndViewPager2();
     }
 
@@ -104,6 +112,16 @@ public class DashBoardFragment extends Fragment {
         }
         else {
             viewPager.setAdapter(new DashBoardViewPagerAdapter(getChildFragmentManager(),getLifecycle()));
+            viewModel.setFavoriteThreadInfo(bbsInfo.getId());
+            viewModel.FavoriteThreadNumber.observe(getViewLifecycleOwner(), integer -> {
+                if(integer > 0){
+                    Objects.requireNonNull(tabLayout.getTabAt(2)).getOrCreateBadge().setNumber(integer);
+                }
+                else {
+                    Objects.requireNonNull(tabLayout.getTabAt(2)).removeBadge();
+                }
+
+            });
         }
 
         new TabLayoutMediator(tabLayout,viewPager,
@@ -111,22 +129,22 @@ public class DashBoardFragment extends Fragment {
             switch (position){
                 case 0:{
                     tab.setText(R.string.hot_thread);
-//                    tab.setIcon(R.drawable.ic_thread_24px);
+                    tab.setIcon(R.drawable.ic_thread_24px);
                     break;
                 }
                 case 1:{
                     tab.setText(R.string.hot_forum);
-//                    tab.setIcon(R.drawable.ic_dashboard_forum_24px);
+                    tab.setIcon(R.drawable.ic_dashboard_forum_24px);
                     break;
                 }
                 case 2:{
                     tab.setText(R.string.marked_thread);
-//                    tab.setIcon(R.drawable.ic_mark_thread_24px);
+                    tab.setIcon(R.drawable.ic_mark_thread_24px);
                     break;
                 }
                 case 3:{
                     tab.setText(R.string.marked_forum);
-//                    tab.setIcon(R.drawable.ic_mark_forum_24px);
+                    tab.setIcon(R.drawable.ic_mark_forum_24px);
                     break;
                 }
 

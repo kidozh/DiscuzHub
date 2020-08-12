@@ -153,7 +153,7 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getApplicationContext(),R.drawable.ic_menu_24px));
+        toolbar.setNavigationIcon(getDrawable(R.drawable.ic_menu_24px));
 
 
     }
@@ -177,6 +177,7 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                     //URLUtils.setBBS(currentBBSInfo);
                     Log.d(TAG,"Load url "+URLUtils.getBBSLogoUrl(currentBBSInfo.base_url));
                     ProfileDrawerItem bbsProfile = new ProfileDrawerItem();
+
                     bbsProfile.setName(new StringHolder(currentBBSInfo.site_name));
                     bbsProfile.setNameShown(true);
                     bbsProfile.setIdentifier(currentBBSInfo.getId());
@@ -194,23 +195,23 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
 
             }
             // add bbs
-            ProfileDrawerItem addBBSProfile = new ProfileDrawerItem();
+            ProfileSettingDrawerItem addBBSProfile = new ProfileSettingDrawerItem();
             addBBSProfile.setName(new StringHolder(getString(R.string.add_a_bbs)));
             addBBSProfile.setIdentifier(FUNC_ADD_A_BBS);
             addBBSProfile.setDescription(new StringHolder(getString(R.string.title_add_a_forum_by_url)));
             addBBSProfile.setSelectable(false);
-            addBBSProfile.setNameShown(true);
+            //addBBSProfile.setNameShown(true);
             addBBSProfile.setIcon(new ImageHolder(R.drawable.ic_add_24px));
             headerView.addProfiles(addBBSProfile);
             Log.d(TAG,"Add a bbs profile");
             // manage bbs
             if(bbsInformations !=null && bbsInformations.size() > 0){
-                ProfileDrawerItem manageBBSProfile = new ProfileDrawerItem();
+                ProfileSettingDrawerItem manageBBSProfile = new ProfileSettingDrawerItem();
                 manageBBSProfile.setName(new StringHolder(getString(R.string.manage_bbs)));
                 manageBBSProfile.setIdentifier(FUNC_MANAGE_BBS);
                 manageBBSProfile.setDescription(new StringHolder(getString(R.string.manage_bbs_description)));
                 manageBBSProfile.setSelectable(false);
-                manageBBSProfile.setNameShown(true);
+                //manageBBSProfile.setNameShown(true);
                 manageBBSProfile.setIcon(new ImageHolder(R.drawable.ic_manage_bbs_24px));
                 headerView.addProfiles(manageBBSProfile);
             }
@@ -238,9 +239,15 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                         int avatarResource = getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),
                                 "drawable",getPackageName());
                         ProfileDrawerItem userProfile = new ProfileDrawerItem();
+
                         userProfile.setSelectable(true);
                         userProfile.setName(new StringHolder(userBriefInfo.username));
-                        userProfile.setIcon(new ImageHolder(userBriefInfo.avatarUrl));
+                        if(viewModel!=null){
+                            URLUtils.setBBS(viewModel.currentBBSInformationMutableLiveData.getValue());
+                        }
+
+                        userProfile.setIcon(new ImageHolder(URLUtils.getDefaultAvatarUrlByUid(userBriefInfo.uid)));
+//                        userProfile.setIcon(new ImageHolder(userBriefInfo.avatarUrl));
                         userProfile.setNameShown(true);
                         userProfile.setIdentifier(userBriefInfo.getId());
                         userProfile.setDescription(new StringHolder(getString(R.string.user_id_description,userBriefInfo.uid)));
@@ -256,12 +263,13 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                 List<bbsInformation> bbsInformationList = viewModel.allBBSInformationMutableLiveData.getValue();
                 if(bbsInformationList == null || bbsInformationList.size() == 0){
                     // add bbs
-                    ProfileDrawerItem addBBSProfile = new ProfileDrawerItem();
+                    PrimaryDrawerItem addBBSProfile = new PrimaryDrawerItem();
                     addBBSProfile.setName(new StringHolder(getString(R.string.add_a_bbs)));
                     addBBSProfile.setIdentifier(FUNC_ADD_A_BBS);
                     addBBSProfile.setDescription(new StringHolder(getString(R.string.title_add_a_forum_by_url)));
                     addBBSProfile.setSelectable(false);
-                    addBBSProfile.setNameShown(true);
+
+                    //addBBSProfile.setNameShown(true);
                     addBBSProfile.setIcon(new ImageHolder(R.drawable.ic_add_24px));
                     slider.getItemAdapter().add(addBBSProfile);
                 }
@@ -274,35 +282,33 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                     incognito.setDescription(new StringHolder(R.string.user_anonymous_description));
                     slider.getItemAdapter().add(incognito);
                     // other profiles
-                    ProfileSettingDrawerItem addAccount = new ProfileSettingDrawerItem();
+                    PrimaryDrawerItem addAccount = new PrimaryDrawerItem();
                     addAccount.setName(new StringHolder(R.string.add_a_account));
                     addAccount.setSelectable(false);
                     addAccount.setIcon(new ImageHolder(R.drawable.ic_person_add_24px));
                     addAccount.setIdentifier(FUNC_ADD_AN_ACCOUNT);
                     addAccount.setDescription(new StringHolder(R.string.bbs_add_an_account_description));
-                    ProfileSettingDrawerItem registerAccount = new ProfileSettingDrawerItem();
+                    PrimaryDrawerItem registerAccount = new PrimaryDrawerItem();
                     registerAccount.setName(new StringHolder(R.string.register_an_account));
                     registerAccount.setSelectable(false);
                     registerAccount.setIcon(new ImageHolder(R.drawable.ic_register_account_24px));
                     registerAccount.setIdentifier(FUNC_REGISTER_ACCOUNT);
                     registerAccount.setDescription(new StringHolder(R.string.register_an_account_description));
                     // manage
-                    ProfileSettingDrawerItem manageAccount = new ProfileSettingDrawerItem();
+                    PrimaryDrawerItem manageAccount = new PrimaryDrawerItem();
                     manageAccount.setName(new StringHolder(R.string.bbs_manage_users));
                     manageAccount.setSelectable(false);
                     manageAccount.setIcon(new ImageHolder(R.drawable.ic_manage_user_24px));
                     manageAccount.setIdentifier(FUNC_MANAGE_ACCOUNT);
                     manageAccount.setDescription(new StringHolder(R.string.bbs_manage_users_description));
                     // history
-                    ProfileSettingDrawerItem viewHistory = new ProfileSettingDrawerItem();
+                    PrimaryDrawerItem viewHistory = new PrimaryDrawerItem();
                     viewHistory.setName(new StringHolder(R.string.view_history));
                     viewHistory.setSelectable(false);
                     viewHistory.setIcon(new ImageHolder(R.drawable.ic_history_24px));
                     viewHistory.setIdentifier(FUNC_VIEW_HISTORY);
                     viewHistory.setDescription(new StringHolder(R.string.preference_summary_on_record_history));
-                    BadgeStyle viewHistoryBadgeStyle = new BadgeStyle(R.color.colorPrimary,R.color.colorPrimaryDark);
 
-                    viewHistory.setBadgeStyle(viewHistoryBadgeStyle);
                     slider.getItemAdapter().add(
                             new DividerDrawerItem(),
                             addAccount,

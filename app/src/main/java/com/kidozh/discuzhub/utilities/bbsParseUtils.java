@@ -917,9 +917,11 @@ public class bbsParseUtils {
         @JsonProperty("sortid")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         public int sortId;
-        @JsonProperty("lastpost")
+        @JsonProperty("dateline")
         @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="s")
-        public Date lastPostTime;
+        public Date lastPostTime = new Date();
+        @JsonProperty("lastpost")
+        public String lastPostTimeString;
         public String lastposter= "";
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("displayorder")

@@ -236,6 +236,14 @@ public class URLUtils {
         return UC_SERVER_URL+String.format("/avatar.php?uid=%s",uid);
     }
 
+    public static String getLargeAvatarUrlByUid(int uid){
+        return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=large",uid);
+    }
+
+    public static String getLargeAvatarUrlByUid(String uid){
+        return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=large",uid);
+    }
+
     public static String getLoginUrl(){
         Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
                 .appendQueryParameter("version","4")

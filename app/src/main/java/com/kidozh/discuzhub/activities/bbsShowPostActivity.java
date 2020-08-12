@@ -1665,8 +1665,6 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                     boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
                     Log.d(TAG,"is Favorite "+isFavorite);
                     new FavoritingThreadAsyncTask(favoriteThread,!isFavorite).execute();
-
-                    return true;
                 }
                 else {
                     Toasty.info(this,getString(R.string.favorite_thread_not_prepared),Toast.LENGTH_SHORT).show();
@@ -1714,11 +1712,11 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
                 Log.d(TAG,"Triggering favorite status "+isFavorite);
                 if(!isFavorite){
-                    menu.findItem(R.id.bbs_favorite).setIcon(ContextCompat.getDrawable(getApplication(),R.drawable.ic_not_favorite_24px));
+                    menu.findItem(R.id.bbs_favorite).setIcon(getDrawable(R.drawable.ic_not_favorite_24px));
                     menu.findItem(R.id.bbs_favorite).setTitle(R.string.favorite);
                 }
                 else {
-                    menu.findItem(R.id.bbs_favorite).setIcon(ContextCompat.getDrawable(getApplication(),R.drawable.ic_favorite_24px));
+                    menu.findItem(R.id.bbs_favorite).setIcon(getDrawable(R.drawable.ic_favorite_24px));
                     menu.findItem(R.id.bbs_favorite).setTitle(R.string.unfavorite);
                 }
 
@@ -1804,27 +1802,29 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
             Log.d(TAG,"Favorite thread "+favoriteThread.title+" "+favorite);
             if(favorite){
                 dao.insert(favoriteThread);
-
+                return true;
             }
             else {
                 // clear potential
                 dao.delete(bbsInfo.getId(),tid);
+                return false;
 
             }
-            return true;
+
         }
 
 
         @Override
         protected void onPostExecute(Boolean favorite) {
             super.onPostExecute(favorite);
-            if(!favorite){
+            if(favorite){
                 Toasty.success(getApplication(),getString(R.string.favorite),Toast.LENGTH_SHORT).show();
 
             }
             else {
                 Toasty.success(getApplication(),getString(R.string.unfavorite),Toast.LENGTH_SHORT).show();
             }
+            VibrateUtils.vibrateSlightly(getApplication());
         }
     }
 }

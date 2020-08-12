@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,7 @@ import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
 
 public class FavoriteThreadAdapter extends PagedListAdapter<FavoriteThread, FavoriteThreadAdapter.FavoriteThreadViewHolder> {
+    private static final String TAG = FavoriteThreadAdapter.class.getSimpleName();
     Context context;
     bbsInformation bbsInfo;
     forumUserBriefInfo curUser;
@@ -77,9 +79,14 @@ public class FavoriteThreadAdapter extends PagedListAdapter<FavoriteThread, Favo
                 holder.description.setText(favoriteThread.description);
             }
             holder.publishAt.setText(timeDisplayUtils.getLocalePastTimeString(context,favoriteThread.date));
+            Log.d(TAG,"get publish date "+favoriteThread.date);
             holder.replyNumber.setText(context.getString(R.string.bbs_thread_reply_number,favoriteThread.replies));
             String avatarURL = URLUtils.getDefaultAvatarUrlByUid(favoriteThread.uid);
             int avatar_num = favoriteThread.uid;
+            avatar_num = avatar_num % 16;
+            if(avatar_num < 0){
+                avatar_num = -avatar_num;
+            }
             int avatarResource = context.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",context.getPackageName());
             RequestOptions options = new RequestOptions()
                     .placeholder(ContextCompat.getDrawable(context,avatarResource))

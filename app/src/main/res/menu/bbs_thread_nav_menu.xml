@@ -11,6 +11,7 @@
         android:id="@+id/bbs_favorite"
         android:icon="@drawable/ic_not_favorite_24px"
         android:title="@string/favorite"
+        android:visible="true"
         app:showAsAction="ifRoom" />
 
     <item

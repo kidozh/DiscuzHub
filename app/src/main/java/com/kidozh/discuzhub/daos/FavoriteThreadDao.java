@@ -46,5 +46,5 @@ public interface FavoriteThreadDao {
     void delete(FavoriteThread... favoriteThreads);
 
     @Query("SELECT COUNT(id) FROM FavoriteThread where belongedBBSId=:belongBBSId")
-    public Integer getFavoriteThreadCount(int belongBBSId);
+    public LiveData<Integer> getFavoriteThreadCountLiveData(int belongBBSId);
 }

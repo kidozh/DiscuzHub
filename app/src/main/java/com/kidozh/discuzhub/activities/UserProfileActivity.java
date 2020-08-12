@@ -480,21 +480,6 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
     }
 
-    private List<UserProfileItem> getEducationInfoList(){
-        UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
-        if(userProfileResult == null){
-            return new ArrayList<>();
-        }
-        List<UserProfileItem> userProfileItemList = new ArrayList<>();
-
-
-
-
-
-        return userProfileItemList;
-
-    }
-
     private List<UserProfileItem> getEduOccupationInfoList(){
         UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
         if(userProfileResult == null){
