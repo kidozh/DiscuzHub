@@ -1,4 +1,4 @@
-package com.kidozh.discuzhub.services;
+package com.kidozh.discuzhub.works;
 
 import android.app.Notification;
 import android.app.PendingIntent;

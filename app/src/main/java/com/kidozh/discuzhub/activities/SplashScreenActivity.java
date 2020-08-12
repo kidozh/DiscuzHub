@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 import androidx.work.Constraints;
@@ -21,11 +20,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.kidozh.discuzhub.MainActivity;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.services.updateBBSInformationWork;
+import com.kidozh.discuzhub.works.updateBBSInformationWork;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.notificationUtils;
 

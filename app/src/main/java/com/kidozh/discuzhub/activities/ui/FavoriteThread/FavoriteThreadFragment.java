@@ -1,8 +1,8 @@
 package com.kidozh.discuzhub.activities.ui.FavoriteThread;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,17 +15,28 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ui.DashBoard.DashBoardFragment;
 import com.kidozh.discuzhub.adapter.FavoriteThreadAdapter;
+import com.kidozh.discuzhub.daos.FavoriteThreadDao;
+import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
 import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class FavoriteThreadFragment extends Fragment {
 
@@ -73,6 +84,8 @@ public class FavoriteThreadFragment extends Fragment {
     RecyclerView favoriteThreadRecyclerview;
     @BindView(R.id.favorite_thread_swipelayout)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.favorite_thread_sync_progressbar)
+    ProgressBar syncFavoriteThreadProgressBar;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -90,6 +103,7 @@ public class FavoriteThreadFragment extends Fragment {
         configureRecyclerview();
         bindViewModel();
         configureSwipeRefreshLayout();
+        syncFavoriteThreadFromServer();
     }
 
     private void configureRecyclerview(){
@@ -104,6 +118,7 @@ public class FavoriteThreadFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                mViewModel.startSyncFavoriteThread();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -120,6 +135,104 @@ public class FavoriteThreadFragment extends Fragment {
                 blankFavoriteThreadView.setVisibility(View.GONE);
             }
         });
+    }
+
+    public void syncFavoriteThreadFromServer(){
+        if(getContext() !=null && UserPreferenceUtils.isSyncBBSInformation(getContext())){
+            int page = 1;
+            // sync information
+            Toasty.info(getContext(),getString(R.string.sync_favorite_thread_start,bbsInfo.site_name), Toast.LENGTH_SHORT).show();
+
+            // loop to fetch favorite thread from server
+            bindSyncStatus();
+
+            mViewModel.startSyncFavoriteThread();
+
+        }
+
+    }
+
+    private void bindSyncStatus(){
+        mViewModel.totalCount.observe(getViewLifecycleOwner(), count ->{
+            if(count == -1){
+                syncFavoriteThreadProgressBar.setVisibility(View.VISIBLE);
+                syncFavoriteThreadProgressBar.setIndeterminate(true);
+            }
+
+        });
+
+        mViewModel.favoriteThreadInServer.observe(getViewLifecycleOwner(),favoriteThreads -> {
+            if(mViewModel !=null){
+                int count = mViewModel.totalCount.getValue();
+                if(count == -1){
+
+                }
+                else if(count > favoriteThreads.size()){
+                    syncFavoriteThreadProgressBar.setVisibility(View.VISIBLE);
+                    syncFavoriteThreadProgressBar.setMax(count);
+
+                    syncFavoriteThreadProgressBar.setProgress(favoriteThreads.size());
+
+                }
+                else {
+                    syncFavoriteThreadProgressBar.setVisibility(View.GONE);
+                    Toasty.success(getContext(),getString(R.string.sync_favorite_thread_load_all),Toast.LENGTH_LONG).show();
+                }
+            }
+            else {
+                syncFavoriteThreadProgressBar.setVisibility(View.GONE);
+            }
+
+        });
+
+        mViewModel.newFavoriteThread.observe(getViewLifecycleOwner(),newFavoriteThreads ->{
+            new SaveFavoriteThreadAsyncTask(newFavoriteThreads).execute();
+        });
+    }
+
+    private class SaveFavoriteThreadAsyncTask extends AsyncTask<Void,Void,Integer>{
+
+        private List<FavoriteThread> favoriteThreadList;
+
+        public SaveFavoriteThreadAsyncTask(List<FavoriteThread> favoriteThreadList) {
+            this.favoriteThreadList = favoriteThreadList;
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            FavoriteThreadDao dao = FavoriteThreadDatabase.getInstance(getContext()).getDao();
+            // query first
+            List<Integer> insertTids = new ArrayList<>();
+            for(int i=0;i<favoriteThreadList.size();i++){
+                insertTids.add(favoriteThreadList.get(i).idKey);
+            }
+
+            List<FavoriteThread> queryList = dao.queyFavoriteThreadListByTids(bbsInfo.getId()
+                    ,userBriefInfo.getUid(),
+                    insertTids
+                    );
+
+            for(int i=0;i<queryList.size();i++){
+                int tid = queryList.get(i).idKey;
+                FavoriteThread queryThread = queryList.get(i);
+                for(int j=0;j<favoriteThreadList.size();j++){
+                    FavoriteThread favoriteThread = favoriteThreadList.get(j);
+                    if(favoriteThread.idKey == tid){
+                        favoriteThread.id = queryThread.id;
+                        break;
+                    }
+                }
+            }
+
+            dao.insert(favoriteThreadList);
+            return favoriteThreadList.size();
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+
+        }
     }
 
 

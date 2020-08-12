@@ -46,7 +46,7 @@ public class FavoriteThread implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public int replies;
     @JsonIgnore
-    public int belongedBBSId;
+    public int belongedBBSId, userId;
 
     public static DiffUtil.ItemCallback<FavoriteThread> DIFF_CALLBACK = new DiffUtil.ItemCallback<FavoriteThread>() {
         @Override

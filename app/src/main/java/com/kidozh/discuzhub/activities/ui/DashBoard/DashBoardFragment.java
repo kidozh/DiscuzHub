@@ -112,7 +112,7 @@ public class DashBoardFragment extends Fragment {
         }
         else {
             viewPager.setAdapter(new DashBoardViewPagerAdapter(getChildFragmentManager(),getLifecycle()));
-            viewModel.setFavoriteThreadInfo(bbsInfo.getId());
+            viewModel.setFavoriteThreadInfo(bbsInfo.getId(),userBriefInfo.getId());
             viewModel.FavoriteThreadNumber.observe(getViewLifecycleOwner(), integer -> {
                 if(integer > 0){
                     Objects.requireNonNull(tabLayout.getTabAt(2)).getOrCreateBadge().setNumber(integer);

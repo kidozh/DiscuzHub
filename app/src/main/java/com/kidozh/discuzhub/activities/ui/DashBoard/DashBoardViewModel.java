@@ -21,8 +21,8 @@ public class DashBoardViewModel extends AndroidViewModel {
         dao = FavoriteThreadDatabase.getInstance(application).getDao();
     }
 
-    public void setFavoriteThreadInfo(int bbsId){
-        FavoriteThreadNumber = dao.getFavoriteThreadCountLiveData(bbsId);
+    public void setFavoriteThreadInfo(int bbsId, int userId){
+        FavoriteThreadNumber = dao.getFavoriteThreadCountLiveData(bbsId, userId);
     }
 
 

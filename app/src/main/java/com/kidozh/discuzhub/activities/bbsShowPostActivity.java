@@ -77,8 +77,11 @@ import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.DisplayForumResult;
+import com.kidozh.discuzhub.results.FavoriteThreadActionResult;
+import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadPostResult;
+import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -109,6 +112,7 @@ import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import retrofit2.Retrofit;
 
 public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFragment.OnSmileyPressedInteraction,
         ThreadPostsAdapter.onFilterChanged,
@@ -1660,11 +1664,18 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 ThreadPostResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
                 if(result!=null && result.threadPostVariables!=null && result.threadPostVariables.detailedThreadInfo!=null){
                     bbsParseUtils.DetailedThreadInfo detailedThreadInfo = result.threadPostVariables.detailedThreadInfo;
-                    FavoriteThread favoriteThread = detailedThreadInfo.toFavoriteThread(bbsInfo.getId());
+                    FavoriteThread favoriteThread = detailedThreadInfo.toFavoriteThread(bbsInfo.getId(),result.threadPostVariables.member_uid);
                     // save it to the database
                     boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
-                    Log.d(TAG,"is Favorite "+isFavorite);
-                    new FavoritingThreadAsyncTask(favoriteThread,!isFavorite).execute();
+                    if(isFavorite){
+                        FavoriteThread favoriteThreadInDB = threadDetailViewModel.favoriteThreadLiveData.getValue();
+                        new FavoritingThreadAsyncTask(favoriteThread,false).execute();
+                    }
+                    else {
+                        Log.d(TAG,"is Favorite "+isFavorite);
+                        new FavoritingThreadAsyncTask(favoriteThread,true).execute();
+                    }
+
                 }
                 else {
                     Toasty.info(this,getString(R.string.favorite_thread_not_prepared),Toast.LENGTH_SHORT).show();
@@ -1740,14 +1751,6 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
             else {
                 menu.findItem(R.id.bbs_forum_nav_dateline_sort).setIcon(getDrawable(R.drawable.vector_drawable_arrow_downward_24px));
             }
-//            boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
-
-//            if(!isFavorite){
-//                menu.findItem(R.id.bbs_favorite).setIcon(ContextCompat.getDrawable(getApplication(),R.drawable.ic_not_favorite_24px)).setTitle(R.string.favorite);
-//            }
-//            else {
-//                menu.findItem(R.id.bbs_favorite).setIcon(ContextCompat.getDrawable(getApplication(),R.drawable.ic_favorite_24px)).setTitle(R.string.favorite);
-//            }
             // invalidateOptionsMenu();
         }
         return super.onPrepareOptionsMenu(menu);
@@ -1788,7 +1791,10 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
 
         FavoriteThread favoriteThread;
         FavoriteThreadDao dao;
-        boolean favorite;
+        boolean favorite, error=false;
+        Retrofit retrofit;
+        retrofit2.Call<FavoriteThreadActionResult> favoriteThreadActionResultCall;
+        MessageResult messageResult;
 
         public FavoritingThreadAsyncTask(FavoriteThread favoriteThread, boolean favorite){
 
@@ -1797,19 +1803,84 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         }
 
         @Override
-        protected Boolean doInBackground(Void... voids) {
-            dao = FavoriteThreadDatabase.getInstance(getApplicationContext()).getDao();
-            Log.d(TAG,"Favorite thread "+favoriteThread.title+" "+favorite);
-            if(favorite){
-                dao.insert(favoriteThread);
-                return true;
-            }
-            else {
-                // clear potential
-                dao.delete(bbsInfo.getId(),tid);
-                return false;
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+            DiscuzApiService service = retrofit.create(DiscuzApiService.class);
+            ThreadPostResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
+            if(result !=null && result.threadPostVariables!=null){
+                if(favorite){
+                    favoriteThreadActionResultCall = service.favoriteThreadActionResult(result.threadPostVariables.formHash
+                            ,favoriteThread.idKey);
+                }
+                else {
+                    if(favoriteThread.favid == 0){
+                        // just remove it from database
+                    }
+                    else {
+                        favoriteThreadActionResultCall = service.unfavoriteThreadActionResult(result.threadPostVariables.formHash
+                                ,favoriteThread.favid);
+                    }
+
+                }
 
             }
+
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+            dao = FavoriteThreadDatabase.getInstance(getApplicationContext()).getDao();
+            Log.d(TAG,"Favorite thread "+favoriteThread.title+" "+favorite);
+            if(favoriteThreadActionResultCall!=null){
+                try {
+                    Log.d(TAG,"request favorite url "+favoriteThreadActionResultCall.request().url());
+                    retrofit2.Response<FavoriteThreadActionResult> response = favoriteThreadActionResultCall.execute();
+                    //Log.d(TAG,"get response "+response.raw().body().string());
+                    if(response.isSuccessful() && response.body() !=null){
+
+                        FavoriteThreadActionResult result = response.body();
+                        messageResult = result.message;
+                        String key = result.message.key;
+                        if(favorite && key.equals("favorite_do_success")){
+                            dao.insert(favoriteThread);
+                        }
+                        else if(!favorite && key.equals("unfavorite_do_success")){
+                            dao.delete(favoriteThread);
+                        }
+                        else {
+                            error = true;
+
+                        }
+
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    error = true;
+                    messageResult = new MessageResult();
+                    messageResult.content = e.getMessage();
+                    messageResult.key = e.toString();
+                }
+
+            }
+            else {
+                if(favorite){
+                    dao.insert(favoriteThread);
+
+                    return true;
+                }
+                else {
+                    // clear potential
+                    dao.delete(bbsInfo.getId(),userBriefInfo.getId(),favoriteThread.idKey);
+                    dao.delete(favoriteThread);
+                    Log.d(TAG,"Just remove it from database "+tid+ " "+favoriteThread.idKey);
+                    return false;
+
+                }
+            }
+            return favorite;
 
         }
 
@@ -1817,14 +1888,30 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         @Override
         protected void onPostExecute(Boolean favorite) {
             super.onPostExecute(favorite);
-            if(favorite){
-                Toasty.success(getApplication(),getString(R.string.favorite),Toast.LENGTH_SHORT).show();
-
+            if(messageResult!=null){
+                String key = messageResult.key;
+                if(favorite && key.equals("favorite_do_success")){
+                    Toasty.success(getApplication(),getString(R.string.discuz_error,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                }
+                else if(!favorite && key.equals("unfavorite_do_success")){
+                    Toasty.success(getApplication(),getString(R.string.discuz_error,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toasty.warning(getApplication(),getString(R.string.discuz_error,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                }
             }
             else {
-                Toasty.success(getApplication(),getString(R.string.unfavorite),Toast.LENGTH_SHORT).show();
+                if(favorite){
+                    Toasty.success(getApplication(),getString(R.string.favorite),Toast.LENGTH_SHORT).show();
+
+                }
+                else {
+                    Toasty.success(getApplication(),getString(R.string.unfavorite),Toast.LENGTH_SHORT).show();
+                }
+                VibrateUtils.vibrateSlightly(getApplication());
             }
-            VibrateUtils.vibrateSlightly(getApplication());
+
+
         }
     }
 }

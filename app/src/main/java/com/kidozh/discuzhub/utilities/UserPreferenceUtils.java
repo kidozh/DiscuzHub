@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.kidozh.discuzhub.R;
 
-public class PreferenceUtils {
+public class UserPreferenceUtils {
 
     public static boolean isSyncBBSInformation(@NonNull Context context){
         String preferenceName = context.getString(R.string.preference_key_sync_information);

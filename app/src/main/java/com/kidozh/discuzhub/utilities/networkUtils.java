@@ -19,6 +19,7 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
 import java.io.IOException;
@@ -36,6 +37,8 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class networkUtils {
     private static String TAG = networkUtils.class.getSimpleName();
@@ -446,6 +449,14 @@ public class networkUtils {
         }
 
 
+    }
+
+    public static Retrofit getRetrofitInstance(@NonNull String baseUrl, @NonNull OkHttpClient client){
+         return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(JacksonConverterFactory.create())
+                .client(client)
+                .build();
     }
 
 

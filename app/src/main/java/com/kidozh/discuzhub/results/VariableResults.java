@@ -8,7 +8,8 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer;
 
 public class VariableResults extends BaseResult {
-    public String cookiepre, auth, saltkey, member_uid, member_username, member_avatar;
+    public String cookiepre, auth, saltkey, member_username, member_avatar;
+    public int member_uid;
     @JsonProperty("groupid")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public int groupId;
@@ -38,6 +39,6 @@ public class VariableResults extends BaseResult {
     }
 
     public forumUserBriefInfo getUserBriefInfo(){
-        return new forumUserBriefInfo(auth,saltkey,member_uid,member_username,member_avatar,readAccess,String.valueOf(groupId));
+        return new forumUserBriefInfo(auth,saltkey,String.valueOf(member_uid),member_username,member_avatar,readAccess,String.valueOf(groupId));
     }
 }

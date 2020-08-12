@@ -977,7 +977,7 @@ public class bbsParseUtils {
         @JsonProperty("replycredit_rule")
         public replyCreditRule creditRule;
 
-        public FavoriteThread toFavoriteThread(int bbsId){
+        public FavoriteThread toFavoriteThread(int bbsId, int userId){
             FavoriteThread favoriteThread = new FavoriteThread();
             favoriteThread.belongedBBSId = bbsId;
             favoriteThread.uid = this.authorId;
@@ -988,6 +988,7 @@ public class bbsParseUtils {
             favoriteThread.author = this.author;
             favoriteThread.date = this.lastPostTime;
             favoriteThread.replies = this.replies;
+            favoriteThread.userId = userId;
             return favoriteThread;
         }
     }

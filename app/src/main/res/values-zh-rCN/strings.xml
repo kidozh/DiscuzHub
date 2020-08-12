@@ -519,5 +519,7 @@
     <string name="favorite">收藏</string>
     <string name="unfavorite">取消收藏</string>
     <string name="favorite_thread_not_prepared">还没有完全加载这个帖子，您目前无法收藏或者取消收藏这个帖子。</string>
+    <string name="sync_favorite_thread_start">开始从%1$s同步收藏的帖子.</string>
+    <string name="sync_favorite_thread_load_all">已经同步所有的收藏贴。</string>
 
 </resources>

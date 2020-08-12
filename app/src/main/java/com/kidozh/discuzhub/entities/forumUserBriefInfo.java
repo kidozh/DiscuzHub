@@ -29,6 +29,10 @@ public class forumUserBriefInfo implements Serializable {
         this.groupId = groupId;
     }
 
+    public int getUid(){
+        return Integer.parseInt(uid);
+    }
+
 //    public forumUserBriefInfo(String auth, String saltkey, String uid, String username, String avatarUrl, int readPerm, String groupId, int belongedBBSID){
 //        this.auth = auth;
 //        this.saltkey = saltkey;

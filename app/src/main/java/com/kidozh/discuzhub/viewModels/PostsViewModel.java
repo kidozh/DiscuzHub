@@ -55,6 +55,7 @@ public class PostsViewModel extends AndroidViewModel {
     public MutableLiveData<ThreadPostResult> threadPostResultMutableLiveData;
     private MutableLiveData<SecureInfoResult> secureInfoResultMutableLiveData;
     public LiveData<Boolean> isFavoriteThreadMutableLiveData;
+    public LiveData<FavoriteThread> favoriteThreadLiveData;
     FavoriteThreadDao dao;
 
     public PostsViewModel(@NonNull Application application) {
@@ -87,8 +88,8 @@ public class PostsViewModel extends AndroidViewModel {
             URLUtils.ThreadStatus threadStatus = new URLUtils.ThreadStatus(tid,1);
             threadStatusMutableLiveData.setValue(threadStatus);
         }
-        isFavoriteThreadMutableLiveData = dao.isFavoriteThread(bbsInfo.getId(),tid);
-
+        isFavoriteThreadMutableLiveData = dao.isFavoriteThread(bbsInfo.getId(),userBriefInfo.getUid(),tid);
+        favoriteThreadLiveData = dao.getFavoriteThreadByTid(bbsInfo.getId(),userBriefInfo.getUid(),tid);
 
 
         // bbsPersonInfoMutableLiveData.postValue(userBriefInfo);
