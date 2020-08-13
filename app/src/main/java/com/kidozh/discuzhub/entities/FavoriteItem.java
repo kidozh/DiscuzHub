@@ -17,7 +17,7 @@ import java.util.Objects;
 
 @Entity
 @TypeConverters(DateConverter.class)
-public class FavoriteThread implements Serializable {
+public class FavoriteItem implements Serializable {
     @PrimaryKey(autoGenerate = true)
     @JsonIgnore
     public int id;
@@ -27,9 +27,9 @@ public class FavoriteThread implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public int idKey;
     @NonNull
-    @JsonProperty("spaceuid")
+    @JsonProperty("idtype")
     public String idType = "";
-    @JsonProperty("id")
+    @JsonProperty("spaceuid")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public int spaceUid;
     @NonNull
@@ -48,14 +48,14 @@ public class FavoriteThread implements Serializable {
     @JsonIgnore
     public int belongedBBSId, userId;
 
-    public static DiffUtil.ItemCallback<FavoriteThread> DIFF_CALLBACK = new DiffUtil.ItemCallback<FavoriteThread>() {
+    public static DiffUtil.ItemCallback<FavoriteItem> DIFF_CALLBACK = new DiffUtil.ItemCallback<FavoriteItem>() {
         @Override
-        public boolean areItemsTheSame(@NonNull FavoriteThread oldItem, @NonNull FavoriteThread newItem) {
+        public boolean areItemsTheSame(@NonNull FavoriteItem oldItem, @NonNull FavoriteItem newItem) {
             return oldItem.id == newItem.id;
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull FavoriteThread oldItem, @NonNull FavoriteThread newItem) {
+        public boolean areContentsTheSame(@NonNull FavoriteItem oldItem, @NonNull FavoriteItem newItem) {
             return oldItem.equals(newItem);
         }
     };
@@ -64,7 +64,7 @@ public class FavoriteThread implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FavoriteThread that = (FavoriteThread) o;
+        FavoriteItem that = (FavoriteItem) o;
         return id == that.id &&
                 favid == that.favid &&
                 uid == that.uid &&

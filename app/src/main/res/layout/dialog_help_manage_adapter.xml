@@ -43,7 +43,7 @@
         android:id="@+id/long_touch_item"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        app:layout_constraintBottom_toBottomOf="@+id/swap_vert_description"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/swipe_icon"
         app:layout_constraintTop_toTopOf="@+id/swap_vert_title"
         app:srcCompat="@drawable/ic_long_touch_item_24px" />

@@ -698,6 +698,8 @@
     <string name="sync_favorite_thread_start">Start to sync favorite thread from %1$s.</string>
     <string name="sync_favorite_thread_load_all">All favorite threads are loaded.</string>
     <string name="discuz_error" translatable="false">%2$s (%1$s)</string>
+    <string name="favoite_status_sync">Synced</string>
+    <string name="favorite_description">Set a description for the favorite</string>
 
 
 </resources>

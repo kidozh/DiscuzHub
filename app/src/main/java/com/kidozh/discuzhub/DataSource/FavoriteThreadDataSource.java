@@ -7,9 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.paging.PageKeyedDataSource;
 
-import com.bumptech.glide.RequestBuilder;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.entities.FavoriteThread;
+import com.kidozh.discuzhub.entities.FavoriteItem;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.FavoriteThreadResult;
@@ -26,7 +25,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class FavoriteThreadDataSource extends PageKeyedDataSource<Integer, FavoriteThread> {
+public class FavoriteThreadDataSource extends PageKeyedDataSource<Integer, FavoriteItem> {
     final static String TAG = FavoriteThreadDataSource.class.getSimpleName();
 
     Context context;
@@ -46,7 +45,7 @@ public class FavoriteThreadDataSource extends PageKeyedDataSource<Integer, Favor
     }
 
     @Override
-    public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<Integer, FavoriteThread> callback) {
+    public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull LoadInitialCallback<Integer, FavoriteItem> callback) {
         networkStateLiveData.postValue(bbsConstUtils.NETWORK_STATUS_LOADING);
         String url = URLUtils.getFavoriteThreadListURL(1,params.requestedLoadSize);
         Log.d(TAG,"get params "+params.requestedLoadSize+" url : "+url);
@@ -68,7 +67,7 @@ public class FavoriteThreadDataSource extends PageKeyedDataSource<Integer, Favor
                     FavoriteThreadResult result = bbsParseUtils.getFavoriteThreadResult(s);
                     if(result !=null && result.favoriteThreadVariable !=null){
                         networkStateLiveData.postValue(bbsConstUtils.NETWORK_STATUS_SUCCESSFULLY);
-                        callback.onResult(result.favoriteThreadVariable.favoriteThreadList,1,2);
+                        callback.onResult(result.favoriteThreadVariable.favoriteItemList,1,2);
                     }
                     else {
                         networkStateLiveData.postValue(bbsConstUtils.NETWORK_STATUS_FAILED);
@@ -85,12 +84,12 @@ public class FavoriteThreadDataSource extends PageKeyedDataSource<Integer, Favor
     }
 
     @Override
-    public void loadBefore(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, FavoriteThread> callback) {
+    public void loadBefore(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, FavoriteItem> callback) {
 
     }
 
     @Override
-    public void loadAfter(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, FavoriteThread> callback) {
+    public void loadAfter(@NonNull LoadParams<Integer> params, @NonNull LoadCallback<Integer, FavoriteItem> callback) {
         networkStateLiveData.postValue(bbsConstUtils.NETWORK_STATUS_LOADING);
         String url = URLUtils.getFavoriteThreadListURL(params.key,params.requestedLoadSize);
         Log.d(TAG,"get params "+params.requestedLoadSize+" url : "+url);
@@ -112,7 +111,7 @@ public class FavoriteThreadDataSource extends PageKeyedDataSource<Integer, Favor
                     FavoriteThreadResult result = bbsParseUtils.getFavoriteThreadResult(s);
                     if(result !=null && result.favoriteThreadVariable !=null){
                         networkStateLiveData.postValue(bbsConstUtils.NETWORK_STATUS_SUCCESSFULLY);
-                        callback.onResult(result.favoriteThreadVariable.favoriteThreadList,params.key+1);
+                        callback.onResult(result.favoriteThreadVariable.favoriteItemList,params.key+1);
                     }
                     else {
                         networkStateLiveData.postValue(bbsConstUtils.NETWORK_STATUS_FAILED);

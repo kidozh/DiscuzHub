@@ -8,10 +8,12 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,44 +21,44 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.FavoriteThreadAdapter;
-import com.kidozh.discuzhub.daos.FavoriteThreadDao;
+import com.kidozh.discuzhub.adapter.FavoriteItemAdapter;
+import com.kidozh.discuzhub.daos.FavoriteItemDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
-import com.kidozh.discuzhub.entities.FavoriteThread;
+import com.kidozh.discuzhub.entities.FavoriteItem;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
-public class FavoriteThreadFragment extends Fragment {
+public class FavoriteItemFragment extends Fragment {
+    private static final String TAG = FavoriteItemFragment.class.getSimpleName();
 
-    private FavoriteThreadViewModel mViewModel;
+    private FavoriteItemViewModel mViewModel;
 
     private static final String ARG_BBS = "ARG_BBS";
     private static final String ARG_USER = "ARG_USER";
+    private static final String ARG_IDTYPE = "ARG_IDTYPE";
 
     private bbsInformation bbsInfo;
     private forumUserBriefInfo userBriefInfo;
+    private String idType;
 
-    public FavoriteThreadFragment(){
+    public FavoriteItemFragment(){
 
     }
 
-    public static FavoriteThreadFragment newInstance(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo) {
-        FavoriteThreadFragment fragment = new FavoriteThreadFragment();
+    public static FavoriteItemFragment newInstance(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, String idType) {
+        FavoriteItemFragment fragment = new FavoriteItemFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_BBS, bbsInfo);
         args.putSerializable(ARG_USER,userBriefInfo);
+        args.putString(ARG_IDTYPE,idType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,10 +69,11 @@ public class FavoriteThreadFragment extends Fragment {
         if (getArguments() != null) {
             bbsInfo = (bbsInformation) getArguments().getSerializable(ARG_BBS);
             userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(ARG_USER);
+            idType = (String) getArguments().getString(ARG_IDTYPE,"tid");
         }
     }
 
-    FavoriteThreadAdapter adapter;
+    FavoriteItemAdapter adapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -98,8 +101,8 @@ public class FavoriteThreadFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this,view);
-        mViewModel = new ViewModelProvider(this).get(FavoriteThreadViewModel.class);
-        mViewModel.setInfo(bbsInfo,userBriefInfo);
+        mViewModel = new ViewModelProvider(this).get(FavoriteItemViewModel.class);
+        mViewModel.setInfo(bbsInfo,userBriefInfo,idType);
         configureRecyclerview();
         bindViewModel();
         configureSwipeRefreshLayout();
@@ -108,16 +111,19 @@ public class FavoriteThreadFragment extends Fragment {
 
     private void configureRecyclerview(){
         favoriteThreadRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new FavoriteThreadAdapter();
+        adapter = new FavoriteItemAdapter();
         adapter.setInformation(bbsInfo,userBriefInfo);
         mViewModel.getFavoriteThreadListData().observe(getViewLifecycleOwner(),adapter::submitList);
         favoriteThreadRecyclerview.setAdapter(adapter);
+        favoriteThreadRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
     }
 
     private void configureSwipeRefreshLayout(){
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                syncFavoriteThreadProgressBar.setVisibility(View.GONE);
+                Toasty.info(getContext(),getString(R.string.sync_favorite_thread_start,bbsInfo.site_name), Toast.LENGTH_SHORT).show();
                 mViewModel.startSyncFavoriteThread();
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -135,13 +141,19 @@ public class FavoriteThreadFragment extends Fragment {
                 blankFavoriteThreadView.setVisibility(View.GONE);
             }
         });
+        mViewModel.errorMsgContent.observe(getViewLifecycleOwner(),error->{
+            if(!TextUtils.isEmpty(error)){
+                Toasty.error(getContext(),error,Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
 
     public void syncFavoriteThreadFromServer(){
         if(getContext() !=null && UserPreferenceUtils.isSyncBBSInformation(getContext())){
             int page = 1;
             // sync information
-            Toasty.info(getContext(),getString(R.string.sync_favorite_thread_start,bbsInfo.site_name), Toast.LENGTH_SHORT).show();
+            // Toasty.info(getContext(),getString(R.string.sync_favorite_thread_start,bbsInfo.site_name), Toast.LENGTH_SHORT).show();
 
             // loop to fetch favorite thread from server
             bindSyncStatus();
@@ -176,7 +188,7 @@ public class FavoriteThreadFragment extends Fragment {
                 }
                 else {
                     syncFavoriteThreadProgressBar.setVisibility(View.GONE);
-                    Toasty.success(getContext(),getString(R.string.sync_favorite_thread_load_all),Toast.LENGTH_LONG).show();
+                    //Toasty.success(getContext(),getString(R.string.sync_favorite_thread_load_all),Toast.LENGTH_LONG).show();
                 }
             }
             else {
@@ -192,40 +204,48 @@ public class FavoriteThreadFragment extends Fragment {
 
     private class SaveFavoriteThreadAsyncTask extends AsyncTask<Void,Void,Integer>{
 
-        private List<FavoriteThread> favoriteThreadList;
+        private List<FavoriteItem> favoriteItemList;
 
-        public SaveFavoriteThreadAsyncTask(List<FavoriteThread> favoriteThreadList) {
-            this.favoriteThreadList = favoriteThreadList;
+        public SaveFavoriteThreadAsyncTask(List<FavoriteItem> favoriteItemList) {
+            this.favoriteItemList = favoriteItemList;
         }
 
         @Override
         protected Integer doInBackground(Void... voids) {
-            FavoriteThreadDao dao = FavoriteThreadDatabase.getInstance(getContext()).getDao();
+            FavoriteItemDao dao = FavoriteThreadDatabase.getInstance(getContext()).getDao();
             // query first
             List<Integer> insertTids = new ArrayList<>();
-            for(int i=0;i<favoriteThreadList.size();i++){
-                insertTids.add(favoriteThreadList.get(i).idKey);
+            for(int i = 0; i< favoriteItemList.size(); i++){
+                insertTids.add(favoriteItemList.get(i).idKey);
+                favoriteItemList.get(i).belongedBBSId = bbsInfo.getId();
+                favoriteItemList.get(i).userId = userBriefInfo.getUid();
+                //Log.d(TAG,"fav id "+favoriteThreadList.get(i).favid);
             }
 
-            List<FavoriteThread> queryList = dao.queyFavoriteThreadListByTids(bbsInfo.getId()
+
+
+            List<FavoriteItem> queryList = dao.queryFavoriteItemListByTids(bbsInfo.getId()
                     ,userBriefInfo.getUid(),
                     insertTids
+                    ,idType
                     );
 
             for(int i=0;i<queryList.size();i++){
                 int tid = queryList.get(i).idKey;
-                FavoriteThread queryThread = queryList.get(i);
-                for(int j=0;j<favoriteThreadList.size();j++){
-                    FavoriteThread favoriteThread = favoriteThreadList.get(j);
-                    if(favoriteThread.idKey == tid){
-                        favoriteThread.id = queryThread.id;
+                FavoriteItem queryThread = queryList.get(i);
+                for(int j = 0; j< favoriteItemList.size(); j++){
+                    FavoriteItem favoriteItem = favoriteItemList.get(j);
+                    if(favoriteItem.idKey == tid){
+                        favoriteItem.id = queryThread.id;
                         break;
                     }
                 }
             }
+            // remove all synced information
+            dao.clearSyncedFavoriteItemByBBSId(bbsInfo.getId(),userBriefInfo.getUid(),idType);
 
-            dao.insert(favoriteThreadList);
-            return favoriteThreadList.size();
+            dao.insert(favoriteItemList);
+            return favoriteItemList.size();
         }
 
         @Override

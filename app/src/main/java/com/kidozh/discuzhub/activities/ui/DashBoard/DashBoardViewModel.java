@@ -1,20 +1,20 @@
 package com.kidozh.discuzhub.activities.ui.DashBoard;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.kidozh.discuzhub.daos.FavoriteThreadDao;
+import com.kidozh.discuzhub.daos.FavoriteItemDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
-import com.kidozh.discuzhub.entities.FavoriteThread;
 
 public class DashBoardViewModel extends AndroidViewModel {
+    private static final String TAG = DashBoardViewModel.class.getSimpleName();
 
     public LiveData<Integer> FavoriteThreadNumber;
-    FavoriteThreadDao dao;
+    FavoriteItemDao dao;
 
     public DashBoardViewModel(@NonNull Application application) {
         super(application);
@@ -22,7 +22,9 @@ public class DashBoardViewModel extends AndroidViewModel {
     }
 
     public void setFavoriteThreadInfo(int bbsId, int userId){
-        FavoriteThreadNumber = dao.getFavoriteThreadCountLiveData(bbsId, userId);
+
+        FavoriteThreadNumber = dao.getFavoriteItemCountLiveData(bbsId, userId,"tid");
+        Log.d(TAG,"Set favorite thread "+bbsId+" userId "+userId);
     }
 
 

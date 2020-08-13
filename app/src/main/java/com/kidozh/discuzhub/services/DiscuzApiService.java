@@ -16,18 +16,45 @@ public interface DiscuzApiService {
     @GET(DISCUZ_API_PATH+"?version=4&module=myfavthread")
     Call<FavoriteThreadResult> getFavoriteThreadResult(@Query("page") int page);
 
-    @GET(DISCUZ_API_PATH+"?version=4&module=favthread&type=thread&ac=favorite")
+    @FormUrlEncoded
+    @POST(DISCUZ_API_PATH+"?version=4&module=favthread&type=thread&ac=favorite")
     Call<FavoriteThreadActionResult> favoriteThreadActionResult(
             @Query("formhash") String formhash,
-            @Query("id") int tid
+            @Query("id") int tid,
+            @Field("description") String description
+
 
     );
 
     @FormUrlEncoded
-    @POST(DISCUZ_API_PATH+"?version=4&module=favthread&type=thread&ac=favorite&op=delete&type=all")
+    @POST(DISCUZ_API_PATH+"?version=4&module=favthread&type=all&ac=favorite&op=delete&inajax=1")
     Call<FavoriteThreadActionResult> unfavoriteThreadActionResult(
             @Field("formhash") String formhash,
+            @Field("deletesubmit") String submit,
+            @Field("handlekey") String handleKey,
             @Query("favid") int favid
+
+
+    );
+
+    @FormUrlEncoded
+    @POST(DISCUZ_API_PATH+"?version=4&module=favforum&type=thread&ac=favorite")
+    Call<FavoriteThreadActionResult> favoriteForumActionResult(
+            @Query("formhash") String formhash,
+            @Query("id") int tid,
+            @Field("description") String description
+
+
+    );
+
+    @FormUrlEncoded
+    @POST(DISCUZ_API_PATH+"?version=4&module=favforum&type=all&ac=favorite&op=delete&inajax=1")
+    Call<FavoriteThreadActionResult> unfavoriteForumActionResult(
+            @Field("formhash") String formhash,
+            @Field("deletesubmit") String submit,
+            @Field("handlekey") String handleKey,
+            @Query("favid") int favid
+
 
     );
 }

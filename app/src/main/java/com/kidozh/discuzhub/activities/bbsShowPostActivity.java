@@ -2,6 +2,7 @@ package com.kidozh.discuzhub.activities;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,19 +10,17 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
-import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,12 +28,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -49,7 +48,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
@@ -64,11 +62,11 @@ import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
 import com.kidozh.discuzhub.adapter.ThreadPostsAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadNotificationAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadPropertiesAdapter;
-import com.kidozh.discuzhub.daos.FavoriteThreadDao;
+import com.kidozh.discuzhub.daos.FavoriteItemDao;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
-import com.kidozh.discuzhub.entities.FavoriteThread;
+import com.kidozh.discuzhub.entities.FavoriteItem;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.ViewHistory;
@@ -76,7 +74,6 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.results.DisplayForumResult;
 import com.kidozh.discuzhub.results.FavoriteThreadActionResult;
 import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
@@ -99,7 +96,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -676,7 +672,12 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
             }
         });
 
-        threadDetailViewModel.isFavoriteThreadMutableLiveData.observe(this,aBoolean -> {
+//        threadDetailViewModel.isFavoriteThreadMutableLiveData.observe(this,aBoolean -> {
+//            invalidateOptionsMenu();
+//        });
+
+        threadDetailViewModel.favoriteThreadLiveData.observe(this,favoriteThread -> {
+            Log.d(TAG,"Get favorite thread in observer"+favoriteThread);
             invalidateOptionsMenu();
         });
     }
@@ -1553,7 +1554,39 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         getSupportActionBar().setTitle(subject);
     }
 
+    private void launchFavoriteThreadDialog(FavoriteItem favoriteItem){
+        AlertDialog.Builder favoriteDialog = new AlertDialog.Builder(this);
+        favoriteDialog.setTitle(R.string.favorite_description);
+        final EditText input = new EditText(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
 
+        input.setLayoutParams(lp);
+
+        favoriteDialog.setView(input);
+
+        favoriteDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String description = input.getText().toString();
+                description = TextUtils.isEmpty(description) ?"" :description;
+                new FavoritingThreadAsyncTask(favoriteItem,true,description).execute();
+
+            }
+        });
+
+//        favoriteDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//            @Override
+//            public void onDismiss(DialogInterface dialog) {
+//                new FavoritingThreadAsyncTask(favoriteThread,true).execute();
+//            }
+//        });
+
+        favoriteDialog.show();
+
+
+    }
 
 
 
@@ -1567,7 +1600,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         else {
             currentUrl = URLUtils.getViewThreadUrl(tid,String.valueOf(threadStatus.page));
         }
-        Log.d(TAG,"You just input "+item.getItemId()+" "+R.id.bbs_favorite);
+
         switch (item.getItemId()) {
 
             case android.R.id.home:   //返回键的id
@@ -1664,16 +1697,22 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 ThreadPostResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
                 if(result!=null && result.threadPostVariables!=null && result.threadPostVariables.detailedThreadInfo!=null){
                     bbsParseUtils.DetailedThreadInfo detailedThreadInfo = result.threadPostVariables.detailedThreadInfo;
-                    FavoriteThread favoriteThread = detailedThreadInfo.toFavoriteThread(bbsInfo.getId(),result.threadPostVariables.member_uid);
+                    FavoriteItem favoriteItem = detailedThreadInfo.toFavoriteThread(bbsInfo.getId(),userBriefInfo.getUid());
                     // save it to the database
-                    boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
+                    // boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
+                    FavoriteItem favoriteItemInDB = threadDetailViewModel.favoriteThreadLiveData.getValue();
+                    boolean isFavorite = favoriteItemInDB != null;
                     if(isFavorite){
-                        FavoriteThread favoriteThreadInDB = threadDetailViewModel.favoriteThreadLiveData.getValue();
-                        new FavoritingThreadAsyncTask(favoriteThread,false).execute();
+
+                        Log.d(TAG,"Get Favroite thread"+ favoriteItemInDB);
+                        new FavoritingThreadAsyncTask(favoriteItemInDB,false).execute();
+
                     }
                     else {
                         Log.d(TAG,"is Favorite "+isFavorite);
-                        new FavoritingThreadAsyncTask(favoriteThread,true).execute();
+                        // open up a dialog
+                        launchFavoriteThreadDialog(favoriteItem);
+                        //new FavoritingThreadAsyncTask(favoriteThread,true).execute();
                     }
 
                 }
@@ -1720,7 +1759,9 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
 
                 }
 
-                boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
+                //boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
+                FavoriteItem favoriteItem = threadDetailViewModel.favoriteThreadLiveData.getValue();
+                boolean isFavorite = favoriteItem != null;
                 Log.d(TAG,"Triggering favorite status "+isFavorite);
                 if(!isFavorite){
                     menu.findItem(R.id.bbs_favorite).setIcon(getDrawable(R.drawable.ic_not_favorite_24px));
@@ -1789,17 +1830,25 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
 
     public class FavoritingThreadAsyncTask extends AsyncTask<Void,Void,Boolean> {
 
-        FavoriteThread favoriteThread;
-        FavoriteThreadDao dao;
+        FavoriteItem favoriteItem;
+        FavoriteItemDao dao;
         boolean favorite, error=false;
         Retrofit retrofit;
         retrofit2.Call<FavoriteThreadActionResult> favoriteThreadActionResultCall;
         MessageResult messageResult;
+        String description = "";
 
-        public FavoritingThreadAsyncTask(FavoriteThread favoriteThread, boolean favorite){
+        public FavoritingThreadAsyncTask(FavoriteItem favoriteItem, boolean favorite){
 
-            this.favoriteThread = favoriteThread;
+            this.favoriteItem = favoriteItem;
             this.favorite = favorite;
+        }
+
+        public FavoritingThreadAsyncTask(FavoriteItem favoriteItem, boolean favorite, String description){
+
+            this.favoriteItem = favoriteItem;
+            this.favorite = favorite;
+            this.description = description;
         }
 
         @Override
@@ -1812,15 +1861,19 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
             if(result !=null && result.threadPostVariables!=null){
                 if(favorite){
                     favoriteThreadActionResultCall = service.favoriteThreadActionResult(result.threadPostVariables.formHash
-                            ,favoriteThread.idKey);
+                            , favoriteItem.idKey,description);
                 }
                 else {
-                    if(favoriteThread.favid == 0){
+                    Log.d(TAG,"Favorite id "+ favoriteItem.favid);
+                    if(favoriteItem.favid == 0){
                         // just remove it from database
                     }
                     else {
-                        favoriteThreadActionResultCall = service.unfavoriteThreadActionResult(result.threadPostVariables.formHash
-                                ,favoriteThread.favid);
+                        favoriteThreadActionResultCall = service.unfavoriteThreadActionResult(
+                                result.threadPostVariables.formHash,
+                                "true",
+                                "a_delete_"+ favoriteItem.favid,
+                                favoriteItem.favid);
                     }
 
                 }
@@ -1833,7 +1886,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         protected Boolean doInBackground(Void... voids) {
 
             dao = FavoriteThreadDatabase.getInstance(getApplicationContext()).getDao();
-            Log.d(TAG,"Favorite thread "+favoriteThread.title+" "+favorite);
+
             if(favoriteThreadActionResultCall!=null){
                 try {
                     Log.d(TAG,"request favorite url "+favoriteThreadActionResultCall.request().url());
@@ -1845,10 +1898,13 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                         messageResult = result.message;
                         String key = result.message.key;
                         if(favorite && key.equals("favorite_do_success")){
-                            dao.insert(favoriteThread);
+                            dao.insert(favoriteItem);
                         }
-                        else if(!favorite && key.equals("unfavorite_do_success")){
-                            dao.delete(favoriteThread);
+                        else if(!favorite && key.equals("do_success")){
+                            if(favoriteItem !=null){
+                                dao.delete(favoriteItem);
+                            }
+                            dao.delete(bbsInfo.getId(),userBriefInfo.getUid(), favoriteItem.idKey,"tid");
                         }
                         else {
                             error = true;
@@ -1867,15 +1923,15 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
             }
             else {
                 if(favorite){
-                    dao.insert(favoriteThread);
+                    dao.insert(favoriteItem);
 
                     return true;
                 }
                 else {
                     // clear potential
-                    dao.delete(bbsInfo.getId(),userBriefInfo.getId(),favoriteThread.idKey);
-                    dao.delete(favoriteThread);
-                    Log.d(TAG,"Just remove it from database "+tid+ " "+favoriteThread.idKey);
+                    dao.delete(bbsInfo.getId(),userBriefInfo.getUid(), favoriteItem.idKey,"tid");
+                    //dao.delete(favoriteThread);
+                    Log.d(TAG,"Just remove it from database "+tid+ " "+ favoriteItem.idKey);
                     return false;
 
                 }
@@ -1893,7 +1949,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 if(favorite && key.equals("favorite_do_success")){
                     Toasty.success(getApplication(),getString(R.string.discuz_error,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
                 }
-                else if(!favorite && key.equals("unfavorite_do_success")){
+                else if(!favorite && key.equals("do_success")){
                     Toasty.success(getApplication(),getString(R.string.discuz_error,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
                 }
                 else {

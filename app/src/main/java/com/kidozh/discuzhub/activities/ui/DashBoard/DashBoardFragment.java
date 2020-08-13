@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.activities.ui.DashBoard;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,11 +20,9 @@ import android.view.ViewGroup;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ui.FavoriteThread.FavoriteThreadFragment;
+import com.kidozh.discuzhub.activities.ui.FavoriteThread.FavoriteItemFragment;
 import com.kidozh.discuzhub.activities.ui.HotForums.HotForumsFragment;
 import com.kidozh.discuzhub.activities.ui.HotThreads.HotThreadsFragment;
-import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
-import com.kidozh.discuzhub.entities.HotForum;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
@@ -112,8 +109,9 @@ public class DashBoardFragment extends Fragment {
         }
         else {
             viewPager.setAdapter(new DashBoardViewPagerAdapter(getChildFragmentManager(),getLifecycle()));
-            viewModel.setFavoriteThreadInfo(bbsInfo.getId(),userBriefInfo.getId());
+            viewModel.setFavoriteThreadInfo(bbsInfo.getId(),userBriefInfo.getUid());
             viewModel.FavoriteThreadNumber.observe(getViewLifecycleOwner(), integer -> {
+                Log.d(TAG,"get favorite thread number "+integer);
                 if(integer > 0){
                     Objects.requireNonNull(tabLayout.getTabAt(2)).getOrCreateBadge().setNumber(integer);
                 }
@@ -212,7 +210,10 @@ public class DashBoardFragment extends Fragment {
                     return HotForumsFragment.newInstance(bbsInfo,userBriefInfo);
                 }
                 case 2:{
-                    return FavoriteThreadFragment.newInstance(bbsInfo,userBriefInfo);
+                    return FavoriteItemFragment.newInstance(bbsInfo,userBriefInfo,"tid");
+                }
+                case 3:{
+                    return FavoriteItemFragment.newInstance(bbsInfo,userBriefInfo,"fid");
                 }
             }
             return HotThreadsFragment.newInstance(bbsInfo,userBriefInfo);
