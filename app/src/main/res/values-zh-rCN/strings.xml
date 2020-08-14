@@ -523,5 +523,8 @@
     <string name="sync_favorite_thread_load_all">已经同步所有的收藏贴。</string>
     <string name="favoite_status_sync">已同步</string>
     <string name="favorite_description">收藏备注</string>
+    <string name="forum_today_post">今日%1$d个新帖</string>
+    <string name="sync_favorite_forum_start">开始从%1$s同步收藏的板块.</string>
+    <string name="favorite_forum_not_found">你还没有收藏一个板块呢。</string>
 
 </resources>

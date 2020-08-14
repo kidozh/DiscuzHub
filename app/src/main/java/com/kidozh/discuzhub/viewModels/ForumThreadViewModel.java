@@ -8,12 +8,15 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.kidozh.discuzhub.daos.FavoriteForumDao;
+import com.kidozh.discuzhub.database.FavoriteForumDatabase;
 import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
+import com.kidozh.discuzhub.entities.FavoriteForum;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.results.DisplayForumResult;
+import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -43,7 +46,9 @@ public class ForumThreadViewModel extends AndroidViewModel {
     public MutableLiveData<String> jsonString, forumDescription, forumRule;
     public LiveData<Integer> draftNumberLiveData;
     public MutableLiveData<ForumInfo> forumDetailedInfoMutableLiveData;
-    public MutableLiveData<DisplayForumResult> displayForumResultMutableLiveData;
+    public MutableLiveData<ForumResult> displayForumResultMutableLiveData;
+    public LiveData<FavoriteForum> favoriteForumLiveData;
+
 
 
     public ForumThreadViewModel(@NonNull Application application) {
@@ -63,14 +68,20 @@ public class ForumThreadViewModel extends AndroidViewModel {
                 .getDraftNumber();
         forumDetailedInfoMutableLiveData = new MutableLiveData<>();
         displayForumResultMutableLiveData = new MutableLiveData<>(null);
+
     }
 
-    public void setBBSInfo(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, ForumInfo forum){
+    public void setBBSInfo(@NonNull bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, ForumInfo forum){
         this.curBBS = bbsInfo;
         this.curUser = userBriefInfo;
         this.forum = forum;
         URLUtils.setBBS(bbsInfo);
         client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
+        favoriteForumLiveData = FavoriteForumDatabase.getInstance(getApplication())
+                .getDao()
+                .getFavoriteItemByfid(bbsInfo.getId(),userBriefInfo!=null? userBriefInfo.getUid():0,forum.fid);
+        int uid = userBriefInfo!=null? userBriefInfo.getUid():0;
+        Log.d(TAG,"Get favorite form info "+userBriefInfo+" fid "+forum.fid+" uid "+uid);
     }
 
     public LiveData<List<ThreadInfo>> getThreadInfoListLiveData(){
@@ -121,7 +132,7 @@ public class ForumThreadViewModel extends AndroidViewModel {
                     String s = response.body().string();
                     jsonString.postValue(s);
                     Log.d(TAG,"recv forum thread json "+s);
-                    DisplayForumResult forumResult = bbsParseUtils.parseForumInfo(s);
+                    ForumResult forumResult = bbsParseUtils.parseForumInfo(s);
                     displayForumResultMutableLiveData.postValue(forumResult);
                     if(forumResult !=null){
                         Log.d(TAG, "Get forum Result" + forumResult);

@@ -20,7 +20,8 @@ import android.view.ViewGroup;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ui.FavoriteThread.FavoriteItemFragment;
+import com.kidozh.discuzhub.activities.ui.FavoriteForum.FavoriteForumFragment;
+import com.kidozh.discuzhub.activities.ui.FavoriteThread.FavoriteThreadFragment;
 import com.kidozh.discuzhub.activities.ui.HotForums.HotForumsFragment;
 import com.kidozh.discuzhub.activities.ui.HotThreads.HotThreadsFragment;
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -104,23 +105,31 @@ public class DashBoardFragment extends Fragment {
     }
 
     private void bindTabLayoutAndViewPager2(){
-        if(userBriefInfo == null){
-            viewPager.setAdapter(new IgcontiveDashBoardViewPagerAdapter(getChildFragmentManager(),getLifecycle()));
-        }
-        else {
-            viewPager.setAdapter(new DashBoardViewPagerAdapter(getChildFragmentManager(),getLifecycle()));
-            viewModel.setFavoriteThreadInfo(bbsInfo.getId(),userBriefInfo.getUid());
-            viewModel.FavoriteThreadNumber.observe(getViewLifecycleOwner(), integer -> {
-                Log.d(TAG,"get favorite thread number "+integer);
-                if(integer > 0){
-                    Objects.requireNonNull(tabLayout.getTabAt(2)).getOrCreateBadge().setNumber(integer);
-                }
-                else {
-                    Objects.requireNonNull(tabLayout.getTabAt(2)).removeBadge();
-                }
+        viewModel.setFavoriteThreadInfo(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0);
+        viewPager.setAdapter(new DashBoardViewPagerAdapter(getChildFragmentManager(),getLifecycle()));
 
-            });
-        }
+        viewModel.FavoriteThreadNumber.observe(getViewLifecycleOwner(), integer -> {
+            Log.d(TAG,"get favorite thread number "+integer);
+            if(integer > 0){
+                Objects.requireNonNull(tabLayout.getTabAt(2)).getOrCreateBadge().setNumber(integer);
+            }
+            else {
+                Objects.requireNonNull(tabLayout.getTabAt(2)).removeBadge();
+            }
+
+        });
+
+        viewModel.favoriteForumNumber.observe(getViewLifecycleOwner(), integer -> {
+            Log.d(TAG,"get favorite thread number "+integer);
+            if(integer > 0){
+                Objects.requireNonNull(tabLayout.getTabAt(3)).getOrCreateBadge().setNumber(integer);
+            }
+            else {
+                Objects.requireNonNull(tabLayout.getTabAt(3)).removeBadge();
+            }
+
+        });
+
 
         new TabLayoutMediator(tabLayout,viewPager,
                 (tab, position) -> {
@@ -155,39 +164,6 @@ public class DashBoardFragment extends Fragment {
 
     }
 
-    private class IgcontiveDashBoardViewPagerAdapter extends FragmentStateAdapter{
-
-        public IgcontiveDashBoardViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
-            super(fragmentActivity);
-        }
-
-        public IgcontiveDashBoardViewPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
-            super(fragmentManager, lifecycle);
-        }
-
-
-        @NonNull
-        @Override
-        public Fragment createFragment(int position) {
-            switch (position){
-                case 0:{
-                    return HotThreadsFragment.newInstance(bbsInfo,userBriefInfo);
-                }
-                case 1:{
-                    return HotForumsFragment.newInstance(bbsInfo,userBriefInfo);
-                }
-            }
-            return HotThreadsFragment.newInstance(bbsInfo,userBriefInfo);
-        }
-
-        @Override
-        public int getItemCount() {
-            return 2;
-        }
-
-
-    }
-
     private class DashBoardViewPagerAdapter extends FragmentStateAdapter{
 
         public DashBoardViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
@@ -210,10 +186,10 @@ public class DashBoardFragment extends Fragment {
                     return HotForumsFragment.newInstance(bbsInfo,userBriefInfo);
                 }
                 case 2:{
-                    return FavoriteItemFragment.newInstance(bbsInfo,userBriefInfo,"tid");
+                    return FavoriteThreadFragment.newInstance(bbsInfo,userBriefInfo,"tid");
                 }
                 case 3:{
-                    return FavoriteItemFragment.newInstance(bbsInfo,userBriefInfo,"fid");
+                    return FavoriteForumFragment.newInstance(bbsInfo,userBriefInfo);
                 }
             }
             return HotThreadsFragment.newInstance(bbsInfo,userBriefInfo);

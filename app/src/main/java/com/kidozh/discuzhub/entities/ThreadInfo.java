@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.kidozh.discuzhub.results.DisplayForumResult;
+import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer;
 
 import java.io.Serializable;
@@ -85,7 +85,7 @@ public class ThreadInfo implements Serializable{
     @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
     public boolean rushReply;
     @JsonProperty("reply")
-    public List<DisplayForumResult.ShortReply> shortReplyList;
+    public List<ForumResult.ShortReply> shortReplyList;
     public String highlight;
     public String folder;
     @JsonFormat(shape = JsonFormat.Shape.STRING)

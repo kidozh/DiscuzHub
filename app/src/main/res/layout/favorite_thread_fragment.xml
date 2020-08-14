@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".activities.ui.FavoriteThread.FavoriteItemFragment">
+        tools:context=".activities.ui.FavoriteThread.FavoriteThreadFragment">
 
         <LinearLayout
             android:layout_width="match_parent"

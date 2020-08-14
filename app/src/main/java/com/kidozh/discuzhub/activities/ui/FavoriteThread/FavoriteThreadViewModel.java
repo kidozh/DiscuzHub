@@ -11,9 +11,9 @@ import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.daos.FavoriteItemDao;
+import com.kidozh.discuzhub.daos.FavoriteThreadDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
-import com.kidozh.discuzhub.entities.FavoriteItem;
+import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.FavoriteThreadResult;
@@ -30,31 +30,31 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class FavoriteItemViewModel extends AndroidViewModel {
+public class FavoriteThreadViewModel extends AndroidViewModel {
 
-    private static final String TAG = FavoriteItemViewModel.class.getSimpleName();
+    private static final String TAG = FavoriteThreadViewModel.class.getSimpleName();
     public MutableLiveData<Integer> networkState = new MutableLiveData<>(bbsConstUtils.NETWORK_STATUS_SUCCESSFULLY);
     public MutableLiveData<String> errorMsgKey = new MutableLiveData<>(""),
             errorMsgContent = new MutableLiveData<>("");
-    private LiveData<PagedList<FavoriteItem>> favoriteThreadListData;
+    private LiveData<PagedList<FavoriteThread>> favoriteThreadListData;
     @NonNull
     public MutableLiveData<Integer> totalCount = new MutableLiveData<>(-1);
     @NonNull
-    public MutableLiveData<List<FavoriteItem>> favoriteThreadInServer = new MutableLiveData<>(new ArrayList<>());
-    public MutableLiveData<List<FavoriteItem>> newFavoriteThread = new MutableLiveData<>(new ArrayList<>());
+    public MutableLiveData<List<FavoriteThread>> favoriteThreadInServer = new MutableLiveData<>(new ArrayList<>());
+    public MutableLiveData<List<FavoriteThread>> newFavoriteThread = new MutableLiveData<>(new ArrayList<>());
     private OkHttpClient client = new OkHttpClient();
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
     String idType;
 
-    FavoriteItemDao dao;
+    FavoriteThreadDao dao;
 
     PagedList.Config myPagingConfig = new PagedList.Config.Builder()
             .setEnablePlaceholders(true)
             .setPageSize(5)
             .build();
 
-    public FavoriteItemViewModel(@NonNull Application application) {
+    public FavoriteThreadViewModel(@NonNull Application application) {
         super(application);
         dao = FavoriteThreadDatabase.getInstance(application).getDao();
     }
@@ -65,24 +65,27 @@ public class FavoriteItemViewModel extends AndroidViewModel {
         this.userBriefInfo = userBriefInfo;
         this.idType = idType;
         client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
-        favoriteThreadListData = new LivePagedListBuilder<>(dao.getFavoriteItemPageListByBBSId(bbsInfo.getId(),userBriefInfo.getUid(),idType),myPagingConfig).build();
+        favoriteThreadListData = new LivePagedListBuilder<>(dao.getFavoriteItemPageListByBBSId(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0,idType),myPagingConfig).build();
     }
 
-    public LiveData<PagedList<FavoriteItem>> getFavoriteThreadListData() {
+    public LiveData<PagedList<FavoriteThread>> getFavoriteItemListData() {
         return favoriteThreadListData;
     }
 
     public void startSyncFavoriteThread(){
-        getFavoriteThread(1);
+        getFavoriteItem(1);
     }
 
 
 
-    private void getFavoriteThread(int page){
+    private void getFavoriteItem(int page){
         networkState.postValue(bbsConstUtils.NETWORK_STATUS_LOADING);
         Retrofit retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService apiService = retrofit.create(DiscuzApiService.class);
-        Call<FavoriteThreadResult> favoriteCall = apiService.getFavoriteThreadResult(page);
+        Call<FavoriteThreadResult> favoriteCall;
+        favoriteCall = apiService.getFavoriteThreadResult(page);
+
+
         Log.d(TAG,"Get favorite result "+favoriteCall.request().url());
         favoriteCall.enqueue(new Callback<FavoriteThreadResult>() {
             @Override
@@ -98,17 +101,17 @@ public class FavoriteItemViewModel extends AndroidViewModel {
                     }
                     else {
                         totalCount.postValue(result.favoriteThreadVariable.count);
-                        Log.d(TAG,"Get cnt "+result.favoriteThreadVariable.count + " "+result.favoriteThreadVariable.favoriteItemList);
-                        newFavoriteThread.postValue(result.favoriteThreadVariable.favoriteItemList);
-                        List<FavoriteItem> curFavoriteItemList =
+                        Log.d(TAG,"Get cnt "+result.favoriteThreadVariable.count + " "+result.favoriteThreadVariable.favoriteThreadList);
+                        newFavoriteThread.postValue(result.favoriteThreadVariable.favoriteThreadList);
+                        List<FavoriteThread> curFavoriteThreadList =
                                 favoriteThreadInServer.getValue() == null ? new ArrayList<>()
                                 : favoriteThreadInServer.getValue();
-                        curFavoriteItemList.addAll(result.favoriteThreadVariable.favoriteItemList);
-                        favoriteThreadInServer.postValue(curFavoriteItemList);
+                        curFavoriteThreadList.addAll(result.favoriteThreadVariable.favoriteThreadList);
+                        favoriteThreadInServer.postValue(curFavoriteThreadList);
 
                         // recursive
-                        if(result.favoriteThreadVariable.count > curFavoriteItemList.size()){
-                            getFavoriteThread(page+1);
+                        if(result.favoriteThreadVariable.count > curFavoriteThreadList.size()){
+                            getFavoriteItem(page+1);
                         }
                     }
                 }

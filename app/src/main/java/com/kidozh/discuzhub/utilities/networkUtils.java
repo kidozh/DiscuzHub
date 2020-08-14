@@ -452,6 +452,9 @@ public class networkUtils {
     }
 
     public static Retrofit getRetrofitInstance(@NonNull String baseUrl, @NonNull OkHttpClient client){
+        if(!baseUrl.endsWith("/")){
+            baseUrl = baseUrl + "/";
+        }
          return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(JacksonConverterFactory.create())

@@ -18,13 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsShowForumThreadActivity;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.results.DisplayForumResult;
+import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -44,14 +43,14 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
     forumUserBriefInfo userBriefInfo;
 
 
-    List<DisplayForumResult.SubForumInfo> subForumInfoList;
+    List<ForumResult.SubForumInfo> subForumInfoList;
 
     public SubForumAdapter(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo) {
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
     }
 
-    public void setSubForumInfoList(List<DisplayForumResult.SubForumInfo> subForumInfoList) {
+    public void setSubForumInfoList(List<ForumResult.SubForumInfo> subForumInfoList) {
         this.subForumInfoList = subForumInfoList;
         notifyDataSetChanged();
     }
@@ -70,7 +69,7 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
 
     @Override
     public void onBindViewHolder(@NonNull SubForumViewHolder holder, int position) {
-        DisplayForumResult.SubForumInfo forum = subForumInfoList.get(position);
+        ForumResult.SubForumInfo forum = subForumInfoList.get(position);
         Spanned sp = Html.fromHtml(forum.name,null,null);
         holder.mForumName.setText(sp, TextView.BufferType.SPANNABLE);
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(getPreferredClient(context));

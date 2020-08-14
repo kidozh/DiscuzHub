@@ -21,10 +21,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.FavoriteItemAdapter;
-import com.kidozh.discuzhub.daos.FavoriteItemDao;
+import com.kidozh.discuzhub.adapter.FavoriteThreadAdapter;
+import com.kidozh.discuzhub.daos.FavoriteThreadDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
-import com.kidozh.discuzhub.entities.FavoriteItem;
+import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
@@ -36,10 +36,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
-public class FavoriteItemFragment extends Fragment {
-    private static final String TAG = FavoriteItemFragment.class.getSimpleName();
+public class FavoriteThreadFragment extends Fragment {
+    private static final String TAG = FavoriteThreadFragment.class.getSimpleName();
 
-    private FavoriteItemViewModel mViewModel;
+    private FavoriteThreadViewModel mViewModel;
 
     private static final String ARG_BBS = "ARG_BBS";
     private static final String ARG_USER = "ARG_USER";
@@ -49,12 +49,12 @@ public class FavoriteItemFragment extends Fragment {
     private forumUserBriefInfo userBriefInfo;
     private String idType;
 
-    public FavoriteItemFragment(){
+    public FavoriteThreadFragment(){
 
     }
 
-    public static FavoriteItemFragment newInstance(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, String idType) {
-        FavoriteItemFragment fragment = new FavoriteItemFragment();
+    public static FavoriteThreadFragment newInstance(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, String idType) {
+        FavoriteThreadFragment fragment = new FavoriteThreadFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_BBS, bbsInfo);
         args.putSerializable(ARG_USER,userBriefInfo);
@@ -73,7 +73,7 @@ public class FavoriteItemFragment extends Fragment {
         }
     }
 
-    FavoriteItemAdapter adapter;
+    FavoriteThreadAdapter adapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -101,7 +101,7 @@ public class FavoriteItemFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this,view);
-        mViewModel = new ViewModelProvider(this).get(FavoriteItemViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(FavoriteThreadViewModel.class);
         mViewModel.setInfo(bbsInfo,userBriefInfo,idType);
         configureRecyclerview();
         bindViewModel();
@@ -111,29 +111,35 @@ public class FavoriteItemFragment extends Fragment {
 
     private void configureRecyclerview(){
         favoriteThreadRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new FavoriteItemAdapter();
+        adapter = new FavoriteThreadAdapter();
         adapter.setInformation(bbsInfo,userBriefInfo);
-        mViewModel.getFavoriteThreadListData().observe(getViewLifecycleOwner(),adapter::submitList);
+        mViewModel.getFavoriteItemListData().observe(getViewLifecycleOwner(),adapter::submitList);
         favoriteThreadRecyclerview.setAdapter(adapter);
         favoriteThreadRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
     }
 
     private void configureSwipeRefreshLayout(){
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                syncFavoriteThreadProgressBar.setVisibility(View.GONE);
-                Toasty.info(getContext(),getString(R.string.sync_favorite_thread_start,bbsInfo.site_name), Toast.LENGTH_SHORT).show();
-                mViewModel.startSyncFavoriteThread();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
+        if(userBriefInfo !=null){
+            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    syncFavoriteThreadProgressBar.setVisibility(View.GONE);
+                    Toasty.info(getContext(),getString(R.string.sync_favorite_thread_start,bbsInfo.site_name), Toast.LENGTH_SHORT).show();
+                    mViewModel.startSyncFavoriteThread();
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            });
+        }
+        else {
+            swipeRefreshLayout.setEnabled(false);
+        }
+
     }
 
     private void bindViewModel(){
 
 
-        mViewModel.getFavoriteThreadListData().observe(getViewLifecycleOwner(),favoriteThreads -> {
+        mViewModel.getFavoriteItemListData().observe(getViewLifecycleOwner(),favoriteThreads -> {
             if(favoriteThreads.size() == 0){
                 blankFavoriteThreadView.setVisibility(View.VISIBLE);
             }
@@ -150,7 +156,7 @@ public class FavoriteItemFragment extends Fragment {
     }
 
     public void syncFavoriteThreadFromServer(){
-        if(getContext() !=null && UserPreferenceUtils.isSyncBBSInformation(getContext())){
+        if(getContext() !=null && UserPreferenceUtils.isSyncBBSInformation(getContext()) && userBriefInfo!=null){
             int page = 1;
             // sync information
             // Toasty.info(getContext(),getString(R.string.sync_favorite_thread_start,bbsInfo.site_name), Toast.LENGTH_SHORT).show();
@@ -198,54 +204,54 @@ public class FavoriteItemFragment extends Fragment {
         });
 
         mViewModel.newFavoriteThread.observe(getViewLifecycleOwner(),newFavoriteThreads ->{
-            new SaveFavoriteThreadAsyncTask(newFavoriteThreads).execute();
+            new SaveFavoriteItemAsyncTask(newFavoriteThreads).execute();
         });
     }
 
-    private class SaveFavoriteThreadAsyncTask extends AsyncTask<Void,Void,Integer>{
+    private class SaveFavoriteItemAsyncTask extends AsyncTask<Void,Void,Integer>{
 
-        private List<FavoriteItem> favoriteItemList;
+        private List<FavoriteThread> favoriteThreadList;
 
-        public SaveFavoriteThreadAsyncTask(List<FavoriteItem> favoriteItemList) {
-            this.favoriteItemList = favoriteItemList;
+        public SaveFavoriteItemAsyncTask(List<FavoriteThread> favoriteThreadList) {
+            this.favoriteThreadList = favoriteThreadList;
         }
 
         @Override
         protected Integer doInBackground(Void... voids) {
-            FavoriteItemDao dao = FavoriteThreadDatabase.getInstance(getContext()).getDao();
+            FavoriteThreadDao dao = FavoriteThreadDatabase.getInstance(getContext()).getDao();
             // query first
             List<Integer> insertTids = new ArrayList<>();
-            for(int i = 0; i< favoriteItemList.size(); i++){
-                insertTids.add(favoriteItemList.get(i).idKey);
-                favoriteItemList.get(i).belongedBBSId = bbsInfo.getId();
-                favoriteItemList.get(i).userId = userBriefInfo.getUid();
+            for(int i = 0; i< favoriteThreadList.size(); i++){
+                insertTids.add(favoriteThreadList.get(i).idKey);
+                favoriteThreadList.get(i).belongedBBSId = bbsInfo.getId();
+                favoriteThreadList.get(i).userId = userBriefInfo!=null?userBriefInfo.getUid():0;
                 //Log.d(TAG,"fav id "+favoriteThreadList.get(i).favid);
             }
 
 
 
-            List<FavoriteItem> queryList = dao.queryFavoriteItemListByTids(bbsInfo.getId()
-                    ,userBriefInfo.getUid(),
+            List<FavoriteThread> queryList = dao.queryFavoriteItemListByTids(bbsInfo.getId()
+                    ,userBriefInfo!=null?userBriefInfo.getUid():0,
                     insertTids
                     ,idType
                     );
 
             for(int i=0;i<queryList.size();i++){
                 int tid = queryList.get(i).idKey;
-                FavoriteItem queryThread = queryList.get(i);
-                for(int j = 0; j< favoriteItemList.size(); j++){
-                    FavoriteItem favoriteItem = favoriteItemList.get(j);
-                    if(favoriteItem.idKey == tid){
-                        favoriteItem.id = queryThread.id;
+                FavoriteThread queryThread = queryList.get(i);
+                for(int j = 0; j< favoriteThreadList.size(); j++){
+                    FavoriteThread favoriteThread = favoriteThreadList.get(j);
+                    if(favoriteThread.idKey == tid){
+                        favoriteThread.id = queryThread.id;
                         break;
                     }
                 }
             }
             // remove all synced information
-            dao.clearSyncedFavoriteItemByBBSId(bbsInfo.getId(),userBriefInfo.getUid(),idType);
+            //dao.clearSyncedFavoriteItemByBBSId(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0,idType);
 
-            dao.insert(favoriteItemList);
-            return favoriteItemList.size();
+            dao.insert(favoriteThreadList);
+            return favoriteThreadList.size();
         }
 
         @Override

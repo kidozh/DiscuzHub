@@ -1,6 +1,8 @@
 package com.kidozh.discuzhub.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -9,11 +11,14 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,24 +39,32 @@ import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.SubForumAdapter;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;
+import com.kidozh.discuzhub.daos.FavoriteForumDao;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
+import com.kidozh.discuzhub.database.FavoriteForumDatabase;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
+import com.kidozh.discuzhub.entities.FavoriteForum;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.results.DisplayForumResult;
+import com.kidozh.discuzhub.results.FavoriteItemActionResult;
+import com.kidozh.discuzhub.results.ForumResult;
+import com.kidozh.discuzhub.results.MessageResult;
+import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
+import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.viewModels.ForumThreadViewModel;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,6 +74,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 public class bbsShowForumThreadActivity
         extends BaseStatusActivity implements bbsLinkMovementMethod.OnLinkClickedListener{
@@ -195,11 +209,11 @@ public class bbsShowForumThreadActivity
                 returned_res_json = s;
             }
         });
-        forumThreadViewModel.displayForumResultMutableLiveData.observe(this, new Observer<DisplayForumResult>() {
+        forumThreadViewModel.displayForumResultMutableLiveData.observe(this, new Observer<ForumResult>() {
             @Override
-            public void onChanged(DisplayForumResult displayForumResult) {
-                if(displayForumResult != null && displayForumResult.isError()){
-                    String errorString = displayForumResult.message.content;
+            public void onChanged(ForumResult forumResult) {
+                if(forumResult != null && forumResult.isError()){
+                    String errorString = forumResult.message.content;
                     Toasty.error(getApplicationContext(),errorString,Toast.LENGTH_LONG).show();
                     VibrateUtils.vibrateForError(getApplication());
                     moreThreadBtn.setVisibility(View.GONE);
@@ -213,10 +227,10 @@ public class bbsShowForumThreadActivity
                 }
 
                 // deal with sublist
-                if(displayForumResult!=null && displayForumResult.forumVariables!=null){
-                    subForumAdapter.setSubForumInfoList(displayForumResult.forumVariables.subForumLists);
-                    if(displayForumResult.forumVariables.forumInfo !=null){
-                        ForumInfo forumInfo = displayForumResult.forumVariables.forumInfo;
+                if(forumResult !=null && forumResult.forumVariables!=null){
+                    subForumAdapter.setSubForumInfoList(forumResult.forumVariables.subForumLists);
+                    if(forumResult.forumVariables.forumInfo !=null){
+                        ForumInfo forumInfo = forumResult.forumVariables.forumInfo;
                         forum = forumInfo;
                         if(getSupportActionBar()!=null){
                             getSupportActionBar().setTitle(forumInfo.name);
@@ -272,6 +286,14 @@ public class bbsShowForumThreadActivity
                 }
 
             }
+        });
+
+        forumThreadViewModel.favoriteForumLiveData.observe(this,favoriteForum -> {
+            Log.d(TAG,"Detecting change favorite forum "+favoriteForum);
+            if(favoriteForum!=null){
+                Log.d(TAG,"favorite forum id "+favoriteForum.id);
+            }
+            invalidateOptionsMenu();
         });
 
     }
@@ -656,7 +678,7 @@ public class bbsShowForumThreadActivity
                 return true;
             }
             case R.id.bbs_share:{
-                DisplayForumResult result = forumThreadViewModel.displayForumResultMutableLiveData.getValue();
+                ForumResult result = forumThreadViewModel.displayForumResultMutableLiveData.getValue();
                 if(result!=null && result.forumVariables!=null && result.forumVariables.forumInfo!=null){
                     ForumInfo forumInfo = result.forumVariables.forumInfo;
                     Intent sendIntent = new Intent();
@@ -673,6 +695,37 @@ public class bbsShowForumThreadActivity
                 }
                 return true;
 
+            }
+            case R.id.bbs_favorite:{
+                ForumResult result = forumThreadViewModel.displayForumResultMutableLiveData.getValue();
+                if(result!=null && result.forumVariables!=null && result.forumVariables.forumInfo!=null){
+                    ForumInfo forumInfo = result.forumVariables.forumInfo;
+
+                    FavoriteForum favoriteForum = forumInfo.toFavoriteForm(bbsInfo.getId(),
+                            userBriefInfo!=null?userBriefInfo.getUid():0
+                    );
+                    // save it to the database
+                    // boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
+                    FavoriteForum favoriteForumInDB = forumThreadViewModel.favoriteForumLiveData.getValue();
+                    Log.d(TAG,"Get db favorite formD "+favoriteForumInDB);
+                    boolean isFavorite = favoriteForumInDB != null;
+                    if(isFavorite){
+
+                        new FavoritingForumAsyncTask(favoriteForumInDB,false).execute();
+
+                    }
+                    else {
+                        // open up a dialog
+                        launchFavoriteForumDialog(favoriteForum);
+                        //new FavoritingThreadAsyncTask(favoriteThread,true).execute();
+                    }
+
+                }
+                else {
+                    Toasty.info(this,getString(R.string.favorite_thread_not_prepared),Toast.LENGTH_SHORT).show();
+                }
+
+                return true;
             }
             default:
                 return super.onOptionsItemSelected(item);
@@ -714,9 +767,9 @@ public class bbsShowForumThreadActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        configureIntentData();
+        // configureIntentData();
         if(userBriefInfo == null){
-            getMenuInflater().inflate(R.menu.menu_bbs_user_status, menu);
+            getMenuInflater().inflate(R.menu.menu_incognitive_forum_nav_menu, menu);
         }
         else {
             getMenuInflater().inflate(R.menu.bbs_forum_nav_menu,menu);
@@ -724,7 +777,203 @@ public class bbsShowForumThreadActivity
         }
 
 
+
+
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        FavoriteForum favoriteForum = forumThreadViewModel.favoriteForumLiveData.getValue();
+        boolean isFavorite = favoriteForum != null;
+        Log.d(TAG,"Triggering favorite status "+isFavorite+" "+favoriteForum);
+        if(!isFavorite){
+            menu.findItem(R.id.bbs_favorite).setIcon(getDrawable(R.drawable.ic_not_favorite_24px));
+            menu.findItem(R.id.bbs_favorite).setTitle(R.string.favorite);
+        }
+        else {
+            menu.findItem(R.id.bbs_favorite).setIcon(getDrawable(R.drawable.ic_favorite_24px));
+            menu.findItem(R.id.bbs_favorite).setTitle(R.string.unfavorite);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    private void launchFavoriteForumDialog(FavoriteForum favoriteForum){
+        AlertDialog.Builder favoriteDialog = new AlertDialog.Builder(this);
+        favoriteDialog.setTitle(R.string.favorite_description);
+        final EditText input = new EditText(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+
+        input.setLayoutParams(lp);
+
+        favoriteDialog.setView(input);
+
+        favoriteDialog.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String description = input.getText().toString();
+                description = TextUtils.isEmpty(description) ?"" :description;
+                new FavoritingForumAsyncTask(favoriteForum,true,description).execute();
+
+            }
+        });
+
+        favoriteDialog.show();
+
+
+    }
+
+    public class FavoritingForumAsyncTask extends AsyncTask<Void,Void,Boolean> {
+
+        FavoriteForum favoriteForum;
+        FavoriteForumDao dao;
+        boolean favorite, error=false;
+        Retrofit retrofit;
+        retrofit2.Call<FavoriteItemActionResult> favoriteForumActionResultCall;
+        MessageResult messageResult;
+        String description = "";
+
+        public FavoritingForumAsyncTask(FavoriteForum favoriteForum, boolean favorite){
+
+            this.favoriteForum = favoriteForum;
+            this.favorite = favorite;
+        }
+
+        public FavoritingForumAsyncTask(FavoriteForum favoriteForum, boolean favorite, String description){
+
+            this.favoriteForum = favoriteForum;
+            this.favorite = favorite;
+            this.description = description;
+            favoriteForum.description = description;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+            DiscuzApiService service = retrofit.create(DiscuzApiService.class);
+            ForumResult result = forumThreadViewModel.displayForumResultMutableLiveData.getValue();
+            dao = FavoriteForumDatabase.getInstance(getApplicationContext()).getDao();
+            if(result !=null && result.forumVariables!=null && favoriteForum.userId !=0){
+                Log.d(TAG,"Favorite formhash "+ result.forumVariables.formHash);
+                if(favorite){
+
+                    favoriteForumActionResultCall = service.favoriteForumActionResult(
+                            result.forumVariables.formHash
+                            , favoriteForum.idKey,description);
+                }
+                else {
+                    Log.d(TAG,"Favorite id "+ favoriteForum.favid);
+                    if(favoriteForum.favid == 0){
+                        // just remove it from database
+                    }
+                    else {
+                        favoriteForumActionResultCall = service.unfavoriteForumActionResult(
+                                result.forumVariables.formHash,
+                                "true",
+                                "a_delete_"+ favoriteForum.favid,
+                                favoriteForum.favid);
+                    }
+
+                }
+
+            }
+
+
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+
+
+            if(favoriteForumActionResultCall!=null){
+                try {
+                    Log.d(TAG,"request favorite url "+favoriteForumActionResultCall.request().url());
+                    retrofit2.Response<FavoriteItemActionResult> response = favoriteForumActionResultCall.execute();
+                    //Log.d(TAG,"get response "+response.raw().body().string());
+                    if(response.isSuccessful() && response.body() !=null){
+
+                        FavoriteItemActionResult result = response.body();
+                        messageResult = result.message;
+                        String key = result.message.key;
+                        if(favorite && key.equals("favorite_do_success")){
+                            dao.insert(favoriteForum);
+                        }
+                        else if(!favorite && key.equals("do_success")){
+                            if(favoriteForum !=null){
+                                dao.delete(favoriteForum);
+                            }
+                            dao.delete(bbsInfo.getId(),userBriefInfo.getUid(), favoriteForum.idKey);
+                        }
+                        else {
+                            error = true;
+
+                        }
+
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    error = true;
+                    messageResult = new MessageResult();
+                    messageResult.content = e.getMessage();
+                    messageResult.key = e.toString();
+                }
+
+            }
+            else {
+                if(favorite){
+                    dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteForum.idKey);
+                    dao.insert(favoriteForum);
+
+                    return true;
+                }
+                else {
+                    // clear potential
+                    dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteForum.idKey);
+                    //dao.delete(favoriteThread);
+                    Log.d(TAG,"Just remove it from database "+favoriteForum.idKey);
+                    return false;
+
+                }
+            }
+            return favorite;
+
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean favorite) {
+            super.onPostExecute(favorite);
+            if(messageResult!=null){
+                String key = messageResult.key;
+                if(favorite && key.equals("favorite_do_success")){
+                    Toasty.success(getApplication(),getString(R.string.discuz_error,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                }
+                else if(!favorite && key.equals("do_success")){
+                    Toasty.success(getApplication(),getString(R.string.discuz_error,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toasty.warning(getApplication(),getString(R.string.discuz_error,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                }
+            }
+            else {
+                if(favorite){
+                    Toasty.success(getApplication(),getString(R.string.favorite),Toast.LENGTH_SHORT).show();
+
+                }
+                else {
+                    Toasty.success(getApplication(),getString(R.string.unfavorite),Toast.LENGTH_SHORT).show();
+                }
+                VibrateUtils.vibrateSlightly(getApplication());
+            }
+
+
+        }
     }
 
 }

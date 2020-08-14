@@ -2,7 +2,7 @@ package com.kidozh.discuzhub.results;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class FavoriteThreadActionResult extends BaseResult {
+public class FavoriteItemActionResult extends BaseResult {
     @JsonProperty("Variables")
     public VariableResults variableResults;
 }

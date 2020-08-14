@@ -8,6 +8,7 @@ import androidx.room.TypeConverters;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
@@ -17,7 +18,8 @@ import java.util.Objects;
 
 @Entity
 @TypeConverters(DateConverter.class)
-public class FavoriteItem implements Serializable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class FavoriteThread implements Serializable {
     @PrimaryKey(autoGenerate = true)
     @JsonIgnore
     public int id;
@@ -33,7 +35,7 @@ public class FavoriteItem implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public int spaceUid;
     @NonNull
-    public String title, description = "", author;
+    public String title="", description = "", author="";
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="s")
     @JsonProperty("dateline")
     public Date date;
@@ -48,14 +50,14 @@ public class FavoriteItem implements Serializable {
     @JsonIgnore
     public int belongedBBSId, userId;
 
-    public static DiffUtil.ItemCallback<FavoriteItem> DIFF_CALLBACK = new DiffUtil.ItemCallback<FavoriteItem>() {
+    public static DiffUtil.ItemCallback<FavoriteThread> DIFF_CALLBACK = new DiffUtil.ItemCallback<FavoriteThread>() {
         @Override
-        public boolean areItemsTheSame(@NonNull FavoriteItem oldItem, @NonNull FavoriteItem newItem) {
+        public boolean areItemsTheSame(@NonNull FavoriteThread oldItem, @NonNull FavoriteThread newItem) {
             return oldItem.id == newItem.id;
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull FavoriteItem oldItem, @NonNull FavoriteItem newItem) {
+        public boolean areContentsTheSame(@NonNull FavoriteThread oldItem, @NonNull FavoriteThread newItem) {
             return oldItem.equals(newItem);
         }
     };
@@ -64,7 +66,7 @@ public class FavoriteItem implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FavoriteItem that = (FavoriteItem) o;
+        FavoriteThread that = (FavoriteThread) o;
         return id == that.id &&
                 favid == that.favid &&
                 uid == that.uid &&

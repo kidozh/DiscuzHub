@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DisplayForumResult extends BaseResult {
+public class ForumResult extends BaseResult {
     @JsonProperty("Variables")
     public ForumVariables forumVariables;
 

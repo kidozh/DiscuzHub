@@ -700,6 +700,9 @@
     <string name="discuz_error" translatable="false">%2$s (%1$s)</string>
     <string name="favoite_status_sync">Synced</string>
     <string name="favorite_description">Set a description for the favorite</string>
+    <string name="forum_today_post">Today posts (%1$d)</string>
+    <string name="sync_favorite_forum_start">Start to sync favorite forums from %1$s.</string>
+    <string name="favorite_forum_not_found">No forum is marked.</string>
 
 
 </resources>

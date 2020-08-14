@@ -7,14 +7,14 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import com.kidozh.discuzhub.daos.FavoriteItemDao;
-import com.kidozh.discuzhub.entities.FavoriteItem;
+import com.kidozh.discuzhub.daos.FavoriteThreadDao;
+import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
-@Database(entities = {FavoriteItem.class}, version = 2, exportSchema = false)
+@Database(entities = {FavoriteThread.class}, version = 3, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class FavoriteThreadDatabase extends RoomDatabase {
-    private static final String DB_NAME = "FavoriteItem.db";
+    private static final String DB_NAME = "FavoriteThread.db";
     private static volatile FavoriteThreadDatabase instance;
 
     public static synchronized FavoriteThreadDatabase getInstance(Context context){
@@ -32,5 +32,5 @@ public abstract class FavoriteThreadDatabase extends RoomDatabase {
                 .build();
     }
 
-    public abstract FavoriteItemDao getDao();
+    public abstract FavoriteThreadDao getDao();
 }

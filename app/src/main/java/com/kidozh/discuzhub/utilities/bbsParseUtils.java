@@ -15,14 +15,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.kidozh.discuzhub.entities.FavoriteItem;
+import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.threadCommentInfo;
 import com.kidozh.discuzhub.results.AddCheckResult;
 import com.kidozh.discuzhub.results.BBSIndexResult;
-import com.kidozh.discuzhub.results.DisplayForumResult;
+import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.results.FavoriteThreadResult;
 import com.kidozh.discuzhub.results.HotForumsResult;
@@ -93,10 +93,10 @@ public class bbsParseUtils {
         }
     }
 
-    public static DisplayForumResult parseForumInfo(String s){
+    public static ForumResult parseForumInfo(String s){
         try {
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(s, DisplayForumResult.class);
+            return mapper.readValue(s, ForumResult.class);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -975,19 +975,19 @@ public class bbsParseUtils {
         @JsonProperty("replycredit_rule")
         public replyCreditRule creditRule;
 
-        public FavoriteItem toFavoriteThread(int bbsId, int userId){
-            FavoriteItem favoriteItem = new FavoriteItem();
-            favoriteItem.belongedBBSId = bbsId;
-            favoriteItem.uid = this.authorId;
-            favoriteItem.idKey = this.tid;
-            favoriteItem.idType = "tid";
-            favoriteItem.title = this.subject;
-            favoriteItem.description = this.freeMessage == null ?"":this.freeMessage;
-            favoriteItem.author = this.author;
-            favoriteItem.date = this.lastPostTime;
-            favoriteItem.replies = this.replies;
-            favoriteItem.userId = userId;
-            return favoriteItem;
+        public FavoriteThread toFavoriteThread(int bbsId, int userId){
+            FavoriteThread favoriteThread = new FavoriteThread();
+            favoriteThread.belongedBBSId = bbsId;
+            favoriteThread.uid = this.authorId;
+            favoriteThread.idKey = this.tid;
+            favoriteThread.idType = "tid";
+            favoriteThread.title = this.subject;
+            favoriteThread.description = this.freeMessage == null ?"":this.freeMessage;
+            favoriteThread.author = this.author;
+            favoriteThread.date = this.lastPostTime;
+            favoriteThread.replies = this.replies;
+            favoriteThread.userId = userId;
+            return favoriteThread;
         }
     }
     @JsonIgnoreProperties(ignoreUnknown = true)

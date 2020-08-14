@@ -3,19 +3,19 @@ package com.kidozh.discuzhub.results;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kidozh.discuzhub.entities.FavoriteThread;
+import com.kidozh.discuzhub.entities.FavoriteForum;
 
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FavoriteThreadResult extends BaseResult {
+public class FavoriteForumResult extends BaseResult {
     @JsonProperty("Variables")
-    public FavoriteThreadVariable favoriteThreadVariable;
+    public FavoriteForumVariable FavoriteForumVariable;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class FavoriteThreadVariable extends VariableResults{
+    public static class FavoriteForumVariable extends VariableResults{
         @JsonProperty("list")
-        public List<FavoriteThread> favoriteThreadList;
+        public List<FavoriteForum> FavoriteForumList;
         @JsonProperty("perpage")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         public int perpage;

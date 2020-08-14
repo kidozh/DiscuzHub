@@ -16,7 +16,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.results.DisplayForumResult;
+import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
@@ -28,14 +28,14 @@ import butterknife.ButterKnife;
 
 public class bbsForumThreadShortReplyAdapter extends RecyclerView.Adapter<bbsForumThreadShortReplyAdapter.ViewHolder> {
 
-    List<DisplayForumResult.ShortReply> shortReplyInfoList;
+    List<ForumResult.ShortReply> shortReplyInfoList;
     Context context;
 
     public bbsForumThreadShortReplyAdapter(Context context){
         this.context = context;
     }
 
-    public void setShortReplyInfoList(List<DisplayForumResult.ShortReply> shortReplyInfoList) {
+    public void setShortReplyInfoList(List<ForumResult.ShortReply> shortReplyInfoList) {
         this.shortReplyInfoList = shortReplyInfoList;
         notifyDataSetChanged();
     }
@@ -54,7 +54,7 @@ public class bbsForumThreadShortReplyAdapter extends RecyclerView.Adapter<bbsFor
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        DisplayForumResult.ShortReply replyInfo = shortReplyInfoList.get(position);
+        ForumResult.ShortReply replyInfo = shortReplyInfoList.get(position);
         holder.mReplyerName.setText(replyInfo.author);
         holder.mReplyMessage.setText(replyInfo.message);
 

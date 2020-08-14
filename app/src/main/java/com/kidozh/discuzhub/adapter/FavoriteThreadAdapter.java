@@ -24,7 +24,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsShowPostActivity;
-import com.kidozh.discuzhub.entities.FavoriteItem;
+import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -35,14 +35,14 @@ import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FavoriteItemAdapter extends PagedListAdapter<FavoriteItem, FavoriteItemAdapter.FavoriteThreadViewHolder> {
-    private static final String TAG = FavoriteItemAdapter.class.getSimpleName();
+public class FavoriteThreadAdapter extends PagedListAdapter<FavoriteThread, FavoriteThreadAdapter.FavoriteThreadViewHolder> {
+    private static final String TAG = FavoriteThreadAdapter.class.getSimpleName();
     Context context;
     bbsInformation bbsInfo;
     forumUserBriefInfo curUser;
 
-    public FavoriteItemAdapter() {
-        super(FavoriteItem.DIFF_CALLBACK);
+    public FavoriteThreadAdapter() {
+        super(FavoriteThread.DIFF_CALLBACK);
     }
 
     public void setInformation(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
@@ -61,29 +61,29 @@ public class FavoriteItemAdapter extends PagedListAdapter<FavoriteItem, Favorite
 
     @Override
     public void onBindViewHolder(@NonNull FavoriteThreadViewHolder holder, int position) {
-        FavoriteItem favoriteItem = getItem(position);
-        if(favoriteItem !=null){
-            holder.author.setText(favoriteItem.author);
-            holder.title.setText(favoriteItem.title);
-            if(TextUtils.isEmpty(favoriteItem.description)){
+        FavoriteThread favoriteThread = getItem(position);
+        if(favoriteThread !=null){
+            holder.author.setText(favoriteThread.author);
+            holder.title.setText(favoriteThread.title);
+            if(TextUtils.isEmpty(favoriteThread.description)){
                 holder.description.setVisibility(View.GONE);
             }
             else {
                 holder.description.setVisibility(View.VISIBLE);
-                holder.description.setText(favoriteItem.description);
+                holder.description.setText(favoriteThread.description);
             }
-            holder.publishAt.setText(timeDisplayUtils.getLocalePastTimeString(context, favoriteItem.date));
-            Log.d(TAG,"get publish date "+ favoriteItem.date);
-            holder.replyNumber.setText(context.getString(R.string.bbs_thread_reply_number, favoriteItem.replies));
-            if(favoriteItem.favid == 0){
+            holder.publishAt.setText(timeDisplayUtils.getLocalePastTimeString(context, favoriteThread.date));
+            Log.d(TAG,"get publish date "+ favoriteThread.date);
+            holder.replyNumber.setText(context.getString(R.string.bbs_thread_reply_number, favoriteThread.replies));
+            if(favoriteThread.favid == 0){
                 holder.syncStatus.setVisibility(View.GONE);
             }
             else {
                 holder.syncStatus.setVisibility(View.VISIBLE);
             }
 
-            String avatarURL = URLUtils.getDefaultAvatarUrlByUid(favoriteItem.uid);
-            int avatar_num = favoriteItem.uid;
+            String avatarURL = URLUtils.getDefaultAvatarUrlByUid(favoriteThread.uid);
+            int avatar_num = favoriteThread.uid;
             avatar_num = avatar_num % 16;
             if(avatar_num < 0){
                 avatar_num = -avatar_num;
@@ -104,10 +104,10 @@ public class FavoriteItemAdapter extends PagedListAdapter<FavoriteItem, Favorite
                         Intent intent = new Intent(context, bbsShowPostActivity.class);
                         intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                         intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
-                        intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, favoriteItem.toThread());
-                        intent.putExtra("FID", favoriteItem.favid);
-                        intent.putExtra("TID", favoriteItem.idKey);
-                        intent.putExtra("SUBJECT", favoriteItem.title);
+                        intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, favoriteThread.toThread());
+                        intent.putExtra("FID", favoriteThread.favid);
+                        intent.putExtra("TID", favoriteThread.idKey);
+                        intent.putExtra("SUBJECT", favoriteThread.title);
                         VibrateUtils.vibrateForClick(context);
                         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context,
                                 Pair.create(holder.title, "bbs_thread_subject")

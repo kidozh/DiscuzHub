@@ -1,6 +1,7 @@
 package com.kidozh.discuzhub.services;
 
-import com.kidozh.discuzhub.results.FavoriteThreadActionResult;
+import com.kidozh.discuzhub.results.FavoriteForumResult;
+import com.kidozh.discuzhub.results.FavoriteItemActionResult;
 import com.kidozh.discuzhub.results.FavoriteThreadResult;
 
 import retrofit2.Call;
@@ -16,9 +17,12 @@ public interface DiscuzApiService {
     @GET(DISCUZ_API_PATH+"?version=4&module=myfavthread")
     Call<FavoriteThreadResult> getFavoriteThreadResult(@Query("page") int page);
 
+    @GET(DISCUZ_API_PATH+"?version=4&module=myfavforum")
+    Call<FavoriteForumResult> getFavoriteForumResult(@Query("page") int page);
+
     @FormUrlEncoded
     @POST(DISCUZ_API_PATH+"?version=4&module=favthread&type=thread&ac=favorite")
-    Call<FavoriteThreadActionResult> favoriteThreadActionResult(
+    Call<FavoriteItemActionResult> favoriteThreadActionResult(
             @Query("formhash") String formhash,
             @Query("id") int tid,
             @Field("description") String description
@@ -28,7 +32,7 @@ public interface DiscuzApiService {
 
     @FormUrlEncoded
     @POST(DISCUZ_API_PATH+"?version=4&module=favthread&type=all&ac=favorite&op=delete&inajax=1")
-    Call<FavoriteThreadActionResult> unfavoriteThreadActionResult(
+    Call<FavoriteItemActionResult> unfavoriteThreadActionResult(
             @Field("formhash") String formhash,
             @Field("deletesubmit") String submit,
             @Field("handlekey") String handleKey,
@@ -38,8 +42,8 @@ public interface DiscuzApiService {
     );
 
     @FormUrlEncoded
-    @POST(DISCUZ_API_PATH+"?version=4&module=favforum&type=thread&ac=favorite")
-    Call<FavoriteThreadActionResult> favoriteForumActionResult(
+    @POST(DISCUZ_API_PATH+"?version=4&module=favforum&type=forum&ac=favorite")
+    Call<FavoriteItemActionResult> favoriteForumActionResult(
             @Query("formhash") String formhash,
             @Query("id") int tid,
             @Field("description") String description
@@ -49,7 +53,7 @@ public interface DiscuzApiService {
 
     @FormUrlEncoded
     @POST(DISCUZ_API_PATH+"?version=4&module=favforum&type=all&ac=favorite&op=delete&inajax=1")
-    Call<FavoriteThreadActionResult> unfavoriteForumActionResult(
+    Call<FavoriteItemActionResult> unfavoriteForumActionResult(
             @Field("formhash") String formhash,
             @Field("deletesubmit") String submit,
             @Field("handlekey") String handleKey,

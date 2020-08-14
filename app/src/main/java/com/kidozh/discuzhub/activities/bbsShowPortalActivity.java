@@ -385,7 +385,7 @@ public class bbsShowPortalActivity extends BaseStatusActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getIntentInfo();
         if(curUser == null){
-            getMenuInflater().inflate(R.menu.menu_bbs_user_status, menu);
+            getMenuInflater().inflate(R.menu.menu_incognitive_forum_nav_menu, menu);
         }
         else {
             getMenuInflater().inflate(R.menu.bbs_forum_nav_menu,menu);
