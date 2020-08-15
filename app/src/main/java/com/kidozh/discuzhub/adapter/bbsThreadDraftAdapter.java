@@ -13,15 +13,13 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.bbsPostThreadActivity;
+import com.kidozh.discuzhub.activities.PublishActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -85,7 +83,7 @@ public class bbsThreadDraftAdapter extends RecyclerView.Adapter<bbsThreadDraftAd
         holder.bbsThreadCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, bbsPostThreadActivity.class);
+                Intent intent = new Intent(context, PublishActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_THREAD_DRAFT_KEY,threadDraft);

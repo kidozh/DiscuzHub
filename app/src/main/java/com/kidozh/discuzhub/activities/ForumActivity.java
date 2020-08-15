@@ -75,7 +75,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
-import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 public class ForumActivity
@@ -356,7 +355,7 @@ public class ForumActivity
                 if(returned_res_json != null){
                     forumUserBriefInfo forumUserBriefInfo = bbsParseUtils.parseBreifUserInfo(returned_res_json);
                     if(forumUserBriefInfo!=null && forumUserBriefInfo.isValid()){
-                        Intent intent = new Intent(context,bbsPostThreadActivity.class);
+                        Intent intent = new Intent(context, PublishActivity.class);
                         intent.putExtra("fid",fid);
                         intent.putExtra("fid_name",forum.name);
                         intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);

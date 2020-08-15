@@ -108,7 +108,6 @@ import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
@@ -726,7 +725,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             @Override
             public void onClick(View v) {
                 String message = mCommentEditText.getText().toString();
-                Intent intent = new Intent(context,bbsPostThreadActivity.class);
+                Intent intent = new Intent(context, PublishActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forum);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
@@ -1477,8 +1476,32 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             SecureInfoResult secureInfoResult = threadDetailViewModel.getSecureInfoResultMutableLiveData().getValue();
 
             formBodyBuilder.add("seccodehash",secureInfoResult.secureVariables.secHash)
-                    .add("seccodemodid", "forum::viewthread")
-                    .add("seccodeverify", mPostCaptchaEditText.getText().toString());
+                    .add("seccodemodid", "forum::viewthread");
+            String captcha=  mPostCaptchaEditText.getText().toString();
+            switch (getCharsetType()){
+                case CHARSET_GBK:{
+                    try {
+                        formBodyBuilder.addEncoded("seccodeverify", URLEncoder.encode(captcha,"GBK"))
+                        ;
+                        break;
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+                case CHARSET_BIG5:{
+                    try {
+                        formBodyBuilder.addEncoded("seccodeverify", URLEncoder.encode(captcha,"BIG5"))
+                        ;
+                        break;
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+                default:{
+                    formBodyBuilder.add("seccodeverify", captcha);
+                }
+            }
+
         }
 
         FormBody formBody = formBodyBuilder.build();
@@ -1639,10 +1662,32 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
         if(needCaptcha()){
             SecureInfoResult secureInfoResult = threadDetailViewModel.getSecureInfoResultMutableLiveData().getValue();
-
+            String captcha = mPostCaptchaEditText.getText().toString();
             formBodyBuilder.add("seccodehash",secureInfoResult.secureVariables.secHash)
-                    .add("seccodemodid", "forum::viewthread")
-                    .add("seccodeverify", mPostCaptchaEditText.getText().toString());
+                    .add("seccodemodid", "forum::viewthread");
+            switch (getCharsetType()){
+                case CHARSET_GBK:{
+                    try {
+                        formBodyBuilder.addEncoded("seccodeverify", URLEncoder.encode(captcha,"GBK"))
+                        ;
+                        break;
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+                case CHARSET_BIG5:{
+                    try {
+                        formBodyBuilder.addEncoded("seccodeverify", URLEncoder.encode(captcha,"BIG5"))
+                        ;
+                        break;
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+                default:{
+                    formBodyBuilder.add("seccodeverify", captcha);
+                }
+            }
         }
 
         FormBody formBody = formBodyBuilder.build();

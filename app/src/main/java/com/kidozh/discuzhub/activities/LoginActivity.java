@@ -48,7 +48,9 @@ import com.kidozh.discuzhub.viewModels.LoginViewModel;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -369,19 +371,50 @@ public class LoginActivity extends BaseStatusActivity {
         // exact login url
         // need formhash
         SecureInfoResult secureInfoResult = viewModel.getSecureInfoResultMutableLiveData().getValue();
+
         String loginUrl = URLUtils.getLoginUrl();
+
 
         FormBody.Builder formBodyBuilder = new FormBody.Builder()
                 .add("loginfield", "username")
                 .add("cookietime", "2592000")
-                .add("username", account)
-                .add("password", password)
+
                 .add("questionid",String.valueOf(bbsSecurityQuestionSpinner.getSelectedItemPosition()))
-                .add("answer",bbsSecurityAnswerEditText.getText().toString())
+
                 .add("quickforward", "yes")
                 .add("handlekey", "1s")
 
                 .add("referer",bbsInfo.base_url);
+        String answer = bbsSecurityAnswerEditText.getText().toString();
+        switch (getCharsetType()){
+            case CHARSET_GBK:{
+                try {
+                    formBodyBuilder.addEncoded("answer", URLEncoder.encode(answer,"GBK"))
+                            .add("username", URLEncoder.encode(account,"GBK"))
+                            .add("password", URLEncoder.encode(password,"GBK"))
+                    ;
+                    break;
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+            case CHARSET_BIG5:{
+                try {
+                    formBodyBuilder.addEncoded("answer", URLEncoder.encode(answer,"BIG5"))
+                            .add("username", URLEncoder.encode(account,"BIG5"))
+                            .add("password", URLEncoder.encode(password,"BIG5"))
+                    ;
+                    break;
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+            default:{
+                formBodyBuilder.add("answer",answer)
+                        .add("username", account)
+                        .add("password", password);
+            }
+        }
 
         if(needCaptcha()){
             Log.d(TAG,"Formhash "+secureInfoResult.secureVariables.formHash);
@@ -389,7 +422,32 @@ public class LoginActivity extends BaseStatusActivity {
                     .add("seccodehash",secureInfoResult.secureVariables.secHash)
                     .add("seccodemodid", "member::logging")
                     //.add("formhash",secureInfoResult.secureVariables.formHash)
-                    .add("seccodeverify", captcha);
+                    ;
+            switch (getCharsetType()){
+                case CHARSET_GBK:{
+                    try {
+                        formBodyBuilder.addEncoded("seccodeverify", URLEncoder.encode(captcha,"GBK"))
+
+                        ;
+                        break;
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+                case CHARSET_BIG5:{
+                    try {
+                        formBodyBuilder.addEncoded("seccodeverify", URLEncoder.encode(captcha,"BIG5"))
+
+                        ;
+                        break;
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+                default:{
+                    formBodyBuilder.add("seccodeverify", captcha);
+                }
+            }
         }
 
         FormBody formBody = formBodyBuilder

@@ -63,7 +63,6 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.BaseResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.PostParameterResult;
-import com.kidozh.discuzhub.results.VariableResults;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsColorPicker;
@@ -99,7 +98,6 @@ import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
@@ -108,11 +106,11 @@ import static com.kidozh.discuzhub.utilities.CharsetUtils.EncodeStringByCharset;
 import static java.text.DateFormat.getDateInstance;
 import static java.text.DateFormat.getDateTimeInstance;
 
-public class bbsPostThreadActivity extends BaseStatusActivity implements View.OnClickListener,
+public class PublishActivity extends BaseStatusActivity implements View.OnClickListener,
         PostThreadConfirmDialogFragment.ConfirmDialogListener,
         PostThreadPasswordDialogFragment.NoticeDialogListener,
         PostThreadInsertLinkDialogFragment.NoticeDialogListener {
-    private static String TAG = bbsPostThreadActivity.class.getSimpleName();
+    private static String TAG = PublishActivity.class.getSimpleName();
 
     @BindView(R.id.bbs_post_thread_subject_editText)
     EditText bbsThreadSubjectEditText;
@@ -527,7 +525,7 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
                 break;
             case R.id.action_insert_photo:
                 if (TextUtils.isEmpty(uploadHash)) {
-                    Toasty.error(bbsPostThreadActivity.this, getString(R.string.bbs_post_thread_cannot_upload_picture), Toast.LENGTH_SHORT).show();
+                    Toasty.error(PublishActivity.this, getString(R.string.bbs_post_thread_cannot_upload_picture), Toast.LENGTH_SHORT).show();
                 } else {
                     startActivityForResult(getPickImageChooserIntent(), bbsConstUtils.REQUEST_CODE_PICK_A_PICTURE);
                 }
@@ -1339,9 +1337,35 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
             if(needCaptcha()){
                 SecureInfoResult secureInfoResult = postThreadViewModel.getSecureInfoResultMutableLiveData().getValue();
                 if(secureInfoResult !=null){
-                    formBody.add("seccodehash",secureInfoResult.secureVariables.secHash)
+                    formBody.add("seccodehash",secureInfoResult.secureVariables.secHash);
 
-                            .add("seccodeverify", mPostCaptchaEditText.getText().toString());
+                            //.add("seccodeverify", mPostCaptchaEditText.getText().toString());
+                    String captcha=  mPostCaptchaEditText.getText().toString();
+                    switch (getCharsetType()){
+                        case CHARSET_GBK:{
+                            try {
+                                formBody.addEncoded("seccodeverify", URLEncoder.encode(captcha,"GBK"))
+                                ;
+                                break;
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        case CHARSET_BIG5:{
+                            try {
+                                formBody.addEncoded("seccodeverify", URLEncoder.encode(captcha,"BIG5"))
+                                ;
+                                break;
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        default:{
+                            formBody.add("seccodeverify", captcha);
+                        }
+                    }
+
+
                     if(isAPostReply()){
                         formBody.add("seccodemodid", "forum::viewthread");
                     }
