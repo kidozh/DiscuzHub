@@ -39,7 +39,7 @@
             android:name=".activities.bbsAddIntroActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.aboutAppActivity" />
-        <activity android:name=".activities.showWebPageActivity" />
+        <activity android:name=".activities.InternalWebViewActivity" />
         <activity
             android:name=".activities.appWelcomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -63,8 +63,8 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_global_settings" />
-        <activity android:name=".activities.bbsShowForumThreadActivity" />
-        <activity android:name=".activities.bbsShowPostActivity" />
+        <activity android:name=".activities.ForumActivity" />
+        <activity android:name=".activities.ThreadActivity" />
         <activity
             android:name=".activities.SplashScreenActivity"
             android:theme="@style/AppTheme.NoActionBar" />

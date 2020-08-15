@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
-import com.kidozh.discuzhub.activities.bbsShowForumThreadActivity;
-import com.kidozh.discuzhub.activities.bbsShowPostActivity;
+import com.kidozh.discuzhub.activities.ForumActivity;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.ViewHistory;
@@ -112,7 +111,7 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
                             ForumInfo forumInfo = new ForumInfo();
                             forumInfo.fid = history.fid;
                             forumInfo.description = history.description;
-                            Intent intent = new Intent(context, bbsShowForumThreadActivity.class);
+                            Intent intent = new Intent(context, ForumActivity.class);
                             intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forumInfo);
                             intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                             intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
@@ -128,7 +127,7 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
                             threadInfo.fid = history.fid;
                             threadInfo.tid = history.tid;
                             threadInfo.subject = history.description;
-                            Intent intent = new Intent(context, bbsShowPostActivity.class);
+                            Intent intent = new Intent(context, ThreadActivity.class);
                             intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                             intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                             intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);

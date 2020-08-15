@@ -13,14 +13,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,11 +29,9 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.UploadAttachmentInfoAdapter;
-import com.kidozh.discuzhub.adapter.bbsAttachmentAdapter;
 import com.kidozh.discuzhub.entities.UploadAttachment;
-import com.kidozh.discuzhub.results.ThreadPostParameterResult;
+import com.kidozh.discuzhub.results.PostParameterResult;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.viewModels.PostThreadViewModel;
 
 import java.util.ArrayList;
@@ -116,10 +112,10 @@ public class UploadAttachmentDialogFragment extends BottomSheetDialogFragment {
 
 
                 Log.d(TAG, "get position "+checkedId);
-                ThreadPostParameterResult threadPostParameterResult = viewModel.getThreadPostParameterResultMutableLiveData().getValue();
+                PostParameterResult postParameterResult = viewModel.getThreadPostParameterResultMutableLiveData().getValue();
 
-                if(threadPostParameterResult!=null){
-                    ThreadPostParameterResult.UploadSize uploadSize = threadPostParameterResult.permissionVariables.allowPerm.uploadSize;
+                if(postParameterResult !=null){
+                    PostParameterResult.UploadSize uploadSize = postParameterResult.permissionVariables.allowPerm.uploadSize;
                     List<String> allowableType = uploadSize.getAllowableFileSuffix();
                     if(checkedId >0){
                         for(int i=0;i< group.getChildCount(); i++){
@@ -164,10 +160,10 @@ public class UploadAttachmentDialogFragment extends BottomSheetDialogFragment {
         });
         Context context = getContext();
         Log.d(TAG,"bind view model");
-        viewModel.getThreadPostParameterResultMutableLiveData().observe(this, new Observer<ThreadPostParameterResult>() {
+        viewModel.getThreadPostParameterResultMutableLiveData().observe(this, new Observer<PostParameterResult>() {
             @Override
-            public void onChanged(ThreadPostParameterResult threadPostParameterResult) {
-                ThreadPostParameterResult.UploadSize uploadSize = threadPostParameterResult.permissionVariables.allowPerm.uploadSize;
+            public void onChanged(PostParameterResult postParameterResult) {
+                PostParameterResult.UploadSize uploadSize = postParameterResult.permissionVariables.allowPerm.uploadSize;
                 List<String> allowableType = uploadSize.getAllowableFileSuffix();
                 Log.d(TAG,"get all allowable list "+allowableType.size());
                 // add to chip group
@@ -201,11 +197,11 @@ public class UploadAttachmentDialogFragment extends BottomSheetDialogFragment {
 
     private String getSelectedFileType(){
         Boolean findType = false;
-        ThreadPostParameterResult threadPostParameterResult = viewModel.getThreadPostParameterResultMutableLiveData().getValue();
-        if(threadPostParameterResult == null){
+        PostParameterResult postParameterResult = viewModel.getThreadPostParameterResultMutableLiveData().getValue();
+        if(postParameterResult == null){
             return "";
         }
-        ThreadPostParameterResult.UploadSize uploadSize = threadPostParameterResult.permissionVariables.allowPerm.uploadSize;
+        PostParameterResult.UploadSize uploadSize = postParameterResult.permissionVariables.allowPerm.uploadSize;
         List<String> allowableType = uploadSize.getAllowableFileSuffix();
         for(int i=0;i<uploadAttachmentTypeChipGroup.getChildCount();i++){
             Chip curChip = (Chip) uploadAttachmentTypeChipGroup.getChildAt(i);

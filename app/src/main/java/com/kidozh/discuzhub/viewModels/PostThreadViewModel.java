@@ -14,7 +14,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.SecureInfoResult;
-import com.kidozh.discuzhub.results.ThreadPostParameterResult;
+import com.kidozh.discuzhub.results.PostParameterResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -38,8 +38,8 @@ public class PostThreadViewModel extends AndroidViewModel {
     String fid;
     OkHttpClient client;
 
-    public MutableLiveData<ThreadPostParameterResult> threadPostParameterResultMutableLiveData;
-    public MutableLiveData<ThreadPostParameterResult.AllowPermission> allowPermissionMutableLiveData;
+    public MutableLiveData<PostParameterResult> threadPostParameterResultMutableLiveData;
+    public MutableLiveData<PostParameterResult.AllowPermission> allowPermissionMutableLiveData;
     public MutableLiveData<Boolean> error,isUploadingAttachmentLiveData;
     public MutableLiveData<bbsThreadDraft> bbsThreadDraftMutableLiveData;
     public MutableLiveData<List<UploadAttachment>> uploadAttachmentListLiveData;
@@ -66,7 +66,7 @@ public class PostThreadViewModel extends AndroidViewModel {
         client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
     }
 
-    public MutableLiveData<ThreadPostParameterResult> getThreadPostParameterResultMutableLiveData() {
+    public MutableLiveData<PostParameterResult> getThreadPostParameterResultMutableLiveData() {
         if(threadPostParameterResultMutableLiveData == null){
             threadPostParameterResultMutableLiveData = new MutableLiveData<>(null);
             loadThreadPostParameter();
@@ -90,15 +90,15 @@ public class PostThreadViewModel extends AndroidViewModel {
                 if(response.isSuccessful() && response.body()!=null){
                     String s = response.body().string();
                     Log.d(TAG,"Recv post parameters "+s);
-                    ThreadPostParameterResult threadPostParameterResult = bbsParseUtils.parseThreadPostParameter(s);
-                    if(threadPostParameterResult == null){
+                    PostParameterResult postParameterResult = bbsParseUtils.parseThreadPostParameter(s);
+                    if(postParameterResult == null){
                         error.postValue(true);
                         Toasty.error(getApplication(),getApplication().getString(R.string.bbs_post_thread_cannot_upload_picture), Toast.LENGTH_SHORT).show();
                     }
                     else {
-                        allowPermissionMutableLiveData.postValue(threadPostParameterResult.permissionVariables.allowPerm);
+                        allowPermissionMutableLiveData.postValue(postParameterResult.permissionVariables.allowPerm);
                     }
-                    threadPostParameterResultMutableLiveData.postValue(threadPostParameterResult);
+                    threadPostParameterResultMutableLiveData.postValue(postParameterResult);
                 }
                 else {
                     error.postValue(false);

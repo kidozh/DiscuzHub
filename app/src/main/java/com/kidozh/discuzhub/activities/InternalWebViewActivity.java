@@ -1,12 +1,9 @@
 package com.kidozh.discuzhub.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -16,15 +13,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
@@ -38,13 +32,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dmoral.toasty.Toasty;
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
-public class showWebPageActivity extends BaseStatusActivity {
-    private final static String TAG = showWebPageActivity.class.getSimpleName();
+public class InternalWebViewActivity extends BaseStatusActivity {
+    private final static String TAG = InternalWebViewActivity.class.getSimpleName();
 
     forumUserBriefInfo userBriefInfo;
     bbsInformation curBBS;
@@ -215,7 +208,7 @@ public class showWebPageActivity extends BaseStatusActivity {
                     Log.d(TAG, "Find the current " + redirectPid + " tid " + redirectTid);
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(context, bbsShowPostActivity.class);
+                    Intent intent = new Intent(context, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -233,7 +226,7 @@ public class showWebPageActivity extends BaseStatusActivity {
                     int redirectTid = Integer.parseInt(tidString);
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(context, bbsShowPostActivity.class);
+                    Intent intent = new Intent(context, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -250,7 +243,7 @@ public class showWebPageActivity extends BaseStatusActivity {
                         && uri.getQueryParameter("fid") != null) {
                     String fidString = uri.getQueryParameter("fid");
                     int fid = Integer.parseInt(fidString);
-                    Intent intent = new Intent(context, bbsShowForumThreadActivity.class);
+                    Intent intent = new Intent(context, ForumActivity.class);
                     ForumInfo clickedForum = new ForumInfo();
                     clickedForum.fid = fid;
 
@@ -278,7 +271,7 @@ public class showWebPageActivity extends BaseStatusActivity {
                     return true;
                 }
 
-                Intent intent = new Intent(context, showWebPageActivity.class);
+                Intent intent = new Intent(context, InternalWebViewActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_URL_KEY, url);

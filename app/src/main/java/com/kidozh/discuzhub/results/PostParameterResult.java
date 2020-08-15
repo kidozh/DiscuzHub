@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ThreadPostParameterResult extends BaseResult {
+public class PostParameterResult extends BaseResult {
     @JsonProperty("Variables")
     public PermissionVariablesResult permissionVariables;
 

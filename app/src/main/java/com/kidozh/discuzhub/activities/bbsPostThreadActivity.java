@@ -61,7 +61,7 @@ import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.SecureInfoResult;
-import com.kidozh.discuzhub.results.ThreadPostParameterResult;
+import com.kidozh.discuzhub.results.PostParameterResult;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsColorPicker;
@@ -251,13 +251,13 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
     }
 
     private void bindViewModel(){
-        postThreadViewModel.getThreadPostParameterResultMutableLiveData().observe(this, new Observer<ThreadPostParameterResult>() {
+        postThreadViewModel.getThreadPostParameterResultMutableLiveData().observe(this, new Observer<PostParameterResult>() {
             @Override
-            public void onChanged(ThreadPostParameterResult threadPostParameterResult) {
-                if(threadPostParameterResult !=null){
-                    bbsPersonInfo = threadPostParameterResult.permissionVariables.getUserBriefInfo();
-                    formHash = threadPostParameterResult.permissionVariables.formHash;
-                    uploadHash = threadPostParameterResult.permissionVariables.allowPerm.uploadHash;
+            public void onChanged(PostParameterResult postParameterResult) {
+                if(postParameterResult !=null){
+                    bbsPersonInfo = postParameterResult.permissionVariables.getUserBriefInfo();
+                    formHash = postParameterResult.permissionVariables.formHash;
+                    uploadHash = postParameterResult.permissionVariables.allowPerm.uploadHash;
                     actionInsertPhoto.setVisibility(View.VISIBLE);
                     actionUploadAttachment.setVisibility(View.VISIBLE);
                 }
@@ -269,9 +269,9 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
             }
         });
 
-        postThreadViewModel.allowPermissionMutableLiveData.observe(this, new Observer<ThreadPostParameterResult.AllowPermission>() {
+        postThreadViewModel.allowPermissionMutableLiveData.observe(this, new Observer<PostParameterResult.AllowPermission>() {
             @Override
-            public void onChanged(ThreadPostParameterResult.AllowPermission allowPermission) {
+            public void onChanged(PostParameterResult.AllowPermission allowPermission) {
                 Log.d(TAG,"get allow perm "+allowPermission);
                 if(allowPermission !=null){
                     uploadHash = allowPermission.uploadHash;
@@ -911,7 +911,7 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
     private void uploadAttachment(byte[] fileData, String filename){
         postThreadViewModel.isUploadingAttachmentLiveData.postValue(true);
 
-        ThreadPostParameterResult postParameterResult = postThreadViewModel.threadPostParameterResultMutableLiveData.getValue();
+        PostParameterResult postParameterResult = postThreadViewModel.threadPostParameterResultMutableLiveData.getValue();
         if(postParameterResult == null){
             return;
         }

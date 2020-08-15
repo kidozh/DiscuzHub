@@ -354,7 +354,7 @@ public class bbsShowPortalActivity extends BaseStatusActivity
                 return true;
             }
             case R.id.bbs_forum_nav_show_in_webview:{
-                Intent intent = new Intent(this, showWebPageActivity.class);
+                Intent intent = new Intent(this, InternalWebViewActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_URL_KEY,currentUrl);

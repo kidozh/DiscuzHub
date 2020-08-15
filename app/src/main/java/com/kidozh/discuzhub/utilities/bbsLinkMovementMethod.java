@@ -12,28 +12,18 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.TextView;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Layout;
-import android.text.Selection;
-import android.text.method.MovementMethod;
-import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.InternalWebViewActivity;
+import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
-import com.kidozh.discuzhub.activities.bbsShowForumThreadActivity;
-import com.kidozh.discuzhub.activities.bbsShowPostActivity;
-import com.kidozh.discuzhub.activities.showWebPageActivity;
+import com.kidozh.discuzhub.activities.ForumActivity;
 import com.kidozh.discuzhub.entities.ForumInfo;
-import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-
-import java.util.List;
-
-import es.dmoral.toasty.Toasty;
 
 
 public class bbsLinkMovementMethod extends LinkMovementMethod {
@@ -141,7 +131,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                     Log.d(TAG, "Find the current " + redirectPid + " tid " + redirectTid);
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(context, bbsShowPostActivity.class);
+                    Intent intent = new Intent(context, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -159,7 +149,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                     int redirectTid = Integer.parseInt(tidString);
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(context, bbsShowPostActivity.class);
+                    Intent intent = new Intent(context, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -176,7 +166,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                         && uri.getQueryParameter("fid") != null) {
                     String fidString = uri.getQueryParameter("fid");
                     int fid = Integer.parseInt(fidString);
-                    Intent intent = new Intent(context, bbsShowForumThreadActivity.class);
+                    Intent intent = new Intent(context, ForumActivity.class);
                     ForumInfo clickedForum = new ForumInfo();
                     clickedForum.fid = fid;
 
@@ -204,7 +194,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                     return true;
                 }
 
-                Intent intent = new Intent(context, showWebPageActivity.class);
+                Intent intent = new Intent(context, InternalWebViewActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_URL_KEY, url);
@@ -214,7 +204,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
 
             }
             else {
-                Intent intent = new Intent(context, showWebPageActivity.class);
+                Intent intent = new Intent(context, InternalWebViewActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_URL_KEY, url);
@@ -235,7 +225,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                         .setNeutralButton(R.string.bbs_show_in_internal_browser, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(context, showWebPageActivity.class);
+                                Intent intent = new Intent(context, InternalWebViewActivity.class);
                                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                                 intent.putExtra(bbsConstUtils.PASS_URL_KEY,finalURL);
@@ -261,7 +251,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
             }
             else {
 
-                Intent intent = new Intent(context, showWebPageActivity.class);
+                Intent intent = new Intent(context, InternalWebViewActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_URL_KEY,url);

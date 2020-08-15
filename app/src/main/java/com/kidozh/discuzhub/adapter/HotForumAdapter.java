@@ -2,7 +2,6 @@ package com.kidozh.discuzhub.adapter;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,8 +17,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.bbsShowForumThreadActivity;
-import com.kidozh.discuzhub.activities.bbsShowPostActivity;
+import com.kidozh.discuzhub.activities.ForumActivity;
+import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.HotForum;
 import com.kidozh.discuzhub.entities.ThreadInfo;
@@ -93,7 +92,7 @@ public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotFor
                 forumInfo.fid = hotForum.fid;
                 forumInfo.todayPosts = hotForum.todayPosts;
                 forumInfo.name = hotForum.name;
-                Intent intent = new Intent(context, bbsShowForumThreadActivity.class);
+                Intent intent = new Intent(context, ForumActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forumInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
@@ -110,7 +109,7 @@ public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotFor
                 threadInfo.fid = hotForum.fid;
                 threadInfo.tid = hotForum.lastPostTid;
                 threadInfo.subject = hotForum.lastPostSubject;
-                Intent intent = new Intent(context, bbsShowPostActivity.class);
+                Intent intent = new Intent(context, ThreadActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);

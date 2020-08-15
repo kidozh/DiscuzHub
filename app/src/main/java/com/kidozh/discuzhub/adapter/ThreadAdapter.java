@@ -29,8 +29,8 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
-import com.kidozh.discuzhub.activities.bbsShowPostActivity;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -268,7 +268,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.bbsForumTh
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, bbsShowPostActivity.class);
+                Intent intent = new Intent(mContext, ThreadActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
                 intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);

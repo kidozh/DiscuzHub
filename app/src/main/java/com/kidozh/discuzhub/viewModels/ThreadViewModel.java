@@ -18,7 +18,7 @@ import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.SecureInfoResult;
-import com.kidozh.discuzhub.results.ThreadPostResult;
+import com.kidozh.discuzhub.results.ThreadResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -34,8 +34,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class PostsViewModel extends AndroidViewModel {
-    private String TAG = PostsViewModel.class.getSimpleName();
+public class ThreadViewModel extends AndroidViewModel {
+    private String TAG = ThreadViewModel.class.getSimpleName();
 
 
 
@@ -52,13 +52,13 @@ public class PostsViewModel extends AndroidViewModel {
     public MutableLiveData<List<PostInfo>> threadCommentInfoListLiveData;
     public MutableLiveData<URLUtils.ThreadStatus> threadStatusMutableLiveData;
     public MutableLiveData<bbsParseUtils.DetailedThreadInfo> detailedThreadInfoMutableLiveData;
-    public MutableLiveData<ThreadPostResult> threadPostResultMutableLiveData;
+    public MutableLiveData<ThreadResult> threadPostResultMutableLiveData;
     private MutableLiveData<SecureInfoResult> secureInfoResultMutableLiveData;
     public LiveData<Boolean> isFavoriteThreadMutableLiveData;
     public LiveData<FavoriteThread> favoriteThreadLiveData;
     FavoriteThreadDao dao;
 
-    public PostsViewModel(@NonNull Application application) {
+    public ThreadViewModel(@NonNull Application application) {
         super(application);
         isLoading = new MutableLiveData<>(false);
         error = new MutableLiveData<>(false);
@@ -167,32 +167,32 @@ public class PostsViewModel extends AndroidViewModel {
                     String s = response.body().string();
                     int totalThreadSize = 0;
                     Log.d(TAG,"Recv thread JSON "+s);
-                    ThreadPostResult threadPostResult = bbsParseUtils.parseThreadPostResult(s);
+                    ThreadResult threadResult = bbsParseUtils.parseThreadPostResult(s);
                     bbsParseUtils.DetailedThreadInfo detailedThreadInfo = null;
-                    threadPostResultMutableLiveData.postValue(threadPostResult);
-                    if(threadPostResult!=null && threadPostResult.threadPostVariables!=null){
+                    threadPostResultMutableLiveData.postValue(threadResult);
+                    if(threadResult !=null && threadResult.threadPostVariables!=null){
                         // update formhash first
-                        if(threadPostResult.threadPostVariables.formHash !=null){
-                            formHash.postValue(threadPostResult.threadPostVariables.formHash);
+                        if(threadResult.threadPostVariables.formHash !=null){
+                            formHash.postValue(threadResult.threadPostVariables.formHash);
                         }
                         // parse message
-                        if(threadPostResult.message!=null){
-                            errorText.postValue(threadPostResult.message.content);
+                        if(threadResult.message!=null){
+                            errorText.postValue(threadResult.message.content);
                         }
                         // update user
-                        if(threadPostResult.threadPostVariables!=null){
-                            bbsPersonInfoMutableLiveData.postValue(threadPostResult.threadPostVariables.getUserBriefInfo());
+                        if(threadResult.threadPostVariables!=null){
+                            bbsPersonInfoMutableLiveData.postValue(threadResult.threadPostVariables.getUserBriefInfo());
                             // parse detailed info
-                            detailedThreadInfo = threadPostResult.threadPostVariables.detailedThreadInfo;
-                            detailedThreadInfoMutableLiveData.postValue(threadPostResult.threadPostVariables.detailedThreadInfo);
+                            detailedThreadInfo = threadResult.threadPostVariables.detailedThreadInfo;
+                            detailedThreadInfoMutableLiveData.postValue(threadResult.threadPostVariables.detailedThreadInfo);
 
-                            bbsPollInfo pollInfo = threadPostResult.threadPostVariables.pollInfo;
+                            bbsPollInfo pollInfo = threadResult.threadPostVariables.pollInfo;
                             if(pollInfoLiveData.getValue() == null && pollInfo !=null){
                                 Log.d(TAG,"recv poll info "+ pollInfo.votersCount);
                                 pollInfoLiveData.postValue(pollInfo);
 
                             }
-                            List<PostInfo> postInfoList = threadPostResult.threadPostVariables.postInfoList;
+                            List<PostInfo> postInfoList = threadResult.threadPostVariables.postInfoList;
                             // remove null object
                             Log.d(TAG,"Recv post info size "+postInfoList.size());
                             Iterator<PostInfo> iterator = postInfoList.iterator();
@@ -220,7 +220,7 @@ public class PostsViewModel extends AndroidViewModel {
                                 }
                             }
                             else {
-                                if(threadStatus.page == 1 && (threadPostResult == null || threadPostResult.message !=null)){
+                                if(threadStatus.page == 1 && (threadResult == null || threadResult.message !=null)){
                                     errorText.postValue(getApplication().getString(R.string.parse_failed));
                                 }
                                 hasLoadAll.postValue(true);

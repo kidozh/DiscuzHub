@@ -27,8 +27,8 @@ import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.results.FavoriteThreadResult;
 import com.kidozh.discuzhub.results.HotForumsResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
-import com.kidozh.discuzhub.results.ThreadPostParameterResult;
-import com.kidozh.discuzhub.results.ThreadPostResult;
+import com.kidozh.discuzhub.results.PostParameterResult;
+import com.kidozh.discuzhub.results.ThreadResult;
 import com.kidozh.discuzhub.results.UserFriendResult;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.results.UserProfileResult;
@@ -262,10 +262,10 @@ public class bbsParseUtils {
         }
     }
 
-    public static ThreadPostResult parseThreadPostResult(String s){
+    public static ThreadResult parseThreadPostResult(String s){
         try {
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(s, ThreadPostResult.class);
+            return mapper.readValue(s, ThreadResult.class);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1021,11 +1021,11 @@ public class bbsParseUtils {
         }
     }
 
-    public static ThreadPostParameterResult parseThreadPostParameter(String s) {
+    public static PostParameterResult parseThreadPostParameter(String s) {
         try {
 
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(s, ThreadPostParameterResult.class);
+            return mapper.readValue(s, PostParameterResult.class);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -19,7 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.bbsShowForumThreadActivity;
+import com.kidozh.discuzhub.activities.ForumActivity;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -94,7 +94,7 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
                 putForum.posts = forum.posts;
                 putForum.todayPosts = forum.todayPosts;
                 putForum.threadCount = forum.threads;
-                Intent intent = new Intent(context, bbsShowForumThreadActivity.class);
+                Intent intent = new Intent(context, ForumActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,putForum);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);

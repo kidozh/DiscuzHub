@@ -8,7 +8,6 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.kidozh.discuzhub.daos.FavoriteForumDao;
 import com.kidozh.discuzhub.database.FavoriteForumDatabase;
 import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
 import com.kidozh.discuzhub.entities.FavoriteForum;
@@ -31,8 +30,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ForumThreadViewModel extends AndroidViewModel {
-    private String TAG = ForumThreadViewModel.class.getSimpleName();
+public class ForumViewModel extends AndroidViewModel {
+    private String TAG = ForumViewModel.class.getSimpleName();
 
     public MutableLiveData<URLUtils.ForumStatus> forumStatusMutableLiveData;
 
@@ -51,7 +50,7 @@ public class ForumThreadViewModel extends AndroidViewModel {
 
 
 
-    public ForumThreadViewModel(@NonNull Application application) {
+    public ForumViewModel(@NonNull Application application) {
         super(application);
         forumStatusMutableLiveData = new MutableLiveData<URLUtils.ForumStatus>();
         isLoading = new MutableLiveData<Boolean>(false);

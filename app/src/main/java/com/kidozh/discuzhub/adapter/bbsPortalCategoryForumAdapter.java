@@ -18,10 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.bbsShowForumThreadActivity;
+import com.kidozh.discuzhub.activities.ForumActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -89,7 +88,7 @@ public class bbsPortalCategoryForumAdapter extends RecyclerView.Adapter<bbsPorta
             holder.mCardview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mContext, bbsShowForumThreadActivity.class);
+                    Intent intent = new Intent(mContext, ForumActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forum);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);

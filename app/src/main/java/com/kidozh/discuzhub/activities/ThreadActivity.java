@@ -77,16 +77,17 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.FavoriteItemActionResult;
 import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
-import com.kidozh.discuzhub.results.ThreadPostResult;
+import com.kidozh.discuzhub.results.ThreadResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
+import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
-import com.kidozh.discuzhub.viewModels.PostsViewModel;
+import com.kidozh.discuzhub.viewModels.ThreadViewModel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -110,12 +111,12 @@ import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
 
-public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFragment.OnSmileyPressedInteraction,
+public class ThreadActivity extends BaseStatusActivity implements SmileyFragment.OnSmileyPressedInteraction,
         ThreadPostsAdapter.onFilterChanged,
         ThreadPostsAdapter.onAdapterReply,
         ThreadPostsAdapter.OnLinkClicked,
         bbsPollFragment.OnFragmentInteractionListener{
-    private final static String TAG = bbsShowPostActivity.class.getSimpleName();
+    private final static String TAG = ThreadActivity.class.getSimpleName();
     @BindView(R.id.bbs_thread_detail_recyclerview)
     RecyclerView mRecyclerview;
 
@@ -184,7 +185,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
     private bbsSmileyPicker smileyPicker;
     private EmotionInputHandler handler;
 
-    private PostsViewModel threadDetailViewModel;
+    private ThreadViewModel threadDetailViewModel;
 
 
     @Override
@@ -192,7 +193,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bbs_show_post);
         ButterKnife.bind(this);
-        threadDetailViewModel = new ViewModelProvider(this).get(PostsViewModel.class);
+        threadDetailViewModel = new ViewModelProvider(this).get(ThreadViewModel.class);
         configureIntentData();
         initThreadStatus();
         configureClient();
@@ -405,7 +406,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 }
 
                 if(detailedThreadInfo.readperm!=0){
-                    ThreadPostResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
+                    ThreadResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
                     if(result != null){
                         forumUserBriefInfo userBriefInfo = result.threadPostVariables.getUserBriefInfo();
                     }
@@ -543,21 +544,21 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
             }
         });
 
-        threadDetailViewModel.threadPostResultMutableLiveData.observe(this, new Observer<ThreadPostResult>() {
+        threadDetailViewModel.threadPostResultMutableLiveData.observe(this, new Observer<ThreadResult>() {
             @Override
-            public void onChanged(ThreadPostResult threadPostResult) {
-                if(threadPostResult!=null ){
-                    if(threadPostResult.threadPostVariables !=null
-                            && threadPostResult.threadPostVariables.detailedThreadInfo !=null
-                            && threadPostResult.threadPostVariables.detailedThreadInfo.subject !=null){
+            public void onChanged(ThreadResult threadResult) {
+                if(threadResult !=null ){
+                    if(threadResult.threadPostVariables !=null
+                            && threadResult.threadPostVariables.detailedThreadInfo !=null
+                            && threadResult.threadPostVariables.detailedThreadInfo.subject !=null){
 
-                        Spanned sp = Html.fromHtml(threadPostResult.threadPostVariables.detailedThreadInfo.subject);
+                        Spanned sp = Html.fromHtml(threadResult.threadPostVariables.detailedThreadInfo.subject);
                         SpannableString spannableString = new SpannableString(sp);
                         mDetailThreadSubjectTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
                         if(getSupportActionBar()!=null){
-                            getSupportActionBar().setTitle(threadPostResult.threadPostVariables.detailedThreadInfo.subject);
+                            getSupportActionBar().setTitle(threadResult.threadPostVariables.detailedThreadInfo.subject);
                         }
-                        bbsParseUtils.DetailedThreadInfo detailedThreadInfo = threadPostResult.threadPostVariables.detailedThreadInfo;
+                        bbsParseUtils.DetailedThreadInfo detailedThreadInfo = threadResult.threadPostVariables.detailedThreadInfo;
                         if(detailedThreadInfo !=null && hasLoadOnce == false){
                             hasLoadOnce = true;
                             SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -578,11 +579,11 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                         }
                     }
 
-                    Log.d(TAG,"Thread post result error "+threadPostResult.isError()+" "+ threadPostResult.threadPostVariables.message);
-                    if(threadPostResult.isError()){
+                    Log.d(TAG,"Thread post result error "+ threadResult.isError()+" "+ threadResult.threadPostVariables.message);
+                    if(threadResult.isError()){
 
                         noMoreThreadFound.setVisibility(View.VISIBLE);
-                        noMoreThreadFound.setText(threadPostResult.message.content);
+                        noMoreThreadFound.setText(threadResult.message.content);
                         errorPostImageview.setVisibility(View.VISIBLE);
                     }
                     else {
@@ -941,7 +942,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 if(redirectTid != tid){
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(this, bbsShowPostActivity.class);
+                    Intent intent = new Intent(this, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -979,7 +980,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 int redirectTid = Integer.parseInt(tidString);
                 ThreadInfo putThreadInfo = new ThreadInfo();
                 putThreadInfo.tid = redirectTid;
-                Intent intent = new Intent(this, bbsShowPostActivity.class);
+                Intent intent = new Intent(this, ThreadActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -997,7 +998,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                     && uri.getQueryParameter("fid")!=null){
                 String fidString = uri.getQueryParameter("fid");
                 int fid = Integer.parseInt(fidString);
-                Intent intent = new Intent(this, bbsShowForumThreadActivity.class);
+                Intent intent = new Intent(this, ForumActivity.class);
                 ForumInfo clickedForum = new ForumInfo();
                 clickedForum.fid = fid;
 
@@ -1025,7 +1026,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 return;
 
             }
-            Intent intent = new Intent(this, showWebPageActivity.class);
+            Intent intent = new Intent(this, InternalWebViewActivity.class);
             intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
             intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             intent.putExtra(bbsConstUtils.PASS_URL_KEY,url);
@@ -1034,7 +1035,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
 
         }
         else {
-            Intent intent = new Intent(this, showWebPageActivity.class);
+            Intent intent = new Intent(this, InternalWebViewActivity.class);
             intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
             intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             intent.putExtra(bbsConstUtils.PASS_URL_KEY,url);
@@ -1062,7 +1063,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
         Uri clickedUri = Uri.parse(unescapedURL);
         if(clickedUri.getHost() == null || clickedUri.getHost().equals(baseUri.getHost())){
             // internal link
-            ThreadPostResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
+            ThreadResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
 
             if(result !=null && result.threadPostVariables!=null ){
                 if(result.threadPostVariables.rewriteRule!=null){
@@ -1102,7 +1103,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                                 if(fidStr !=null){
                                     int fid = Integer.parseInt(fidStr);
 //                                    int page = Integer.parseInt(pageStr);
-                                    Intent intent = new Intent(context, bbsShowForumThreadActivity.class);
+                                    Intent intent = new Intent(context, ForumActivity.class);
                                     ForumInfo clickedForum = new ForumInfo();
                                     clickedForum.fid = fid;
 
@@ -1142,7 +1143,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                                     ThreadInfo putThreadInfo = new ThreadInfo();
                                     int tid = Integer.parseInt(tidStr);
                                     putThreadInfo.tid = tid;
-                                    Intent intent = new Intent(context, bbsShowPostActivity.class);
+                                    Intent intent = new Intent(context, ThreadActivity.class);
                                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -1190,7 +1191,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                         .setNeutralButton(R.string.bbs_show_in_internal_browser, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(context, showWebPageActivity.class);
+                                Intent intent = new Intent(context, InternalWebViewActivity.class);
                                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                                 intent.putExtra(bbsConstUtils.PASS_URL_KEY,unescapedURL);
@@ -1214,7 +1215,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                         .show();
             }
             else {
-                Intent intent = new Intent(this, showWebPageActivity.class);
+                Intent intent = new Intent(this, InternalWebViewActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_URL_KEY,unescapedURL);
@@ -1621,7 +1622,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
 
             }
             case R.id.bbs_forum_nav_show_in_webview:{
-                Intent intent = new Intent(this, showWebPageActivity.class);
+                Intent intent = new Intent(this, InternalWebViewActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_URL_KEY,currentUrl);
@@ -1666,7 +1667,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                 return true;
             }
             case R.id.bbs_share:{
-                ThreadPostResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
+                ThreadResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
                 if(result!=null && result.threadPostVariables!=null && result.threadPostVariables.detailedThreadInfo!=null){
                     bbsParseUtils.DetailedThreadInfo detailedThreadInfo = result.threadPostVariables.detailedThreadInfo;
                     Intent sendIntent = new Intent();
@@ -1686,7 +1687,7 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
 
             }
             case R.id.bbs_favorite:{
-                ThreadPostResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
+                ThreadResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
                 if(result!=null && result.threadPostVariables!=null && result.threadPostVariables.detailedThreadInfo!=null){
                     bbsParseUtils.DetailedThreadInfo detailedThreadInfo = result.threadPostVariables.detailedThreadInfo;
                     FavoriteThread favoriteThread = detailedThreadInfo.toFavoriteThread(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0);
@@ -1851,8 +1852,11 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
 
             retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
             DiscuzApiService service = retrofit.create(DiscuzApiService.class);
-            ThreadPostResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
-            if(result !=null && result.threadPostVariables!=null && favoriteThread.userId !=0){
+            ThreadResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
+            if(result !=null
+                    && result.threadPostVariables!=null
+                    && favoriteThread.userId !=0
+                    && UserPreferenceUtils.isSyncBBSInformation(getApplication())){
                 if(favorite){
                     favoriteThreadActionResultCall = service.favoriteThreadActionResult(result.threadPostVariables.formHash
                             , favoriteThread.idKey,description);
@@ -1891,10 +1895,12 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                         FavoriteItemActionResult result = response.body();
                         messageResult = result.message;
                         String key = result.message.key;
-                        if(favorite && key.equals("favorite_do_success")){
+                        if(favorite && key.equals("favorite_do_success")
+                        ){
                             dao.insert(favoriteThread);
                         }
-                        else if(!favorite && key.equals("do_success")){
+                        else if(!favorite && key.equals("do_success")
+                        ){
                             if(favoriteThread !=null){
                                 dao.delete(favoriteThread);
                             }
@@ -1912,11 +1918,26 @@ public class bbsShowPostActivity extends BaseStatusActivity implements SmileyFra
                     messageResult = new MessageResult();
                     messageResult.content = e.getMessage();
                     messageResult.key = e.toString();
+                    if(favorite){
+                        dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteThread.idKey,"tid");
+                        dao.insert(favoriteThread);
+
+                        return true;
+                    }
+                    else {
+                        // clear potential
+                        dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteThread.idKey,"tid");
+                        //dao.delete(favoriteThread);
+                        Log.d(TAG,"Just remove it from database "+tid+ " "+ favoriteThread.idKey);
+                        return false;
+
+                    }
                 }
 
             }
             else {
                 if(favorite){
+                    dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteThread.idKey,"tid");
                     dao.insert(favoriteThread);
 
                     return true;

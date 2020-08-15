@@ -19,7 +19,7 @@ import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.bbsShowForumThreadActivity;
+import com.kidozh.discuzhub.activities.ForumActivity;
 import com.kidozh.discuzhub.entities.FavoriteForum;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -83,7 +83,7 @@ public class FavoriteForumAdapter extends PagedListAdapter<FavoriteForum, Favori
                     @Override
                     public void onClick(View v) {
 
-                        Intent intent = new Intent(context, bbsShowForumThreadActivity.class);
+                        Intent intent = new Intent(context, ForumActivity.class);
                         intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                         intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
                         intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY, FavoriteForum.toForum());
