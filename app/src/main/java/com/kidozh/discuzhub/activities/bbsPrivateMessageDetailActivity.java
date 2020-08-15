@@ -41,6 +41,8 @@ import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -403,12 +405,33 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
 
 
     private void sendPrivateMessage(){
-
-        FormBody formBody = new FormBody.Builder()
+        FormBody.Builder builder = new FormBody.Builder()
                 .add("formhash",formHash)
-                .add("message",privateMessageCommentEditText.getText().toString())
-                .add("topmuid",String.valueOf(privateMessageInfo.toUid))
-                .build();
+                .add("topmuid",String.valueOf(privateMessageInfo.toUid));
+
+
+        switch (getCharsetType()){
+            case (CHARSET_GBK):{
+                try {
+                    builder.addEncoded("message", URLEncoder.encode(privateMessageCommentEditText.getText().toString(),"GBK"));
+                    break;
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+            case (CHARSET_BIG5):{
+                try {
+                    builder.addEncoded("message", URLEncoder.encode(privateMessageCommentEditText.getText().toString(),"BIG5"));
+                    break;
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+            default:{
+                builder.add("message",privateMessageCommentEditText.getText().toString());
+            }
+        }
+        FormBody formBody = builder.build();
 
         String apiStr = URLUtils.getSendPMApiUrl(privateMessageInfo.plid,Integer.parseInt(pmid));
         Log.d(TAG,"Send PM "+apiStr+" topmuid "+privateMessageInfo.toUid+" formhash "+formHash);

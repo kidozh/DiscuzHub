@@ -96,6 +96,8 @@ public class LoginActivity extends BaseStatusActivity {
     @BindView(R.id.login_bbs_captcha_editText)
     EditText bbsCaptchaEditText;
 
+    private OkHttpClient client;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -378,6 +380,7 @@ public class LoginActivity extends BaseStatusActivity {
                 .add("answer",bbsSecurityAnswerEditText.getText().toString())
                 .add("quickforward", "yes")
                 .add("handlekey", "1s")
+
                 .add("referer",bbsInfo.base_url);
 
         if(needCaptcha()){

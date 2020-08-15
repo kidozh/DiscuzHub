@@ -327,6 +327,7 @@ public class DrawerActivity extends BaseStatusActivity implements
             }
         });
         viewModel.currentBBSInformationMutableLiveData.observe(this, bbsInformation -> {
+            bbsInfo = bbsInformation;
             if(bbsInformation != null){
                 toolbarTitleTextview.setText(bbsInformation.site_name);
                 if(getSupportActionBar() !=null){
@@ -355,6 +356,7 @@ public class DrawerActivity extends BaseStatusActivity implements
             } else {
                 toolbarSubtitleTextview.setText(forumUserBriefInfo.username);
             }
+            userBriefInfo = forumUserBriefInfo;
             renderViewPageAndBtmView();
         });
     }
@@ -571,7 +573,7 @@ public class DrawerActivity extends BaseStatusActivity implements
         @Override
         public Fragment getItem(int position) {
             bbsInformation bbsInfo = viewModel.currentBBSInformationMutableLiveData.getValue();
-            forumUserBriefInfo userBriefInfo = viewModel.currentForumUserBriefInfoMutableLiveData.getValue();
+            userBriefInfo = viewModel.currentForumUserBriefInfoMutableLiveData.getValue();
             switch (position){
                 case 0:
                     homeFragment = HomeFragment.newInstance(bbsInfo,userBriefInfo);
@@ -660,8 +662,8 @@ public class DrawerActivity extends BaseStatusActivity implements
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         // detecting current bbs
-        bbsInformation bbsInformation = viewModel.currentBBSInformationMutableLiveData.getValue();
-        if(bbsInformation == null){
+        bbsInfo = viewModel.currentBBSInformationMutableLiveData.getValue();
+        if(bbsInfo == null){
             // judge the
             portalViewPager.setAdapter(new EmptyViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
             navView.getMenu().clear();
@@ -669,16 +671,16 @@ public class DrawerActivity extends BaseStatusActivity implements
             return;
         }
 
-        forumUserBriefInfo curUser = viewModel.currentForumUserBriefInfoMutableLiveData.getValue();
+        userBriefInfo = viewModel.currentForumUserBriefInfoMutableLiveData.getValue();
 
-        if(curUser == null){
-            Log.d(TAG, "Current incognitive user "+curUser);
+        if(userBriefInfo == null){
+            Log.d(TAG, "Current incognitive user "+userBriefInfo);
             portalViewPager.setAdapter(new anonymousViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
             navView.getMenu().clear();
             navView.inflateMenu(R.menu.bottom_incognitive_nav_menu);
         } else {
             // use fragment transaction instead
-            Log.d(TAG, "Current incognitive user "+curUser.username);
+            Log.d(TAG, "Current incognitive user "+userBriefInfo.username);
             portalViewPager.setAdapter(new userViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
             navView.getMenu().clear();
             navView.inflateMenu(R.menu.bottom_nav_menu);

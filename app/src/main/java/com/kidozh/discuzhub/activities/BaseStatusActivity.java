@@ -49,7 +49,7 @@ public class BaseStatusActivity extends AppCompatActivity
     }
 
     public void setBaseResult(BaseResult baseVariableResult, VariableResults variableResults){
-        client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
+        Log.d(TAG,"Recv "+userBriefInfo+" "+variableResults+" UID "+String.valueOf(variableResults!=null?variableResults.member_uid:-8512));
         if(userBriefInfo!=null && this.variableResults!=null && variableResults!=null && variableResults.member_uid == 0){
             // open up a dialog
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
@@ -79,11 +79,15 @@ public class BaseStatusActivity extends AppCompatActivity
 
     public static final int CHARSET_UTF8 = 1;
     public static final int CHARSET_GBK = 2;
+    public static final int CHARSET_BIG5 = 3;
 
     public int getCharsetType(){
         if(baseVariableResult !=null && baseVariableResult.Charset!=null){
             if(baseVariableResult.Charset.equals("GBK")){
                 return CHARSET_GBK;
+            }
+            else if(baseVariableResult.Charset.equals("BIG5")){
+                return CHARSET_BIG5;
             }
         }
         // follow UTF8 default

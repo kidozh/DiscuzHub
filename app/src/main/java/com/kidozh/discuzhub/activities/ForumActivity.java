@@ -27,6 +27,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -480,6 +481,7 @@ public class ForumActivity
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
         mRecyclerview.setLayoutManager(linearLayoutManager);
+        mRecyclerview.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
 
         adapter = new ThreadAdapter(this,null,fid,bbsInfo,userBriefInfo);
         mRecyclerview.setAdapter(adapter);

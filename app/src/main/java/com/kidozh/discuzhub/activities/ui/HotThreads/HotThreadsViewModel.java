@@ -106,6 +106,7 @@ public class HotThreadsViewModel extends AndroidViewModel {
 
                 if(response.isSuccessful()&& response.body()!=null){
                     String s = response.body().string();
+                    Log.d(TAG,"recv hot threads "+s);
                     DisplayThreadsResult threadsResult = bbsParseUtils.getThreadListInfo(s);
                     resultMutableLiveData.postValue(threadsResult);
 

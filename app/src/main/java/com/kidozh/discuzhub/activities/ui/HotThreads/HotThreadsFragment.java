@@ -73,6 +73,7 @@ public class HotThreadsFragment extends Fragment {
             curBBS = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
             URLUtils.setBBS(curBBS);
             userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
+            Log.d(TAG,"Hot thread recv get user "+userBriefInfo);
             client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
         }
     }
@@ -102,6 +103,10 @@ public class HotThreadsFragment extends Fragment {
 
     private void configureClient(){
         client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+        if(curBBS !=null){
+            hotThreadsViewModel.setBBSInfo(curBBS,userBriefInfo);
+        }
+
     }
 
     private void configureThreadRecyclerview(){
@@ -156,11 +161,11 @@ public class HotThreadsFragment extends Fragment {
             hotThreadsViewModel.setBBSInfo(curBBS,curUser);
             return;
         }
-        Intent intent = getActivity().getIntent();
+//        Intent intent = getActivity().getIntent();
 
-        curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+//        curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+//        curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+//        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         if(curBBS == null){
             getActivity().finish();
         }
@@ -219,9 +224,9 @@ public class HotThreadsFragment extends Fragment {
             }
         });
         hotThreadsViewModel.resultMutableLiveData.observe(getViewLifecycleOwner(), displayThreadsResult -> {
-            if(getContext() instanceof BaseStatusInteract){
+            if(getContext() instanceof BaseStatusInteract && displayThreadsResult!=null){
                 ((BaseStatusInteract) getContext()).setBaseResult(displayThreadsResult,
-                        displayThreadsResult!=null?displayThreadsResult.forumVariables:null);
+                        displayThreadsResult.forumVariables);
             }
         });
 

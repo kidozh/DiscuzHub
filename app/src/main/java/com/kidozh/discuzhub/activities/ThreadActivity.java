@@ -91,6 +91,8 @@ import com.kidozh.discuzhub.viewModels.ThreadViewModel;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -110,6 +112,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
+
 
 public class ThreadActivity extends BaseStatusActivity implements SmileyFragment.OnSmileyPressedInteraction,
         ThreadPostsAdapter.onFilterChanged,
@@ -1437,12 +1440,39 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
     private void postCommentToThread(String message){
         Date timeGetTime = new Date();
+
         FormBody.Builder formBodyBuilder = new FormBody.Builder()
-                .add("message", message)
+
+
                 .add("subject", "")
                 .add("usesig", "1")
                 .add("posttime",String.valueOf(timeGetTime.getTime() / 1000 - 1))
                 .add("formhash",formHash);
+        switch (getCharsetType()){
+            case CHARSET_GBK:{
+                try{
+                    formBodyBuilder.addEncoded("message", URLEncoder.encode(message,"GBK"));
+                    break;
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+            case CHARSET_BIG5:{
+                try{
+                    formBodyBuilder.addEncoded("message", URLEncoder.encode(message,"BIG5"));
+                    break;
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+            default:{
+                formBodyBuilder.add("message", message);
+            }
+
+
+        }
         if(needCaptcha()){
             SecureInfoResult secureInfoResult = threadDetailViewModel.getSecureInfoResultMutableLiveData().getValue();
 
@@ -1540,6 +1570,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
     }
 
+
     private void postReplyToSomeoneInThread(int replyPid,String message,String noticeAuthorMsg){
         // remove noticeAuthorMsg <>
         noticeAuthorMsg = noticeAuthorMsg.replaceAll("<.*>","");
@@ -1555,6 +1586,16 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         if(noticeAuthorMsg.length()>MAX_CHAR_LENGTH){
             replyMessage += "...";
         }
+        String noticeMsgTrimString = getString(R.string.bbs_reply_notice_author_string,
+                URLUtils.getReplyPostURLInLabel(selectedThreadComment.pid, selectedThreadComment.tid),
+                selectedThreadComment.author,
+                publishAtString,
+                replyMessage
+
+        );
+
+
+
 
         FormBody.Builder formBodyBuilder = new FormBody.Builder()
                 .add("formhash",formHash)
@@ -1562,16 +1603,38 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
                 .add("usesig", "1")
                 .add("reppid", String.valueOf(replyPid))
-                .add("reppost", String.valueOf(replyPid))
-                .add("message", message)
-                .add("noticeauthormsg",noticeAuthorMsg)
-                .add("noticetrimstr",getString(R.string.bbs_reply_notice_author_string,
-                        URLUtils.getReplyPostURLInLabel(selectedThreadComment.pid, selectedThreadComment.tid),
-                        selectedThreadComment.author,
-                        publishAtString,
-                        replyMessage
+                .add("reppost", String.valueOf(replyPid));
 
-                ));
+
+        switch (getCharsetType()){
+            case CHARSET_GBK:{
+                try{
+                    formBodyBuilder.addEncoded("message", URLEncoder.encode(message,"GBK"));
+                    formBodyBuilder.addEncoded("noticeauthormsg",URLEncoder.encode(noticeAuthorMsg,"GBK"))
+                            .addEncoded("noticetrimstr",URLEncoder.encode(noticeMsgTrimString,"GBK"));
+                    break;
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+            case CHARSET_BIG5:{
+                try{
+                    formBodyBuilder.addEncoded("message", URLEncoder.encode(message,"BIG5"));
+                    formBodyBuilder.addEncoded("noticeauthormsg",URLEncoder.encode(noticeAuthorMsg,"BIG5"))
+                            .addEncoded("noticetrimstr",URLEncoder.encode(noticeMsgTrimString,"BIG5"));
+                    break;
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+            default:{
+                formBodyBuilder.add("message", message);
+            }
+
+
+        }
 
 
         if(needCaptcha()){

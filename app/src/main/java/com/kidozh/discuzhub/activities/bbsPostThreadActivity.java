@@ -80,6 +80,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -102,6 +104,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static com.kidozh.discuzhub.utilities.CharsetUtils.EncodeStringByCharset;
 import static java.text.DateFormat.getDateInstance;
 import static java.text.DateFormat.getDateTimeInstance;
 
@@ -1224,11 +1227,42 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
                 formBody.add("topicsubmit", "yes");
             }
 
+            // encoding
+
             formBody
-                    .add("subject",subject)
                     .add("formhash",formHash)
                     .add("usesig","1")
-                    .add("message",message);
+                    ;
+            switch (getCharsetType()){
+                case CHARSET_GBK:{
+                    try{
+                        formBody.addEncoded("subject", URLEncoder.encode(subject,"GBK"))
+                                .addEncoded("message",URLEncoder.encode(message,"GBK"));
+                        break;
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+                case CHARSET_BIG5:{
+                    try{
+                        formBody.addEncoded("subject", URLEncoder.encode(subject,"BIG5"))
+                                .addEncoded("message",URLEncoder.encode(message,"BIG5"));
+                        break;
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+
+                default:{
+                    formBody.add("subject",subject)
+                            .add("message",message);
+                }
+            }
+
             if(numKeys!=null && numKeys.size() >0){
                 String typeId = numKeys.get(selectPos);
                 formBody.add("typeid",typeId);
@@ -1241,7 +1275,32 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
             List<UploadAttachment> uploadAttachmentList = postThreadViewModel.uploadAttachmentListLiveData.getValue();
             if(uploadAttachmentList !=null){
                 for(UploadAttachment uploadAttachment : uploadAttachmentList){
-                    formBody.add(String.format(Locale.US,"attachnew[%d][description]",uploadAttachment.aid),uploadAttachment.description);
+                    switch (getCharsetType()){
+                        case (CHARSET_GBK):{
+
+                            try {
+                                formBody.addEncoded(String.format(Locale.US,"attachnew[%d][description]",uploadAttachment.aid),
+                                        URLEncoder.encode(uploadAttachment.description,"GBK"));
+                                break;
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                        case (CHARSET_BIG5):{
+                            try {
+                                formBody.addEncoded(String.format(Locale.US,"attachnew[%d][description]",uploadAttachment.aid),
+                                        URLEncoder.encode(uploadAttachment.description,"BIG5"));
+                                break;
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        default:{
+                            formBody.add(String.format(Locale.US,"attachnew[%d][description]",uploadAttachment.aid),uploadAttachment.description);
+                        }
+                    }
+
                 }
             }
 
@@ -1252,16 +1311,27 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
                 final int MAX_CHAR_LENGTH = 300;
                 int trimEnd = Math.min(MAX_CHAR_LENGTH,replyPost.message.length());
                 String replyMessage = replyPost.message.substring(0,trimEnd);
+                String noticeTriMsg = getString(R.string.bbs_reply_notice_author_string,
+                        URLUtils.getReplyPostURLInLabel(replyPost.pid, replyPost.tid),
+                        replyPost.author,
+                        publishAtString,
+                        replyMessage
+
+                );
+
+                switch (getCharsetType()){
+                    case (CHARSET_GBK):{
+                        noticeTriMsg = EncodeStringByCharset(noticeTriMsg,"GBK");
+                        break;
+                    }
+                    default:{
+
+                    }
+                }
                 formBody.add("reppid", String.valueOf(replyPost.pid))
                         .add("reppost", String.valueOf(replyPost.pid))
                         .add("noticeauthormsg",replyPost.author)
-                        .add("noticetrimstr",getString(R.string.bbs_reply_notice_author_string,
-                                URLUtils.getReplyPostURLInLabel(replyPost.pid, replyPost.tid),
-                                replyPost.author,
-                                publishAtString,
-                                replyMessage
-
-                        ))
+                        .add("noticetrimstr",noticeTriMsg)
                 ;
             }
 
