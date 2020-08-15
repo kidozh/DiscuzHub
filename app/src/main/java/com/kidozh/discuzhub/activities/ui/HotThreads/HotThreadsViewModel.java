@@ -38,6 +38,7 @@ public class HotThreadsViewModel extends AndroidViewModel {
     public MutableLiveData<Boolean> isLoading, isError;
     public MutableLiveData<List<ThreadInfo>> threadListLiveData;
     public MutableLiveData<String> errorTextLiveData;
+    public MutableLiveData<DisplayThreadsResult> resultMutableLiveData = new MutableLiveData<>();
     public String jsonString;
 
 
@@ -106,6 +107,7 @@ public class HotThreadsViewModel extends AndroidViewModel {
                 if(response.isSuccessful()&& response.body()!=null){
                     String s = response.body().string();
                     DisplayThreadsResult threadsResult = bbsParseUtils.getThreadListInfo(s);
+                    resultMutableLiveData.postValue(threadsResult);
 
                     List<ThreadInfo> currentThreadInfo = threadListLiveData.getValue();
                     if(currentThreadInfo == null){

@@ -13,6 +13,7 @@ public class UserPreferenceUtils {
     public static boolean isSyncBBSInformation(@NonNull Context context){
         String preferenceName = context.getString(R.string.preference_key_sync_information);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(preferenceName,true);
+        String syncFavoriteName = context.getString(R.string.preference_key_sync_favorite);
+        return prefs.getBoolean(preferenceName,true) && prefs.getBoolean(syncFavoriteName,true);
     }
 }

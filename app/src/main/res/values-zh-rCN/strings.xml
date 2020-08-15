@@ -526,5 +526,8 @@
     <string name="forum_today_post">今日%1$d个新帖</string>
     <string name="sync_favorite_forum_start">开始从%1$s同步收藏的板块.</string>
     <string name="favorite_forum_not_found">你还没有收藏一个板块呢。</string>
+    <string name="preference_title_sync_favorite">同步收藏的帖子和板块</string>
+    <string name="preference_summary_on_sync_favorite">从论坛中同步已收藏的帖子和板块。</string>
+    <string name="preference_summary_off_sync_favorite">仅仅从数据库中获取收藏信息。</string>
 
 </resources>

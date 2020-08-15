@@ -22,6 +22,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.HotForumAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.HotForumsResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -123,6 +124,10 @@ public class HotForumsFragment extends Fragment {
         viewModel.getHotForumsResult().observe(getViewLifecycleOwner(), new Observer<HotForumsResult>() {
             @Override
             public void onChanged(HotForumsResult hotForumsResult) {
+                if(getContext() instanceof BaseStatusInteract){
+                    ((BaseStatusInteract) getContext()).setBaseResult(hotForumsResult,
+                            hotForumsResult!=null?hotForumsResult.variables:null);
+                }
                 if(hotForumsResult == null ||
                         hotForumsResult.variables == null){
 

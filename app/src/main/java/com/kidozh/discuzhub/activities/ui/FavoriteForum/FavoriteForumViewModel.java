@@ -44,6 +44,7 @@ public class FavoriteForumViewModel extends AndroidViewModel {
     @NonNull
     public MutableLiveData<List<FavoriteForum>> FavoriteForumInServer = new MutableLiveData<>(new ArrayList<>());
     public MutableLiveData<List<FavoriteForum>> newFavoriteForum = new MutableLiveData<>(new ArrayList<>());
+    public MutableLiveData<FavoriteForumResult> resultMutableLiveData = new MutableLiveData<>();
     private OkHttpClient client = new OkHttpClient();
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
@@ -93,8 +94,8 @@ public class FavoriteForumViewModel extends AndroidViewModel {
             public void onResponse(Call<FavoriteForumResult> call, Response<FavoriteForumResult> response) {
                 if(response.isSuccessful() && response.body()!=null){
 
-
                     FavoriteForumResult result = response.body();
+                    resultMutableLiveData.postValue(result);
                     if(result.isError()){
                         networkState.postValue(bbsConstUtils.NETWORK_STATUS_FAILED);
                         errorMsgKey.postValue(result.message.key);

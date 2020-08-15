@@ -704,5 +704,10 @@
     <string name="sync_favorite_forum_start">Start to sync favorite forums from %1$s.</string>
     <string name="favorite_forum_not_found">No forum is marked.</string>
 
+    <string name="preference_key_sync_favorite" translatable="false">preference_key_sync_favorite</string>
+    <string name="preference_title_sync_favorite">Sync favorite threads and forums</string>
+    <string name="preference_summary_on_sync_favorite">Sync favorite threads and forums from server</string>
+    <string name="preference_summary_off_sync_favorite">Only retrieve favorite threads and forums from database</string>
+
 
 </resources>

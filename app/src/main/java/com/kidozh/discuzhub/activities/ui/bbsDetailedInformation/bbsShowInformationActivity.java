@@ -29,6 +29,7 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.BaseStatusActivity;
 import com.kidozh.discuzhub.activities.LoginActivity;
 import com.kidozh.discuzhub.adapter.bbsDetailInformationAdapter;
 import com.kidozh.discuzhub.adapter.forumUsersAdapter;
@@ -49,7 +50,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class bbsShowInformationActivity extends AppCompatActivity implements forumSwipeToDeleteUserCallback.onSwipedInteraction{
+public class bbsShowInformationActivity extends BaseStatusActivity implements forumSwipeToDeleteUserCallback.onSwipedInteraction{
     private final static String TAG = bbsShowInformationActivity.class.getSimpleName();
     @BindView(R.id.show_bbs_information_name)
     TextView bbsInfoName;
@@ -76,8 +77,6 @@ public class bbsShowInformationActivity extends AppCompatActivity implements for
     forumUsersAdapter userAdapter;
 
 
-    bbsInformation bbsInfo;
-
     private bbsShowInformationViewModel viewModel;
     private Observer bbsUserObserver;
     private LiveData<List<forumUserBriefInfo>> bbsUserInfoLiveDatas;
@@ -98,6 +97,7 @@ public class bbsShowInformationActivity extends AppCompatActivity implements for
     private void configureIntent(){
         Intent intent = getIntent();
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+
         URLUtils.setBBS(bbsInfo);
     }
 

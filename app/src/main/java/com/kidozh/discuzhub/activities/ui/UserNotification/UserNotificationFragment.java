@@ -25,6 +25,7 @@ import com.kidozh.discuzhub.adapter.UserNotificationAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -187,6 +188,11 @@ public class UserNotificationFragment extends Fragment {
         viewModel.userNoteListResultMutableLiveData.observe(getViewLifecycleOwner(), new Observer<UserNoteListResult>() {
             @Override
             public void onChanged(UserNoteListResult userNoteListResult) {
+                if(getContext() instanceof BaseStatusInteract){
+                    ((BaseStatusInteract) getContext()).setBaseResult(userNoteListResult,
+                            userNoteListResult!=null?userNoteListResult.noteListVariableResult:null);
+                }
+
                 Log.d(TAG, "Recv notelist "+userNoteListResult);
                 if(userNoteListResult !=null && userNoteListResult.noteListVariableResult!=null){
                     List<UserNoteListResult.UserNotification> notificationList = userNoteListResult.noteListVariableResult.notificationList;

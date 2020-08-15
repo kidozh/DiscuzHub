@@ -27,6 +27,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -161,6 +162,10 @@ public class bbsMyThreadFragment extends Fragment {
 
 
                     DisplayThreadsResult threadsResult = bbsParseUtils.getThreadListInfo(s);
+                    if(getContext() instanceof BaseStatusInteract){
+                        ((BaseStatusInteract) getContext()).setBaseResult(threadsResult,
+                                threadsResult!=null?threadsResult.forumVariables:null);
+                    }
                     if(threadsResult!=null && threadsResult.forumVariables !=null) {
                         List<ThreadInfo> threadInfoList = threadsResult.forumVariables.forumThreadList;
 

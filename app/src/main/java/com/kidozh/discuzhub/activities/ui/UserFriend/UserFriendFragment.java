@@ -27,6 +27,7 @@ import com.kidozh.discuzhub.adapter.bbsUserFriendAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.UserFriendResult;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -240,6 +241,12 @@ public class UserFriendFragment extends Fragment {
                     userFriendImageView.setImageResource(R.drawable.ic_privacy_24px);
                     noFriendTextView.setText(R.string.bbs_privacy_protect_alert);
                 }
+            }
+        });
+        viewModel.getUserFriendResultMutableLiveData().observe(getViewLifecycleOwner(),userFriendResult -> {
+            if(getContext() instanceof BaseStatusInteract){
+                ((BaseStatusInteract) getContext()).setBaseResult(userFriendResult,
+                        userFriendResult!=null?userFriendResult.friendVariables:null);
             }
         });
 

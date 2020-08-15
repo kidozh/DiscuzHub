@@ -21,6 +21,7 @@ import com.google.errorprone.annotations.Var;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.BaseResult;
 import com.kidozh.discuzhub.results.VariableResults;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -31,10 +32,11 @@ import org.jsoup.Connection;
 
 import okhttp3.OkHttpClient;
 
-public class BaseStatusActivity extends AppCompatActivity {
+public class BaseStatusActivity extends AppCompatActivity
+    implements BaseStatusInteract {
     private final static String TAG = BaseStatusActivity.class.getSimpleName();
-    bbsInformation bbsInfo;
-    forumUserBriefInfo userBriefInfo;
+    public bbsInformation bbsInfo;
+    public forumUserBriefInfo userBriefInfo;
     OkHttpClient client;
     BaseResult baseVariableResult;
     VariableResults variableResults;
@@ -47,14 +49,13 @@ public class BaseStatusActivity extends AppCompatActivity {
     }
 
     public void setBaseResult(BaseResult baseVariableResult, VariableResults variableResults){
-        this.baseVariableResult = baseVariableResult;
-        this.variableResults = variableResults;
-        if(variableResults!=null && variableResults.member_uid == 0){
+
+        if(userBriefInfo!=null && this.variableResults!=null && variableResults!=null && variableResults.member_uid == 0){
             // open up a dialog
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
             //MaterialAlertDialogBuilder builder =  new AlertDialog.Builder(getActivity());
-            builder.setMessage(getString(R.string.user_login_expired,userBriefInfo.username))
-                    .setPositiveButton(getString(R.string.user_relogin, userBriefInfo.username), new DialogInterface.OnClickListener() {
+            builder.setMessage(getString(R.string.user_login_expired,userBriefInfo!=null?userBriefInfo.username:""))
+                    .setPositiveButton(getString(R.string.user_relogin, userBriefInfo!=null?userBriefInfo.username:""), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -72,6 +73,8 @@ public class BaseStatusActivity extends AppCompatActivity {
 
             builder.show();
         }
+        this.baseVariableResult = baseVariableResult;
+        this.variableResults = variableResults;
     }
 
     public static final int CHARSET_UTF8 = 1;

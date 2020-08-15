@@ -42,6 +42,7 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
     @NonNull
     public MutableLiveData<List<FavoriteThread>> favoriteThreadInServer = new MutableLiveData<>(new ArrayList<>());
     public MutableLiveData<List<FavoriteThread>> newFavoriteThread = new MutableLiveData<>(new ArrayList<>());
+    public MutableLiveData<FavoriteThreadResult> resultMutableLiveData = new MutableLiveData<>();
     private OkHttpClient client = new OkHttpClient();
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
@@ -91,9 +92,8 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
             @Override
             public void onResponse(Call<FavoriteThreadResult> call, Response<FavoriteThreadResult> response) {
                 if(response.isSuccessful() && response.body()!=null){
-
-
                     FavoriteThreadResult result = response.body();
+                    resultMutableLiveData.postValue(result);
                     if(result.isError()){
                         networkState.postValue(bbsConstUtils.NETWORK_STATUS_FAILED);
                         errorMsgKey.postValue(result.message.key);

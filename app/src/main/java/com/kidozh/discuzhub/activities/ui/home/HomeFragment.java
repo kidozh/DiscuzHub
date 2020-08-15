@@ -27,6 +27,7 @@ import com.kidozh.discuzhub.adapter.bbsPortalCategoryAdapter;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.BBSIndexResult;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -51,9 +52,8 @@ public class HomeFragment extends Fragment {
     Button bbsPortalRefreshPageBtn;
 
     bbsPortalCategoryAdapter adapter;
-    bbsInformation curBBS;
-    forumUserBriefInfo curUser;
-    private forumUserBriefInfo userBriefInfo;
+    bbsInformation bbsInfo;
+    forumUserBriefInfo userBriefInfo;
 
     private OkHttpClient client = new OkHttpClient();
 
@@ -90,30 +90,30 @@ public class HomeFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            curBBS = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+            bbsInfo = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
             userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
-            curUser = userBriefInfo;
+
         }
     }
 
     private void getIntentInfo(){
 
-        if(curBBS != null){
-            homeViewModel.setBBSInfo(curBBS,curUser);
+        if(bbsInfo != null){
+            homeViewModel.setBBSInfo(bbsInfo,userBriefInfo);
             return;
         }
         Intent intent = getActivity().getIntent();
-        curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        if(curBBS == null){
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        if(bbsInfo == null){
             getActivity().finish();
         }
         else {
-            Log.d(TAG,"get bbs name "+curBBS.site_name);
-            URLUtils.setBBS(curBBS);
-            homeViewModel.setBBSInfo(curBBS,curUser);
-            //bbsURLUtils.setBaseUrl(curBBS.base_url);
+            Log.d(TAG,"get bbs name "+bbsInfo.site_name);
+            URLUtils.setBBS(bbsInfo);
+            homeViewModel.setBBSInfo(bbsInfo,userBriefInfo);
+            //bbsURLUtils.setBaseUrl(bbsInfo.base_url);
         }
 
 
@@ -158,17 +158,17 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChanged(forumUserBriefInfo userBriefInfo) {
                 Log.d(TAG,"changed user to "+userBriefInfo);
-                if(userBriefInfo == null && curUser!=null){
+                if(userBriefInfo == null && userBriefInfo!=null){
                     // raise dialog
                     MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
                     //MaterialAlertDialogBuilder builder =  new AlertDialog.Builder(getActivity());
-                    builder.setMessage(getString(R.string.user_login_expired,curUser.username))
-                            .setPositiveButton(getString(R.string.user_relogin, curUser.username), new DialogInterface.OnClickListener() {
+                    builder.setMessage(getString(R.string.user_login_expired,userBriefInfo.username))
+                            .setPositiveButton(getString(R.string.user_relogin, userBriefInfo.username), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     Intent intent = new Intent(getActivity(), LoginActivity.class);
-                                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
-                                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                                     startActivity(intent);
                                 }
                             })
@@ -195,13 +195,19 @@ public class HomeFragment extends Fragment {
 
             }
         });
+        homeViewModel.bbsIndexResultMutableLiveData.observe(getViewLifecycleOwner(),bbsIndexResult -> {
+            if(getContext() instanceof BaseStatusInteract){
+                ((BaseStatusInteract) getContext()).setBaseResult(bbsIndexResult,
+                        bbsIndexResult!=null?bbsIndexResult.forumVariables:null);
+            }
+        });
     }
 
 
     private void configurePortalRecyclerview(){
         portalRecyclerView.setHasFixedSize(true);
         portalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new bbsPortalCategoryAdapter(getContext(),null,curBBS,userBriefInfo);
+        adapter = new bbsPortalCategoryAdapter(getContext(),null,bbsInfo,userBriefInfo);
         portalRecyclerView.setAdapter(adapter);
     }
 

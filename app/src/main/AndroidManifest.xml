@@ -27,7 +27,7 @@
             android:label="@string/view_history"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".activities.NewMainDrawerActivity"
+            android:name=".activities.DrawerActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

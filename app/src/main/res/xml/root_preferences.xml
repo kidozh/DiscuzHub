@@ -14,19 +14,19 @@
   ~ limitations under the License.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory android:title="@string/settings_security">
+    <androidx.preference.PreferenceCategory android:title="@string/settings_security">
 
-        <SwitchPreference
+        <androidx.preference.SwitchPreference
             android:defaultValue="true"
             android:icon="@drawable/vector_drawable_security_24px"
             android:key="@string/preference_key_use_safer_client"
             android:summaryOff="@string/preference_summary_off_use_safer_client"
             android:summaryOn="@string/preference_summary_on_use_safer_client"
             android:title="@string/preference_title_use_safer_client" />
-        <ListPreference
+        <androidx.preference.ListPreference
             android:defaultValue="Android default"
             android:entries="@array/preference_entries_use_browser_client"
             android:entryValues="@array/preference_entry_values_use_browser_client"
@@ -34,23 +34,23 @@
             android:key="@string/preference_key_use_browser_client"
             android:summary="%s"
             android:title="@string/preference_title_use_browser_client" />
-        <SwitchPreference
+        <androidx.preference.SwitchPreference
             android:defaultValue="false"
             android:icon="@drawable/ic_history_24px"
             android:key="@string/preference_key_record_history"
             android:summaryOff="@string/preference_summary_off_record_history"
             android:summaryOn="@string/preference_summary_on_record_history"
             android:title="@string/preference_title_record_history" />
-        <SwitchPreference
+        <androidx.preference.SwitchPreference
             android:defaultValue="true"
             android:icon="@drawable/ic_open_in_new_24px"
             android:key="@string/preference_key_outlink_warn"
             android:title="@string/preference_title_outlink_warn"/>
 
 
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preference_title_display">
-        <ListPreference
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="@string/preference_title_display">
+        <androidx.preference.ListPreference
             android:defaultValue="@string/preference_default_display_mode"
             android:entries="@array/string_dark_mode_night_shift"
             android:entryValues="@array/dark_mode_night_shift"
@@ -58,11 +58,11 @@
             android:key="@string/preference_key_display_mode"
             android:summary="%s"
             android:title="@string/preference_title_display_mode" />
-    </PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/preference_group_title_network">
+    <androidx.preference.PreferenceCategory android:title="@string/preference_group_title_network">
 
-        <SwitchPreference
+        <androidx.preference.SwitchPreference
             android:defaultValue="true"
             android:icon="@drawable/vector_drawable_eco_24px"
             android:key="@string/preference_key_data_save_mode"
@@ -70,7 +70,7 @@
             android:summaryOn="@string/preference_summary_on_data_save"
             android:title="@string/preference_title_data_save_mode" />
 
-        <SwitchPreferenceCompat
+        <androidx.preference.SwitchPreference
             android:icon="@drawable/vector_drawable_attachment"
             app:dependency="@string/preference_key_sync_information"
             app:icon="@drawable/vector_drawable_attachment"
@@ -79,15 +79,15 @@
             app:summaryOn="@string/attachment_summary_on"
             app:title="@string/attachment_title" />
 
-    </PreferenceCategory>
-    <PreferenceCategory app:title="@string/settings_post_header">
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory app:title="@string/settings_post_header">
 
-        <EditTextPreference
+        <androidx.preference.EditTextPreference
             android:icon="@drawable/vector_drawable_attachment"
             app:key="signature"
             app:title="@string/signature_title"
             app:useSimpleSummaryProvider="true" />
-        <SwitchPreference
+        <androidx.preference.SwitchPreference
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
             app:defaultValue="true"
             app:title="@string/preference_title_send_post_backup"
             app:useSimpleSummaryProvider="true" />
-        <SwitchPreference
+        <androidx.preference.SwitchPreference
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -110,11 +110,11 @@
             app:title="@string/preference_title_auto_post_backup"
             app:useSimpleSummaryProvider="true" />
 
-    </PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sync_header">
+    <androidx.preference.PreferenceCategory app:title="@string/sync_header">
 
-        <SwitchPreference
+        <androidx.preference.SwitchPreference
             android:defaultValue="true"
             android:icon="@drawable/vector_drawable_sync_24px"
             android:key="@string/preference_key_sync_information"
@@ -122,7 +122,16 @@
             app:key="@string/preference_key_sync_information"
             android:title="@string/sync_title" />
 
-        <ListPreference
+        <androidx.preference.SwitchPreference
+            android:defaultValue="true"
+            android:icon="@drawable/ic_sync_favorite_24px"
+            android:key="@string/preference_key_sync_favorite"
+            android:summaryOn="@string/preference_summary_on_sync_favorite"
+            android:summaryOff="@string/preference_summary_off_sync_favorite"
+            android:title="@string/preference_title_sync_favorite"
+            android:dependency="@string/preference_key_sync_information"/>
+
+        <androidx.preference.ListPreference
             android:defaultValue="30min"
             android:entries="@array/preference_entries_sync_time"
             android:entryValues="@array/preference_entry_values_sync_time"
@@ -131,7 +140,7 @@
             android:summary="%s"
             android:title="@string/preference_title_sync_time"
             app:dependency="@string/preference_key_sync_information" />
-        <SwitchPreference
+        <androidx.preference.SwitchPreference
             android:defaultValue="true"
             android:icon="@drawable/vector_drawable_snooze_24px"
             android:key="@string/preference_key_dont_distrub_at_night"
@@ -139,7 +148,7 @@
             android:summaryOn="@string/preference_summary_on_sync_at_night"
             android:title="@string/preference_title_sync_at_night"
             app:dependency="@string/preference_key_sync_information" />
-        <MultiSelectListPreference
+        <androidx.preference.MultiSelectListPreference
             android:defaultValue="@array/preference_entry_values_recv_notification_situation"
             android:entries="@array/preference_entry_recv_notification_situation"
             android:entryValues="@array/preference_entry_values_recv_notification_situation"
@@ -149,19 +158,19 @@
             app:dependency="@string/preference_key_sync_information" />
 
 
-    </PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
 
-    <PreferenceCategory android:title="@string/settings_vibrate_header">
+    <androidx.preference.PreferenceCategory android:title="@string/settings_vibrate_header">
 
 
-        <SwitchPreferenceCompat
+        <androidx.preference.SwitchPreferenceCompat
             android:icon="@drawable/ic_vibration_24px"
             app:icon="@drawable/ic_vibration_24px"
             app:key="@string/preference_key_vibrate_when_load_all"
             android:defaultValue="true"
             android:summaryOn="@string/preference_summary_on_vibrate_when_load_all"
             app:title="@string/preference_title_vibrate_when_load_all" />
-    </PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>

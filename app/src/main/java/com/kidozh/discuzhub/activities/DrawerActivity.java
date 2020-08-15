@@ -41,8 +41,6 @@ import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.viewModels.MainDrawerViewModel;
-import com.mikepenz.materialdrawer.holder.BadgeStyle;
-import com.mikepenz.materialdrawer.holder.ColorHolder;
 import com.mikepenz.materialdrawer.holder.ImageHolder;
 import com.mikepenz.materialdrawer.holder.StringHolder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -59,17 +57,14 @@ import com.mikepenz.materialdrawer.util.MaterialDrawerSliderViewExtensionsKt;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.appcompat.widget.Toolbar;
-import androidx.paging.PagedListAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import java.io.InputStream;
@@ -81,12 +76,12 @@ import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import kotlin.jvm.functions.Function3;
 
-public class NewMainDrawerActivity extends BaseStatusActivity implements
+public class DrawerActivity extends BaseStatusActivity implements
         bbsPrivateMessageFragment.OnNewMessageChangeListener,
         bbsPublicMessageFragment.OnNewMessageChangeListener,
         UserNotificationFragment.OnNewMessageChangeListener,
         NotificationsFragment.onPrivateMessageChangeListener{
-    private final static String TAG = NewMainDrawerActivity.class.getSimpleName();
+    private final static String TAG = DrawerActivity.class.getSimpleName();
     PrimaryDrawerItem bbsDrawerItem;
 
     @BindView(R.id.toolbar)
@@ -557,7 +552,7 @@ public class NewMainDrawerActivity extends BaseStatusActivity implements
                 Glide.get(getApplication()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
                 Glide.with(getApplication())
                         .load(uri)
-                        .centerInside()
+                        .centerCrop()
                         .into(imageView);
             }
         });

@@ -23,6 +23,7 @@ import com.kidozh.discuzhub.adapter.ThreadAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -217,6 +218,13 @@ public class HotThreadsFragment extends Fragment {
                 }
             }
         });
+        hotThreadsViewModel.resultMutableLiveData.observe(getViewLifecycleOwner(), displayThreadsResult -> {
+            if(getContext() instanceof BaseStatusInteract){
+                ((BaseStatusInteract) getContext()).setBaseResult(displayThreadsResult,
+                        displayThreadsResult!=null?displayThreadsResult.forumVariables:null);
+            }
+        });
+
     }
 
 }

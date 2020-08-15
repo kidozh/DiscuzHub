@@ -27,6 +27,9 @@ import com.kidozh.discuzhub.database.FavoriteForumDatabase;
 import com.kidozh.discuzhub.entities.FavoriteForum;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.interact.BaseStatusInteract;
+import com.kidozh.discuzhub.results.BaseResult;
+import com.kidozh.discuzhub.results.VariableResults;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 
 import java.util.ArrayList;
@@ -152,6 +155,11 @@ public class FavoriteForumFragment extends Fragment {
                 Toasty.error(getContext(),error,Toast.LENGTH_SHORT).show();
             }
 
+        });
+        mViewModel.resultMutableLiveData.observe(getViewLifecycleOwner(),favoriteForumResult -> {
+            if(getContext() instanceof BaseStatusInteract){
+                ((BaseStatusInteract) getContext()).setBaseResult(favoriteForumResult,favoriteForumResult!=null?favoriteForumResult.FavoriteForumVariable:null);
+            }
         });
     }
 

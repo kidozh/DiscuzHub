@@ -146,8 +146,7 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
 
     Uri curOutputFileUri;
     String curOutputFilePath;
-    private forumUserBriefInfo userBriefInfo;
-    bbsInformation bbsInfo;
+
     ForumInfo forum;
     private bbsColorPicker myColorPicker;
     private bbsSmileyPicker smileyPicker;
