@@ -364,9 +364,6 @@ public class LoginActivity extends BaseStatusActivity {
         Log.d(TAG,"Send user id "+userBriefInfo.getId());
         networkUtils.clearUserCookieInfo(getApplicationContext(),userBriefInfo);
 
-        if(client ==null){
-            client = networkUtils.getPreferredClientWithCookieJar(getApplicationContext());
-        }
 
         // exact login url
         // need formhash
@@ -562,19 +559,10 @@ public class LoginActivity extends BaseStatusActivity {
             Log.d(TAG,"save user to database id: "+userBriefInfo.getId()+"  "+insertedId);
             userBriefInfo.setId((int) insertedId);
             // transiting data
-            if(userBriefInfo !=null){
-                // relogin user
-                networkUtils.copySharedPrefence(
-                        context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE),
-                        context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE)
-                );
-            }
-            else {
-                networkUtils.copySharedPrefence(
-                        context.getSharedPreferences("CookiePersistence",Context.MODE_PRIVATE),
-                        context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE)
-                );
-            }
+            networkUtils.copySharedPrefence(
+                    context.getSharedPreferences("CookiePersistence",Context.MODE_PRIVATE),
+                    context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE)
+            );
 
             Log.d(TAG, "Transiting data to preference "+networkUtils.getSharedPreferenceNameByUser(userBriefInfo));
 
@@ -600,6 +588,7 @@ public class LoginActivity extends BaseStatusActivity {
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         viewModel.setBBSInfo(bbsInfo,userBriefInfo);
+        client = networkUtils.getPreferredClientWithCookieJar(getApplicationContext());
         if(bbsInfo == null){
             finishAfterTransition();
         }
@@ -619,7 +608,7 @@ public class LoginActivity extends BaseStatusActivity {
             getSupportActionBar().setSubtitle(bbsInfo.site_name);
             // clear it first
             getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE).edit().clear().commit();
-            client = networkUtils.getPreferredClientWithCookieJar(getApplicationContext());
+
         }
 
     }

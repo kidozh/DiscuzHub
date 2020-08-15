@@ -251,6 +251,7 @@ public class URLUtils {
                 .appendQueryParameter("action","login")
                 .appendQueryParameter("loginsubmit","yes")
                 .appendQueryParameter("inajax","1")
+                .appendQueryParameter("lssubmit","yes")
                 .build();
         return uri.toString();
     }

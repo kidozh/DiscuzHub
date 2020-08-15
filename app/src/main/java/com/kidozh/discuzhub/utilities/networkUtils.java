@@ -143,9 +143,11 @@ public class networkUtils {
     public static void copySharedPrefence(SharedPreferences fromSp, SharedPreferences toSp){
         SharedPreferences sp1 = toSp, sp = fromSp;
         SharedPreferences.Editor ed = sp1.edit();
+
         // SharedPreferences sp = Sp2; //The shared preferences to copy from
         ed.clear(); // This clears the one we are copying to, but you don't necessarily need to do that.
         //Cycle through all the entries in the sp
+        Log.d(TAG,"Start copy preference "+sp.getAll().entrySet());
         for(Map.Entry<String,?> entry : sp.getAll().entrySet()){
             Object v = entry.getValue();
             String key = entry.getKey();

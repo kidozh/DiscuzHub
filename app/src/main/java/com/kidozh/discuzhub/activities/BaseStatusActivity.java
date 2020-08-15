@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -50,7 +52,8 @@ public class BaseStatusActivity extends AppCompatActivity
 
     public void setBaseResult(BaseResult baseVariableResult, VariableResults variableResults){
         Log.d(TAG,"Recv "+userBriefInfo+" "+variableResults+" UID "+String.valueOf(variableResults!=null?variableResults.member_uid:-8512));
-        if(userBriefInfo!=null && this.variableResults!=null && variableResults!=null && variableResults.member_uid == 0){
+        if(userBriefInfo!=null && this.variableResults!=null
+                && variableResults!=null && variableResults.member_uid == 0){
             // open up a dialog
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
             //MaterialAlertDialogBuilder builder =  new AlertDialog.Builder(getActivity());
@@ -70,8 +73,15 @@ public class BaseStatusActivity extends AppCompatActivity
                             dialog.dismiss();
                         }
                     });
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    builder.show();
+                }
+            });
 
-            builder.show();
+
         }
         this.baseVariableResult = baseVariableResult;
         this.variableResults = variableResults;
