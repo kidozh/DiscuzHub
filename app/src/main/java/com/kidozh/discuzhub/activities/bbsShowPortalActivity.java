@@ -62,9 +62,8 @@ public class bbsShowPortalActivity extends BaseStatusActivity
     NotificationsFragment notificationsFragment;
     bbsParseUtils.noticeNumInfo noticeNumInfo;
 
-    bbsInformation curBBS;
-    forumUserBriefInfo curUser;
-    forumUserBriefInfo userBriefInfo;
+    
+
     private OkHttpClient client;
     NavController navController;
 
@@ -171,15 +170,15 @@ public class bbsShowPortalActivity extends BaseStatusActivity
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
 
-        if(curUser == null){
-            Log.d(TAG, "Current incognitive user "+curUser);
+        if(userBriefInfo == null){
+            Log.d(TAG, "Current incognitive user "+userBriefInfo);
             portalViewPager.setAdapter(new anonymousViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
             navView.getMenu().clear();
             navView.inflateMenu(R.menu.bottom_incognitive_nav_menu);
         }
         else {
             // use fragment transaction instead
-            Log.d(TAG, "Current incognitive user "+curUser.username);
+            Log.d(TAG, "Current incognitive user "+userBriefInfo.username);
             portalViewPager.setAdapter(new userViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
             navView.getMenu().clear();
             navView.inflateMenu(R.menu.bottom_nav_menu);
@@ -267,21 +266,21 @@ public class bbsShowPortalActivity extends BaseStatusActivity
 
     private void getIntentInfo(){
         Intent intent = getIntent();
-        curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
-        URLUtils.setBBS(curBBS);
-        if(curBBS == null){
+        URLUtils.setBBS(bbsInfo);
+        if(bbsInfo == null){
             finishAfterTransition();
         }
         else {
-            Log.d(TAG,"get bbs name "+curBBS.site_name);
-            URLUtils.setBBS(curBBS);
-            //bbsURLUtils.setBaseUrl(curBBS.base_url);
+            Log.d(TAG,"get bbs name "+bbsInfo.site_name);
+            URLUtils.setBBS(bbsInfo);
+            //bbsURLUtils.setBaseUrl(bbsInfo.base_url);
         }
         if(getSupportActionBar()!=null){
-            getSupportActionBar().setTitle(curBBS.site_name);
+            getSupportActionBar().setTitle(bbsInfo.site_name);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -335,9 +334,9 @@ public class bbsShowPortalActivity extends BaseStatusActivity
             }
             case R.id.bbs_forum_nav_personal_center:{
                 Intent intent = new Intent(this, UserProfileActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
-                intent.putExtra("UID",curUser.uid);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra("UID",userBriefInfo.uid);
                 startActivity(intent);
                 return true;
             }
@@ -348,14 +347,14 @@ public class bbsShowPortalActivity extends BaseStatusActivity
             }
             case R.id.bbs_forum_nav_draft_box:{
                 Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 startActivity(intent);
                 return true;
             }
             case R.id.bbs_forum_nav_show_in_webview:{
                 Intent intent = new Intent(this, InternalWebViewActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_URL_KEY,currentUrl);
                 Log.d(TAG,"Inputted URL "+currentUrl);
@@ -384,7 +383,7 @@ public class bbsShowPortalActivity extends BaseStatusActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getIntentInfo();
-        if(curUser == null){
+        if(userBriefInfo == null){
             getMenuInflater().inflate(R.menu.menu_incognitive_forum_nav_menu, menu);
         }
         else {
@@ -397,7 +396,7 @@ public class bbsShowPortalActivity extends BaseStatusActivity
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        LiveData<Integer> draftNumberLiveData = bbsThreadDraftDatabase.getInstance(this).getbbsThreadDraftDao().getAllDraftsCount(curBBS.getId());
+        LiveData<Integer> draftNumberLiveData = bbsThreadDraftDatabase.getInstance(this).getbbsThreadDraftDao().getAllDraftsCount(bbsInfo.getId());
         draftNumberLiveData.observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {

@@ -45,7 +45,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ManageUserActivity extends AppCompatActivity
+public class ManageUserActivity extends BaseStatusActivity
         implements RecyclerViewItemTouchCallback.onInteraction{
     final static String TAG = ManageUserActivity.class.getSimpleName();
 
@@ -59,7 +59,7 @@ public class ManageUserActivity extends AppCompatActivity
     CoordinatorLayout manageUserCoordinatorLayout;
 
     bbsShowInformationViewModel viewModel;
-    bbsInformation bbsInfo;
+
 
     forumUsersAdapter userAdapter;
 

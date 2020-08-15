@@ -64,9 +64,6 @@ public class LoginActivity extends BaseStatusActivity {
 
     private String TAG = LoginActivity.class.getSimpleName();
 
-    bbsInformation curBBS;
-    forumUserBriefInfo curUser;
-
     @BindView(R.id.login_bbs_avatar)
     ImageView bbsAvatar;
     @BindView(R.id.login_bbs_title)
@@ -117,17 +114,17 @@ public class LoginActivity extends BaseStatusActivity {
     }
 
     void setInformation(){
-        bbsTitle.setText(curBBS.site_name);
-        if(curUser == null){
-            bbsBaseUrl.setText(curBBS.base_url);
+        bbsTitle.setText(bbsInfo.site_name);
+        if(userBriefInfo == null){
+            bbsBaseUrl.setText(bbsInfo.base_url);
         }
         else {
-            bbsBaseUrl.setText(getString(R.string.user_relogin,curUser.username));
+            bbsBaseUrl.setText(getString(R.string.user_relogin,userBriefInfo.username));
         }
 
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-        if(curUser == null){
+        if(userBriefInfo == null){
 
         }
         Glide.with(this)
@@ -342,7 +339,7 @@ public class LoginActivity extends BaseStatusActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(),loginByWebViewActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 startActivity(intent);
             }
         });
@@ -382,7 +379,7 @@ public class LoginActivity extends BaseStatusActivity {
                 .add("answer",bbsSecurityAnswerEditText.getText().toString())
                 .add("quickforward", "yes")
                 .add("handlekey", "1s")
-                .add("referer",curBBS.base_url);
+                .add("referer",bbsInfo.base_url);
 
         if(needCaptcha()){
             Log.d(TAG,"Formhash "+secureInfoResult.secureVariables.formHash);
@@ -439,10 +436,10 @@ public class LoginActivity extends BaseStatusActivity {
                                 && loginResult.message!=null
                                 && loginResult.message.key.equals("login_succeed")){
                             // successful
-                            parsedUserInfo.belongedBBSID = curBBS.getId();
-                            if(curUser !=null){
+                            parsedUserInfo.belongedBBSID = bbsInfo.getId();
+                            if(userBriefInfo !=null){
                                 // relogin user
-                                parsedUserInfo.setId(curUser.getId());
+                                parsedUserInfo.setId(userBriefInfo.getId());
                             }
                             new saveUserToDatabaseAsyncTask(parsedUserInfo,client).execute();
                         }
@@ -499,16 +496,16 @@ public class LoginActivity extends BaseStatusActivity {
             super.onPostExecute(aVoid);
             Context context = getApplicationContext();
             Toasty.success(context,
-                    String.format(context.getString(R.string.save_user_to_bbs_successfully_template),userBriefInfo.username,curBBS.site_name),
+                    String.format(context.getString(R.string.save_user_to_bbs_successfully_template),userBriefInfo.username,bbsInfo.site_name),
                     Toast.LENGTH_SHORT
             ).show();
             Log.d(TAG,"save user to database id: "+userBriefInfo.getId()+"  "+insertedId);
             userBriefInfo.setId((int) insertedId);
             // transiting data
-            if(curUser !=null){
+            if(userBriefInfo !=null){
                 // relogin user
                 networkUtils.copySharedPrefence(
-                        context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(curUser),Context.MODE_PRIVATE),
+                        context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE),
                         context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE)
                 );
             }
@@ -529,7 +526,7 @@ public class LoginActivity extends BaseStatusActivity {
         if(getSupportActionBar() !=null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
-            if(curBBS.isSecureClient()){
+            if(bbsInfo.isSecureClient()){
                 bbsUnsecureNoticeTextview.setVisibility(View.GONE);
             }
             else {
@@ -540,26 +537,26 @@ public class LoginActivity extends BaseStatusActivity {
 
     void configureData(){
         Intent intent = getIntent();
-        curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        viewModel.setBBSInfo(curBBS,curUser);
-        if(curBBS == null){
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        viewModel.setBBSInfo(bbsInfo,userBriefInfo);
+        if(bbsInfo == null){
             finishAfterTransition();
         }
         else {
-            Log.d(TAG,"get bbs name "+curBBS.site_name);
-            URLUtils.setBBS(curBBS);
-            //bbsURLUtils.setBaseUrl(curBBS.base_url);
+            Log.d(TAG,"get bbs name "+bbsInfo.site_name);
+            URLUtils.setBBS(bbsInfo);
+            //bbsURLUtils.setBaseUrl(bbsInfo.base_url);
         }
         if(getSupportActionBar()!=null){
-            if(curUser == null){
+            if(userBriefInfo == null){
                 getSupportActionBar().setTitle(R.string.bbs_login);
             }
             else {
-                getSupportActionBar().setTitle(getString(R.string.user_relogin,curUser.username));
+                getSupportActionBar().setTitle(getString(R.string.user_relogin,userBriefInfo.username));
             }
 
-            getSupportActionBar().setSubtitle(curBBS.site_name);
+            getSupportActionBar().setSubtitle(bbsInfo.site_name);
             // clear it first
             getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE).edit().clear().commit();
             client = networkUtils.getPreferredClientWithCookieJar(getApplicationContext());

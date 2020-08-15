@@ -45,8 +45,7 @@ import es.dmoral.toasty.Toasty;
 
 public class bbsShowThreadDraftActivity extends BaseStatusActivity implements recyclerViewSwipeToDeleteCallback.onRecyclerviewSwiped{
     private final String TAG = bbsShowThreadDraftActivity.class.getSimpleName();
-    private forumUserBriefInfo userBriefInfo;
-    bbsInformation bbsInfo;
+
     @BindView(R.id.bbs_show_thread_draft_recyclerview)
     RecyclerView threadDraftRecyclerview;
     @BindView(R.id.bbs_show_thread_draft_no_item_found)

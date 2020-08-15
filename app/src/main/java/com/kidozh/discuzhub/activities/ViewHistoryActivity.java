@@ -82,9 +82,6 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
     ViewHistoryViewModel viewModel;
     ViewHistoryAdapter adapter;
 
-    bbsInformation bbsInfo;
-    forumUserBriefInfo userBriefInfo;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -76,9 +76,8 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
     @BindView(R.id.bbs_private_message_comment_smiley_viewPager)
     ViewPager mCommentSmileyViewPager;
 
-    bbsInformation curBBS;
-    forumUserBriefInfo curUser;
-    forumUserBriefInfo userBriefInfo;
+    bbsInformation bbsInfo;
+
     bbsParseUtils.privateMessage privateMessageInfo;
     bbsPrivateDetailMessageAdapter adapter;
     private OkHttpClient client;
@@ -146,7 +145,7 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
     private void configureRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
         privateMessageDetailRecyclerview.setLayoutManager(linearLayoutManager);
-        adapter = new bbsPrivateDetailMessageAdapter(curBBS,curUser);
+        adapter = new bbsPrivateDetailMessageAdapter(bbsInfo,userBriefInfo);
         privateMessageDetailRecyclerview.setAdapter(adapter);
     }
 
@@ -380,19 +379,19 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
 
     private void getIntentInfo(){
         Intent intent = getIntent();
-        curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         privateMessageInfo = (bbsParseUtils.privateMessage) intent.getSerializableExtra(bbsConstUtils.PASS_PRIVATE_MESSAGE_KEY);
         // parse client
         client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
-        if(curBBS == null){
+        if(bbsInfo == null){
             finishAfterTransition();
         }
         else {
-            Log.d(TAG,"get bbs name "+curBBS.site_name);
-            URLUtils.setBBS(curBBS);
-            //bbsURLUtils.setBaseUrl(curBBS.base_url);
+            Log.d(TAG,"get bbs name "+bbsInfo.site_name);
+            URLUtils.setBBS(bbsInfo);
+            //bbsURLUtils.setBaseUrl(bbsInfo.base_url);
         }
         if(getSupportActionBar()!=null){
             getSupportActionBar().setTitle(R.string.bbs_notification_my_pm);

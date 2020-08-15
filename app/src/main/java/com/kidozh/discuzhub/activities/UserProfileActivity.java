@@ -113,10 +113,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
     TextView personalInfoLastActivityTime;
     @BindView(R.id.user_bio_textview)
     TextView userBioTextview;
-
-    bbsInformation curBBS;
-    forumUserBriefInfo curUser;
-    forumUserBriefInfo userBriefInfo;
+    
     private int userId;
     OkHttpClient client;
     String friendNum, threadNum, postsNum;
@@ -143,7 +140,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
     }
 
     void renderUserInfo(){
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(this,curBBS.useSafeClient));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(this,bbsInfo.useSafeClient));
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
         int avatar_num = userId % 16;
@@ -162,7 +159,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
     }
 
     void renderFollowAndPMBtn(){
-        if(curUser ==null){
+        if(userBriefInfo ==null){
             personalInfoPMBtn.setVisibility(View.GONE);
             personalInfoFollowBtn.setVisibility(View.GONE);
         }
@@ -180,7 +177,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
                         username,"",username,""
                 );
                 Intent intent = new Intent(getApplicationContext(), bbsPrivateMessageDetailActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_PRIVATE_MESSAGE_KEY,privateM);
 
@@ -197,20 +194,20 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
     private void getIntentInfo(){
         Intent intent = getIntent();
-        curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         userId = intent.getIntExtra("UID",0);
-        if(curBBS == null){
+        if(bbsInfo == null){
             finishAfterTransition();
         }
         else {
-            Log.d(TAG,"get bbs name "+curBBS.site_name);
-            URLUtils.setBBS(curBBS);
-            viewModel.setBBSInfo(curBBS,userBriefInfo, userId);
+            Log.d(TAG,"get bbs name "+bbsInfo.site_name);
+            URLUtils.setBBS(bbsInfo);
+            viewModel.setBBSInfo(bbsInfo,userBriefInfo, userId);
         }
         if(getSupportActionBar()!=null){
-            getSupportActionBar().setTitle(curBBS.site_name);
+            getSupportActionBar().setTitle(bbsInfo.site_name);
         }
         client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
         if(userBriefInfo!=null && userId == Integer.parseInt(userBriefInfo.uid)){
@@ -227,6 +224,8 @@ public class UserProfileActivity extends BaseStatusActivity implements
             @Override
             public void onChanged(UserProfileResult userProfileResult) {
                 Log.d(TAG,"User profile result "+userProfileResult);
+
+                setBaseResult(userProfileResult,userProfileResult!=null?userProfileResult.userProfileVariableResult:null);
                 if(userProfileResult !=null
                         && userProfileResult.userProfileVariableResult !=null
                         && userProfileResult.userProfileVariableResult.space !=null){
@@ -237,7 +236,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
 
                     // for avatar rendering
-                    OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(getApplication(),curBBS.useSafeClient));
+                    OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(getApplication(),bbsInfo.useSafeClient));
                     Glide.get(getApplicationContext()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
                     int uid = userProfileResult.userProfileVariableResult.space.uid;
                     int avatar_num = uid % 16;
@@ -316,7 +315,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
                         new InsertViewHistory(new ViewHistory(
                                 URLUtils.getDefaultAvatarUrlByUid(uid),
                                 username,
-                                curBBS.getId(),
+                                bbsInfo.getId(),
                                 userProfileResult.userProfileVariableResult.space.sigatureHtml,
                                 ViewHistory.VIEW_TYPE_USER_PROFILE,
                                 uid,
@@ -618,7 +617,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
     @Override
     public boolean onLinkClicked(String url) {
-        bbsLinkMovementMethod.parseURLAndOpen(this,curBBS,userBriefInfo,url);
+        bbsLinkMovementMethod.parseURLAndOpen(this,bbsInfo,userBriefInfo,url);
         return true;
     }
 

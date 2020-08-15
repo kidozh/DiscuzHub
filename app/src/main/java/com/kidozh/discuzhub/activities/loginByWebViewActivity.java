@@ -55,7 +55,6 @@ public class loginByWebViewActivity extends BaseStatusActivity {
     WebView webView;
     @BindView(R.id.login_by_web_progressBar)
     ProgressBar webViewProgressBar;
-    bbsInformation curBBS;
     cookieWebViewClient cookieWebViewClientInstance;
 
     @Override
@@ -85,8 +84,8 @@ public class loginByWebViewActivity extends BaseStatusActivity {
 
     void configureIntentData(){
         Intent intent = getIntent();
-        curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        URLUtils.setBBS(curBBS);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+        URLUtils.setBBS(bbsInfo);
     }
 
     void configureActionBar(){
@@ -94,7 +93,7 @@ public class loginByWebViewActivity extends BaseStatusActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle(R.string.bbs_login_by_browser);
-            getSupportActionBar().setSubtitle(curBBS.site_name);
+            getSupportActionBar().setSubtitle(bbsInfo.site_name);
         }
     }
 
@@ -217,7 +216,7 @@ public class loginByWebViewActivity extends BaseStatusActivity {
                     if(parsedUserInfo!=null){
                         Log.d(TAG,"Parse user info "+parsedUserInfo.uid+ " "+parsedUserInfo.getId());
                         // save it to database
-                        parsedUserInfo.belongedBBSID = curBBS.getId();
+                        parsedUserInfo.belongedBBSID = bbsInfo.getId();
                         //client.cookieJar().saveFromResponse(httpUrl,cookieList);
                         String cookie = response.headers().get("Set-Cookie");
                         Log.d(TAG,"SAVE Cookie to "+httpUrl.toString()+" cookie list "+cookieList.size()+" SET COOKIE"+cookie);
@@ -277,7 +276,7 @@ public class loginByWebViewActivity extends BaseStatusActivity {
             super.onPostExecute(aVoid);
             Context context = getApplicationContext();
             Toasty.success(context,
-                    String.format(context.getString(R.string.save_user_to_bbs_successfully_template),userBriefInfo.username,curBBS.site_name),
+                    String.format(context.getString(R.string.save_user_to_bbs_successfully_template),userBriefInfo.username,bbsInfo.site_name),
                     Toast.LENGTH_SHORT
             ).show();
             Log.d(TAG,"save user to database id: "+userBriefInfo.getId()+"  "+insertedId);

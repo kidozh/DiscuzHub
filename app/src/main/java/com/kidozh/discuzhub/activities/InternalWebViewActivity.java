@@ -39,9 +39,6 @@ import okhttp3.OkHttpClient;
 public class InternalWebViewActivity extends BaseStatusActivity {
     private final static String TAG = InternalWebViewActivity.class.getSimpleName();
 
-    forumUserBriefInfo userBriefInfo;
-    bbsInformation curBBS;
-
     @BindView(R.id.show_web_page_webview)
     WebView webView;
     @BindView(R.id.show_web_page_progressBar)
@@ -67,7 +64,7 @@ public class InternalWebViewActivity extends BaseStatusActivity {
 
     private void getIntentInfo(){
         Intent intent = getIntent();
-        curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         startURL =  intent.getStringExtra(bbsConstUtils.PASS_URL_KEY);
         okHttpClient = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);

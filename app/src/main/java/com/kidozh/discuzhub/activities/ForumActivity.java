@@ -111,9 +111,8 @@ public class ForumActivity
     @BindView(R.id.bbs_forum_sublist)
     RecyclerView subForumRecyclerview;
     private ForumInfo forum;
-    private bbsInformation bbsInfo;
-    private forumUserBriefInfo userBriefInfo;
-    private OkHttpClient client = new OkHttpClient();
+
+
     private ThreadAdapter adapter;
     private SubForumAdapter subForumAdapter;
     boolean isTaskRunning;
@@ -213,6 +212,7 @@ public class ForumActivity
         forumViewModel.displayForumResultMutableLiveData.observe(this, new Observer<ForumResult>() {
             @Override
             public void onChanged(ForumResult forumResult) {
+                setBaseResult(forumResult,forumResult!=null?forumResult.forumVariables:null);
                 if(forumResult != null && forumResult.isError()){
                     String errorString = forumResult.message.content;
                     Toasty.error(getApplicationContext(),errorString,Toast.LENGTH_LONG).show();

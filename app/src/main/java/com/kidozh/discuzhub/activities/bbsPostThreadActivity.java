@@ -60,8 +60,10 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.BaseResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.PostParameterResult;
+import com.kidozh.discuzhub.results.VariableResults;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsColorPicker;
@@ -254,6 +256,7 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
         postThreadViewModel.getThreadPostParameterResultMutableLiveData().observe(this, new Observer<PostParameterResult>() {
             @Override
             public void onChanged(PostParameterResult postParameterResult) {
+                setBaseResult((BaseResult) postParameterResult,postParameterResult!=null?postParameterResult.permissionVariables:null);
                 if(postParameterResult !=null){
                     bbsPersonInfo = postParameterResult.permissionVariables.getUserBriefInfo();
                     formHash = postParameterResult.permissionVariables.formHash;
@@ -315,6 +318,7 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
         postThreadViewModel.getSecureInfoResultMutableLiveData().observe(this, new Observer<SecureInfoResult>() {
             @Override
             public void onChanged(SecureInfoResult secureInfoResult) {
+                setBaseResult(secureInfoResult,secureInfoResult!=null?secureInfoResult.secureVariables:null);
                 if(secureInfoResult !=null){
                     if(secureInfoResult.secureVariables == null){
                         // don't need a code

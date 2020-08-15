@@ -169,8 +169,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     private bbsThreadNotificationAdapter notificationAdapter;
     private bbsThreadPropertiesAdapter propertiesAdapter;
     String formHash = null;
-    private forumUserBriefInfo userBriefInfo;
-    bbsInformation bbsInfo;
+
     ForumInfo forum;
     ThreadInfo threadInfo;
     private boolean hasLoadOnce = false;
@@ -214,7 +213,6 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        curUser = userBriefInfo;
         threadInfo = (ThreadInfo) intent.getSerializableExtra(bbsConstUtils.PASS_THREAD_KEY);
         tid = intent.getIntExtra("TID",0);
         fid = intent.getIntExtra("FID",0);
@@ -547,6 +545,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         threadDetailViewModel.threadPostResultMutableLiveData.observe(this, new Observer<ThreadResult>() {
             @Override
             public void onChanged(ThreadResult threadResult) {
+                setBaseResult(threadResult,threadResult!=null?threadResult.threadPostVariables:null);
                 if(threadResult !=null ){
                     if(threadResult.threadPostVariables !=null
                             && threadResult.threadPostVariables.detailedThreadInfo !=null
