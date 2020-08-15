@@ -1,11 +1,15 @@
 package com.kidozh.discuzhub.utilities;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.Spannable;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
 import android.util.Log;
@@ -24,6 +28,9 @@ import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class bbsLinkMovementMethod extends LinkMovementMethod {
@@ -116,7 +123,158 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
         Uri uri = Uri.parse(url);
         Uri baseUri = Uri.parse(bbsInfo.base_url);
         Uri clickedUri = Uri.parse(url);
+        String clickedURLPath = clickedUri.getPath();
+        String basedURLPath = baseUri.getPath();
+        if(clickedURLPath !=null && basedURLPath!=null){
+            if(clickedURLPath.matches("^"+basedURLPath+".*")){
+                clickedURLPath = clickedURLPath.substring(basedURLPath.length());
+            }
+        }
+
+
+
         if (clickedUri.getHost() == null || clickedUri.getHost().equals(baseUri.getHost())) {
+            // check static first
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && clickedURLPath!=null) {
+
+                if(!TextUtils.isEmpty(
+                        UserPreferenceUtils.getRewriteRule(
+                                        context,
+                                        bbsInfo,
+                                        UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY))
+                ){
+                    String rewriteRule = UserPreferenceUtils.getRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY);
+                    UserPreferenceUtils.saveRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY,rewriteRule);
+
+                    // match template such as f{fid}-{page}
+                    // crate reverse copy
+                    rewriteRule = rewriteRule.replace("{fid}","(?<fid>\\d+)");
+                    rewriteRule = rewriteRule.replace("{page}","(?<page>\\d+)");
+                    Pattern pattern = Pattern.compile(rewriteRule);
+                    Matcher matcher = pattern.matcher(clickedURLPath);
+                    if(matcher.find()){
+
+                        String fidStr = matcher.group("fid");
+                        String pageStr = matcher.group("page");
+                        // handle it
+                        if(fidStr !=null){
+                            int fid = 0;
+                            try{
+                                fid = Integer.parseInt(fidStr);
+                            }
+                            catch (Exception e){
+                                fid= 0;
+                            }
+                            Intent intent = new Intent(context, ForumActivity.class);
+                            ForumInfo clickedForum = new ForumInfo();
+                            clickedForum.fid = fid;
+
+                            intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,clickedForum);
+                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                            Log.d(TAG,"put base url "+bbsInfo.base_url);
+                            VibrateUtils.vibrateForClick(context);
+                            context.startActivity(intent);
+                            return true;
+                        }
+
+                    }
+
+                }
+                if(!TextUtils.isEmpty(UserPreferenceUtils.getRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY))){
+                    // match template such as t{tid}-{page}-{prevpage}
+                    String rewriteRule = UserPreferenceUtils.getRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY);
+                    UserPreferenceUtils.saveRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY,rewriteRule);
+
+                    // match template such as f{fid}-{page}
+                    // crate reverse copy
+                    rewriteRule = rewriteRule.replace("{tid}","(?<tid>\\d+)");
+                    rewriteRule = rewriteRule.replace("{page}","(?<page>\\d+)");
+                    rewriteRule = rewriteRule.replace("{prevpage}","(?<prevpage>\\d+)");
+                    Pattern pattern = Pattern.compile(rewriteRule);
+                    Matcher matcher = pattern.matcher(clickedURLPath);
+                    if(matcher.find()){
+
+                        String tidStr = matcher.group("tid");
+                        String pageStr = matcher.group("page");
+                        // handle it
+                        if(tidStr !=null){
+
+                            ThreadInfo putThreadInfo = new ThreadInfo();
+                            int tid = 0;
+                            try{
+                                tid = Integer.parseInt(tidStr);
+                            }
+                            catch (Exception e){
+                                tid = 0;
+                            }
+
+                            putThreadInfo.tid = tid;
+                            Intent intent = new Intent(context, ThreadActivity.class);
+                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                            intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                            intent.putExtra("FID","0");
+                            intent.putExtra("TID",tid);
+                            intent.putExtra("SUBJECT",url);
+                            VibrateUtils.vibrateForClick(context);
+                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context);
+
+                            Bundle bundle = options.toBundle();
+                            context.startActivity(intent,bundle);
+                            return true;
+                        }
+
+                    }
+                }
+
+                if(!TextUtils.isEmpty(UserPreferenceUtils.getRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_HOME_SPACE))){
+                    // match template such as s{user}-{name}
+                    String rewriteRule = UserPreferenceUtils.getRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_HOME_SPACE);
+                    //UserPreferenceUtils.saveRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_HOME_SPACE,rewriteRule);
+                    Log.d(TAG,"Get home space rewrite url "+rewriteRule+" path "+clickedURLPath);
+
+                    // match template such as f{fid}-{page}
+                    // crate reverse copy
+                    rewriteRule = rewriteRule.replace("{user}","(?<user>\\w+)");
+                    rewriteRule = rewriteRule.replace("{value}","(?<value>\\d+)");
+                    Pattern pattern = Pattern.compile(rewriteRule);
+                    Matcher matcher = pattern.matcher(clickedURLPath);
+                    if(matcher.find()){
+
+                        String userString = matcher.group("user");
+                        String uidString = matcher.group("value");
+                        Log.d(TAG,"Get uid "+uidString);
+                        // handle it
+                        if(uidString !=null){
+                            int uid = 0;
+                            try{
+                                uid = Integer.parseInt(uidString);
+                            }
+                            catch (Exception e){
+                                e.printStackTrace();
+                            }
+
+
+                            Intent intent = new Intent(context, UserProfileActivity.class);
+                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                            intent.putExtra("UID",uid);
+
+                            VibrateUtils.vibrateForClick(context);
+                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context);
+
+                            Bundle bundle = options.toBundle();
+                            context.startActivity(intent,bundle);
+                            return true;
+                        }
+
+                    }
+                }
+
+            }
+
+
             if (uri != null && uri.getPath() != null) {
                 if (uri.getQueryParameter("mod") != null
                         && uri.getQueryParameter("mod").equals("redirect")
@@ -126,8 +284,16 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                         && uri.getQueryParameter("ptid") != null) {
                     String pidString = uri.getQueryParameter("pid");
                     String tidString = uri.getQueryParameter("ptid");
-                    int redirectTid = Integer.parseInt(tidString);
-                    int redirectPid = Integer.parseInt(pidString);
+                    int redirectTid = 0;
+                    int redirectPid = 0;
+                    try{
+                        redirectTid = Integer.parseInt(tidString);
+                        redirectPid = Integer.parseInt(pidString);
+                    }
+                    catch (Exception e){
+
+                    }
+
                     Log.d(TAG, "Find the current " + redirectPid + " tid " + redirectTid);
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
@@ -146,7 +312,14 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                         && uri.getQueryParameter("mod").equals("viewthread")
                         && uri.getQueryParameter("tid") != null) {
                     String tidString = uri.getQueryParameter("tid");
-                    int redirectTid = Integer.parseInt(tidString);
+                    int redirectTid = 0;
+                    try{
+                        redirectTid = Integer.parseInt(tidString);
+                    }
+                    catch (Exception e){
+                        redirectTid = 0;
+                    }
+
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
                     Intent intent = new Intent(context, ThreadActivity.class);
@@ -165,7 +338,14 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                         && uri.getQueryParameter("mod").equals("forumdisplay")
                         && uri.getQueryParameter("fid") != null) {
                     String fidString = uri.getQueryParameter("fid");
-                    int fid = Integer.parseInt(fidString);
+                    int fid = 0;
+                    try{
+                        fid = Integer.parseInt(fidString);
+                    }
+                    catch (Exception e){
+                        fid = 0;
+                    }
+
                     Intent intent = new Intent(context, ForumActivity.class);
                     ForumInfo clickedForum = new ForumInfo();
                     clickedForum.fid = fid;
@@ -183,7 +363,14 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                         && uri.getQueryParameter("mod").equals("space")
                         && uri.getQueryParameter("uid")!=null) {
                     String uidStr = uri.getQueryParameter("uid");
-                    int uid = Integer.parseInt(uidStr);
+                    int uid = 0;
+                    try{
+                        uid = Integer.parseInt(uidStr);
+                    }
+                    catch (Exception e){
+                        uid = 0;
+                    }
+
                     Intent intent = new Intent(context, UserProfileActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);

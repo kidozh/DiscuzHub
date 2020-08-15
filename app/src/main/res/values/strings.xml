@@ -708,6 +708,7 @@
     <string name="preference_title_sync_favorite">Sync favorite threads and forums</string>
     <string name="preference_summary_on_sync_favorite">Sync favorite threads and forums from server</string>
     <string name="preference_summary_off_sync_favorite">Only retrieve favorite threads and forums from database</string>
+    <string name="bbs_rewrite_rule_preference" translatable="false">%1$s_%2$d</string>
 
 
 </resources>

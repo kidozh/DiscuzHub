@@ -539,6 +539,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 mDetailedThreadCommentNumber.setText(getString(R.string.bbs_thread_reply_number,detailedThreadInfo.replies));
                 mDetailedThreadViewNumber.setText(String.valueOf(detailedThreadInfo.views));
 
+
             }
         });
 
@@ -588,6 +589,13 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                     else {
                         noMoreThreadFound.setVisibility(View.GONE);
                         errorPostImageview.setVisibility(View.GONE);
+                    }
+
+                    Map<String,String> rewriteRule = threadResult.threadPostVariables.rewriteRule;
+                    if(rewriteRule!=null){
+                        getAndSaveRewriteRule(rewriteRule,UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY);
+                        getAndSaveRewriteRule(rewriteRule,UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY);
+                        getAndSaveRewriteRule(rewriteRule,UserPreferenceUtils.REWRITE_HOME_SPACE);
                     }
                 }
 
@@ -680,6 +688,12 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             Log.d(TAG,"Get favorite thread in observer"+favoriteThread);
             invalidateOptionsMenu();
         });
+    }
+
+    private void getAndSaveRewriteRule(@NonNull Map<String,String> rewriteRule, @NonNull String key){
+        if(rewriteRule.containsKey(key)){
+            UserPreferenceUtils.saveRewriteRule(this,bbsInfo,key,rewriteRule.get(key));
+        }
     }
 
 
@@ -935,8 +949,15 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                     && uri.getQueryParameter("ptid")!=null){
                 String pidString = uri.getQueryParameter("pid");
                 String tidString = uri.getQueryParameter("ptid");
-                int redirectTid = Integer.parseInt(tidString);
-                int redirectPid = Integer.parseInt(pidString);
+                int redirectTid = 0;
+                int redirectPid = 0;
+                try{
+                    redirectTid = Integer.parseInt(tidString);
+                    redirectPid = Integer.parseInt(pidString);
+                }
+                catch (Exception e){
+
+                }
                 Log.d(TAG,"Find the current "+redirectPid+" tid "+redirectTid);
                 if(redirectTid != tid){
                     ThreadInfo putThreadInfo = new ThreadInfo();
@@ -976,7 +997,13 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                     && uri.getQueryParameter("mod").equals("viewthread")
                     && uri.getQueryParameter("tid")!=null){
                 String tidString = uri.getQueryParameter("tid");
-                int redirectTid = Integer.parseInt(tidString);
+                int redirectTid = 0;
+                try{
+                    redirectTid = Integer.parseInt(tidString);
+                }
+                catch (Exception e){
+
+                }
                 ThreadInfo putThreadInfo = new ThreadInfo();
                 putThreadInfo.tid = redirectTid;
                 Intent intent = new Intent(this, ThreadActivity.class);
@@ -996,7 +1023,13 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                     && uri.getQueryParameter("mod").equals("forumdisplay")
                     && uri.getQueryParameter("fid")!=null){
                 String fidString = uri.getQueryParameter("fid");
-                int fid = Integer.parseInt(fidString);
+                int fid = 0;
+                try{
+                    fid = Integer.parseInt(fidString);
+                }
+                catch (Exception e){
+                    fid = 0;
+                }
                 Intent intent = new Intent(this, ForumActivity.class);
                 ForumInfo clickedForum = new ForumInfo();
                 clickedForum.fid = fid;
@@ -1014,7 +1047,14 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                     && uri.getQueryParameter("mod").equals("space")
                     && uri.getQueryParameter("uid")!=null){
                 String uidStr = uri.getQueryParameter("uid");
-                int uid = Integer.parseInt(uidStr);
+                int uid = 0;
+                try{
+                    uid = Integer.parseInt(uidStr);
+                }
+                catch (Exception e){
+                    uid = 0;
+                }
+
                 Intent intent = new Intent(this, UserProfileActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
@@ -1084,6 +1124,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
                         if(rewriteRules.containsKey("forum_forumdisplay") ){
                             String rewriteRule = rewriteRules.get("forum_forumdisplay");
+                            UserPreferenceUtils.saveRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY,rewriteRule);
                             if(rewriteRule == null || clickedURLPath == null){
                                 parseURLAndOpen(unescapedURL);
                                 return;
@@ -1100,13 +1141,20 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                                 String pageStr = matcher.group("page");
                                 // handle it
                                 if(fidStr !=null){
-                                    int fid = Integer.parseInt(fidStr);
+                                    int fid = 0;
+                                    try{
+                                        fid = Integer.parseInt(fidStr);
+                                    }
+                                    catch (Exception e){
+                                        fid = 0;
+                                    }
+
 //                                    int page = Integer.parseInt(pageStr);
                                     Intent intent = new Intent(context, ForumActivity.class);
                                     ForumInfo clickedForum = new ForumInfo();
                                     clickedForum.fid = fid;
 
-                                    intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forum);
+                                    intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,clickedForum);
                                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                                     Log.d(TAG,"put base url "+bbsInfo.base_url);
@@ -1121,6 +1169,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                         if(rewriteRules.containsKey("forum_viewthread")){
                             // match template such as t{tid}-{page}-{prevpage}
                             String rewriteRule = rewriteRules.get("forum_viewthread");
+                            UserPreferenceUtils.saveRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY,rewriteRule);
                             if(rewriteRule == null || clickedURLPath == null){
                                 parseURLAndOpen(unescapedURL);
                                 return;
@@ -1140,7 +1189,14 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                                 if(tidStr !=null){
 
                                     ThreadInfo putThreadInfo = new ThreadInfo();
-                                    int tid = Integer.parseInt(tidStr);
+                                    int tid = 0;
+                                    try{
+                                        tid = Integer.parseInt(tidStr);
+                                    }
+                                    catch (Exception e){
+                                        tid = 0;
+                                    }
+
                                     putThreadInfo.tid = tid;
                                     Intent intent = new Intent(context, ThreadActivity.class);
                                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
@@ -1159,6 +1215,52 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
                             }
                         }
+                        if(rewriteRules.containsKey("home_space")){
+                            // match template such as t{tid}-{page}-{prevpage}
+                            String rewriteRule = rewriteRules.get("home_space");
+                            Log.d(TAG,"get home space url "+rewriteRule);
+                            UserPreferenceUtils.saveRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_HOME_SPACE,rewriteRule);
+                            if(rewriteRule == null || clickedURLPath == null){
+                                parseURLAndOpen(unescapedURL);
+                                return;
+                            }
+                            // match template such as f{fid}-{page}
+                            // crate reverse copy
+                            rewriteRule = rewriteRule.replace("{user}","(?<user>\\d+)");
+                            rewriteRule = rewriteRule.replace("{value}","(?<value>\\d+)");
+                            Pattern pattern = Pattern.compile(rewriteRule);
+                            Matcher matcher = pattern.matcher(clickedURLPath);
+                            if(matcher.find()){
+
+                                String userString = matcher.group("user");
+                                String uidString = matcher.group("value");
+                                // handle it
+                                if(uidString !=null){
+                                    int uid = 0;
+                                    try{
+                                        uid = Integer.parseInt(uidString);
+                                    }
+                                    catch (Exception e){
+                                        uid = 0;
+                                    }
+
+
+                                    Intent intent = new Intent(context, UserProfileActivity.class);
+                                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                                    intent.putExtra("UID",uid);
+
+                                    VibrateUtils.vibrateForClick(context);
+                                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context);
+
+                                    Bundle bundle = options.toBundle();
+                                    context.startActivity(intent,bundle);
+                                    return;
+                                }
+
+                            }
+                        }
+
                         parseURLAndOpen(unescapedURL);
                     }
                     else {
