@@ -118,7 +118,7 @@ public class bbsPostThreadActivity extends BaseStatusActivity implements View.On
     @BindView(R.id.bbs_post_thread_cate_spinner)
     Spinner mCategorySpinner;
     private EmotionInputHandler handler;
-    private OkHttpClient client;
+
 
     @BindView(R.id.bbs_post_thread_edit_bar_linear_layout)
     LinearLayout editBar;

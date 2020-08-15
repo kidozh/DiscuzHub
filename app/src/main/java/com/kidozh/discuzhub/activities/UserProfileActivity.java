@@ -115,7 +115,6 @@ public class UserProfileActivity extends BaseStatusActivity implements
     TextView userBioTextview;
     
     private int userId;
-    OkHttpClient client;
     String friendNum, threadNum, postsNum;
     String username;
     private UserProfileViewModel viewModel;

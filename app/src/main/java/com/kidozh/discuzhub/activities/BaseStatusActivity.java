@@ -37,7 +37,7 @@ public class BaseStatusActivity extends AppCompatActivity
     private final static String TAG = BaseStatusActivity.class.getSimpleName();
     public bbsInformation bbsInfo;
     public forumUserBriefInfo userBriefInfo;
-    OkHttpClient client;
+    OkHttpClient client = new OkHttpClient();
     BaseResult baseVariableResult;
     VariableResults variableResults;
 
@@ -49,7 +49,7 @@ public class BaseStatusActivity extends AppCompatActivity
     }
 
     public void setBaseResult(BaseResult baseVariableResult, VariableResults variableResults){
-
+        client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
         if(userBriefInfo!=null && this.variableResults!=null && variableResults!=null && variableResults.member_uid == 0){
             // open up a dialog
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);

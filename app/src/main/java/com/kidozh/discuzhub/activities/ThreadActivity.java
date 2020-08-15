@@ -164,7 +164,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
     public String subject;
     public int tid, fid;
-    private OkHttpClient client = new OkHttpClient();
+    //private OkHttpClient client = new OkHttpClient();
     private ThreadPostsAdapter adapter;
     private bbsThreadNotificationAdapter notificationAdapter;
     private bbsThreadPropertiesAdapter propertiesAdapter;

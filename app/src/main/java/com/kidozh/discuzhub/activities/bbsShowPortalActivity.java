@@ -64,7 +64,7 @@ public class bbsShowPortalActivity extends BaseStatusActivity
 
     
 
-    private OkHttpClient client;
+    // private OkHttpClient client;
     NavController navController;
 
     @Override

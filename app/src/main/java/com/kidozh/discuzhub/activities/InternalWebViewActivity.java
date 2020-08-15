@@ -45,7 +45,6 @@ public class InternalWebViewActivity extends BaseStatusActivity {
     ProgressBar webViewProgressbar;
 
     String startURL;
-    OkHttpClient okHttpClient;
 
     boolean first = true;
 
@@ -67,7 +66,7 @@ public class InternalWebViewActivity extends BaseStatusActivity {
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         startURL =  intent.getStringExtra(bbsConstUtils.PASS_URL_KEY);
-        okHttpClient = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
+        client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
     }
 
     void configureActionBar(){
@@ -93,7 +92,7 @@ public class InternalWebViewActivity extends BaseStatusActivity {
         // set cookie
         HttpUrl currentHttpUrl = HttpUrl.parse(startURL);
         if(currentHttpUrl!=null){
-            List<Cookie> cookies = okHttpClient.cookieJar().loadForRequest(currentHttpUrl);
+            List<Cookie> cookies = client.cookieJar().loadForRequest(currentHttpUrl);
             for(int i=0;i<cookies.size();i++){
                 Cookie cookie = cookies.get(i);
                 String value = cookie.name() + "=" + cookie.value();

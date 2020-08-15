@@ -80,7 +80,7 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
 
     bbsParseUtils.privateMessage privateMessageInfo;
     bbsPrivateDetailMessageAdapter adapter;
-    private OkHttpClient client;
+    // private OkHttpClient client;
     private int globalPage = -1;
     private Boolean hasLoadAll=false;
     String formHash;

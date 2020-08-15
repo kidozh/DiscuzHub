@@ -96,7 +96,6 @@ public class LoginActivity extends BaseStatusActivity {
     @BindView(R.id.login_bbs_captcha_editText)
     EditText bbsCaptchaEditText;
 
-    private OkHttpClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
