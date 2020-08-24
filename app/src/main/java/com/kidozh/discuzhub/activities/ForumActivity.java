@@ -50,7 +50,7 @@ import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.results.FavoriteItemActionResult;
+import com.kidozh.discuzhub.results.ApiMessageActionResult;
 import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
@@ -834,7 +834,7 @@ public class ForumActivity
         FavoriteForumDao dao;
         boolean favorite, error=false;
         Retrofit retrofit;
-        retrofit2.Call<FavoriteItemActionResult> favoriteForumActionResultCall;
+        retrofit2.Call<ApiMessageActionResult> favoriteForumActionResultCall;
         MessageResult messageResult;
         String description = "";
 
@@ -863,7 +863,7 @@ public class ForumActivity
             if(result !=null
                     && result.forumVariables!=null
                     && favoriteForum.userId !=0
-                    && UserPreferenceUtils.isSyncBBSInformation(getApplication())){
+                    && UserPreferenceUtils.syncInformation(getApplication())){
                 Log.d(TAG,"Favorite formhash "+ result.forumVariables.formHash);
                 if(favorite){
 
@@ -899,11 +899,12 @@ public class ForumActivity
             if(favoriteForumActionResultCall!=null){
                 try {
                     Log.d(TAG,"request favorite url "+favoriteForumActionResultCall.request().url());
-                    retrofit2.Response<FavoriteItemActionResult> response = favoriteForumActionResultCall.execute();
+                    retrofit2.Response<ApiMessageActionResult> response = favoriteForumActionResultCall.execute();
                     //Log.d(TAG,"get response "+response.raw().body().string());
                     if(response.isSuccessful() && response.body() !=null){
 
-                        FavoriteItemActionResult result = response.body();
+                        ApiMessageActionResult result = response.body();
+
                         messageResult = result.message;
                         String key = result.message.key;
                         if(favorite && key.equals("favorite_do_success")
@@ -924,7 +925,28 @@ public class ForumActivity
                         }
 
                     }
-                } catch (IOException e) {
+                    else {
+                        messageResult = new MessageResult();
+                        messageResult.content = getString(R.string.network_failed);
+                        messageResult.key = String.valueOf(response.code());
+                        if(favorite){
+                            dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteForum.idKey);
+                            dao.insert(favoriteForum);
+
+                            return true;
+                        }
+                        else {
+
+                            // clear potential
+                            dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteForum.idKey);
+                            //dao.delete(favoriteThread);
+                            Log.d(TAG,"Just remove it from database "+favoriteForum.idKey);
+                            return false;
+
+                        }
+                    }
+                }
+                catch (IOException e) {
                     e.printStackTrace();
                     error = true;
                     messageResult = new MessageResult();

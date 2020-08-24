@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -135,10 +136,12 @@ public class UserGroupInfoFragment extends Fragment {
                         // set background
                         //adminGroupCardview.setAlpha(0.5f);
                         adminGroupCardview.setCardBackgroundColor(Color.parseColor(adminGroupVariables.color));
-                        adminGroupCardview.getBackground().setAlpha(140);
+                        //adminGroupCardview.getBackground().setAlpha(140);
                     }
                     adminGroupCardview.setVisibility(View.VISIBLE);
-                    adminGroupTitle.setText(Html.fromHtml(adminGroupVariables.groupTitle), TextView.BufferType.SPANNABLE);
+                    String adminGroupTitleString = adminGroupVariables.groupTitle.replaceAll("<.*?>","");
+
+                    adminGroupTitle.setText(Html.fromHtml(adminGroupTitleString), TextView.BufferType.SPANNABLE);
                     adminGroupStarTextview.setText(String.valueOf(adminGroupVariables.stars));
                     adminGroupReadAccess.setText(String.valueOf(adminGroupVariables.readAccess));
                     setCheckableImageview(adminGroupAllowAttachment,adminGroupVariables.allowGetAttach);
@@ -172,11 +175,12 @@ public class UserGroupInfoFragment extends Fragment {
                     if(groupVariables.color!=null &&groupVariables.color.length()!=0){
                         // set background
                         groupCardview.setCardBackgroundColor(Color.parseColor(groupVariables.color));
-                        groupCardview.getBackground().setAlpha(140);
+                        //groupCardview.getBackground().setAlpha(140);
                         //groupCardview.setBackgroundColor(Color.parseColor(groupVariables.color));
                     }
                     groupCardview.setVisibility(View.VISIBLE);
-                    groupTitle.setText(Html.fromHtml(groupVariables.groupTitle), TextView.BufferType.SPANNABLE);
+                    String title = groupVariables.groupTitle.replaceAll("<.*?>","");
+                    groupTitle.setText(Html.fromHtml(title), TextView.BufferType.SPANNABLE);
                     groupReadAccess.setText(String.valueOf(groupVariables.readAccess));
                     groupStarTextview.setText(String.valueOf(groupVariables.stars));
                     setCheckableImageview(groupAllowAttachment,groupVariables.allowGetAttach);

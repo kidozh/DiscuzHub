@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.works.updateBBSInformationWork;
+import com.kidozh.discuzhub.works.PushUserNotificationWork;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.notificationUtils;
 
@@ -76,7 +76,7 @@ public class SplashScreenActivity extends BaseStatusActivity {
 
         Constraints constraints = new Constraints.Builder()
                 .setRequiresBatteryNotLow(true)
-                .setRequiresDeviceIdle(true)
+//                .setRequiresDeviceIdle(true)
                 .build();
         // update frequency
         // extracting all user...
@@ -118,7 +118,7 @@ public class SplashScreenActivity extends BaseStatusActivity {
             // start periodic work
             Log.d(TAG,"Register notification "+userBriefInfo.username);
             PeriodicWorkRequest saveRequest =
-                    new PeriodicWorkRequest.Builder(updateBBSInformationWork.class, periodicFreq, TimeUnit.MINUTES)
+                    new PeriodicWorkRequest.Builder(PushUserNotificationWork.class, periodicFreq, TimeUnit.MINUTES)
                             .setInputData(userData)
                             .setConstraints(constraints)
                             .addTag(bbsConstUtils.WORK_MANAGER_UPDATE_USERS_TAG)
@@ -127,7 +127,7 @@ public class SplashScreenActivity extends BaseStatusActivity {
             WorkManager.getInstance(this)
                     .enqueue(saveRequest);
 
-            OneTimeWorkRequest oneTimeWorkRequest = new OneTimeWorkRequest.Builder(updateBBSInformationWork.class)
+            OneTimeWorkRequest oneTimeWorkRequest = new OneTimeWorkRequest.Builder(PushUserNotificationWork.class)
                     .setConstraints(constraints)
                     .setInputData(userData)
                     .build();

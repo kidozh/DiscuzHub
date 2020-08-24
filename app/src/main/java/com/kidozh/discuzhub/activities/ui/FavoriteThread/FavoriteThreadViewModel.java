@@ -43,7 +43,7 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
     public MutableLiveData<List<FavoriteThread>> favoriteThreadInServer = new MutableLiveData<>(new ArrayList<>());
     public MutableLiveData<List<FavoriteThread>> newFavoriteThread = new MutableLiveData<>(new ArrayList<>());
     public MutableLiveData<FavoriteThreadResult> resultMutableLiveData = new MutableLiveData<>();
-    private OkHttpClient client = new OkHttpClient();
+    private OkHttpClient client;
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
     String idType;

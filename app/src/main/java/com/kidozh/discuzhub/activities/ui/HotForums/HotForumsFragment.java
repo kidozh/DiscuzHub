@@ -84,6 +84,7 @@ public class HotForumsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this,view);
         viewModel = new ViewModelProvider(this).get(HotForumsViewModel.class);
+        viewModel.setBBSInfo(bbsInfo,userBriefInfo);
         configureRecyclerview();
         bindViewModel();
         configureSwipeRefreshLayout();

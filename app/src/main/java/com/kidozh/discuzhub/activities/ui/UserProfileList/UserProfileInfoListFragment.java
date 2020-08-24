@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -81,6 +82,9 @@ public class UserProfileInfoListFragment extends Fragment {
         userProfileRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new UserProfileItemAdapter();
         userProfileRecyclerview.setAdapter(adapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
+                DividerItemDecoration.VERTICAL);
+        userProfileRecyclerview.addItemDecoration(dividerItemDecoration);
     }
 
     private void bindViewModel(){

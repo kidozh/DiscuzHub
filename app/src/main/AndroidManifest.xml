@@ -64,7 +64,7 @@
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_global_settings" />
         <activity android:name=".activities.ForumActivity" />
-        <activity android:name=".activities.ThreadActivity" />
+        <activity android:name=".activities.ViewThreadActivity" />
         <activity
             android:name=".activities.SplashScreenActivity"
             android:theme="@style/AppTheme.NoActionBar" />

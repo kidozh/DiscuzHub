@@ -26,7 +26,7 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/bbs_forum_nav_personal_center"
-        android:icon="@drawable/vector_drawable_account_box_24px"
+        android:icon="@drawable/ic_account_box_24px"
         android:title="@string/bbs_personal_center"
         app:showAsAction="never|withText" />
     <item

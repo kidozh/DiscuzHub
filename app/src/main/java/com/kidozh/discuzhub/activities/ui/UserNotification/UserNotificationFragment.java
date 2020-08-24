@@ -1,7 +1,6 @@
 package com.kidozh.discuzhub.activities.ui.UserNotification;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -21,13 +21,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.UserNotificationAdapter;
+import com.kidozh.discuzhub.adapter.NotificationAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.UserNoteListResult;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
@@ -70,7 +69,7 @@ public class UserNotificationFragment extends Fragment {
     bbsInformation bbsInfo;
     ForumInfo forum;
     private OkHttpClient client = new OkHttpClient();
-    UserNotificationAdapter adapter;
+    NotificationAdapter adapter;
     private int globalPage = 1;
     private Boolean hasLoadAll = false;
     private String type, view;
@@ -151,11 +150,12 @@ public class UserNotificationFragment extends Fragment {
     private void configureRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         bbsNotificationRecyclerview.setLayoutManager(linearLayoutManager);
-//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
-//                linearLayoutManager.getOrientation());
-//        bbsNotificationRecyclerview.addItemDecoration(dividerItemDecoration);
-        adapter = new UserNotificationAdapter(bbsInfo,userBriefInfo);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
+                linearLayoutManager.getOrientation());
+        bbsNotificationRecyclerview.addItemDecoration(dividerItemDecoration);
+        adapter = new NotificationAdapter(bbsInfo,userBriefInfo);
         bbsNotificationRecyclerview.setAdapter(adapter);
+
 
         bbsNotificationRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

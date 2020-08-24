@@ -1,8 +1,9 @@
 package com.kidozh.discuzhub.services;
 
 import com.kidozh.discuzhub.results.FavoriteForumResult;
-import com.kidozh.discuzhub.results.FavoriteItemActionResult;
+import com.kidozh.discuzhub.results.ApiMessageActionResult;
 import com.kidozh.discuzhub.results.FavoriteThreadResult;
+import com.kidozh.discuzhub.results.UserNoteListResult;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -22,7 +23,7 @@ public interface DiscuzApiService {
 
     @FormUrlEncoded
     @POST(DISCUZ_API_PATH+"?version=4&module=favthread&type=thread&ac=favorite")
-    Call<FavoriteItemActionResult> favoriteThreadActionResult(
+    Call<ApiMessageActionResult> favoriteThreadActionResult(
             @Query("formhash") String formhash,
             @Query("id") int tid,
             @Field("description") String description
@@ -32,7 +33,7 @@ public interface DiscuzApiService {
 
     @FormUrlEncoded
     @POST(DISCUZ_API_PATH+"?version=4&module=favthread&type=all&ac=favorite&op=delete&inajax=1")
-    Call<FavoriteItemActionResult> unfavoriteThreadActionResult(
+    Call<ApiMessageActionResult> unfavoriteThreadActionResult(
             @Field("formhash") String formhash,
             @Field("deletesubmit") String submit,
             @Field("handlekey") String handleKey,
@@ -43,7 +44,7 @@ public interface DiscuzApiService {
 
     @FormUrlEncoded
     @POST(DISCUZ_API_PATH+"?version=4&module=favforum&type=forum&ac=favorite")
-    Call<FavoriteItemActionResult> favoriteForumActionResult(
+    Call<ApiMessageActionResult> favoriteForumActionResult(
             @Query("formhash") String formhash,
             @Query("id") int tid,
             @Field("description") String description
@@ -53,7 +54,7 @@ public interface DiscuzApiService {
 
     @FormUrlEncoded
     @POST(DISCUZ_API_PATH+"?version=4&module=favforum&type=all&ac=favorite&op=delete&inajax=1")
-    Call<FavoriteItemActionResult> unfavoriteForumActionResult(
+    Call<ApiMessageActionResult> unfavoriteForumActionResult(
             @Field("formhash") String formhash,
             @Field("deletesubmit") String submit,
             @Field("handlekey") String handleKey,
@@ -61,4 +62,16 @@ public interface DiscuzApiService {
 
 
     );
+
+
+    @GET(DISCUZ_API_PATH+"?version=4&module=mobilesign")
+    Call<ApiMessageActionResult> mobileSignActionResult(
+            @Query("hash") String formHash
+    );
+
+    @GET(DISCUZ_API_PATH+"?version=4&module=mynotelist")
+    Call<UserNoteListResult> userNotificationListResult(
+            @Query("page") int page
+    );
+
 }

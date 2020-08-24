@@ -40,6 +40,7 @@ import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.notificationUtils;
 import com.kidozh.discuzhub.viewModels.MainDrawerViewModel;
 import com.mikepenz.materialdrawer.holder.ImageHolder;
 import com.mikepenz.materialdrawer.holder.StringHolder;
@@ -169,6 +170,7 @@ public class DrawerActivity extends BaseStatusActivity implements
                 List<IProfile> accountProfiles = new ArrayList<>();
                 for(int i=0;i<bbsInformations.size(); i++){
                     bbsInformation currentBBSInfo = bbsInformations.get(i);
+                    notificationUtils.createBBSUpdateChannel(getApplicationContext(),currentBBSInfo);
                     //URLUtils.setBBS(currentBBSInfo);
                     Log.d(TAG,"Load url "+URLUtils.getBBSLogoUrl(currentBBSInfo.base_url));
                     ProfileDrawerItem bbsProfile = new ProfileDrawerItem();

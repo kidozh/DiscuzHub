@@ -678,7 +678,7 @@
     <string name="outlink_warn_title">You are browsing outer link</string>
     <string name="outlink_warn_message">Outlink \"%1$s\" is different from current bbs \"%2$s\". Please be careful.</string>
     <string name="scroll_to_pid_failed">Currently, post #%1$s is not loaded.</string>
-    <string name="scroll_to_pid_successfully">Go to #%1$s.</string>
+    <string name="scroll_to_pid_successfully">Go to #%1$d.</string>
     <string name="close_webview">Close</string>
     <string name="share">Share</string>
     <string name="share_template">%1$s (via link:%2$s)</string>
@@ -709,6 +709,17 @@
     <string name="preference_summary_on_sync_favorite">Sync favorite threads and forums from server</string>
     <string name="preference_summary_off_sync_favorite">Only retrieve favorite threads and forums from database</string>
     <string name="bbs_rewrite_rule_preference" translatable="false">%1$s_%2$d</string>
+    <string name="post_index_number"># %1$d</string>
+    <string name="post_author">Author</string>
+    <string name="notification_new">New</string>
+    <string name="channel_name_bbs_information">New Messages from %1$s (ID:%2$d)</string>
+    <string name="channel_description_bbs_information">All new messages from sign-in user in %1$s will be notified.</string>
+    <string name="channel_id_bbs_information" translatable="false">channel_id_bbs_information_%1$d</string>
+    <string name="notification_new_message">New Message from %1$s in %2$s</string>
+    <string name="notification_group_new_message_title">New messages from %1$s in %2$s</string>
+    <string name="notification_group_new_message_description">Recv %1$d new messages and total %2$d ones.</string>
+    <string name="bbs_credit">Credit</string>
+    <string name="bbs_medals_num">Medals (%1$d)</string>
 
 
 </resources>

@@ -77,20 +77,15 @@ public class UserProfileActivity extends BaseStatusActivity implements
     ImageView personalInfoAvatar;
     @BindView(R.id.user_signature_textview)
     TextView personalInfoSignatureTextView;
-    @BindView(R.id.show_personal_info_interest_icon)
-    ImageView personalInfoInterestIcon;
+
     @BindView(R.id.show_personal_info_interest_textView)
     TextView personalInfoInterestTextView;
     @BindView(R.id.show_personal_info_birthplace_textView)
     TextView personInfoBirthPlace;
-    @BindView(R.id.show_personal_info_birthplace_icon)
-    ImageView personalInfoBirthPlaceIcon;
-    @BindView(R.id.show_personal_info_regdate_icon)
-    ImageView personalInfoRegdateIcon;
+
     @BindView(R.id.show_personal_info_regdate_textView)
     TextView personalInfoRegdateTextview;
-    @BindView(R.id.show_personal_info_recent_note_icon)
-    ImageView personalInfoRecentNoteIcon;
+
     @BindView(R.id.show_personal_info_recent_note_textView)
     TextView personalInfoRecentNoteTextview;
     @BindView(R.id.show_personal_info_progressbar)
@@ -105,8 +100,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
     Button personalInfoPMBtn;
     @BindView(R.id.show_personal_info_focus_btn)
     Button personalInfoFollowBtn;
-    @BindView(R.id.show_personal_info_group_icon)
-    ImageView personalInfoGroupIcon;
+
     @BindView(R.id.show_personal_info_group_info)
     TextView personalInfoGroupInfo;
     @BindView(R.id.show_personal_info_last_activity_time)
@@ -270,12 +264,12 @@ public class UserProfileActivity extends BaseStatusActivity implements
                     }
 
                     if(userProfileResult.userProfileVariableResult.space.interest.length()!=0){
-                        personalInfoInterestIcon.setVisibility(View.VISIBLE);
+
                         personalInfoInterestTextView.setVisibility(View.VISIBLE);
                         personalInfoInterestTextView.setText(userProfileResult.userProfileVariableResult.space.interest);
                     }
                     else {
-                        personalInfoInterestIcon.setVisibility(View.GONE);
+                        
                         personalInfoInterestTextView.setVisibility(View.GONE);
                         personalInfoInterestTextView.setText(userProfileResult.userProfileVariableResult.space.interest);
                     }
@@ -285,12 +279,12 @@ public class UserProfileActivity extends BaseStatusActivity implements
                             userProfileResult.userProfileVariableResult.space.birthdist +
                             userProfileResult.userProfileVariableResult.space.birthcommunity;
                     if(birthPlace.length()!=0){
-                        personalInfoBirthPlaceIcon.setVisibility(View.VISIBLE);
+
                         personInfoBirthPlace.setVisibility(View.VISIBLE);
                         personInfoBirthPlace.setText(birthPlace);
                     }
                     else {
-                        personalInfoBirthPlaceIcon.setVisibility(View.GONE);
+
                         personInfoBirthPlace.setVisibility(View.GONE);
                     }
                     personalInfoRegdateTextview.setText(userProfileResult.userProfileVariableResult.space.regdate);
@@ -304,7 +298,6 @@ public class UserProfileActivity extends BaseStatusActivity implements
                     }
                     else {
                         personalInfoGroupInfo.setVisibility(View.GONE);
-                        personalInfoGroupIcon.setVisibility(View.GONE);
                     }
                     // for detailed information
 
@@ -344,7 +337,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
     }
 
     private UserProfileItem generateUserProfileItem(String title, String content, int iconId, int privateStatus){
-        Log.d(TAG,"title "+title+" content "+content);
+
         if(content == null || content.length() !=0){
             return new UserProfileItem(title,content,iconId);
         }
@@ -527,6 +520,42 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
     }
 
+    private List<UserProfileItem> getCreditList(){
+        UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
+        if(userProfileResult == null || userProfileResult.userProfileVariableResult == null){
+            return new ArrayList<>();
+        }
+        List<UserProfileItem> userProfileItemList = new ArrayList<>();
+
+        UserProfileResult.SpaceVariables spaceVariables = userProfileResult.userProfileVariableResult.space;
+        userProfileItemList.add(
+                generateUserProfileItem(getString(R.string.bbs_credit),
+                        String.valueOf(spaceVariables.credits),
+                        R.drawable.ic_credit_24px,
+                        0)
+        );
+        UserProfileResult.PrivacySetting privacySetting = spaceVariables.privacySetting;
+        List<UserProfileResult.extendCredit> extCredits = userProfileResult.userProfileVariableResult.getExtendCredits();
+        for(int i=0;i<extCredits.size();i++){
+            UserProfileResult.extendCredit extendCredit = extCredits.get(i);
+            userProfileItemList.add(
+                    generateUserProfileItem(extendCredit.title,
+                            extendCredit.value + extendCredit.unit,
+                            R.drawable.ic_extend_credit_24px,
+                            0)
+            );
+        }
+
+
+
+
+
+
+
+        return userProfileItemList;
+
+    }
+
     private List<UserProfileItem> getExtraInfoList(){
         UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
         if(userProfileResult == null){
@@ -643,6 +672,9 @@ public class UserProfileActivity extends BaseStatusActivity implements
                         return MedalFragment.newInstance(null);
                     }
                 case 1:
+                    return UserProfileInfoListFragment.newInstance(getString(R.string.user_profile_extra_information),
+                            getCreditList());
+                case 2:
                     if(userProfileResult!=null && userProfileResult.userProfileVariableResult!=null
                             && userProfileResult.userProfileVariableResult.space !=null){
                         return UserFriendFragment.newInstance(userId,userProfileResult.userProfileVariableResult.space.friends);
@@ -651,16 +683,16 @@ public class UserProfileActivity extends BaseStatusActivity implements
                         return UserFriendFragment.newInstance(userId,0);
                     }
 
-                case 2:
+                case 3:
                     return UserProfileInfoListFragment.newInstance(getString(R.string.user_profile_basic_information),
                             getBasicInfoList());
-                case 3:
+                case 4:
                     return UserProfileInfoListFragment.newInstance(getString(R.string.user_profile_edu_job),
                             getEduOccupationInfoList());
-                case 4:
+                case 5:
                     return UserProfileInfoListFragment.newInstance(getString(R.string.user_profile_extra_information),
                             getExtraInfoList());
-                case 5:
+                case 6:
                     if(userProfileResult!=null && userProfileResult.userProfileVariableResult!=null
                     && userProfileResult.userProfileVariableResult.space !=null){
                         return UserGroupInfoFragment.newInstance(userProfileResult.userProfileVariableResult.space.group,
@@ -680,8 +712,18 @@ public class UserProfileActivity extends BaseStatusActivity implements
             UserProfileResult userProfileResult = viewModel.getUserProfileResultLiveData().getValue();
             switch (position){
                 case 0:
-                    return getString(R.string.user_profile_medal);
+                    if(userProfileResult!=null && userProfileResult.userProfileVariableResult!=null
+                            && userProfileResult.userProfileVariableResult.space !=null
+                            && userProfileResult.userProfileVariableResult.space.medals!=null){
+                        return getString(R.string.bbs_medals_num,userProfileResult.userProfileVariableResult.space.medals.size());
+                    }
+                    else {
+                        return getString(R.string.user_profile_medal);
+                    }
+
                 case 1:
+                    return getString(R.string.bbs_credit);
+                case 2:
                     if(userProfileResult !=null && userProfileResult.userProfileVariableResult!=null && userProfileResult.userProfileVariableResult.space!=null){
                         return getString(R.string.user_profile_friend_number_template, userProfileResult.userProfileVariableResult.space.friends);
                     }
@@ -689,13 +731,13 @@ public class UserProfileActivity extends BaseStatusActivity implements
                         return getString(R.string.bbs_user_friend);
                     }
 
-                case 2:
-                    return getString(R.string.user_profile_basic_information);
                 case 3:
-                    return getString(R.string.user_profile_edu_job);
+                    return getString(R.string.user_profile_basic_information);
                 case 4:
-                    return getString(R.string.user_profile_extra_information);
+                    return getString(R.string.user_profile_edu_job);
                 case 5:
+                    return getString(R.string.user_profile_extra_information);
+                case 6:
                     return getString(R.string.profile_group_information);
                 default:
                     return "";
@@ -704,7 +746,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
         @Override
         public int getCount() {
-            return 6;
+            return 7;
         }
 
         @Override

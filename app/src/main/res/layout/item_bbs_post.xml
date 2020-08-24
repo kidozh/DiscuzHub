@@ -25,7 +25,7 @@
             android:layout_height="wrap_content">
 
             <cn.gavinliu.android.lib.shapedimageview.ShapedImageView
-                android:id="@+id/bbs_thread_avatar_imageView"
+                android:id="@+id/bbs_post_avatar_imageView"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
@@ -37,32 +37,51 @@
                 tools:srcCompat="@tools:sample/avatars[0]" />
 
             <TextView
-                android:id="@+id/bbs_thread_publisher"
+                android:id="@+id/bbs_post_publisher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:textColor="@color/colorTextSecondaryDefault"
-                app:layout_constraintStart_toEndOf="@+id/bbs_thread_avatar_imageView"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                app:layout_constraintStart_toEndOf="@+id/bbs_post_avatar_imageView"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="@tools:sample/full_names" />
 
             <TextView
-                android:id="@+id/bbs_thread_publish_date"
+                android:id="@+id/bbs_post_publish_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="@+id/bbs_thread_publisher"
-                app:layout_constraintTop_toBottomOf="@+id/bbs_thread_publisher"
+                app:layout_constraintStart_toStartOf="@+id/bbs_post_publisher"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_post_publisher"
                 tools:text="@tools:sample/date/hhmmss" />
+
+            <TextView
+                android:id="@+id/bbs_post_is_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@color/colorPrimary"
+                android:paddingStart="4dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="4dp"
+                android:paddingBottom="2dp"
+                android:text="@string/post_author"
+                android:textAlignment="center"
+                android:textColor="@color/colorPureWhite"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/bbs_post_publisher"
+                app:layout_constraintStart_toEndOf="@+id/bbs_post_publisher"
+                app:layout_constraintTop_toTopOf="@+id/bbs_post_publisher" />
 
             <ImageView
                 android:id="@+id/bbs_post_status_mobile"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="@+id/bbs_thread_publisher"
-                app:layout_constraintStart_toEndOf="@+id/bbs_thread_publisher"
-                app:layout_constraintTop_toTopOf="@+id/bbs_thread_publisher"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/bbs_post_publisher"
+                app:layout_constraintStart_toEndOf="@+id/bbs_post_is_author"
+                app:layout_constraintTop_toTopOf="@+id/bbs_post_publisher"
                 app:srcCompat="@drawable/ic_post_status_mobile_24px" />
 
             <LinearLayout
@@ -74,7 +93,7 @@
                 android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bbs_thread_publish_date"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_post_publish_date"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -174,12 +193,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:background="@color/colorPrimary"
-                android:padding="4dp"
-                android:textColor="@color/colorPureWhite"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/bbs_thread_publisher"
-                tools:text="1" />
+                app:layout_constraintTop_toTopOf="@+id/bbs_post_publisher"
+                tools:text="@string/post_index_number" />
 
             <LinearLayout
                 android:id="@+id/bbs_thread_linearlayout"

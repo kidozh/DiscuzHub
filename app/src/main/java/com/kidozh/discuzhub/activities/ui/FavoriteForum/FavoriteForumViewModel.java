@@ -45,7 +45,7 @@ public class FavoriteForumViewModel extends AndroidViewModel {
     public MutableLiveData<List<FavoriteForum>> FavoriteForumInServer = new MutableLiveData<>(new ArrayList<>());
     public MutableLiveData<List<FavoriteForum>> newFavoriteForum = new MutableLiveData<>(new ArrayList<>());
     public MutableLiveData<FavoriteForumResult> resultMutableLiveData = new MutableLiveData<>();
-    private OkHttpClient client = new OkHttpClient();
+    private OkHttpClient client;
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
     String idType;

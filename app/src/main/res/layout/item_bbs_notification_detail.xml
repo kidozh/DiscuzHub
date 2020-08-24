@@ -28,7 +28,9 @@
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:transitionName="user_info_avatar"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@tools:sample/avatars" />
@@ -38,9 +40,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:textAlignment="viewStart"
                 app:layout_constraintStart_toEndOf="@+id/bbs_notification_imageView"
-                app:layout_constraintTop_toTopOf="@+id/bbs_notification_imageView"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="@tools:sample/full_names" />
 
             <TextView
@@ -51,6 +54,7 @@
                 android:layout_marginEnd="16dp"
                 android:textAlignment="viewStart"
                 android:textColor="@color/colorTextDefault"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/bbs_notification_imageView"
                 app:layout_constraintTop_toBottomOf="@+id/bbs_notification_author"
@@ -60,10 +64,30 @@
                 android:id="@+id/bbs_notification_publish_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:drawableStart="@drawable/vector_drawable_clock"
+                android:gravity="center_vertical"
                 android:textAlignment="viewStart"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/bbs_notification_note"
                 app:layout_constraintTop_toBottomOf="@+id/bbs_notification_note"
                 tools:text="@tools:sample/date/hhmmss" />
+
+            <TextView
+                android:id="@+id/bbs_notification_new_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="?attr/colorPrimary"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/notification_new"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPureWhite"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/bbs_notification_author"
+                app:layout_constraintStart_toEndOf="@+id/bbs_notification_author"
+                app:layout_constraintTop_toTopOf="@+id/bbs_notification_author" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

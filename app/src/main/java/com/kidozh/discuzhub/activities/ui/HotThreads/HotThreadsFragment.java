@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -114,6 +115,7 @@ public class HotThreadsFragment extends Fragment {
         dashboardRecyclerview.setLayoutManager(linearLayoutManager);
         forumThreadAdapter = new ThreadAdapter(getContext(),null,null,curBBS,userBriefInfo);
         dashboardRecyclerview.setAdapter(forumThreadAdapter);
+        dashboardRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         dashboardRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {

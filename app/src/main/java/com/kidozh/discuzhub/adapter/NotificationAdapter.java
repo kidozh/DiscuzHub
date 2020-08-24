@@ -28,7 +28,7 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ThreadActivity;
+import com.kidozh.discuzhub.activities.ViewThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -53,8 +53,8 @@ import butterknife.ButterKnife;
 
 import static com.kidozh.discuzhub.utilities.networkUtils.getPreferredClient;
 
-public class UserNotificationAdapter extends RecyclerView.Adapter<UserNotificationAdapter.ViewHolder> {
-    private static final String TAG = UserNotificationAdapter.class.getSimpleName();
+public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
+    private static final String TAG = NotificationAdapter.class.getSimpleName();
     private Context context;
     private List<UserNoteListResult.UserNotification> notificationDetailInfoList;
     bbsInformation bbsInfo;
@@ -64,7 +64,7 @@ public class UserNotificationAdapter extends RecyclerView.Adapter<UserNotificati
         return notificationDetailInfoList;
     }
 
-    public UserNotificationAdapter(bbsInformation bbsInfo, forumUserBriefInfo curUser){
+    public NotificationAdapter(bbsInformation bbsInfo, forumUserBriefInfo curUser){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
     }
@@ -97,6 +97,12 @@ public class UserNotificationAdapter extends RecyclerView.Adapter<UserNotificati
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         UserNoteListResult.UserNotification notificationDetailInfo = this.notificationDetailInfoList.get(position);
         // remove author if not named
+        if(notificationDetailInfo.isNew){
+            holder.newLabel.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.newLabel.setVisibility(View.GONE);
+        }
         if(notificationDetailInfo.authorId == 0){
             holder.bbsNotificationAuthor.setVisibility(View.GONE);
             holder.bbsNotificationImageview.setImageDrawable(context.getDrawable(R.drawable.vector_drawable_info_24px_outline));
@@ -147,7 +153,7 @@ public class UserNotificationAdapter extends RecyclerView.Adapter<UserNotificati
             holder.bbsNotificationCardview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, ThreadActivity.class);
+                    Intent intent = new Intent(context, ViewThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
                     intent.putExtra("TID",notificationDetailInfo.notificationExtraInfo.tid);
@@ -238,7 +244,8 @@ public class UserNotificationAdapter extends RecyclerView.Adapter<UserNotificati
         TextView bbsNotificationPublishTime;
         @BindView(R.id.bbs_notification_cardview)
         CardView bbsNotificationCardview;
-
+        @BindView(R.id.bbs_notification_new_label)
+        TextView newLabel;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);

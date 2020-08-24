@@ -16,7 +16,7 @@ import com.kidozh.discuzhub.database.BBSInformationDatabase;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.works.updateBBSInformationWork;
+import com.kidozh.discuzhub.works.PushUserNotificationWork;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
                     // start periodic work
                     Log.d(TAG,"Register notification "+userBriefInfo.username);
 
-                    OneTimeWorkRequest oneTimeWorkRequest = new OneTimeWorkRequest.Builder(updateBBSInformationWork.class)
+                    OneTimeWorkRequest oneTimeWorkRequest = new OneTimeWorkRequest.Builder(PushUserNotificationWork.class)
                             .setInputData(userData)
                             .build();
                     WorkManager.getInstance(context).enqueue(oneTimeWorkRequest);

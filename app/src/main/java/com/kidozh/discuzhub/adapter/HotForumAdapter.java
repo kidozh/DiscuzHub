@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ForumActivity;
-import com.kidozh.discuzhub.activities.ThreadActivity;
+import com.kidozh.discuzhub.activities.ViewThreadActivity;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.HotForum;
 import com.kidozh.discuzhub.entities.ThreadInfo;
@@ -109,7 +109,7 @@ public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotFor
                 threadInfo.fid = hotForum.fid;
                 threadInfo.tid = hotForum.lastPostTid;
                 threadInfo.subject = hotForum.lastPostSubject;
-                Intent intent = new Intent(context, ThreadActivity.class);
+                Intent intent = new Intent(context, ViewThreadActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);

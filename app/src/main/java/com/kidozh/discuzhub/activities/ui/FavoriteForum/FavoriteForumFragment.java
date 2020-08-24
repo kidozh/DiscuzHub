@@ -164,7 +164,7 @@ public class FavoriteForumFragment extends Fragment {
     }
 
     public void syncFavoriteThreadFromServer(){
-        if(getContext() !=null && UserPreferenceUtils.isSyncBBSInformation(getContext()) && userBriefInfo!=null){
+        if(getContext() !=null && UserPreferenceUtils.syncFavorite(getContext()) && userBriefInfo!=null){
 
             bindSyncStatus();
 

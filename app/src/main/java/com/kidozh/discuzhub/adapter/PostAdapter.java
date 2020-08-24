@@ -16,16 +16,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.Html;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.BulletSpan;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
-import android.text.style.LeadingMarginSpan;
 import android.text.style.StrikethroughSpan;
-import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,11 +64,9 @@ import org.xml.sax.XMLReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
 
@@ -81,8 +74,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
 
-public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.bbsForumThreadCommentViewHolder> {
-    private final static String TAG = ThreadPostsAdapter.class.getSimpleName();
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThreadCommentViewHolder> {
+    private final static String TAG = PostAdapter.class.getSimpleName();
     private List<PostInfo> threadInfoList = new ArrayList<>();
     private Context mContext,context;
     public String subject;
@@ -96,11 +89,12 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
     private AdapterView.OnItemClickListener listener;
     private onAdapterReply replyListener;
     private OnLinkClicked onLinkClickedListener;
+    private int authorId = 0;
 
 
 
 
-    public ThreadPostsAdapter(Context context, bbsInformation bbsInfo, forumUserBriefInfo curUser, URLUtils.ThreadStatus threadStatus){
+    public PostAdapter(Context context, bbsInformation bbsInfo, forumUserBriefInfo curUser, URLUtils.ThreadStatus threadStatus){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
         this.mContext = context;
@@ -108,10 +102,10 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
         this.threadStatus = threadStatus;
     }
 
-    public void setThreadInfoList(List<PostInfo> threadInfoList, URLUtils.ThreadStatus threadStatus){
+    public void setThreadInfoList(List<PostInfo> threadInfoList, URLUtils.ThreadStatus threadStatus, int authorId){
         this.threadInfoList = threadInfoList;
         this.threadStatus = threadStatus;
-
+        this.authorId = authorId;
         notifyDataSetChanged();
     }
 
@@ -121,7 +115,7 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
 
     @NonNull
     @Override
-    public ThreadPostsAdapter.bbsForumThreadCommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PostAdapter.bbsForumThreadCommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         int layoutIdForListItem = R.layout.item_bbs_post;
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -134,9 +128,16 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ThreadPostsAdapter.bbsForumThreadCommentViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PostAdapter.bbsForumThreadCommentViewHolder holder, int position) {
         PostInfo threadInfo = threadInfoList.get(position);
         holder.mThreadPublisher.setText(threadInfo.author);
+        if(threadInfo.authorId == authorId){
+            holder.isAuthorLabel.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.isAuthorLabel.setVisibility(View.GONE);
+
+        }
         // parse status
         int status = threadInfo.status;
         int BACKGROUND_ALPHA = 25;
@@ -219,15 +220,10 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
         //DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
         //holder.mPublishDate.setText(df.format(threadInfo.publishAt));
         holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext,threadInfo.publishAt));
-        if(threadInfo.first){
-            holder.mThreadType.setText(R.string.bbs_thread_publisher);
-            holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorAccent));
-        }
-        else {
 
-            holder.mThreadType.setText(String.format("%s",position+1));
-            holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorPrimaryDark));
-        }
+        holder.mThreadType.setText(context.getString(R.string.post_index_number,threadInfo.position));
+
+
         int avatar_num = threadInfo.authorId % 16;
         if(avatar_num < 0){
             avatar_num = -avatar_num;
@@ -339,15 +335,16 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
     }
 
     public class bbsForumThreadCommentViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.bbs_thread_publisher)
+        @BindView(R.id.bbs_post_publisher)
         TextView mThreadPublisher;
-        @BindView(R.id.bbs_thread_publish_date)
+
+        @BindView(R.id.bbs_post_publish_date)
         TextView mPublishDate;
         @BindView(R.id.bbs_thread_content)
         TextView mContent;
         @BindView(R.id.bbs_thread_type)
         TextView mThreadType;
-        @BindView(R.id.bbs_thread_avatar_imageView)
+        @BindView(R.id.bbs_post_avatar_imageView)
         ImageView mAvatarImageview;
         @BindView(R.id.bbs_thread_attachment_recyclerview)
         RecyclerView mRecyclerview;
@@ -363,6 +360,8 @@ public class ThreadPostsAdapter extends RecyclerView.Adapter<ThreadPostsAdapter.
         View mPostStatusWarnedView;
         @BindView(R.id.bbs_post_status_edited_layout)
         View mPostStatusEditedView;
+        @BindView(R.id.bbs_post_is_author)
+        TextView isAuthorLabel;
         public bbsForumThreadCommentViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);

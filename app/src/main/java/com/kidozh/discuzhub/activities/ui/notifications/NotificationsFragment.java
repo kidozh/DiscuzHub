@@ -488,7 +488,7 @@ public class NotificationsFragment extends Fragment {
                 }
 
                 case 4:{
-                    return new bbsMyThreadFragment();
+                    return bbsMyThreadFragment.newInstance(bbsInformation,userBriefInfo);
 
                 }
             }

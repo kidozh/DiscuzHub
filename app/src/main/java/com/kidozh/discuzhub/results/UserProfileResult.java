@@ -21,10 +21,13 @@ import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer;
 import com.kidozh.discuzhub.utilities.URLUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 
@@ -33,8 +36,9 @@ public class UserProfileResult extends BaseResult {
 
     @JsonProperty("Variables")
     public UserProfileVariableResult userProfileVariableResult;
-    @JsonProperty("extcredits")
-    public Map<String,extendCredit> extendCreditMap;
+
+
+
 
 
     //@JsonIgnoreProperties(ignoreUnknown = true)
@@ -42,6 +46,32 @@ public class UserProfileResult extends BaseResult {
 
         @JsonProperty("space")
         public SpaceVariables space;
+
+        @JsonProperty("extcredits")
+        public Map<String,extendCredit> extendCreditMap = new HashMap<>();
+
+        public List<extendCredit> getExtendCredits(){
+            List<extendCredit> extendCreditList = new ArrayList<>();
+            Log.d(TAG,"GET extend credit hash map "+extendCreditMap+" "+space);
+            if(space !=null && extendCreditMap!=null){
+                Set<String> creditIndexKey = extendCreditMap.keySet();
+                for(String creditIndex : creditIndexKey){
+                    String extFieldName = "extcredits"+creditIndex;
+                    try{
+                        Field extField = SpaceVariables.class.getField(extFieldName);
+                        int fieldValue = (int) extField.get(space);
+                        extendCredit extCredit = extendCreditMap.get(creditIndex);
+                        extCredit.value = fieldValue;
+                        extendCreditList.add(extCredit);
+                    }
+                    catch (Exception ignored){
+
+                    }
+                }
+
+            }
+            return extendCreditList;
+        }
 
     }
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -283,7 +313,9 @@ public class UserProfileResult extends BaseResult {
     }
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class extendCredit{
-        public String img, title, unit, ratio;
+        public String img, title, unit, ratio,showinthread,allowexchangein,allowexchangeout;
+        @JsonIgnore
+        public int value = 0;
 
     }
 

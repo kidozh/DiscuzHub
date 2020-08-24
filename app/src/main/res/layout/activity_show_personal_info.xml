@@ -102,132 +102,100 @@
                         app:layout_constraintTop_toBottomOf="@+id/user_bio_textview"
                         tools:text="@tools:sample/lorem" />
 
-                    <ImageView
-                        android:id="@+id/show_personal_info_interest_icon"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintStart_toStartOf="@+id/user_signature_textview"
-                        app:layout_constraintTop_toBottomOf="@+id/user_signature_textview"
-                        app:srcCompat="@drawable/vector_drawable_attachment" />
-
                     <TextView
                         android:id="@+id/show_personal_info_interest_textView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
+                        android:drawableStart="@drawable/ic_attachment_24px"
+                        android:drawablePadding="8dp"
+                        android:drawableTint="@color/MaterialColorBlue"
                         android:singleLine="true"
                         android:textAlignment="viewStart"
                         android:textColor="@color/colorPrimaryDark"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/show_personal_info_interest_icon"
-                        app:layout_constraintTop_toTopOf="@+id/show_personal_info_interest_icon"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/user_signature_textview"
                         tools:text="@tools:sample/lorem" />
-
-                    <ImageView
-                        android:id="@+id/show_personal_info_birthplace_icon"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintStart_toStartOf="@+id/show_personal_info_interest_icon"
-                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_interest_icon"
-                        app:srcCompat="@drawable/vector_drawable_location_city_24px" />
 
                     <TextView
                         android:id="@+id/show_personal_info_birthplace_textView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
+                        android:drawableStart="@drawable/ic_location_city_24px"
+                        android:drawablePadding="8dp"
+                        android:drawableTint="@color/colorTextSecondaryDefault"
                         android:textAlignment="viewStart"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/show_personal_info_birthplace_icon"
-                        app:layout_constraintTop_toTopOf="@+id/show_personal_info_birthplace_icon"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_interest_textView"
                         tools:text="@tools:sample/cities" />
-
-                    <ImageView
-                        android:id="@+id/show_personal_info_regdate_icon"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginTop="8dp"
-                        app:layout_constraintStart_toStartOf="@+id/show_personal_info_birthplace_icon"
-                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_birthplace_icon"
-                        app:srcCompat="@drawable/vector_drawable_add_24px" />
 
                     <TextView
                         android:id="@+id/show_personal_info_regdate_textView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:drawableStart="@drawable/ic_add_24px"
+                        android:drawableTint="?attr/colorControlNormal"
                         android:singleLine="true"
                         android:textAlignment="viewStart"
-                        app:layout_constraintStart_toEndOf="@+id/show_personal_info_regdate_icon"
-                        app:layout_constraintTop_toTopOf="@+id/show_personal_info_regdate_icon"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_birthplace_textView"
                         tools:text="@tools:sample/date/ddmmyy" />
-
-                    <ImageView
-                        android:id="@+id/show_personal_info_last_activity_icon"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginStart="8dp"
-                        app:layout_constraintStart_toEndOf="@+id/show_personal_info_regdate_textView"
-                        app:layout_constraintTop_toTopOf="@+id/show_personal_info_regdate_textView"
-                        app:srcCompat="@drawable/vector_drawable_update_24px" />
 
                     <TextView
                         android:id="@+id/show_personal_info_last_activity_time"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:textAlignment="viewStart"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/show_personal_info_last_activity_icon"
-                        app:layout_constraintTop_toTopOf="@+id/show_personal_info_last_activity_icon"
-                        tools:text="@tools:sample/date/ddmmyy" />
-
-                    <ImageView
-                        android:id="@+id/show_personal_info_recent_note_icon"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
-                        app:layout_constraintStart_toStartOf="@+id/show_personal_info_regdate_icon"
-                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_regdate_icon"
-                        app:srcCompat="@drawable/vector_drawable_notes_24px" />
+                        android:drawableStart="@drawable/ic_clock_24px"
+                        android:drawablePadding="8dp"
+                        android:drawableTint="?attr/colorControlNormal"
+                        android:textAlignment="viewStart"
+                        app:layout_constraintStart_toEndOf="@+id/show_personal_info_regdate_textView"
+                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_birthplace_textView"
+                        tools:text="@tools:sample/date/ddmmyy" />
 
                     <TextView
                         android:id="@+id/show_personal_info_recent_note_textView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:textAlignment="viewStart"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/show_personal_info_recent_note_icon"
-                        app:layout_constraintTop_toTopOf="@+id/show_personal_info_recent_note_icon"
-                        tools:text="@tools:sample/full_names" />
-
-                    <ImageView
-                        android:id="@+id/show_personal_info_group_icon"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:drawableStart="@drawable/ic_bbs_add_24px"
+                        android:drawablePadding="8dp"
+                        android:drawableTint="?attr/colorControlNormal"
+                        android:textAlignment="viewStart"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_recent_note_textView"
-                        app:srcCompat="@drawable/vector_drawable_account_box_24px" />
+                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_last_activity_time"
+                        tools:text="@tools:sample/full_names" />
 
                     <TextView
                         android:id="@+id/show_personal_info_group_info"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:drawableStart="@drawable/ic_account_box_24px"
+                        android:drawablePadding="8dp"
+                        android:drawableTint="@color/colorPrimary"
                         android:textAlignment="viewStart"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/show_personal_info_group_icon"
-                        app:layout_constraintTop_toTopOf="@+id/show_personal_info_group_icon"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_recent_note_textView"
                         tools:text="@tools:sample/full_names" />
 
 

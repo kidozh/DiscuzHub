@@ -163,7 +163,7 @@ public class FavoriteThreadFragment extends Fragment {
     }
 
     public void syncFavoriteThreadFromServer(){
-        if(getContext() !=null && UserPreferenceUtils.isSyncBBSInformation(getContext()) && userBriefInfo!=null){
+        if(getContext() !=null && UserPreferenceUtils.syncFavorite(getContext()) && userBriefInfo!=null){
             int page = 1;
             // sync information
             // Toasty.info(getContext(),getString(R.string.sync_favorite_thread_start,bbsInfo.site_name), Toast.LENGTH_SHORT).show();

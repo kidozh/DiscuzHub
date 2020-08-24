@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ui.HotForums.HotForumsFragment;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
@@ -69,10 +70,29 @@ public class bbsMyThreadFragment extends Fragment {
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
     ForumInfo forum;
-    private OkHttpClient client = new OkHttpClient();
+    private OkHttpClient client;
     ThreadAdapter adapter;
     private int globalPage = 1;
 
+    public static bbsMyThreadFragment newInstance(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+        bbsMyThreadFragment fragment = new bbsMyThreadFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
+        args.putSerializable(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            bbsInfo = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+            URLUtils.setBBS(bbsInfo);
+            userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
+            client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,20 +105,12 @@ public class bbsMyThreadFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this,view);
-        configureIntentData();
         configureRecyclerview();
         configureSwipeRefreshLayout();
         configureEmptyView();
 
     }
 
-    private void configureIntentData(){
-        Intent intent = getActivity().getIntent();
-        forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
-    }
 
     private void configureEmptyView(){
         emptyImageview.setImageResource(R.drawable.ic_empty_my_post_list);

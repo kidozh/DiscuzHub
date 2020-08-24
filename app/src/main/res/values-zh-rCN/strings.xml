@@ -8,7 +8,7 @@
     <string name="bbs_register_an_account">注册</string>
     <string name="delete_forum_information">已经删除了此论坛的所有信息。</string>
     <string name="bbs_undo_delete">撤销</string>
-    <string name="network_failed">由于网络问题无法获得论坛信息。</string>
+    <string name="network_failed">网络出错了。</string>
     <string name="parse_failed">无法解析服务器发来的信息。</string>
     <string name="add_a_forum_successfully">成功添加了一个论坛！</string>
     <string name="bbs_upgrade_to_https">升级到更安全的HTTPS协议。</string>
@@ -502,10 +502,10 @@
     <string name="outlink_warn_title">你正要访问外链</string>
     <string name="outlink_warn_message">外链 \"%1$s\" 与当前论坛 \"%2$s\"不一致，其很有可能不是论坛所拥有的。请您小心点击以确保您的信息安全，谨防诈骗等信息。</string>
     <string name="scroll_to_pid_failed">发言 #%1$s 还未被加载，无法滚动到那个条目上。</string>
-    <string name="scroll_to_pid_successfully">跳转到%1$s楼。</string>
+    <string name="scroll_to_pid_successfully">跳转到%1$d楼。</string>
     <string name="close_webview">关闭</string>
     <string name="share">分享</string>
-    <string name="share_template">分享%1$s （链接：%2$s）</string>
+    <string name="share_template">%1$s （链接：%2$s）</string>
     <string name="share_not_prepared">分享功能还没有准备好，请等待页面加载完毕后分享。</string>
     <string name="insert_link">插入一个链接</string>
     <string name="hot_thread">热门帖子</string>
@@ -529,5 +529,15 @@
     <string name="preference_title_sync_favorite">同步收藏的帖子和板块</string>
     <string name="preference_summary_on_sync_favorite">从论坛中同步已收藏的帖子和板块。</string>
     <string name="preference_summary_off_sync_favorite">仅仅从数据库中获取收藏信息。</string>
+    <string name="post_index_number">%1$d楼</string>
+    <string name="post_author">楼主</string>
+    <string name="notification_new">新消息</string>
+    <string name="channel_name_bbs_information">%1$s论坛 (数据库编号:%2$d)的新消息</string>
+    <string name="channel_description_bbs_information">所有在%1$s论坛下的本机已登录的用户的新消息都会被展示。</string>
+    <string name="notification_new_message">来自%2$s的用户%1$s的新消息</string>
+    <string name="notification_group_new_message_title">来自%2$s中%1$s的新消息</string>
+    <string name="notification_group_new_message_description">收到%1$d条新消息，共%2$d条消息。</string>
+    <string name="bbs_credit">积分</string>
+    <string name="bbs_medals_num">奖项 (%1$d)</string>
 
 </resources>

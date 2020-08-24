@@ -38,10 +38,22 @@ public class UserPreferenceUtils {
         return prefs.getString(preferenceName,null);
     }
 
-    public static boolean isSyncBBSInformation(@NonNull Context context){
+    public static boolean syncFavorite(@NonNull Context context){
         String preferenceName = context.getString(R.string.preference_key_sync_information);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String syncFavoriteName = context.getString(R.string.preference_key_sync_favorite);
         return prefs.getBoolean(preferenceName,true) && prefs.getBoolean(syncFavoriteName,true);
+    }
+
+    public static boolean syncInformation(@NonNull Context context){
+        String preferenceName = context.getString(R.string.preference_key_sync_information);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(preferenceName,true);
+    }
+
+    public static boolean dontDisturbAtNight(@NonNull Context context){
+        String preferenceName = context.getString(R.string.preference_key_dont_distrub_at_night);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(preferenceName,true);
     }
 }

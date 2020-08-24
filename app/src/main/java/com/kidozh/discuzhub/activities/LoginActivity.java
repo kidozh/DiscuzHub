@@ -360,9 +360,12 @@ public class LoginActivity extends BaseStatusActivity {
         String account = bbsAccountInputEditText.getText().toString();
         String password = bbsPasswordInputEditText.getText().toString();
         String captcha = bbsCaptchaEditText.getText().toString();
-        forumUserBriefInfo userBriefInfo = new forumUserBriefInfo("","","","","",50,"");
-        Log.d(TAG,"Send user id "+userBriefInfo.getId());
-        networkUtils.clearUserCookieInfo(getApplicationContext(),userBriefInfo);
+        forumUserBriefInfo savedUserBriefInfo = new forumUserBriefInfo("","","","","",50,"");
+        //Log.d(TAG,"Send user id "+userBriefInfo.getId());
+        if(userBriefInfo !=null){
+            savedUserBriefInfo.setId(userBriefInfo.getId());
+        }
+        networkUtils.clearUserCookieInfo(getApplicationContext(),savedUserBriefInfo);
 
 
         // exact login url

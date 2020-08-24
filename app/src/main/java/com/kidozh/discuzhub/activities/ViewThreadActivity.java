@@ -59,7 +59,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
-import com.kidozh.discuzhub.adapter.ThreadPostsAdapter;
+import com.kidozh.discuzhub.adapter.PostAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadNotificationAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadPropertiesAdapter;
 import com.kidozh.discuzhub.daos.FavoriteThreadDao;
@@ -74,7 +74,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.results.FavoriteItemActionResult;
+import com.kidozh.discuzhub.results.ApiMessageActionResult;
 import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadResult;
@@ -113,12 +113,12 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 
 
-public class ThreadActivity extends BaseStatusActivity implements SmileyFragment.OnSmileyPressedInteraction,
-        ThreadPostsAdapter.onFilterChanged,
-        ThreadPostsAdapter.onAdapterReply,
-        ThreadPostsAdapter.OnLinkClicked,
+public class ViewThreadActivity extends BaseStatusActivity implements SmileyFragment.OnSmileyPressedInteraction,
+        PostAdapter.onFilterChanged,
+        PostAdapter.onAdapterReply,
+        PostAdapter.OnLinkClicked,
         bbsPollFragment.OnFragmentInteractionListener{
-    private final static String TAG = ThreadActivity.class.getSimpleName();
+    private final static String TAG = ViewThreadActivity.class.getSimpleName();
     @BindView(R.id.bbs_thread_detail_recyclerview)
     RecyclerView mRecyclerview;
 
@@ -167,7 +167,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     public String subject;
     public int tid, fid;
     //private OkHttpClient client = new OkHttpClient();
-    private ThreadPostsAdapter adapter;
+    private PostAdapter adapter;
     private bbsThreadNotificationAdapter notificationAdapter;
     private bbsThreadPropertiesAdapter propertiesAdapter;
     String formHash = null;
@@ -269,7 +269,14 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         threadDetailViewModel.threadCommentInfoListLiveData.observe(this, new Observer<List<PostInfo>>() {
             @Override
             public void onChanged(List<PostInfo> postInfos) {
-                adapter.setThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue());
+                int authorid = 0;
+                ThreadResult threadResult = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
+                if(threadResult!=null
+                        && threadResult.threadPostVariables!=null
+                        && threadResult.threadPostVariables.detailedThreadInfo!=null){
+                    authorid = threadResult.threadPostVariables.detailedThreadInfo.authorId;
+                }
+                adapter.setThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue(),authorid);
             }
         });
 
@@ -964,7 +971,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 if(redirectTid != tid){
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(this, ThreadActivity.class);
+                    Intent intent = new Intent(this, ViewThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -985,7 +992,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                             if(curPost.pid == redirectPid){
                                 mRecyclerview.scrollToPosition(i);
                                 VibrateUtils.vibrateForClick(this);
-                                Toasty.success(this,getString(R.string.scroll_to_pid_successfully,String.valueOf(i+1)),Toast.LENGTH_SHORT).show();
+                                long postPostion = postInfos.get(i).position;
+                                Toasty.success(this,getString(R.string.scroll_to_pid_successfully,postPostion),Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }
@@ -1008,7 +1016,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 }
                 ThreadInfo putThreadInfo = new ThreadInfo();
                 putThreadInfo.tid = redirectTid;
-                Intent intent = new Intent(this, ThreadActivity.class);
+                Intent intent = new Intent(this, ViewThreadActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -1200,7 +1208,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                                     }
 
                                     putThreadInfo.tid = tid;
-                                    Intent intent = new Intent(context, ThreadActivity.class);
+                                    Intent intent = new Intent(context, ViewThreadActivity.class);
                                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -1375,7 +1383,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         //mRecyclerview.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerview.setLayoutManager(linearLayoutManager);
-        adapter = new ThreadPostsAdapter(this,
+        adapter = new PostAdapter(this,
                 bbsInfo,
                 userBriefInfo,
                 threadDetailViewModel.threadStatusMutableLiveData.getValue());
@@ -2037,7 +2045,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         FavoriteThreadDao dao;
         boolean favorite, error=false;
         Retrofit retrofit;
-        retrofit2.Call<FavoriteItemActionResult> favoriteThreadActionResultCall;
+        retrofit2.Call<ApiMessageActionResult> favoriteThreadActionResultCall;
         MessageResult messageResult;
         String description = "";
 
@@ -2065,7 +2073,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             if(result !=null
                     && result.threadPostVariables!=null
                     && favoriteThread.userId !=0
-                    && UserPreferenceUtils.isSyncBBSInformation(getApplication())){
+                    && UserPreferenceUtils.syncInformation(getApplication())){
                 if(favorite){
                     favoriteThreadActionResultCall = service.favoriteThreadActionResult(result.threadPostVariables.formHash
                             , favoriteThread.idKey,description);
@@ -2097,11 +2105,11 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             if(favoriteThreadActionResultCall!=null){
                 try {
                     Log.d(TAG,"request favorite url "+favoriteThreadActionResultCall.request().url());
-                    retrofit2.Response<FavoriteItemActionResult> response = favoriteThreadActionResultCall.execute();
+                    retrofit2.Response<ApiMessageActionResult> response = favoriteThreadActionResultCall.execute();
                     //Log.d(TAG,"get response "+response.raw().body().string());
                     if(response.isSuccessful() && response.body() !=null){
 
-                        FavoriteItemActionResult result = response.body();
+                        ApiMessageActionResult result = response.body();
                         messageResult = result.message;
                         String key = result.message.key;
                         if(favorite && key.equals("favorite_do_success")
@@ -2120,6 +2128,25 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
                         }
 
+                    }
+                    else {
+                        messageResult = new MessageResult();
+                        messageResult.content = getString(R.string.network_failed);
+                        messageResult.key = String.valueOf(response.code());
+                        if(favorite){
+                            dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteThread.idKey,"tid");
+                            dao.insert(favoriteThread);
+
+                            return true;
+                        }
+                        else {
+                            // clear potential
+                            dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteThread.idKey,"tid");
+                            //dao.delete(favoriteThread);
+                            Log.d(TAG,"Just remove it from database "+tid+ " "+ favoriteThread.idKey);
+                            return false;
+
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

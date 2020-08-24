@@ -26,12 +26,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginBottom="8dp"
                 android:text="@string/favoite_status_sync"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="@color/MaterialColorTeal"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/favorite_forum_description" />
 
@@ -41,9 +39,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/favorite_forum_sync_status"
                 app:layout_constraintStart_toEndOf="@+id/favorite_forum_sync_status"
-                app:layout_constraintTop_toTopOf="@+id/favorite_forum_sync_status"
+                app:layout_constraintTop_toBottomOf="@+id/favorite_forum_description"
                 tools:text="@tools:sample/date/hhmm" />
 
             <TextView
@@ -52,8 +49,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
 
+                android:layout_marginBottom="8dp"
                 android:text="@string/forum_today_post"
                 android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/favorite_forum_date"
                 app:layout_constraintTop_toTopOf="@+id/favorite_forum_date" />
 

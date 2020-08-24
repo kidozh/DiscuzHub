@@ -29,7 +29,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ThreadActivity;
+import com.kidozh.discuzhub.activities.ViewThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -268,7 +268,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.bbsForumTh
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, ThreadActivity.class);
+                Intent intent = new Intent(mContext, ViewThreadActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
                 intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);
@@ -316,9 +316,9 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.bbsForumTh
     }
 
     public class bbsForumThreadViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.bbs_thread_publisher)
+        @BindView(R.id.bbs_post_publisher)
         TextView mThreadPublisher;
-        @BindView(R.id.bbs_thread_publish_date)
+        @BindView(R.id.bbs_post_publish_date)
         TextView mPublishDate;
         @BindView(R.id.bbs_thread_title)
         TextView mTitle;
@@ -330,7 +330,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.bbsForumTh
         TextView mThreadReplyNum;
         @BindView(R.id.bbs_thread_type)
         TextView mThreadType;
-        @BindView(R.id.bbs_thread_avatar_imageView)
+        @BindView(R.id.bbs_post_avatar_imageView)
         ShapedImageView mAvatarImageview;
         @BindView(R.id.bbs_thread_cardview)
         CardView mCardview;
