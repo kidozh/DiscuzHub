@@ -58,7 +58,8 @@
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@+id/show_personal_info_avatar"
                         app:layout_constraintEnd_toEndOf="@+id/show_personal_info_avatar"
-                        app:srcCompat="@drawable/ic_verified_24px" />
+                        app:srcCompat="@drawable/ic_verified_24px"
+                        tools:visibility="visible" />
 
                     <Button
                         android:id="@+id/show_personal_info_message_btn"
