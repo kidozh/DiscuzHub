@@ -720,6 +720,7 @@
     <string name="notification_group_new_message_description">Recv %1$d new messages and total %2$d ones.</string>
     <string name="bbs_credit">Credit</string>
     <string name="bbs_medals_num">Medals (%1$d)</string>
+    <string name="verified_user">Mail Verified</string>
 
 
 </resources>

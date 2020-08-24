@@ -38,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/show_personal_info_avatar"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
@@ -48,7 +48,17 @@
                         app:layout_anchorGravity="bottom|start"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        app:shapeAppearanceOverlay="@style/circleImageView"
                         app:srcCompat="@drawable/avatar_1" />
+
+                    <ImageView
+                        android:id="@+id/user_verified_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@+id/show_personal_info_avatar"
+                        app:layout_constraintEnd_toEndOf="@+id/show_personal_info_avatar"
+                        app:srcCompat="@drawable/ic_verified_24px" />
 
                     <Button
                         android:id="@+id/show_personal_info_message_btn"

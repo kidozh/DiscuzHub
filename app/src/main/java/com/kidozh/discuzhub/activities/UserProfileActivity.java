@@ -31,6 +31,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.BuildConfig;
 import com.kidozh.discuzhub.R;
@@ -74,7 +75,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
     private static final String TAG = UserProfileActivity.class.getSimpleName();
 
     @BindView(R.id.show_personal_info_avatar)
-    ImageView personalInfoAvatar;
+    ShapeableImageView personalInfoAvatar;
     @BindView(R.id.user_signature_textview)
     TextView personalInfoSignatureTextView;
 
@@ -107,6 +108,8 @@ public class UserProfileActivity extends BaseStatusActivity implements
     TextView personalInfoLastActivityTime;
     @BindView(R.id.user_bio_textview)
     TextView userBioTextview;
+    @BindView(R.id.user_verified_icon)
+    ImageView verifiedIcon;
     
     private int userId;
     String friendNum, threadNum, postsNum;
@@ -133,6 +136,9 @@ public class UserProfileActivity extends BaseStatusActivity implements
     }
 
     void renderUserInfo(){
+        // making it circle
+
+
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(this,bbsInfo.useSafeClient));
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
@@ -222,6 +228,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
                 if(userProfileResult !=null
                         && userProfileResult.userProfileVariableResult !=null
                         && userProfileResult.userProfileVariableResult.space !=null){
+                    UserProfileResult.SpaceVariables spaceVariables = userProfileResult.userProfileVariableResult.space;
                     String username = userProfileResult.userProfileVariableResult.space.username;
                     if(getSupportActionBar()!=null){
                         getSupportActionBar().setSubtitle(username);
@@ -245,6 +252,13 @@ public class UserProfileActivity extends BaseStatusActivity implements
                             .placeholder(avatarResource)
                             .centerInside()
                             .into(personalInfoAvatar);
+                    //check with verified status
+                    if(spaceVariables.emailStatus){
+                        verifiedIcon.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        verifiedIcon.setVisibility(View.GONE);
+                    }
 
                     // signature
                     String sigHtml = userProfileResult.userProfileVariableResult.space.sigatureHtml;
@@ -269,7 +283,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
                         personalInfoInterestTextView.setText(userProfileResult.userProfileVariableResult.space.interest);
                     }
                     else {
-                        
+
                         personalInfoInterestTextView.setVisibility(View.GONE);
                         personalInfoInterestTextView.setText(userProfileResult.userProfileVariableResult.space.interest);
                     }

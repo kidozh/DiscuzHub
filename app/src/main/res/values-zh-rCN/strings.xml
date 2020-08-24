@@ -539,5 +539,6 @@
     <string name="notification_group_new_message_description">收到%1$d条新消息，共%2$d条消息。</string>
     <string name="bbs_credit">积分</string>
     <string name="bbs_medals_num">奖项 (%1$d)</string>
+    <string name="verified_user">邮件已认证</string>
 
 </resources>
