@@ -23,15 +23,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <cn.gavinliu.android.lib.shapedimageview.ShapedImageView
+                android:id="@+id/bbs_post_avatar_imageView"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="8dp"
+                android:transitionName="user_info_avatar"
+                app:layout_constraintBottom_toBottomOf="@+id/bbs_post_publisher"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/bbs_post_publisher"
+                app:shape_mode="circle"
+                app:srcCompat="@drawable/avatar_person_male"
+                tools:srcCompat="@tools:sample/avatars[0]" />
+
             <TextView
                 android:id="@+id/bbs_post_publisher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/bbs_post_avatar_imageView"
                 app:layout_constraintTop_toBottomOf="@+id/bbs_thread_title"
                 tools:text="@tools:sample/full_names" />
 
@@ -40,6 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:textSize="12sp"
                 app:layout_constraintStart_toEndOf="@+id/bbs_post_publisher"
                 app:layout_constraintTop_toTopOf="@+id/bbs_post_publisher"
                 tools:text="@tools:sample/date/hhmmss" />
@@ -52,7 +68,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:textAlignment="viewStart"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 android:textSize="18sp"
                 android:transitionName="bbs_thread_subject"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -67,6 +83,7 @@
                 android:layout_marginStart="8dp"
                 android:drawableStart="@drawable/ic_reply_16px"
                 android:drawablePadding="4dp"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/bbs_post_publisher"
                 app:layout_constraintStart_toEndOf="@+id/bbs_post_publish_date"
                 app:layout_constraintTop_toTopOf="@+id/bbs_post_publisher"
@@ -77,6 +94,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"
                 app:layout_constraintStart_toEndOf="@+id/bbs_thread_reply_number"
                 app:layout_constraintTop_toTopOf="@+id/bbs_post_publish_date"
                 tools:text="@tools:sample/us_zipcodes" />

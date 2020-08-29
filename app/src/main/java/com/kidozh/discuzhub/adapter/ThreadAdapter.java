@@ -152,7 +152,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         textResource = R.string.bbs_forum_pinned;
                 }
                 holder.mThreadType.setText(textResource);
-                holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorAccent));
+                //holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorAccent));
             }
             else {
                 if(threadType == null){
@@ -174,7 +174,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 }
 
-                holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorPrimary));
+                //holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.ThreadTypeBackgroundColor));
             }
 
             holder.mThreadPublisher.setText(threadInfo.author);
@@ -241,7 +241,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     holder.mAttachmentIcon.setImageDrawable(mContext.getDrawable(R.drawable.ic_thread_attachment_24px));
                 }
                 else {
-                    holder.mAttachmentIcon.setImageDrawable(mContext.getDrawable(R.drawable.ic_image_24px));
+                    holder.mAttachmentIcon.setImageDrawable(mContext.getDrawable(R.drawable.ic_image_outlined_24px));
                 }
             }
 
@@ -374,6 +374,31 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.mThreadType.setTextColor(mContext.getColor(R.color.colorPrimary));
             }
 
+            int avatar_num = threadInfo.authorId % 16;
+            if(avatar_num < 0){
+                avatar_num = -avatar_num;
+            }
+
+            int avatarResource = mContext.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",mContext.getPackageName());
+
+            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(mContext));
+            Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+            String source = URLUtils.getSmallAvatarUrlByUid(threadInfo.authorId);
+            RequestOptions options = new RequestOptions()
+                    .placeholder(mContext.getDrawable(avatarResource))
+                    .error(mContext.getDrawable(avatarResource))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+
+                    .priority(Priority.HIGH);
+            GlideUrl glideUrl = new GlideUrl(source,
+                    new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
+            );
+
+            Glide.with(mContext)
+                    .load(glideUrl)
+                    .apply(options)
+                    .into(holder.mAvatarImageview);
+
             holder.mThreadPublisher.setText(threadInfo.author);
             holder.mCardview.setOnClickListener(new View.OnClickListener(){
 
@@ -465,6 +490,8 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView mThreadType;
         @BindView(R.id.bbs_thread_cardview)
         CardView mCardview;
+        @BindView(R.id.bbs_post_avatar_imageView)
+        ShapedImageView mAvatarImageview;
 
 
 

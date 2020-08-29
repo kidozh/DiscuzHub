@@ -3,6 +3,7 @@ package com.kidozh.discuzhub.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -164,7 +165,9 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 holder.mTodayPosts.setVisibility(View.GONE);
             }
             // description
-            holder.mDescription.setText(forum.description);
+            sp = Html.fromHtml(forum.description);
+            SpannableString spannableString = new SpannableString(sp);
+            holder.mDescription.setText(spannableString, TextView.BufferType.SPANNABLE);
 
         }
 

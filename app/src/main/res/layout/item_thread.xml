@@ -87,12 +87,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:background="@color/colorBelizahole"
+                android:background="@color/ThreadTypeBackgroundColor"
                 android:padding="4dp"
-                android:textColor="@color/colorCloud"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                app:layout_constraintCircleRadius="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/bbs_post_publisher"
-                tools:text="1" />
+                tools:text="@tools:sample/full_names" />
 
             <TextView
                 android:id="@+id/bbs_thread_view_textview"

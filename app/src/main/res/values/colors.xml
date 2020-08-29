@@ -65,6 +65,7 @@
     <color name="MaterialColorGrey">#9E9E9E</color>
     <color name="MaterialColorBlueGrey">#607D8B</color>
 
+    <color name="ThreadTypeBackgroundColor">@color/colorCloud</color>
 
 
 
