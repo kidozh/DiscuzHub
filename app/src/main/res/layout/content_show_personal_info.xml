@@ -76,7 +76,7 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="@+id/user_signature_textview"
                 app:layout_constraintTop_toBottomOf="@+id/user_signature_textview"
-                app:srcCompat="@drawable/vector_drawable_attachment" />
+                app:srcCompat="@drawable/ic_thread_attachment_24px" />
 
             <TextView
                 android:id="@+id/show_personal_info_interest_textView"

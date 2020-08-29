@@ -19,15 +19,15 @@
 
     <androidx.preference.PreferenceCategory android:title="@string/settings_security">
 
-        <androidx.preference.SwitchPreference
-            android:defaultValue="true"
-            android:icon="@drawable/vector_drawable_security_24px"
-            android:key="@string/preference_key_use_safer_client"
-            android:summaryOff="@string/preference_summary_off_use_safer_client"
-            android:summaryOn="@string/preference_summary_on_use_safer_client"
-            android:title="@string/preference_title_use_safer_client" />
+<!--        <androidx.preference.SwitchPreference-->
+<!--            android:defaultValue="true"-->
+<!--            android:icon="@drawable/vector_drawable_security_24px"-->
+<!--            android:key="@string/preference_key_use_safer_client"-->
+<!--            android:summaryOff="@string/preference_summary_off_use_safer_client"-->
+<!--            android:summaryOn="@string/preference_summary_on_use_safer_client"-->
+<!--            android:title="@string/preference_title_use_safer_client" />-->
         <androidx.preference.ListPreference
-            android:defaultValue="Android default"
+            android:defaultValue="ANDROID"
             android:entries="@array/preference_entries_use_browser_client"
             android:entryValues="@array/preference_entry_values_use_browser_client"
             android:icon="@drawable/vector_drawable_fingerprint_24px"
@@ -58,6 +58,14 @@
             android:key="@string/preference_key_display_mode"
             android:summary="%s"
             android:title="@string/preference_title_display_mode" />
+        <androidx.preference.SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/ic_concise_view_24px"
+            android:key="@string/preference_key_concise_recyclerview"
+
+            android:summaryOn="@string/preference_summary_on_concise_recyclerview"
+            android:title="@string/preference_title_concise_recyclerview" />
+
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory android:title="@string/preference_group_title_network">
@@ -71,9 +79,9 @@
             android:title="@string/preference_title_data_save_mode" />
 
         <androidx.preference.SwitchPreference
-            android:icon="@drawable/vector_drawable_attachment"
+            android:icon="@drawable/ic_thread_attachment_24px"
             app:dependency="@string/preference_key_sync_information"
-            app:icon="@drawable/vector_drawable_attachment"
+            app:icon="@drawable/ic_thread_attachment_24px"
             app:key="attachment"
             app:summaryOff="@string/attachment_summary_off"
             app:summaryOn="@string/attachment_summary_on"
@@ -83,7 +91,7 @@
     <androidx.preference.PreferenceCategory app:title="@string/settings_post_header">
 
         <androidx.preference.EditTextPreference
-            android:icon="@drawable/vector_drawable_attachment"
+            android:icon="@drawable/ic_thread_attachment_24px"
             app:key="signature"
             app:title="@string/signature_title"
             app:useSimpleSummaryProvider="true" />

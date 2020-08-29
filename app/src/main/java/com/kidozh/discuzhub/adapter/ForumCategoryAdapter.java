@@ -16,6 +16,7 @@ import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.BBSIndexResult;
+import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 
 import java.util.List;
 
@@ -24,8 +25,8 @@ import butterknife.ButterKnife;
 
 import static com.kidozh.discuzhub.utilities.networkUtils.getPreferredClient;
 
-public class bbsPortalCategoryAdapter extends RecyclerView.Adapter<bbsPortalCategoryAdapter.bbsShowPortalViewHolder> {
-    private final static String TAG = bbsPortalCategoryAdapter.class.getSimpleName();
+public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdapter.bbsShowPortalViewHolder> {
+    private final static String TAG = ForumCategoryAdapter.class.getSimpleName();
     Context mContext;
     List<BBSIndexResult.ForumCategory> forumCategoryList;
     public String jsonString;
@@ -33,11 +34,11 @@ public class bbsPortalCategoryAdapter extends RecyclerView.Adapter<bbsPortalCate
     forumUserBriefInfo curUser;
     List<ForumInfo> allForumInfo;
 
-    bbsPortalCategoryAdapter(Context context){
+    ForumCategoryAdapter(Context context){
         this.mContext = context;
     }
 
-    public bbsPortalCategoryAdapter(Context context, String jsonString, bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+    public ForumCategoryAdapter(Context context, String jsonString, bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
         this.mContext = context;
         this.jsonString = jsonString;
         this.bbsInfo = bbsInformation;
@@ -55,7 +56,7 @@ public class bbsPortalCategoryAdapter extends RecyclerView.Adapter<bbsPortalCate
     @Override
     public bbsShowPortalViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.item_bbs_category;
+        int layoutIdForListItem = R.layout.item_forum_category;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
@@ -67,14 +68,15 @@ public class bbsPortalCategoryAdapter extends RecyclerView.Adapter<bbsPortalCate
     public void onBindViewHolder(@NonNull bbsShowPortalViewHolder holder, int position) {
         BBSIndexResult.ForumCategory category = forumCategoryList.get(position);
         holder.mPortalCatagoryName.setText(category.name);
-        if(category.forumIdList.size()>=4){
+        if(UserPreferenceUtils.conciseRecyclerView(mContext)){
             holder.mRecyclerView.setLayoutManager(new GridLayoutManager(mContext,4));
         }
         else {
-            holder.mRecyclerView.setLayoutManager(new GridLayoutManager(mContext,4));
+            holder.mRecyclerView.setLayoutManager(new GridLayoutManager(mContext,2));
+            //holder.mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext,DividerItemDecoration.VERTICAL));
         }
 
-        bbsPortalCategoryForumAdapter adapter = new bbsPortalCategoryForumAdapter(mContext,jsonString,bbsInfo,curUser);
+        ForumAdapter adapter = new ForumAdapter(mContext,jsonString,bbsInfo,curUser);
         holder.mRecyclerView.setAdapter(adapter);
         List<ForumInfo> forumInfoListInTheCategory = category.getForumListInTheCategory(allForumInfo);
         adapter.setForumInfoList(forumInfoListInTheCategory);

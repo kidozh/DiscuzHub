@@ -94,90 +94,55 @@
                 app:layout_constraintTop_toTopOf="@+id/bbs_post_publisher"
                 tools:text="1" />
 
-            <ImageView
-                android:id="@+id/bbs_thread_view_image"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="@+id/bbs_thread_title"
-                app:layout_constraintTop_toBottomOf="@+id/bbs_thread_content"
-                app:srcCompat="@drawable/vector_drawable_view_eye" />
-
             <TextView
                 android:id="@+id/bbs_thread_view_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:drawableStart="@drawable/ic_thread_view_16px"
+                android:drawablePadding="4dp"
                 android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/bbs_thread_view_image"
-                app:layout_constraintTop_toTopOf="@+id/bbs_thread_view_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_thread_title"
                 tools:text="12306" />
-
-            <ImageView
-                android:id="@+id/bbs_thread_reply_image"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintStart_toEndOf="@+id/bbs_thread_view_textview"
-                app:layout_constraintTop_toTopOf="@+id/bbs_thread_view_textview"
-                app:srcCompat="@drawable/vector_drawable_reply" />
 
             <TextView
                 android:id="@+id/bbs_thread_reply_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:drawableStart="@drawable/ic_reply_16px"
+                android:drawablePadding="4dp"
                 android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/bbs_thread_reply_image"
-                app:layout_constraintTop_toTopOf="@+id/bbs_thread_reply_image"
-                tools:text="@tools:sample/us_zipcodes" />
-
-            <ImageView
-                android:id="@+id/bbs_thread_recommend_image"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintStart_toEndOf="@+id/bbs_thread_reply_number"
+                app:layout_constraintStart_toEndOf="@+id/bbs_thread_view_textview"
                 app:layout_constraintTop_toTopOf="@+id/bbs_thread_view_textview"
-                app:srcCompat="@drawable/vector_drawable_recommend_star" />
+                tools:text="@tools:sample/us_zipcodes" />
 
             <TextView
                 android:id="@+id/bbs_thread_recommend_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:drawableStart="@drawable/ic_favorite_outlined_16px"
+                android:drawablePadding="4dp"
                 android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/bbs_thread_recommend_image"
-                app:layout_constraintTop_toTopOf="@+id/bbs_thread_reply_image"
+                app:layout_constraintStart_toEndOf="@+id/bbs_thread_reply_number"
+                app:layout_constraintTop_toTopOf="@+id/bbs_thread_reply_number"
                 tools:text="@tools:sample/us_zipcodes" />
-
-            <ImageView
-                android:id="@+id/bbs_thread_read_perm_image"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintStart_toEndOf="@+id/bbs_thread_recommend_number"
-                app:layout_constraintTop_toTopOf="@+id/bbs_thread_view_textview"
-                app:srcCompat="@drawable/vector_drawable_read_permission" />
 
             <TextView
                 android:id="@+id/bbs_thread_read_perm_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:drawableStart="@drawable/ic_read_permission_16px"
+                android:drawablePadding="4dp"
                 android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/bbs_thread_read_perm_image"
-                app:layout_constraintTop_toTopOf="@+id/bbs_thread_reply_image"
+                app:layout_constraintStart_toEndOf="@+id/bbs_thread_recommend_number"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_thread_title"
                 tools:text="@tools:sample/us_zipcodes" />
-
-            <ImageView
-                android:id="@+id/bbs_thread_price_image"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintStart_toEndOf="@+id/bbs_thread_read_perm_number"
-                app:layout_constraintTop_toTopOf="@+id/bbs_thread_view_textview"
-                app:srcCompat="@drawable/ic_coin_24dp" />
 
             <ImageView
                 android:id="@+id/bbs_thread_attachment_image"
@@ -186,27 +151,19 @@
                 android:layout_marginStart="8dp"
                 app:layout_constraintStart_toEndOf="@+id/bbs_thread_price_number"
                 app:layout_constraintTop_toTopOf="@+id/bbs_thread_view_textview"
-                app:srcCompat="@drawable/vector_drawable_attachment" />
+                app:srcCompat="@drawable/ic_thread_attachment_24px" />
 
             <TextView
                 android:id="@+id/bbs_thread_price_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:drawableStart="@drawable/ic_price_coin_16dp"
+                android:drawablePadding="4dp"
                 android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/bbs_thread_price_image"
-                app:layout_constraintTop_toTopOf="@+id/bbs_thread_reply_image"
-                tools:text="@tools:sample/us_zipcodes" />
-
-            <TextView
-                android:id="@+id/bbs_thread_attachment_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:textSize="12sp"
-                android:visibility="gone"
-                app:layout_constraintStart_toEndOf="@+id/bbs_thread_attachment_image"
-                app:layout_constraintTop_toTopOf="@+id/bbs_thread_reply_image"
+                app:layout_constraintStart_toEndOf="@+id/bbs_thread_read_perm_number"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_thread_title"
                 tools:text="@tools:sample/us_zipcodes" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -220,7 +177,7 @@
                 app:layout_constraintStart_toStartOf="@+id/bbs_post_avatar_imageView"
                 app:layout_constraintTop_toBottomOf="@+id/bbs_thread_reply_number"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_bbs_forum_thread_short_reply" />
+                tools:listitem="@layout/item_short_post" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

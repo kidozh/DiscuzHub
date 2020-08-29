@@ -528,18 +528,6 @@ public class DrawerActivity extends BaseStatusActivity implements
         });
 
         slider.setSavedInstance(savedInstanceState);
-        PrimaryDrawerItem settingsFooterItem = new PrimaryDrawerItem();
-        settingsFooterItem.setName(new StringHolder(R.string.action_settings));
-        settingsFooterItem.setIcon(new ImageHolder(R.drawable.ic_settings_24px));
-        settingsFooterItem.setIdentifier(FOOTER_SETTINGS);
-        settingsFooterItem.setSelectable(false);
-        slider.getFooterAdapter().add(settingsFooterItem);
-        PrimaryDrawerItem aboutFooterItem = new PrimaryDrawerItem();
-        aboutFooterItem.setName(new StringHolder(R.string.bbs_app_about));
-        aboutFooterItem.setIcon(new ImageHolder(R.drawable.ic_info_24px));
-        aboutFooterItem.setIdentifier(FOOTER_ABOUT);
-        aboutFooterItem.setSelectable(false);
-        slider.getFooterAdapter().add(aboutFooterItem);
 
         ActionBarDrawerToggle actionBarDrawerToggle =
                 new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_closed);

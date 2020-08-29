@@ -51,34 +51,38 @@ public class networkUtils {
     private static String preferenceName = "use_safe_https_client";
 
     public static OkHttpClient getPreferredClientWithCookieJar(Context context){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
-        Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
-        if(useSafeHttpClient){
-            return getSafeOkHttpClientWithCookieJar(context);
-        }
-        else {
-            return getUnsafeOkHttpClientWithCookieJar(context);
-        }
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
+//        Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
+        return getSafeOkHttpClientWithCookieJar(context);
+//        if(useSafeHttpClient){
+//            return getSafeOkHttpClientWithCookieJar(context);
+//        }
+//        else {
+//            return getUnsafeOkHttpClientWithCookieJar(context);
+//        }
     }
 
     public static OkHttpClient getPreferredClient(Context context){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
-        Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
-        if(useSafeHttpClient){
-            return getSafeOkHttpClient(context);
-        }
-        else {
-            return getUnsafeOkHttpClient(context);
-        }
+        return getSafeOkHttpClient(context);
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
+//        Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
+//
+//        if(useSafeHttpClient){
+//            return getSafeOkHttpClient(context);
+//        }
+//        else {
+//            return getUnsafeOkHttpClient(context);
+//        }
     }
 
     public static OkHttpClient getPreferredClient(Context context,Boolean useSafeHttpClient){
-        if(useSafeHttpClient){
-            return getSafeOkHttpClient(context);
-        }
-        else {
-            return getUnsafeOkHttpClient(context);
-        }
+        return getSafeOkHttpClient(context);
+//        if(useSafeHttpClient){
+//            return getSafeOkHttpClient(context);
+//        }
+//        else {
+//            return getUnsafeOkHttpClient(context);
+//        }
     }
 
     public static OkHttpClient getSafeOkHttpClient(Context context){
@@ -111,30 +115,32 @@ public class networkUtils {
             return getPreferredClient(context);
         }
         else {
-            if(useSafeHttpClient){
-                return getSafeOkHttpClientWithCookieJarByUser(context,briefInfo);
-            }
-            else {
-                return getUnSafeOkHttpClientWithCookieJarByUser(context,briefInfo);
-            }
+            return getSafeOkHttpClientWithCookieJarByUser(context,briefInfo);
+//            if(useSafeHttpClient){
+//                return getSafeOkHttpClientWithCookieJarByUser(context,briefInfo);
+//            }
+//            else {
+//                return getUnSafeOkHttpClientWithCookieJarByUser(context,briefInfo);
+//            }
         }
 
 
     }
 
     public static OkHttpClient getPreferredClientWithCookieJarByUserWithDefaultHeader(Context context, forumUserBriefInfo briefInfo){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
-        Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
+//        Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
         if(briefInfo==null){
             return getPreferredClient(context);
         }
         else {
-            if(useSafeHttpClient){
-                return getSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(context,briefInfo);
-            }
-            else {
-                return getUnSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(context,briefInfo);
-            }
+            return getSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(context,briefInfo);
+//            if(useSafeHttpClient){
+//                return getSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(context,briefInfo);
+//            }
+//            else {
+//                return getUnSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(context,briefInfo);
+//            }
         }
 
 

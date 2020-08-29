@@ -56,4 +56,10 @@ public class UserPreferenceUtils {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(preferenceName,true);
     }
+
+    public static boolean conciseRecyclerView(@NonNull Context context){
+        String preferenceName = context.getString(R.string.preference_key_concise_recyclerview);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(preferenceName,false);
+    }
 }

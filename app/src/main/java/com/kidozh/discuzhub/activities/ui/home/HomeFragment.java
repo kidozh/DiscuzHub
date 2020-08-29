@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.LoginActivity;
-import com.kidozh.discuzhub.adapter.bbsPortalCategoryAdapter;
+import com.kidozh.discuzhub.adapter.ForumCategoryAdapter;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment {
     @BindView(R.id.bbs_portal_refresh_page)
     Button bbsPortalRefreshPageBtn;
 
-    bbsPortalCategoryAdapter adapter;
+    ForumCategoryAdapter adapter;
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
 
@@ -208,7 +208,7 @@ public class HomeFragment extends Fragment {
     private void configurePortalRecyclerview(){
         portalRecyclerView.setHasFixedSize(true);
         portalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new bbsPortalCategoryAdapter(getContext(),null,bbsInfo,userBriefInfo);
+        adapter = new ForumCategoryAdapter(getContext(),null,bbsInfo,userBriefInfo);
         portalRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         portalRecyclerView.setAdapter(adapter);
     }

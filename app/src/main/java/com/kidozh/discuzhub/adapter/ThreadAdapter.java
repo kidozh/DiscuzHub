@@ -34,12 +34,14 @@ import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
+import com.kidozh.discuzhub.viewModels.ThreadViewModel;
 
 
 import java.io.InputStream;
@@ -51,7 +53,7 @@ import butterknife.ButterKnife;
 import cn.gavinliu.android.lib.shapedimageview.ShapedImageView;
 
 
-public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.bbsForumThreadViewHolder> {
+public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = ThreadAdapter.class.getSimpleName();
     public List<ThreadInfo> threadInfoList;
     Context mContext;
@@ -89,218 +91,314 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.bbsForumTh
 
     @NonNull
     @Override
-    public ThreadAdapter.bbsForumThreadViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.item_thread;
+
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
-        return new bbsForumThreadViewHolder(view);
+
+        if(!UserPreferenceUtils.conciseRecyclerView(context)){
+            View view = inflater.inflate(R.layout.item_thread, parent, shouldAttachToParentImmediately);
+            return new ThreadViewHolder(view);
+        }
+        else {
+            View view = inflater.inflate(R.layout.item_thread_concise, parent, shouldAttachToParentImmediately);
+            return new ConciseThreadViewHolder(view);
+        }
+
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ThreadAdapter.bbsForumThreadViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holderRaw, int position) {
         ThreadInfo threadInfo = threadInfoList.get(position);
+        if(holderRaw instanceof ThreadViewHolder){
+            ThreadViewHolder holder = (ThreadViewHolder) holderRaw;
+            holder.mContent.setVisibility(View.GONE);
+            Spanned sp = Html.fromHtml(threadInfo.subject);
+            SpannableString spannableString = new SpannableString(sp);
+            holder.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE);
+            holder.mThreadViewNum.setText(numberFormatUtils.getShortNumberText(threadInfo.views));
+            holder.mThreadReplyNum.setText(numberFormatUtils.getShortNumberText(threadInfo.replies));
 
-        holder.mContent.setVisibility(View.GONE);
-        Spanned sp = Html.fromHtml(threadInfo.subject);
-        SpannableString spannableString = new SpannableString(sp);
-        holder.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE);
-        holder.mThreadViewNum.setText(numberFormatUtils.getShortNumberText(threadInfo.views));
-        holder.mThreadReplyNum.setText(numberFormatUtils.getShortNumberText(threadInfo.replies));
+            holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext,threadInfo.publishAt));
 
-        holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext,threadInfo.publishAt));
-
-        //holder.mPublishDate.setText(df.format(threadInfo.publishAt));
-        if(threadInfo.displayOrder !=0){
-            int textResource = R.string.bbs_forum_pinned;
-            switch(threadInfo.displayOrder){
-                case 3:
-                    textResource = R.string.display_order_3;
-                    break;
-                case 2:
-                    textResource = R.string.display_order_2;
-                    break;
-                case 1:
-                    textResource = R.string.display_order_1;
-                    break;
-                case -1:
-                    textResource = R.string.display_order_n1;
-                    break;
-                case -2:
-                    textResource = R.string.display_order_n2;
-                    break;
-                case -3:
-                    textResource = R.string.display_order_n3;
-                    break;
-                case -4:
-                    textResource = R.string.display_order_n4;
-                    break;
+            //holder.mPublishDate.setText(df.format(threadInfo.publishAt));
+            if(threadInfo.displayOrder !=0){
+                int textResource = R.string.bbs_forum_pinned;
+                switch(threadInfo.displayOrder){
+                    case 3:
+                        textResource = R.string.display_order_3;
+                        break;
+                    case 2:
+                        textResource = R.string.display_order_2;
+                        break;
+                    case 1:
+                        textResource = R.string.display_order_1;
+                        break;
+                    case -1:
+                        textResource = R.string.display_order_n1;
+                        break;
+                    case -2:
+                        textResource = R.string.display_order_n2;
+                        break;
+                    case -3:
+                        textResource = R.string.display_order_n3;
+                        break;
+                    case -4:
+                        textResource = R.string.display_order_n4;
+                        break;
                     default:
                         textResource = R.string.bbs_forum_pinned;
-            }
-            holder.mThreadType.setText(textResource);
-            holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorAccent));
-        }
-        else {
-            if(threadType == null){
-
-                holder.mThreadType.setText(String.format("%s",position+1));
+                }
+                holder.mThreadType.setText(textResource);
+                holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorAccent));
             }
             else {
-                // provided by label
-                String type = threadType.get(String.valueOf(threadInfo.typeId));
-                Log.d(TAG, "Get thread type "+type);
-                if(type !=null){
-                    Spanned threadSpanned = Html.fromHtml(type);
-                    SpannableString threadSpannableString = new SpannableString(threadSpanned);
-                    holder.mThreadType.setText(threadSpannableString);
-                }
-                else {
+                if(threadType == null){
+
                     holder.mThreadType.setText(String.format("%s",position+1));
                 }
+                else {
+                    // provided by label
+                    String type = threadType.get(String.valueOf(threadInfo.typeId));
+                    Log.d(TAG, "Get thread type "+type);
+                    if(type !=null){
+                        Spanned threadSpanned = Html.fromHtml(type);
+                        SpannableString threadSpannableString = new SpannableString(threadSpanned);
+                        holder.mThreadType.setText(threadSpannableString);
+                    }
+                    else {
+                        holder.mThreadType.setText(String.format("%s",position+1));
+                    }
 
+                }
+
+                holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorPrimary));
             }
 
-            holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.colorPrimary));
-        }
+            holder.mThreadPublisher.setText(threadInfo.author);
 
-        holder.mThreadPublisher.setText(threadInfo.author);
+            int avatar_num = threadInfo.authorId % 16;
+            if(avatar_num < 0){
+                avatar_num = -avatar_num;
+            }
 
-        int avatar_num = threadInfo.authorId % 16;
-        if(avatar_num < 0){
-            avatar_num = -avatar_num;
-        }
+            int avatarResource = mContext.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",mContext.getPackageName());
 
-        int avatarResource = mContext.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",mContext.getPackageName());
+            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(mContext));
+            Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+            String source = URLUtils.getSmallAvatarUrlByUid(threadInfo.authorId);
+            RequestOptions options = new RequestOptions()
+                    .placeholder(mContext.getDrawable(avatarResource))
+                    .error(mContext.getDrawable(avatarResource))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
 
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(mContext));
-        Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-        String source = URLUtils.getSmallAvatarUrlByUid(threadInfo.authorId);
-        RequestOptions options = new RequestOptions()
-                .placeholder(mContext.getDrawable(avatarResource))
-                .error(mContext.getDrawable(avatarResource))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .priority(Priority.HIGH);
+            GlideUrl glideUrl = new GlideUrl(source,
+                    new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
+            );
 
-                .priority(Priority.HIGH);
-        GlideUrl glideUrl = new GlideUrl(source,
-                new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
-        );
+            Glide.with(mContext)
+                    .load(glideUrl)
+                    .apply(options)
+                    .into(holder.mAvatarImageview);
+            // set short reply
+            if(threadInfo.recommendNum !=0){
+                holder.mRecommendationNumber.setVisibility(View.VISIBLE);
+                holder.mRecommendationNumber.setText(numberFormatUtils.getShortNumberText(threadInfo.recommendNum));
 
-        Glide.with(mContext)
-                .load(glideUrl)
-                .apply(options)
-                .into(holder.mAvatarImageview);
-        // set short reply
-        if(threadInfo.recommendNum !=0){
-            holder.mRecommendationNumber.setVisibility(View.VISIBLE);
-            holder.mRecommendationNumber.setText(numberFormatUtils.getShortNumberText(threadInfo.recommendNum));
-            holder.mRecommendationIcon.setVisibility(View.VISIBLE);
-        }
-        else {
-            holder.mRecommendationNumber.setVisibility(View.GONE);
-            holder.mRecommendationIcon.setVisibility(View.GONE);
-        }
-
-        if(threadInfo.readPerm == 0){
-            holder.mReadPerm.setVisibility(View.GONE);
-            holder.mReadPermIcon.setVisibility(View.GONE);
-        }
-        else {
-            holder.mReadPermIcon.setVisibility(View.VISIBLE);
-            holder.mReadPerm.setVisibility(View.VISIBLE);
-            holder.mReadPerm.setText(String.valueOf(threadInfo.readPerm));
-            //holder.mReadPerm.setText(numberFormatUtils.getShortNumberText(threadInfo.readPerm));
-            int readPermissionVal = threadInfo.readPerm;
-            if(curUser == null || curUser.readPerm < readPermissionVal){
-                holder.mReadPerm.setTextColor(mContext.getColor(R.color.colorWarn));
-                holder.mReadPermIcon.setImageDrawable(mContext.getDrawable(R.drawable.vector_drawable_close));
             }
             else {
-                holder.mReadPerm.setTextColor(mContext.getColor(R.color.colorTextDefault));
-                holder.mReadPermIcon.setImageDrawable(mContext.getDrawable(R.drawable.vector_drawable_read_permission));
-            }
-        }
+                holder.mRecommendationNumber.setVisibility(View.GONE);
 
-        if(threadInfo.attachment == 0){
-            holder.mAttachmentIcon.setVisibility(View.GONE);
-        }
-        else {
-            holder.mAttachmentIcon.setVisibility(View.VISIBLE);
-            if(threadInfo.attachment == 1){
-                holder.mAttachmentIcon.setImageDrawable(mContext.getDrawable(R.drawable.vector_drawable_attachment));
+            }
+
+            if(threadInfo.readPerm == 0){
+                holder.mReadPerm.setVisibility(View.GONE);
+
             }
             else {
-                holder.mAttachmentIcon.setImageDrawable(mContext.getDrawable(R.drawable.vector_drawable_image_24px));
+
+                holder.mReadPerm.setVisibility(View.VISIBLE);
+                holder.mReadPerm.setText(String.valueOf(threadInfo.readPerm));
+                //holder.mReadPerm.setText(numberFormatUtils.getShortNumberText(threadInfo.readPerm));
+                int readPermissionVal = threadInfo.readPerm;
+                if(curUser == null || curUser.readPerm < readPermissionVal){
+                    holder.mReadPerm.setTextColor(mContext.getColor(R.color.colorWarn));
+                }
+                else {
+                    holder.mReadPerm.setTextColor(mContext.getColor(R.color.colorTextDefault));
+                }
             }
-        }
 
-        if(threadInfo.price !=0 ){
-            holder.mPriceImage.setVisibility(View.VISIBLE);
-            holder.mPriceNumber.setText(String.valueOf(threadInfo.price));
-            holder.mPriceNumber.setVisibility(View.VISIBLE);
-        }
-        else {
-            holder.mPriceImage.setVisibility(View.GONE);
-            // holder.mPriceNumber.setText(String.valueOf(threadInfo.price));
-            holder.mPriceNumber.setVisibility(View.GONE);
-        }
-
-
-        holder.mAttachmentNumber.setText(numberFormatUtils.getShortNumberText(threadInfo.attachment));
-        if(threadInfo.shortReplyList!=null && threadInfo.shortReplyList.size()>0){
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-            holder.mReplyRecyclerview.setFocusable(false);
-            holder.mReplyRecyclerview.setNestedScrollingEnabled(false);
-            holder.mReplyRecyclerview.setLayoutManager(linearLayoutManager);
-            holder.mReplyRecyclerview.setClickable(false);
-            bbsForumThreadShortReplyAdapter adapter = new bbsForumThreadShortReplyAdapter(mContext);
-            adapter.setShortReplyInfoList(threadInfo.shortReplyList);
-            holder.mReplyRecyclerview.setAdapter(adapter);
-            holder.mReplyRecyclerview.setNestedScrollingEnabled(false);
-        }
-        else {
-
-        }
-
-        holder.mCardview.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, ViewThreadActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
-                intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);
-                intent.putExtra("FID",threadInfo.fid);
-                intent.putExtra("TID",threadInfo.tid);
-                intent.putExtra("SUBJECT",threadInfo.subject);
-                VibrateUtils.vibrateForClick(mContext);
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
-                        Pair.create(holder.mTitle, "bbs_thread_subject")
-                );
-
-                Bundle bundle = options.toBundle();
-                mContext.startActivity(intent,bundle);
+            if(threadInfo.attachment == 0){
+                holder.mAttachmentIcon.setVisibility(View.GONE);
             }
-        });
-
-        holder.mAvatarImageview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, UserProfileActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
-                intent.putExtra("UID",threadInfo.authorId);
-
-                ActivityOptions options = ActivityOptions
-                        .makeSceneTransitionAnimation((Activity) mContext, holder.mAvatarImageview, "user_info_avatar");
-
-                Bundle bundle = options.toBundle();
-
-                mContext.startActivity(intent,bundle);
+            else {
+                holder.mAttachmentIcon.setVisibility(View.VISIBLE);
+                if(threadInfo.attachment == 1){
+                    holder.mAttachmentIcon.setImageDrawable(mContext.getDrawable(R.drawable.ic_thread_attachment_24px));
+                }
+                else {
+                    holder.mAttachmentIcon.setImageDrawable(mContext.getDrawable(R.drawable.ic_image_24px));
+                }
             }
-        });
+
+            if(threadInfo.price !=0 ){
+
+                holder.mPriceNumber.setText(String.valueOf(threadInfo.price));
+                holder.mPriceNumber.setVisibility(View.VISIBLE);
+            }
+            else {
+                // holder.mPriceNumber.setText(String.valueOf(threadInfo.price));
+                holder.mPriceNumber.setVisibility(View.GONE);
+            }
+
+
+            if(threadInfo.shortReplyList!=null && threadInfo.shortReplyList.size()>0){
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+                holder.mReplyRecyclerview.setFocusable(false);
+                holder.mReplyRecyclerview.setNestedScrollingEnabled(false);
+                holder.mReplyRecyclerview.setLayoutManager(linearLayoutManager);
+                holder.mReplyRecyclerview.setClickable(false);
+                bbsForumThreadShortReplyAdapter adapter = new bbsForumThreadShortReplyAdapter(mContext);
+                adapter.setShortReplyInfoList(threadInfo.shortReplyList);
+                holder.mReplyRecyclerview.setAdapter(adapter);
+                holder.mReplyRecyclerview.setNestedScrollingEnabled(false);
+            }
+            else {
+
+            }
+
+            holder.mCardview.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, ViewThreadActivity.class);
+                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);
+                    intent.putExtra("FID",threadInfo.fid);
+                    intent.putExtra("TID",threadInfo.tid);
+                    intent.putExtra("SUBJECT",threadInfo.subject);
+                    VibrateUtils.vibrateForClick(mContext);
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
+                            Pair.create(holder.mTitle, "bbs_thread_subject")
+                    );
+
+                    Bundle bundle = options.toBundle();
+                    mContext.startActivity(intent,bundle);
+                }
+            });
+
+            holder.mAvatarImageview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, UserProfileActivity.class);
+                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                    intent.putExtra("UID",threadInfo.authorId);
+
+                    ActivityOptions options = ActivityOptions
+                            .makeSceneTransitionAnimation((Activity) mContext, holder.mAvatarImageview, "user_info_avatar");
+
+                    Bundle bundle = options.toBundle();
+
+                    mContext.startActivity(intent,bundle);
+                }
+            });
+        }
+        else if(holderRaw instanceof ConciseThreadViewHolder){
+            ConciseThreadViewHolder holder = (ConciseThreadViewHolder) holderRaw;
+
+            Spanned sp = Html.fromHtml(threadInfo.subject);
+            SpannableString spannableString = new SpannableString(sp);
+            holder.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE);
+
+            holder.mThreadReplyNum.setText(numberFormatUtils.getShortNumberText(threadInfo.replies));
+
+            holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext,threadInfo.publishAt));
+
+            //holder.mPublishDate.setText(df.format(threadInfo.publishAt));
+            if(threadInfo.displayOrder !=0){
+                int textResource = R.string.bbs_forum_pinned;
+                switch(threadInfo.displayOrder){
+                    case 3:
+                        textResource = R.string.display_order_3;
+                        break;
+                    case 2:
+                        textResource = R.string.display_order_2;
+                        break;
+                    case 1:
+                        textResource = R.string.display_order_1;
+                        break;
+                    case -1:
+                        textResource = R.string.display_order_n1;
+                        break;
+                    case -2:
+                        textResource = R.string.display_order_n2;
+                        break;
+                    case -3:
+                        textResource = R.string.display_order_n3;
+                        break;
+                    case -4:
+                        textResource = R.string.display_order_n4;
+                        break;
+                    default:
+                        textResource = R.string.bbs_forum_pinned;
+                }
+                holder.mThreadType.setText(textResource);
+                holder.mThreadType.setTextColor(mContext.getColor(R.color.colorAccent));
+            }
+            else {
+                if(threadType == null){
+
+                    holder.mThreadType.setText(String.format("%s",position+1));
+                }
+                else {
+                    // provided by label
+                    String type = threadType.get(String.valueOf(threadInfo.typeId));
+                    Log.d(TAG, "Get thread type "+type);
+                    if(type !=null){
+                        Spanned threadSpanned = Html.fromHtml(type);
+                        SpannableString threadSpannableString = new SpannableString(threadSpanned);
+                        holder.mThreadType.setText(threadSpannableString);
+                    }
+                    else {
+                        //holder.mThreadType.setText(String.format("%s",position+1));
+                    }
+
+                }
+
+                holder.mThreadType.setTextColor(mContext.getColor(R.color.colorPrimary));
+            }
+
+            holder.mThreadPublisher.setText(threadInfo.author);
+            holder.mCardview.setOnClickListener(new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, ViewThreadActivity.class);
+                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);
+                    intent.putExtra("FID",threadInfo.fid);
+                    intent.putExtra("TID",threadInfo.tid);
+                    intent.putExtra("SUBJECT",threadInfo.subject);
+                    VibrateUtils.vibrateForClick(mContext);
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
+                            Pair.create(holder.mTitle, "bbs_thread_subject")
+                    );
+
+                    Bundle bundle = options.toBundle();
+                    mContext.startActivity(intent,bundle);
+                }
+            });
+
+
+        }
+
 
     }
 
@@ -315,7 +413,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.bbsForumTh
 
     }
 
-    public class bbsForumThreadViewHolder extends RecyclerView.ViewHolder{
+    public class ThreadViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.bbs_post_publisher)
         TextView mThreadPublisher;
         @BindView(R.id.bbs_post_publish_date)
@@ -336,23 +434,41 @@ public class ThreadAdapter extends RecyclerView.Adapter<ThreadAdapter.bbsForumTh
         CardView mCardview;
         @BindView(R.id.bbs_thread_short_reply_recyclerview)
         RecyclerView mReplyRecyclerview;
-        @BindView(R.id.bbs_thread_recommend_image)
-        ImageView mRecommendationIcon;
+
         @BindView(R.id.bbs_thread_recommend_number)
         TextView mRecommendationNumber;
-        @BindView(R.id.bbs_thread_read_perm_image)
-        ImageView mReadPermIcon;
+
         @BindView(R.id.bbs_thread_read_perm_number)
         TextView mReadPerm;
         @BindView(R.id.bbs_thread_attachment_image)
         ImageView mAttachmentIcon;
-        @BindView(R.id.bbs_thread_attachment_number)
-        TextView mAttachmentNumber;
-        @BindView(R.id.bbs_thread_price_image)
-        ImageView mPriceImage;
+
+
         @BindView(R.id.bbs_thread_price_number)
         TextView mPriceNumber;
-        public bbsForumThreadViewHolder(@NonNull View itemView) {
+        public ThreadViewHolder(@NonNull View itemView) {
+            super(itemView);
+            ButterKnife.bind(this,itemView);
+        }
+    }
+
+    public class ConciseThreadViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.bbs_post_publisher)
+        TextView mThreadPublisher;
+        @BindView(R.id.bbs_post_publish_date)
+        TextView mPublishDate;
+        @BindView(R.id.bbs_thread_title)
+        TextView mTitle;
+        @BindView(R.id.bbs_thread_reply_number)
+        TextView mThreadReplyNum;
+        @BindView(R.id.bbs_thread_type)
+        TextView mThreadType;
+        @BindView(R.id.bbs_thread_cardview)
+        CardView mCardview;
+
+
+
+        public ConciseThreadViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
         }

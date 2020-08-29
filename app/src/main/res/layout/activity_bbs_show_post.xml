@@ -106,7 +106,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/bbs_thread_view_number"
                         app:layout_constraintTop_toTopOf="@+id/bbs_thread_comment_icon"
-                        app:srcCompat="@drawable/vector_drawable_view_eye" />
+                        app:srcCompat="@drawable/ic_thread_view_16px" />
 
                     <TextView
                         android:id="@+id/bbs_thread_view_number"

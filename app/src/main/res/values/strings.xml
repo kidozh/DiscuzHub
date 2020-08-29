@@ -403,7 +403,7 @@
     <string name="bbs_notification_failed">Failed to update %1$s.</string>
 
     <string name="preference_title_recv_notification_situation">Notification situation</string>
-    <string name="preference_key_recv_notification_situation">preference_key_recv_notification_situation</string>
+    <string name="preference_key_recv_notification_situation" translatable="false">preference_key_recv_notification_situation</string>
 
     <string-array name="preference_entry_recv_notification_situation">
         <item>New information</item>
@@ -721,6 +721,18 @@
     <string name="bbs_credit">Credit</string>
     <string name="bbs_medals_num">Medals (%1$d)</string>
     <string name="verified_user">Mail Verified</string>
+    <string name="notification_system">System notification</string>
+    <string name="notification_doing">Record</string>
+    <string name="notification_friend">Friend request</string>
+    <string name="notification_sharenotice">Share</string>
+    <string name="notification_post">Post</string>
+    <string name="notification_activity">Activity</string>
+    <string name="notification_gift">Gift</string>
+    <string name="notification_wall">Left messages</string>
+    <string name="notification_task">Task</string>
+    <string name="preference_key_concise_recyclerview" translatable="false">preference_key_concise_recyclerview</string>
+    <string name="preference_title_concise_recyclerview">Concise display</string>
+    <string name="preference_summary_on_concise_recyclerview">It may improve the performance slightly. It is recommended to turn on in low-memory devices.</string>
 
 
 </resources>

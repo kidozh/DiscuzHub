@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:itemCount="1"
-            tools:listitem="@layout/item_bbs_category"
+            tools:listitem="@layout/item_forum_category"
             tools:visibility="gone" />
     </LinearLayout>
 

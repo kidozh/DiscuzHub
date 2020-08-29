@@ -540,5 +540,16 @@
     <string name="bbs_credit">积分</string>
     <string name="bbs_medals_num">奖项 (%1$d)</string>
     <string name="verified_user">邮件已认证</string>
+    <string name="notification_system">系统消息</string>
+    <string name="notification_doing">记录</string>
+    <string name="notification_friend">好友请求</string>
+    <string name="notification_sharenotice">来自好友的分享</string>
+    <string name="notification_post">帖子通知</string>
+    <string name="notification_activity">活动通知</string>
+    <string name="notification_gift">礼物通知</string>
+    <string name="notification_wall">留言通知</string>
+    <string name="notification_task">任务通知</string>
+    <string name="preference_title_concise_recyclerview">简洁模式</string>
+    <string name="preference_summary_on_concise_recyclerview">这也许会轻微的提高性能，推荐在低配置的机器上开启。</string>
 
 </resources>

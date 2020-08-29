@@ -44,7 +44,7 @@ public class bbsForumThreadShortReplyAdapter extends RecyclerView.Adapter<bbsFor
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.item_bbs_forum_thread_short_reply;
+        int layoutIdForListItem = R.layout.item_short_post;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 

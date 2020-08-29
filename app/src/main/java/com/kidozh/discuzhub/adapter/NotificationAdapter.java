@@ -93,8 +93,16 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_bbs_notification_detail,parent,false));
     }
 
+    private void setIconAndText(@NonNull ViewHolder holder,int textResource, int drawableResource){
+        holder.bbsNotificationImageview.setImageResource(drawableResource);
+        holder.bbsNotificationAuthor.setText(textResource);
+    }
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+
+
         UserNoteListResult.UserNotification notificationDetailInfo = this.notificationDetailInfoList.get(position);
         // remove author if not named
         if(notificationDetailInfo.isNew){
@@ -103,9 +111,44 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         else {
             holder.newLabel.setVisibility(View.GONE);
         }
+        // judge type
+        switch (notificationDetailInfo.type){
+            case "system":{
+                setIconAndText(holder,R.string.notification_system,R.drawable.ic_notification_system_24px);
+                break;
+            }
+            case "doing":{
+                setIconAndText(holder,R.string.notification_doing,R.drawable.ic_notification_doing_24px);
+                break;
+            }
+            case "friend":{
+                setIconAndText(holder,R.string.notification_friend,R.drawable.ic_notification_friend_24px);
+                break;
+            }
+            case "post":{
+                setIconAndText(holder,R.string.notification_post,R.drawable.ic_notification_post_24px);
+                break;
+            }
+            case "activity":{
+                setIconAndText(holder,R.string.notification_activity,R.drawable.ic_notification_activity_24px);
+                break;
+            }
+            case "gift":{
+                setIconAndText(holder,R.string.notification_gift,R.drawable.ic_notification_gift_24px);
+                break;
+            }
+            case "wall":{
+                setIconAndText(holder,R.string.notification_wall,R.drawable.ic_notification_wall_24px);
+                break;
+            }
+            case "task":{
+                setIconAndText(holder,R.string.notification_task,R.drawable.ic_notification_task_24px);
+                break;
+            }
+        }
+
         if(notificationDetailInfo.authorId == 0){
-            holder.bbsNotificationAuthor.setVisibility(View.GONE);
-            holder.bbsNotificationImageview.setImageDrawable(context.getDrawable(R.drawable.vector_drawable_info_24px_outline));
+
         }
         else {
             holder.bbsNotificationAuthor.setVisibility(View.VISIBLE);
