@@ -1559,6 +1559,9 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                                 Toasty.success(getApplicationContext(),returnedMessage.string,Toast.LENGTH_LONG).show();
                             }
                         });
+                        if(mCommentSmileyConstraintLayout.getVisibility() == View.VISIBLE){
+                            mCommentEmoijBtn.callOnClick();
+                        }
                     }
                     else {
                         mHandler.post(new Runnable() {
@@ -1624,6 +1627,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                 replyMessage
 
         );
+        Log.d(TAG,"Get message "+noticeAuthorMsg+noticeMsgTrimString);
 
 
 
@@ -1662,6 +1666,9 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
             }
             default:{
                 formBodyBuilder.add("message", message);
+                formBodyBuilder.add("noticeauthormsg",noticeAuthorMsg)
+                        .add("noticetrimstr",noticeMsgTrimString);
+
             }
 
 
@@ -1731,6 +1738,9 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                     Log.d(TAG, "Recv reply comment info " + s);
                     if(returnedMessage!=null && returnedMessage.value.equals("post_reply_succeed")) {
                         // success!
+                        if(mCommentSmileyConstraintLayout.getVisibility() == View.VISIBLE){
+                            mCommentEmoijBtn.callOnClick();
+                        }
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
@@ -1740,7 +1750,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                                 reloadThePage();
                                 threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
                                 //getThreadComment();
-                                Toasty.success(getApplicationContext(), returnedMessage.string, Toast.LENGTH_LONG).show();
+                                Toasty.success(getApplicationContext(), getString(R.string.discuz_error,returnedMessage.value,returnedMessage.string), Toast.LENGTH_LONG).show();
                             }
                         });
                     } else {
@@ -1753,7 +1763,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                                     Toasty.error(getApplicationContext(), getString(R.string.network_failed), Toast.LENGTH_LONG).show();
                                 }
                                 else {
-                                    Toasty.error(getApplicationContext(), returnedMessage.string, Toast.LENGTH_LONG).show();
+                                    Toasty.error(getApplicationContext(), getString(R.string.discuz_error,returnedMessage.value,returnedMessage.string), Toast.LENGTH_LONG).show();
                                 }
                             }
                         });

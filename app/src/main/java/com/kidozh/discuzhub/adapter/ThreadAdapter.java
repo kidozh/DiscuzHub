@@ -383,13 +383,10 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(mContext));
             Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-            String source = URLUtils.getSmallAvatarUrlByUid(threadInfo.authorId);
+            String source = URLUtils.getDefaultAvatarUrlByUid(threadInfo.authorId);
             RequestOptions options = new RequestOptions()
                     .placeholder(mContext.getDrawable(avatarResource))
-                    .error(mContext.getDrawable(avatarResource))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-
-                    .priority(Priority.HIGH);
+                    .error(mContext.getDrawable(avatarResource));
             GlideUrl glideUrl = new GlideUrl(source,
                     new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
             );
