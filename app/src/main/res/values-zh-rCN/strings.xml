@@ -551,5 +551,8 @@
     <string name="notification_task">任务通知</string>
     <string name="preference_title_concise_recyclerview">简洁模式</string>
     <string name="preference_summary_on_concise_recyclerview">这也许会轻微的提高性能，推荐在低配置的机器上开启。</string>
+    <string name="preference_title_collapse_forum_rule">折叠版规</string>
+    <string name="preference_summary_on_collapse_forum_rule">5行外的文本将会被折叠，你可以点击文本以展开版规。</string>
+    <string name="preference_summary_off_collapse_forum_rule">版规将会被完整显示，点击文本即可折叠版规。</string>
 
 </resources>

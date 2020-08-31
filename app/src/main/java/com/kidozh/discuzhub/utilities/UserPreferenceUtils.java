@@ -68,4 +68,10 @@ public class UserPreferenceUtils {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(preferenceName,true);
     }
+
+    public static boolean collapseForumRule(@NonNull Context context){
+        String preferenceName = context.getString(R.string.preference_key_collapse_forum_rule);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(preferenceName,true);
+    }
 }

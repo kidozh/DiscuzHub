@@ -16,6 +16,8 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ForumResult;
+import com.kidozh.discuzhub.results.UserFriendResult;
+import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -47,6 +49,8 @@ public class ForumViewModel extends AndroidViewModel {
     public MutableLiveData<ForumInfo> forumDetailedInfoMutableLiveData;
     public MutableLiveData<ForumResult> displayForumResultMutableLiveData;
     public LiveData<FavoriteForum> favoriteForumLiveData;
+    public MutableLiveData<Boolean> ruleTextCollapse = new MutableLiveData<>(true);
+
 
 
 
@@ -67,7 +71,8 @@ public class ForumViewModel extends AndroidViewModel {
                 .getDraftNumber();
         forumDetailedInfoMutableLiveData = new MutableLiveData<>();
         displayForumResultMutableLiveData = new MutableLiveData<>(null);
-
+        ruleTextCollapse = new MutableLiveData<>(UserPreferenceUtils.collapseForumRule(application));
+        ruleTextCollapse.postValue(UserPreferenceUtils.collapseForumRule(application));
     }
 
     public void setBBSInfo(@NonNull bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, ForumInfo forum){
@@ -81,6 +86,10 @@ public class ForumViewModel extends AndroidViewModel {
                 .getFavoriteItemByfid(bbsInfo.getId(),userBriefInfo!=null? userBriefInfo.getUid():0,forum.fid);
         int uid = userBriefInfo!=null? userBriefInfo.getUid():0;
         Log.d(TAG,"Get favorite form info "+userBriefInfo+" fid "+forum.fid+" uid "+uid);
+    }
+
+    public void toggleRuleCollapseStatus(){
+        ruleTextCollapse.postValue(!ruleTextCollapse.getValue());
     }
 
     public LiveData<List<ThreadInfo>> getThreadInfoListLiveData(){

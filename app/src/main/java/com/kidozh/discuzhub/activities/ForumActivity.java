@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.activities;
 
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -143,12 +144,13 @@ public class ForumActivity
         configureForumInfo();
         configureRecyclerview();
         configureSwipeRefreshLayout();
-
+        setForumRuleCollapseListener();
 
         //getThreadInfo();
         configurePostThreadBtn();
         configureChipGroupFilter();
     }
+
 
 
     private void configureIntentData(){
@@ -262,6 +264,7 @@ public class ForumActivity
                         // mForumAlert.setAutoLinkMask(Linkify.ALL);
                         mForumRule.setMovementMethod(new bbsLinkMovementMethod(ForumActivity.this));
                         mForumRule.setText(spannableString, TextView.BufferType.SPANNABLE);
+                        //collapseTextView(mForumRule,3);
                     }
                     else {
                         mForumRule.setText(R.string.bbs_rule_not_set);
@@ -297,6 +300,28 @@ public class ForumActivity
             invalidateOptionsMenu();
         });
 
+
+        forumViewModel.ruleTextCollapse.observe(this,aBoolean -> {
+
+            if(aBoolean){
+                Log.d(TAG,"Collapse rule text "+aBoolean);
+                mForumRule.setMaxLines(5);
+            }
+            else {
+
+                mForumRule.setMaxLines(Integer.MAX_VALUE);
+            }
+        });
+
+    }
+
+    private void setForumRuleCollapseListener(){
+        mForumRule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                forumViewModel.toggleRuleCollapseStatus();
+            }
+        });
     }
 
     private void initLiveData(){

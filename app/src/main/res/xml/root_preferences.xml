@@ -65,6 +65,14 @@
 
             android:summaryOn="@string/preference_summary_on_concise_recyclerview"
             android:title="@string/preference_title_concise_recyclerview" />
+        <androidx.preference.SwitchPreference
+            android:defaultValue="true"
+            android:icon="@drawable/ic_collapse_forum_rule_24px"
+            android:key="@string/preference_key_collapse_forum_rule"
+
+            android:summaryOn="@string/preference_summary_on_collapse_forum_rule"
+            android:summaryOff="@string/preference_summary_off_collapse_forum_rule"
+            android:title="@string/preference_title_collapse_forum_rule" />
 
     </androidx.preference.PreferenceCategory>
 

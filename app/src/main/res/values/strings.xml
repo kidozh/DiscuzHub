@@ -733,6 +733,10 @@
     <string name="preference_key_concise_recyclerview" translatable="false">preference_key_concise_recyclerview</string>
     <string name="preference_title_concise_recyclerview">Concise display</string>
     <string name="preference_summary_on_concise_recyclerview">It may improve the performance slightly. It is recommended to turn on in low-memory devices.</string>
+    <string name="preference_key_collapse_forum_rule" translatable="false">preference_key_collapse_forum_rule</string>
+    <string name="preference_title_collapse_forum_rule">Collapse forum rule</string>
+    <string name="preference_summary_on_collapse_forum_rule">The max lines of forum rules will be set to 5. But you still can click the text to expand it.</string>
+    <string name="preference_summary_off_collapse_forum_rule">The forum rule will be originally displayed. Click the text to collapse it.</string>
 
 
 </resources>
