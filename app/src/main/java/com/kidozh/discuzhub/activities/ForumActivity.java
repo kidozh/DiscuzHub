@@ -128,7 +128,7 @@ public class ForumActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bbs_show_forum_thread);
+        setContentView(R.layout.activity_bbs_show_forum);
         ButterKnife.bind(this);
         forumViewModel = new ViewModelProvider(this).get(ForumViewModel.class);
         configureIntentData();

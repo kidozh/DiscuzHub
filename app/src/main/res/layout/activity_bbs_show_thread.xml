@@ -17,109 +17,111 @@
             app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary">
-
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/bbs_thread_property_recyclerview"
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:itemCount="1">
-
-                </androidx.recyclerview.widget.RecyclerView>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/bbs_thread_subject_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_forum_description_outlined_24px" />
-
+                    android:theme="?attr/actionBarTheme">
                     <TextView
                         android:id="@+id/bbs_thread_subject"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
+                        android:drawableStart="@drawable/ic_forum_description_outlined_24px"
+                        android:drawablePadding="8dp"
                         android:textAlignment="viewStart"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textStyle="bold"
                         android:transitionName="bbs_thread_subject"
                         tools:text="@tools:sample/cities" />
-                </LinearLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/bbs_thread_interactive_recyclerview"
+
+                </androidx.appcompat.widget.Toolbar>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    android:clipChildren="true"
-                    android:clipToPadding="true"
-                    tools:itemCount="1" />
-
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/bbs_thread_poll_fragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent">
-
-                    <ImageView
-                        android:id="@+id/bbs_thread_comment_icon"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:visibility="gone"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/vector_drawable_forum" />
-
-                    <TextView
-                        android:id="@+id/bbs_thread_comment_number"
-                        android:layout_width="wrap_content"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/bbs_thread_property_recyclerview"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:textSize="24sp"
-                        app:layout_constraintStart_toEndOf="@+id/bbs_thread_comment_icon"
-                        app:layout_constraintTop_toTopOf="@+id/bbs_thread_comment_icon"
-                        tools:text="45" />
+                        tools:itemCount="1" />
 
-                    <ImageView
-                        android:id="@+id/bbs_thread_view_icon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginEnd="8dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/bbs_thread_view_number"
-                        app:layout_constraintTop_toTopOf="@+id/bbs_thread_comment_icon"
-                        app:srcCompat="@drawable/ic_thread_view_16px" />
 
-                    <TextView
-                        android:id="@+id/bbs_thread_view_number"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_marginEnd="8dp"
-                        android:textSize="18sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/bbs_thread_view_icon"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/bbs_thread_view_icon"
-                        tools:text="46" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/bbs_thread_interactive_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:clipChildren="true"
+                        android:clipToPadding="true"
+                        tools:itemCount="1" />
+
+                    <androidx.fragment.app.FragmentContainerView
+                        android:id="@+id/bbs_thread_poll_fragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/bbs_thread_comment_icon"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:visibility="gone"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/vector_drawable_forum" />
+
+                        <TextView
+                            android:id="@+id/bbs_thread_comment_number"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                            android:textSize="24sp"
+                            app:layout_constraintStart_toEndOf="@+id/bbs_thread_comment_icon"
+                            app:layout_constraintTop_toTopOf="@+id/bbs_thread_comment_icon"
+                            tools:text="45" />
+
+                        <ImageView
+                            android:id="@+id/bbs_thread_view_icon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="8dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/bbs_thread_view_number"
+                            app:layout_constraintTop_toTopOf="@+id/bbs_thread_comment_icon"
+                            app:srcCompat="@drawable/ic_thread_view_16px" />
+
+                        <TextView
+                            android:id="@+id/bbs_thread_view_number"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:layout_marginEnd="8dp"
+                            android:textSize="18sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/bbs_thread_view_icon"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/bbs_thread_view_icon"
+                            tools:text="46" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
             </LinearLayout>
+
+
+
+
+
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -137,7 +139,7 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:context=".bbsService.bbsShowThreadActivity"
-            tools:showIn="@layout/activity_bbs_show_post">
+            tools:showIn="@layout/activity_bbs_show_thread">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -157,9 +159,10 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/bbs_thread_detail_recyclerview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
+                        android:nestedScrollingEnabled="true"
                         android:visibility="visible"
-                        tools:itemCount="1"
+                        tools:itemCount="3"
                         tools:listitem="@layout/item_bbs_post">
 
 

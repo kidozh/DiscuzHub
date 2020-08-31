@@ -94,7 +94,7 @@ public class bbsPollOptionAdapter extends RecyclerView.Adapter<bbsPollOptionAdap
 
         }
         else {
-            holder.pollOptionCheckIcon.setVisibility(View.INVISIBLE);
+            holder.pollOptionCheckIcon.setVisibility(View.GONE);
         }
 
 

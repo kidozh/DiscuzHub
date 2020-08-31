@@ -228,7 +228,6 @@
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </androidx.core.widget.NestedScrollView>
 
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/bbs_forum_fab"
         android:layout_width="wrap_content"

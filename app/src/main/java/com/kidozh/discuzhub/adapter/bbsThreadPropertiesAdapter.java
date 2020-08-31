@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.ThreadCount;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ import butterknife.ButterKnife;
 public class bbsThreadPropertiesAdapter extends RecyclerView.Adapter<bbsThreadPropertiesAdapter.bbsThreadPropertiesViewHolder> {
     private Context context;
 
-    List<bbsThreadNotificationAdapter.threadNotification> threadNotificationList;
+    List<ThreadCount> threadNotificationList;
 
     @NonNull
     @Override
@@ -35,7 +36,7 @@ public class bbsThreadPropertiesAdapter extends RecyclerView.Adapter<bbsThreadPr
         return new bbsThreadPropertiesAdapter.bbsThreadPropertiesViewHolder(view);
     }
 
-    public void setThreadNotificationList(List<bbsThreadNotificationAdapter.threadNotification> threadNotificationList){
+    public void setThreadNotificationList(List<ThreadCount> threadNotificationList){
         this.threadNotificationList = threadNotificationList;
         notifyDataSetChanged();
     }
@@ -43,7 +44,7 @@ public class bbsThreadPropertiesAdapter extends RecyclerView.Adapter<bbsThreadPr
     @Override
     public void onBindViewHolder(@NonNull bbsThreadPropertiesAdapter.bbsThreadPropertiesViewHolder holder, int position) {
 
-        bbsThreadNotificationAdapter.threadNotification notification = threadNotificationList.get(position);
+        ThreadCount notification = threadNotificationList.get(position);
 
         if(notification.highlightColorRes == -1){
             holder.itemThreadTypeAvatar.setImageResource(notification.imageResource);

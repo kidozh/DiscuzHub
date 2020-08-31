@@ -62,4 +62,10 @@ public class UserPreferenceUtils {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(preferenceName,false);
     }
+
+    public static boolean vibrateWhenLoadingAll(@NonNull Context context){
+        String preferenceName = context.getString(R.string.preference_key_vibrate_when_load_all);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(preferenceName,true);
+    }
 }

@@ -14,8 +14,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
+
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -60,7 +61,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
 import com.kidozh.discuzhub.adapter.PostAdapter;
-import com.kidozh.discuzhub.adapter.bbsThreadNotificationAdapter;
+import com.kidozh.discuzhub.adapter.ThreadCountAdapter;
 import com.kidozh.discuzhub.adapter.bbsThreadPropertiesAdapter;
 import com.kidozh.discuzhub.daos.FavoriteThreadDao;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
@@ -68,6 +69,7 @@ import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.PostInfo;
+import com.kidozh.discuzhub.entities.ThreadCount;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -119,6 +121,8 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
         PostAdapter.OnLinkClicked,
         bbsPollFragment.OnFragmentInteractionListener{
     private final static String TAG = ViewThreadActivity.class.getSimpleName();
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.bbs_thread_detail_recyclerview)
     RecyclerView mRecyclerview;
 
@@ -168,13 +172,13 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
     public int tid, fid;
     //private OkHttpClient client = new OkHttpClient();
     private PostAdapter adapter;
-    private bbsThreadNotificationAdapter notificationAdapter;
+    private ThreadCountAdapter countAdapter;
     private bbsThreadPropertiesAdapter propertiesAdapter;
     String formHash = null;
 
     ForumInfo forum;
     ThreadInfo threadInfo;
-    private boolean hasLoadOnce = false;
+    private boolean hasLoadOnce = false, notifyLoadAll = false;
 
     List<bbsParseUtils.smileyInfo> allSmileyInfos;
     int smileyCateNum;
@@ -192,10 +196,11 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bbs_show_post);
+        setContentView(R.layout.activity_bbs_show_thread);
         ButterKnife.bind(this);
         threadDetailViewModel = new ViewModelProvider(this).get(ThreadViewModel.class);
         configureIntentData();
+
         initThreadStatus();
         configureClient();
         configureToolbar();
@@ -209,6 +214,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
         configureSmileyLayout();
 
     }
+
 
     private void configureIntentData(){
         Intent intent = getIntent();
@@ -287,26 +293,6 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
             }
         });
 
-        threadDetailViewModel.hasLoadAll.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
-                    //noMoreThreadFound.setVisibility(View.VISIBLE);
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplication());
-                    boolean needVibrate = prefs.getBoolean(getString(R.string.preference_key_vibrate_when_load_all),true);
-                    Toasty.success(getApplication(),getString(R.string.thread_has_load_all),Toast.LENGTH_SHORT).show();
-                    if(needVibrate){
-                        Log.d(TAG,"Vibrate phone when all threads are loaded");
-                        VibrateUtils.vibrateSlightly(getApplication());
-                    }
-
-                }
-                else {
-                    //noMoreThreadFound.setVisibility(View.GONE);
-                }
-            }
-        });
-
         threadDetailViewModel.error.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -376,8 +362,8 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                 // closed situation
                 // prepare notification list
 
-                List<bbsThreadNotificationAdapter.threadNotification> threadNotificationList = new ArrayList<>();
-                List<bbsThreadNotificationAdapter.threadNotification> threadPropertyList = new ArrayList<>();
+                List<ThreadCount> threadNotificationList = new ArrayList<>();
+                List<ThreadCount> threadPropertyList = new ArrayList<>();
                 if(detailedThreadInfo.subject!=null){
                     Spanned sp = Html.fromHtml(detailedThreadInfo.subject);
                     SpannableString spannableString = new SpannableString(sp);
@@ -389,9 +375,10 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                     mCommentEditText.setHint(R.string.thread_is_closed);
                     mCommentEmoijBtn.setClickable(false);
                     mAdvancePostIcon.setVisibility(View.GONE);
-                    if(detailedThreadInfo.closed == 1){
+                    if(!UserPreferenceUtils.conciseRecyclerView(getApplicationContext())
+                            &&detailedThreadInfo.closed == 1){
                         threadPropertyList.add(
-                                new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_highlight_off_outlined_24px,
+                                new ThreadCount(R.drawable.ic_highlight_off_outlined_24px,
                                         getString(R.string.thread_is_closed),getColor(R.color.colorPomegranate))
                         );
                     }
@@ -407,7 +394,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
 
                 if(detailedThreadInfo.price!=0){
                     threadPropertyList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_price_outlined_24px,
+                            new ThreadCount(R.drawable.ic_price_outlined_24px,
                                     getString(R.string.thread_price,detailedThreadInfo.price),getColor(R.color.colorPumpkin))
                     );
                 }
@@ -418,21 +405,25 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                         forumUserBriefInfo userBriefInfo = result.threadPostVariables.getUserBriefInfo();
                     }
                     if(userBriefInfo!=null && userBriefInfo.readPerm >= detailedThreadInfo.readperm){
-                        threadPropertyList.add(
-                                new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_verified_user_outlined_24px,
-                                        getString(R.string.thread_readperm,detailedThreadInfo.readperm,userBriefInfo.readPerm),getColor(R.color.colorTurquoise))
-                        );
+                        if(!UserPreferenceUtils.conciseRecyclerView(getApplicationContext())){
+                            // not to display in concise mode
+                            threadPropertyList.add(
+                                    new ThreadCount(R.drawable.ic_verified_user_outlined_24px,
+                                            getString(R.string.thread_readperm,detailedThreadInfo.readperm,userBriefInfo.readPerm),getColor(R.color.colorTurquoise))
+                            );
+                        }
+
                     }
                     else {
                         if(userBriefInfo == null){
                             threadPropertyList.add(
-                                    new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_read_perm_unsatisfied_24px,
+                                    new ThreadCount(R.drawable.ic_read_perm_unsatisfied_24px,
                                             getString(R.string.thread_anoymous_readperm,detailedThreadInfo.readperm),getColor(R.color.colorAsbestos))
                             );
                         }
                         else {
                             threadPropertyList.add(
-                                    new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_read_perm_unsatisfied_24px,
+                                    new ThreadCount(R.drawable.ic_read_perm_unsatisfied_24px,
                                             getString(R.string.thread_readperm,detailedThreadInfo.readperm,userBriefInfo.readPerm),getColor(R.color.colorAlizarin))
                             );
                         }
@@ -441,21 +432,11 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
 
                 }
 
-                // recommend?
-                threadNotificationList.add(
-                        new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thumb_up_outlined_24px,
-                                String.valueOf(detailedThreadInfo.recommend_add)
-                        )
-                );
-                threadNotificationList.add(
-                        new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thumb_down_outlined_24px,
-                                String.valueOf(detailedThreadInfo.recommend_sub)
-                        )
-                );
+
 
                 if(detailedThreadInfo.hidden){
                     threadPropertyList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thread_visibility_off_24px,
+                            new ThreadCount(R.drawable.ic_thread_visibility_off_24px,
                                     getString(R.string.thread_is_hidden),getColor(R.color.colorWisteria))
                     );
                 }
@@ -463,51 +444,66 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                 // need another
                 if(detailedThreadInfo.highlight !=null && !detailedThreadInfo.highlight.equals("0")){
                     threadPropertyList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_highlight_outlined_24px,
+                            new ThreadCount(R.drawable.ic_highlight_outlined_24px,
                                     getString(R.string.thread_is_highlighted),getColor(R.color.colorPrimary))
                     );
                 }
 
                 if(detailedThreadInfo.digest != 0){
                     threadPropertyList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_digest_outlined_24px,
+                            new ThreadCount(R.drawable.ic_digest_outlined_24px,
                                     getString(R.string.thread_is_digested),getColor(R.color.colorGreensea))
                     );
                 }
+                
+                
 
-                if(detailedThreadInfo.moderated){
-                    threadPropertyList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_moderated_outlined_24px,
-                                    getString(R.string.thread_is_moderated),getColor(R.color.colorOrange))
-                    );
-                }
+                
 
                 if(detailedThreadInfo.is_archived){
                     threadPropertyList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_archive_outlined_24px,
+                            new ThreadCount(R.drawable.ic_archive_outlined_24px,
                                     getString(R.string.thread_is_archived),getColor(R.color.colorMidnightblue))
                     );
                 }
 
-                if(detailedThreadInfo.stickReply){
-                    threadPropertyList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.vector_drawable_reply_24px,
-                                    getString(R.string.thread_stick_reply),getColor(R.color.colorWetasphalt))
-                    );
-                }
-                threadNotificationList.add(
-                        new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_favorite_24px,String.valueOf(detailedThreadInfo.favtimes),"FAVORITE")
-                );
-
-                threadNotificationList.add(
-                        new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_share_outlined_24px,String.valueOf(detailedThreadInfo.sharedtimes),"SHARE")
-                );
-
-
-                if(detailedThreadInfo.heats !=0){
+                if(!UserPreferenceUtils.conciseRecyclerView(getApplicationContext())){
+                    // only see in not concise mode
+                    if(detailedThreadInfo.moderated){
+                        threadPropertyList.add(
+                                new ThreadCount(R.drawable.ic_moderated_outlined_24px,
+                                        getString(R.string.thread_is_moderated),getColor(R.color.colorOrange))
+                        );
+                    }
+                    if(detailedThreadInfo.stickReply){
+                        threadPropertyList.add(
+                                new ThreadCount(R.drawable.vector_drawable_reply_24px,
+                                        getString(R.string.thread_stick_reply),getColor(R.color.colorWetasphalt))
+                        );
+                    }
+                    // recommend?
                     threadNotificationList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_whatshot_outlined_24px,String.valueOf(detailedThreadInfo.heats))
+                            new ThreadCount(R.drawable.ic_thumb_up_outlined_24px,
+                                    String.valueOf(detailedThreadInfo.recommend_add)
+                            )
                     );
+                    threadNotificationList.add(
+                            new ThreadCount(R.drawable.ic_thumb_down_outlined_24px,
+                                    String.valueOf(detailedThreadInfo.recommend_sub)
+                            )
+                    );
+                    threadNotificationList.add(
+                            new ThreadCount(R.drawable.ic_favorite_24px,String.valueOf(detailedThreadInfo.favtimes),"FAVORITE")
+                    );
+
+                    threadNotificationList.add(
+                            new ThreadCount(R.drawable.ic_share_outlined_24px,String.valueOf(detailedThreadInfo.sharedtimes),"SHARE")
+                    );
+                    if(detailedThreadInfo.heats !=0){
+                        threadNotificationList.add(
+                                new ThreadCount(R.drawable.ic_whatshot_outlined_24px,String.valueOf(detailedThreadInfo.heats))
+                        );
+                    }
                 }
 
                 int status = detailedThreadInfo.status;
@@ -517,32 +513,34 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                         STATUS_NOTIFY_AUTHOR = 32;
                 if(checkWithPerm(status,STATUS_CACHE_THREAD_LOCATION)){
                     threadPropertyList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_cache_thread_location_24px,
+                            new ThreadCount(R.drawable.ic_cache_thread_location_24px,
                                     getString(R.string.thread_cache_location),getColor(R.color.colorMidnightblue))
                     );
                 }
                 if(checkWithPerm(status,STATUS_ONLY_SEE_BY_POSTER)){
                     threadPropertyList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_reply_only_see_by_poster_24px,
+                            new ThreadCount(R.drawable.ic_reply_only_see_by_poster_24px,
                                     getString(R.string.thread_reply_only_see_by_poster),getColor(R.color.colorNephritis))
                     );
                 }
                 if(checkWithPerm(status,STATUS_REWARD_LOTTO)){
                     threadPropertyList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thread_reward_lotto_24px,
+                            new ThreadCount(R.drawable.ic_thread_reward_lotto_24px,
                                     getString(R.string.thread_reward_lotto),getColor(R.color.colorSunflower))
                     );
                 }
-                if(checkWithPerm(status,STATUS_NOTIFY_AUTHOR)){
+                
+                if(!UserPreferenceUtils.conciseRecyclerView(getApplicationContext())
+                        && checkWithPerm(status,STATUS_NOTIFY_AUTHOR)){
                     threadPropertyList.add(
-                            new bbsThreadNotificationAdapter.threadNotification(R.drawable.ic_thread_notify_author_24px,
+                            new ThreadCount(R.drawable.ic_thread_notify_author_24px,
                                     getString(R.string.thread_notify_author),getColor(R.color.colorPrimaryDark))
                     );
                 }
 
 
 
-                notificationAdapter.setThreadNotificationList(threadNotificationList);
+                countAdapter.setThreadCountList(threadNotificationList);
                 propertiesAdapter.setThreadNotificationList(threadPropertyList);
                 // for normal rendering
                 mDetailedThreadCommentNumber.setText(getString(R.string.bbs_thread_reply_number,detailedThreadInfo.replies));
@@ -689,9 +687,6 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
             }
         });
 
-//        threadDetailViewModel.isFavoriteThreadMutableLiveData.observe(this,aBoolean -> {
-//            invalidateOptionsMenu();
-//        });
 
         threadDetailViewModel.favoriteThreadLiveData.observe(this,favoriteThread -> {
             Log.d(TAG,"Get favorite thread in observer"+favoriteThread);
@@ -1379,6 +1374,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
         }
     }
 
+
     private void configureRecyclerview(){
         //mRecyclerview.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -1397,9 +1393,20 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                 if(isScrollAtEnd()){
                     URLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
                     boolean isLoading = threadDetailViewModel.isLoading.getValue();
+                    boolean hasLoadAll = threadDetailViewModel.hasLoadAll.getValue();
                     if(!isLoading && threadStatus !=null){
-                        if(threadDetailViewModel.hasLoadAll.getValue()){
-                            //Toasty.info(getApplication(),getString(R.string.bbs_forum_thread_load_all),Toast.LENGTH_LONG).show();
+                        if(hasLoadAll){
+                            // load all posts
+                            if(!notifyLoadAll){
+                                // never vibrate before
+                                if(UserPreferenceUtils.vibrateWhenLoadingAll(getApplicationContext())){
+                                    VibrateUtils.vibrateSlightly(getApplicationContext());
+                                }
+                                notifyLoadAll = true;
+                                threadDetailViewModel.notifyLoadAll.postValue(true);
+                                Toasty.success(getApplication(),getString(R.string.bbs_forum_thread_load_all),Toast.LENGTH_LONG).show();
+                            }
+
                         }
                         else {
                             threadStatus.page += 1;
@@ -1423,10 +1430,15 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
 
             }
         });
-        mDetailThreadTypeRecyclerview.setHasFixedSize(true);
-        mDetailThreadTypeRecyclerview.setLayoutManager(new GridLayoutManager(this, 6));
-        notificationAdapter = new bbsThreadNotificationAdapter();
-        mDetailThreadTypeRecyclerview.setAdapter(notificationAdapter);
+        countAdapter = new ThreadCountAdapter();
+
+        if(!UserPreferenceUtils.conciseRecyclerView(getApplicationContext())){
+            // not to bind this
+            mDetailThreadTypeRecyclerview.setHasFixedSize(true);
+            mDetailThreadTypeRecyclerview.setLayoutManager(new GridLayoutManager(this, 6));
+            mDetailThreadTypeRecyclerview.setAdapter(countAdapter);
+        }
+
         propertiesAdapter = new bbsThreadPropertiesAdapter();
         mDetailThreadPropertyRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         mDetailThreadPropertyRecyclerview.setAdapter(propertiesAdapter);
@@ -1550,6 +1562,9 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
+                                if(mCommentSmileyConstraintLayout.getVisibility() == View.VISIBLE){
+                                    mCommentEmoijBtn.callOnClick();
+                                }
                                 mCommentBtn.setText(R.string.bbs_thread_comment);
                                 mCommentBtn.setEnabled(true);
                                 mCommentEditText.setText("");
@@ -1559,9 +1574,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                                 Toasty.success(getApplicationContext(),returnedMessage.string,Toast.LENGTH_LONG).show();
                             }
                         });
-                        if(mCommentSmileyConstraintLayout.getVisibility() == View.VISIBLE){
-                            mCommentEmoijBtn.callOnClick();
-                        }
+
                     }
                     else {
                         mHandler.post(new Runnable() {
@@ -1594,6 +1607,8 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
         }
         Log.d(TAG,"Set status when reload page");
         threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
+        threadDetailViewModel.notifyLoadAll.setValue(false);
+        notifyLoadAll = false;
     }
 
     private void reloadThePage(URLUtils.ThreadStatus threadStatus){
@@ -1602,6 +1617,8 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
         }
         Log.d(TAG,"Set status when init data "+threadStatus);
         threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
+        threadDetailViewModel.notifyLoadAll.setValue(false);
+        notifyLoadAll = false;
     }
 
 
@@ -1713,7 +1730,6 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
 
         mCommentBtn.setText(R.string.bbs_commentting);
         mCommentBtn.setEnabled(false);
-        int pid = selectedThreadComment.pid;
         Handler mHandler = new Handler(Looper.getMainLooper());
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -1738,12 +1754,13 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                     Log.d(TAG, "Recv reply comment info " + s);
                     if(returnedMessage!=null && returnedMessage.value.equals("post_reply_succeed")) {
                         // success!
-                        if(mCommentSmileyConstraintLayout.getVisibility() == View.VISIBLE){
-                            mCommentEmoijBtn.callOnClick();
-                        }
+
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
+                                if(mCommentSmileyConstraintLayout.getVisibility() == View.VISIBLE){
+                                    mCommentEmoijBtn.callOnClick();
+                                }
                                 mCommentBtn.setText(R.string.bbs_thread_comment);
                                 mCommentBtn.setEnabled(true);
                                 mCommentEditText.setText("");
@@ -1777,9 +1794,11 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
 
     private void configureToolbar(){
 
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle(subject);
+        //getSupportActionBar().setTitle(subject);
+
     }
 
     private void launchFavoriteThreadDialog(FavoriteThread favoriteThread){

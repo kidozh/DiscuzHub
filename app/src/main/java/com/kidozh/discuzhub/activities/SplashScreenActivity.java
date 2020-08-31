@@ -107,6 +107,7 @@ public class SplashScreenActivity extends BaseStatusActivity {
                 periodicFreq = 500;
                 break;
         }
+        WorkManager.getInstance(this).cancelAllWork();
 
         for(int i=0; i<allUsers.size();i++){
 
@@ -117,6 +118,7 @@ public class SplashScreenActivity extends BaseStatusActivity {
                     .build();
             // start periodic work
             Log.d(TAG,"Register notification "+userBriefInfo.username);
+
             PeriodicWorkRequest saveRequest =
                     new PeriodicWorkRequest.Builder(PushUserNotificationWork.class, periodicFreq, TimeUnit.MINUTES)
                             .setInputData(userData)

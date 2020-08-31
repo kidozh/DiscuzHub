@@ -1,7 +1,6 @@
 package com.kidozh.discuzhub.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,39 +12,40 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.ThreadCount;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class bbsThreadNotificationAdapter extends RecyclerView.Adapter<bbsThreadNotificationAdapter.bbsThreadTypeViewHolder> {
+public class ThreadCountAdapter extends RecyclerView.Adapter<ThreadCountAdapter.ThreadCountHolder> {
 
     private Context context;
 
-    List<threadNotification> threadNotificationList;
+    List<ThreadCount> ThreadCountList;
 
     @NonNull
     @Override
-    public bbsThreadTypeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ThreadCountHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         int layoutIdForListItem = R.layout.item_bbs_thread_type;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
-        return new bbsThreadTypeViewHolder(view);
+        return new ThreadCountHolder(view);
     }
 
-    public void setThreadNotificationList(List<threadNotification> threadNotificationList){
-        this.threadNotificationList = threadNotificationList;
+    public void setThreadCountList(List<ThreadCount> ThreadCountList){
+        this.ThreadCountList = ThreadCountList;
         notifyDataSetChanged();
     }
 
     @Override
-    public void onBindViewHolder(@NonNull bbsThreadTypeViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ThreadCountHolder holder, int position) {
 
-        threadNotification notification = threadNotificationList.get(position);
+        ThreadCount notification = ThreadCountList.get(position);
 
         if(notification.highlightColorRes == -1){
             holder.itemThreadTypeAvatar.setImageResource(notification.imageResource);
@@ -63,15 +63,15 @@ public class bbsThreadNotificationAdapter extends RecyclerView.Adapter<bbsThread
 
     @Override
     public int getItemCount() {
-        if(threadNotificationList == null){
+        if(ThreadCountList == null){
             return 0;
         }
         else {
-            return threadNotificationList.size();
+            return ThreadCountList.size();
         }
     }
 
-    public class bbsThreadTypeViewHolder extends RecyclerView.ViewHolder{
+    public class ThreadCountHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.item_bbs_thread_type_cardview)
         CardView itemThreadTypeCardview;
         @BindView(R.id.item_bbs_thread_type_avatar)
@@ -79,34 +79,11 @@ public class bbsThreadNotificationAdapter extends RecyclerView.Adapter<bbsThread
         @BindView(R.id.item_bbs_thread_type_value)
         TextView itemThreadTypeTextview;
 
-        public bbsThreadTypeViewHolder(@NonNull View itemView) {
+        public ThreadCountHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
     }
 
-    public static class threadNotification{
-        public int imageResource;
-        public String typeString;
-        public String type = "";
-        public int highlightColorRes = -1;
 
-
-        public threadNotification(int imageResource, String typeString) {
-            this.imageResource = imageResource;
-            this.typeString = typeString;
-        }
-
-        public threadNotification(int imageResource, String typeString, String type) {
-            this.imageResource = imageResource;
-            this.typeString = typeString;
-            this.type = type;
-        }
-
-        public threadNotification(int imageResource, String typeString, int colorRes) {
-            this.imageResource = imageResource;
-            this.typeString = typeString;
-            this.highlightColorRes = colorRes;
-        }
-    }
 }

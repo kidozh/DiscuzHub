@@ -53,6 +53,7 @@ import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
@@ -169,7 +170,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             holder.mPostStatusEditedView.setVisibility(View.GONE);
         }
 
-        if((status & POST_MOBILE) != 0){
+        if((status & POST_MOBILE) != 0 && !UserPreferenceUtils.conciseRecyclerView(context)){
             holder.mPostStatusMobileIcon.setVisibility(View.VISIBLE);
         }
         else {

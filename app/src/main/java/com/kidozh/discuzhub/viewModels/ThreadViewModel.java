@@ -45,7 +45,10 @@ public class ThreadViewModel extends AndroidViewModel {
     private int tid;
     private forumUserBriefInfo userBriefInfo;
 
-    public MutableLiveData<Boolean> isLoading, error, hasLoadAll;
+    public MutableLiveData<Boolean> isLoading= new MutableLiveData<>(false)
+            , error= new MutableLiveData<>(false),
+            hasLoadAll= new MutableLiveData<>(false);
+    public MutableLiveData<Boolean> notifyLoadAll = new MutableLiveData<>(false);
     public MutableLiveData<String> formHash, errorText;
     public MutableLiveData<bbsPollInfo> pollInfoLiveData;
     public MutableLiveData<forumUserBriefInfo> bbsPersonInfoMutableLiveData;
