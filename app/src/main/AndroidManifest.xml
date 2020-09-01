@@ -25,7 +25,7 @@
         <activity
             android:name=".activities.ViewHistoryActivity"
             android:label="@string/view_history"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activities.DrawerActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -63,7 +63,8 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_global_settings" />
-        <activity android:name=".activities.ForumActivity" />
+        <activity android:name=".activities.ForumActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activities.ViewThreadActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity

@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
@@ -43,12 +44,12 @@ public class HomeFragment extends Fragment {
     private static final String TAG = HomeFragment.class.getSimpleName();
 
     private HomeViewModel homeViewModel;
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.bbs_portal_recyclerview)
     RecyclerView portalRecyclerView;
     @BindView(R.id.bbs_portal_error_text)
     TextView bbsPortalErrorText;
-    @BindView(R.id.bbs_portal_progressBar)
-    ProgressBar bbsPortalProgressbar;
     @BindView(R.id.bbs_portal_refresh_page)
     Button bbsPortalRefreshPageBtn;
 
@@ -70,6 +71,7 @@ public class HomeFragment extends Fragment {
         bindLiveDataFromViewModel();
         //getPortalCategoryInfo();
         configureRefreshBtn();
+        configureSwipeRefreshLayout();
 
         return root;
     }
@@ -120,6 +122,15 @@ public class HomeFragment extends Fragment {
 
     }
 
+    private void configureSwipeRefreshLayout(){
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                homeViewModel.loadForumCategoryInfo();
+            }
+        });
+    }
+
     private void bindLiveDataFromViewModel(){
         homeViewModel.getForumCategoryInfo().observe(getViewLifecycleOwner(), new Observer<List<BBSIndexResult.ForumCategory>>() {
             @Override
@@ -128,7 +139,6 @@ public class HomeFragment extends Fragment {
                         homeViewModel.bbsIndexResultMutableLiveData.getValue().forumVariables !=null){
                     List<ForumInfo> allForumInfo = homeViewModel.bbsIndexResultMutableLiveData.getValue().forumVariables.forumInfoList;
                     adapter.setForumCategoryList(forumCategories,allForumInfo);
-                    bbsPortalProgressbar.setVisibility(View.GONE);
                 }
 
             }
@@ -188,10 +198,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
-                    bbsPortalProgressbar.setVisibility(View.VISIBLE);
+                    swipeRefreshLayout.setRefreshing(true);
                 }
                 else {
-                    bbsPortalProgressbar.setVisibility(View.GONE);
+                    swipeRefreshLayout.setRefreshing(false);
                 }
 
             }

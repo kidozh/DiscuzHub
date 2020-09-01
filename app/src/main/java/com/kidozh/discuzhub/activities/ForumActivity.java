@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -82,7 +83,8 @@ public class ForumActivity
         extends BaseStatusActivity implements bbsLinkMovementMethod.OnLinkClickedListener{
     private static final String TAG = ForumActivity.class.getSimpleName();
 
-
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.bbs_forum_fab)
     FloatingActionButton fab;
     @BindView(R.id.bbs_forum_description_textview)
@@ -412,7 +414,7 @@ public class ForumActivity
 
 
     private void configureActionBar(){
-
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(bbsInfo.site_name);
