@@ -25,14 +25,14 @@ import butterknife.ButterKnife;
  * Created by free2 on 16-5-1.
  * 表情adapter
  */
-public class bbsSmileyAdapter extends RecyclerView.Adapter<bbsSmileyAdapter.SmileyViewHolder> {
+public class SmileyAdapter extends RecyclerView.Adapter<SmileyAdapter.SmileyViewHolder> {
 
     private ListItemClickListener itemListener;
     private Context context;
 
     private List<bbsParseUtils.smileyInfo> smileyInfos;
 
-    public bbsSmileyAdapter(Context context,ListItemClickListener itemListener) {
+    public SmileyAdapter(Context context, ListItemClickListener itemListener) {
         this.itemListener = itemListener;
         this.context = context;
     }

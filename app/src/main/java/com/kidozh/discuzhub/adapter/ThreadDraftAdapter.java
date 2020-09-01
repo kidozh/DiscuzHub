@@ -26,14 +26,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class bbsThreadDraftAdapter extends RecyclerView.Adapter<bbsThreadDraftAdapter.ViewHolder> {
+public class ThreadDraftAdapter extends RecyclerView.Adapter<ThreadDraftAdapter.ViewHolder> {
 
     List<bbsThreadDraft> bbsThreadDraftList;
     Context context;
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
 
-    public bbsThreadDraftAdapter(bbsInformation bbsInfo,forumUserBriefInfo userBriefInfo){
+    public ThreadDraftAdapter(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
         this.userBriefInfo = userBriefInfo;
         this.bbsInfo = bbsInfo;
     }

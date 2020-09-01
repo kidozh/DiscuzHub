@@ -28,8 +28,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class bbsPollOptionAdapter extends RecyclerView.Adapter<bbsPollOptionAdapter.ViewHolder> {
-    private final String TAG = bbsPollOptionAdapter.class.getSimpleName();
+public class PollOptionAdapter extends RecyclerView.Adapter<PollOptionAdapter.ViewHolder> {
+    private final String TAG = PollOptionAdapter.class.getSimpleName();
 
     List<bbsPollInfo.option> pollOptions;
     private Context context;

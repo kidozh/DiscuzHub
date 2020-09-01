@@ -41,7 +41,6 @@ import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
-import com.kidozh.discuzhub.viewModels.ThreadViewModel;
 
 
 import java.io.InputStream;
@@ -262,7 +261,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.mReplyRecyclerview.setNestedScrollingEnabled(false);
                 holder.mReplyRecyclerview.setLayoutManager(linearLayoutManager);
                 holder.mReplyRecyclerview.setClickable(false);
-                bbsForumThreadShortReplyAdapter adapter = new bbsForumThreadShortReplyAdapter(mContext);
+                ShortPostAdapter adapter = new ShortPostAdapter(mContext);
                 adapter.setShortReplyInfoList(threadInfo.shortReplyList);
                 holder.mReplyRecyclerview.setAdapter(adapter);
                 holder.mReplyRecyclerview.setNestedScrollingEnabled(false);

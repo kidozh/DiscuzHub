@@ -14,21 +14,16 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
-import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
-import java.io.InputStream;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class bbsPublicMessageAdapter extends RecyclerView.Adapter<bbsPublicMessageAdapter.ViewHolder> {
+public class PublicMessageAdapter extends RecyclerView.Adapter<PublicMessageAdapter.ViewHolder> {
 
     List<bbsParseUtils.publicMessage> publicMessageList;
     private Context context;

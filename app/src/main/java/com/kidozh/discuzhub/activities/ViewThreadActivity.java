@@ -62,7 +62,7 @@ import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
 import com.kidozh.discuzhub.adapter.PostAdapter;
 import com.kidozh.discuzhub.adapter.ThreadCountAdapter;
-import com.kidozh.discuzhub.adapter.bbsThreadPropertiesAdapter;
+import com.kidozh.discuzhub.adapter.ThreadPropertiesAdapter;
 import com.kidozh.discuzhub.daos.FavoriteThreadDao;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
@@ -173,7 +173,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
     //private OkHttpClient client = new OkHttpClient();
     private PostAdapter adapter;
     private ThreadCountAdapter countAdapter;
-    private bbsThreadPropertiesAdapter propertiesAdapter;
+    private ThreadPropertiesAdapter propertiesAdapter;
     String formHash = null;
 
     ForumInfo forum;
@@ -1439,7 +1439,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
             mDetailThreadTypeRecyclerview.setAdapter(countAdapter);
         }
 
-        propertiesAdapter = new bbsThreadPropertiesAdapter();
+        propertiesAdapter = new ThreadPropertiesAdapter();
         mDetailThreadPropertyRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         mDetailThreadPropertyRecyclerview.setAdapter(propertiesAdapter);
 

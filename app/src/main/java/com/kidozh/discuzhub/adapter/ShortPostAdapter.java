@@ -26,12 +26,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class bbsForumThreadShortReplyAdapter extends RecyclerView.Adapter<bbsForumThreadShortReplyAdapter.ViewHolder> {
+public class ShortPostAdapter extends RecyclerView.Adapter<ShortPostAdapter.ViewHolder> {
 
     List<ForumResult.ShortReply> shortReplyInfoList;
     Context context;
 
-    public bbsForumThreadShortReplyAdapter(Context context){
+    public ShortPostAdapter(Context context){
         this.context = context;
     }
 

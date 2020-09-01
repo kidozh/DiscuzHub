@@ -19,21 +19,21 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class bbsThreadPropertiesAdapter extends RecyclerView.Adapter<bbsThreadPropertiesAdapter.bbsThreadPropertiesViewHolder> {
+public class ThreadPropertiesAdapter extends RecyclerView.Adapter<ThreadPropertiesAdapter.bbsThreadPropertiesViewHolder> {
     private Context context;
 
     List<ThreadCount> threadNotificationList;
 
     @NonNull
     @Override
-    public bbsThreadPropertiesAdapter.bbsThreadPropertiesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ThreadPropertiesAdapter.bbsThreadPropertiesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
         int layoutIdForListItem = R.layout.item_bbs_thread_property;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
-        return new bbsThreadPropertiesAdapter.bbsThreadPropertiesViewHolder(view);
+        return new ThreadPropertiesAdapter.bbsThreadPropertiesViewHolder(view);
     }
 
     public void setThreadNotificationList(List<ThreadCount> threadNotificationList){
@@ -42,7 +42,7 @@ public class bbsThreadPropertiesAdapter extends RecyclerView.Adapter<bbsThreadPr
     }
 
     @Override
-    public void onBindViewHolder(@NonNull bbsThreadPropertiesAdapter.bbsThreadPropertiesViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ThreadPropertiesAdapter.bbsThreadPropertiesViewHolder holder, int position) {
 
         ThreadCount notification = threadNotificationList.get(position);
 

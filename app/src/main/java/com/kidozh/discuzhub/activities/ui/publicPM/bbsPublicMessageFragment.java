@@ -1,7 +1,6 @@
 package com.kidozh.discuzhub.activities.ui.publicPM;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,11 +21,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
-import com.kidozh.discuzhub.adapter.bbsPublicMessageAdapter;
+import com.kidozh.discuzhub.adapter.PublicMessageAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -62,7 +60,7 @@ public class bbsPublicMessageFragment extends Fragment {
     bbsInformation bbsInfo;
     ForumInfo forum;
     private OkHttpClient client = new OkHttpClient();
-    bbsPublicMessageAdapter adapter;
+    PublicMessageAdapter adapter;
     private int globalPage = 1;
 
     public bbsPublicMessageFragment(){
@@ -126,7 +124,7 @@ public class bbsPublicMessageFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 linearLayoutManager.getOrientation());
         publicMessageRecyclerview.addItemDecoration(dividerItemDecoration);
-        adapter = new bbsPublicMessageAdapter();
+        adapter = new PublicMessageAdapter();
         publicMessageRecyclerview.setAdapter(adapter);
     }
 

@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.bbsPollOptionAdapter;
+import com.kidozh.discuzhub.adapter.PollOptionAdapter;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.RecyclerItemClickListener;
@@ -122,7 +122,7 @@ public class bbsPollFragment extends Fragment {
     @BindView(R.id.bbs_poll_vote_btn)
     Button bbsPollVoteBtn;
 
-    bbsPollOptionAdapter adapter;
+    PollOptionAdapter adapter;
     OkHttpClient client;
 
     Context context;
@@ -274,7 +274,7 @@ public class bbsPollFragment extends Fragment {
     void configureRecyclerview(){
         //pollOptionRecyclerview.setLayoutManager(new GridLayoutManager(getActivity(),2));
         pollOptionRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new bbsPollOptionAdapter();
+        adapter = new PollOptionAdapter();
         pollOptionRecyclerview.setAdapter(adapter);
         List<bbsPollInfo.option> options = pollInfo.options;
         if(options!= null && options.size() > 0){

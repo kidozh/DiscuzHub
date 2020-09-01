@@ -2,7 +2,6 @@ package com.kidozh.discuzhub.activities.ui.smiley;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.bbsSmileyAdapter;
+import com.kidozh.discuzhub.adapter.SmileyAdapter;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class SmileyFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String SMILEY_PARAM = "SMILEY";
 
-    bbsSmileyAdapter adapter;
+    SmileyAdapter adapter;
 
     // TODO: Rename and change types of parameters
 
@@ -99,7 +98,7 @@ public class SmileyFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 6, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new bbsSmileyAdapter(getContext(), (v1, position) -> {
+        adapter = new SmileyAdapter(getContext(), (v1, position) -> {
             ImageView img = (ImageView) v1;
             smileyClick(img.getDrawable(), position);
         });

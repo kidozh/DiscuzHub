@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.bbsSmileyAdapter;
+import com.kidozh.discuzhub.adapter.SmileyAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class bbsSmileyPicker extends PopupWindow {
     private static final String TAG = bbsSmileyPicker.class.getSimpleName();
     private Context mContext;
     private OnItemClickListener listener;
-    private bbsSmileyAdapter adapter;
+    private SmileyAdapter adapter;
     private List<bbsParseUtils.smileyInfo> allSmileyInfos = new ArrayList<>();
     private int smileyCateNum = 0;
 
@@ -113,7 +113,7 @@ public class bbsSmileyPicker extends PopupWindow {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 7, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new bbsSmileyAdapter(mContext, (v1, position) -> {
+        adapter = new SmileyAdapter(mContext, (v1, position) -> {
             ImageView img = (ImageView) v1;
             smileyClick(img.getDrawable(), position);
             dismiss();

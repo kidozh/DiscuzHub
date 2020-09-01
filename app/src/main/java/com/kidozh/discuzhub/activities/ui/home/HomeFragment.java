@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -63,7 +62,7 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
-        View root = inflater.inflate(R.layout.activity_bbs_show_category_forum, container, false);
+        View root = inflater.inflate(R.layout.activity_bbs_forum_index, container, false);
         ButterKnife.bind(this,root);
         getIntentInfo();
 
