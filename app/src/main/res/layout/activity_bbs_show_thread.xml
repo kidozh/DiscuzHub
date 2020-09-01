@@ -26,20 +26,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:theme="?attr/actionBarTheme">
-                    <TextView
-                        android:id="@+id/bbs_thread_subject"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_forum_description_outlined_24px"
-                        android:drawablePadding="8dp"
-                        android:textAlignment="viewStart"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:textStyle="bold"
-                        android:transitionName="bbs_thread_subject"
-                        tools:text="@tools:sample/cities" />
+
 
 
                 </androidx.appcompat.widget.Toolbar>
+
+                <TextView
+                    android:id="@+id/bbs_thread_subject"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_forum_description_outlined_24px"
+                    android:drawablePadding="8dp"
+                    android:textAlignment="viewStart"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textStyle="bold"
+                    android:transitionName="bbs_thread_subject"
+                    tools:text="@tools:sample/cities" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -159,10 +161,10 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/bbs_thread_detail_recyclerview"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="true"
                         android:visibility="visible"
-                        tools:itemCount="3"
+                        tools:itemCount="0"
                         tools:listitem="@layout/item_bbs_post">
 
 
@@ -180,7 +182,7 @@
                     <TextView
                         android:id="@+id/bbs_post_error_textview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginTop="8dp"
                         android:text="@string/bbs_no_thread_gotten"
                         android:textAlignment="center"
