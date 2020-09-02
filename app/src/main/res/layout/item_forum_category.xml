@@ -48,6 +48,7 @@
             android:id="@+id/portal_catagory_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
             tools:listitem="@layout/item_forum_concise" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
