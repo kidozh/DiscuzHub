@@ -554,5 +554,7 @@
     <string name="preference_title_collapse_forum_rule">折叠版规</string>
     <string name="preference_summary_on_collapse_forum_rule">5行外的文本将会被折叠，你可以点击文本以展开版规。</string>
     <string name="preference_summary_off_collapse_forum_rule">版规将会被完整显示，点击文本即可折叠版规。</string>
+    <string name="bulk_save_user_to_bbs_successfully_template">新增%1$d个用户。</string>
+    <string name="save_user_bbs_not_found">用户%1$s已经验证成功，但是我们在数据库中未能找到这个论坛（其url为：%2$s）。</string>
 
 </resources>

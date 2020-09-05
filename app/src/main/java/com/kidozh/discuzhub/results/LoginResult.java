@@ -8,6 +8,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class LoginResult extends BaseResult {
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonProperty("Variables")
-    public VariableResults variables;
+    public LoginVariableResult variables;
 
+    public static class LoginVariableResult extends VariableResults{
+        public String loginUrl;
+    }
 }

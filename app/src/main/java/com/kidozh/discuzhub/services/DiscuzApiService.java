@@ -1,9 +1,12 @@
 package com.kidozh.discuzhub.services;
 
+import com.kidozh.discuzhub.results.BaseResult;
 import com.kidozh.discuzhub.results.FavoriteForumResult;
 import com.kidozh.discuzhub.results.ApiMessageActionResult;
 import com.kidozh.discuzhub.results.FavoriteThreadResult;
+import com.kidozh.discuzhub.results.LoginResult;
 import com.kidozh.discuzhub.results.UserNoteListResult;
+import com.kidozh.discuzhub.results.VariableResults;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -73,5 +76,8 @@ public interface DiscuzApiService {
     Call<UserNoteListResult> userNotificationListResult(
             @Query("page") int page
     );
+
+    @GET(DISCUZ_API_PATH+"?version=4&module=login&mod=logging&action=login")
+    Call<LoginResult> getLoginResult();
 
 }

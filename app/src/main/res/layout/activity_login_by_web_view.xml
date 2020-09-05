@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.loginByWebViewActivity">
+    tools:context=".activities.WebViewLoginActivity">
 
     <ProgressBar
         android:id="@+id/login_by_web_progressBar"

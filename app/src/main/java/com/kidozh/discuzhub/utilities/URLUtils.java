@@ -262,6 +262,10 @@ public class URLUtils {
         return BASE_URL+"/member.php?mod=logging&action=login";
     }
 
+    public static String getLoginWebURL(@NonNull bbsInformation bbsInfo){
+        return bbsInfo.base_url + "/member.php?mod=logging&action=login";
+    }
+
     public static String getLoginSecondaryUrl(){
         return BASE_URL + "/api/mobile/index.php?version=4&module=login&mod=logging&action=login";
     }
@@ -276,21 +280,9 @@ public class URLUtils {
         return BASE_URL + String.format("/api/mobile/index.php?version=4&module=mythread&page=%s",page);
     }
 
-    public static String getNewThreadUrl(int fid){
-        return BASE_URL + String.format("/api/mobile/index.php?module=newthread&fid=%s&mobile=2&version=4",fid);
-    }
 
-    public static String getArticleListApiUrl(int fid, int page) {
-        return "api/mobile/index.php?version=4&module=forumdisplay&fid=" + fid + "&page=" + page;
-    }
 
-    public static String getArticleApiUrl(String tid, int page, int pageSize) {
-        return "api/mobile/index.php?version=4&module=viewthread&tid=" + tid + "&page=" + page + "&ppp=" + pageSize;
-    }
 
-    public static String getAttachmentImageUrl(String s){
-        return BASE_URL +"/data/attachment/forum/"+s;
-    }
 
     public static String getAttachmentWithAlienCode(String alienCode){
         Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
@@ -405,9 +397,6 @@ public class URLUtils {
         return BASE_URL+"/api/mobile/index.php?version=4&module=friend&uid="+uid+"&page="+page;
     }
 
-    public static String getNotificationListApiUrl(int page){
-        return BASE_URL+"/api/mobile/index.php?version=4&module=mynotelist&page="+page;
-    }
 
     public static String getSmileyApiUrl() {
         return BASE_URL + "/api/mobile/index.php?version=4&module=smiley";
@@ -417,19 +406,8 @@ public class URLUtils {
         return BASE_URL + "/static/image/smiley/"+path;
     }
 
-    public static String getSeccodeApiUrl(int idhash){
-        return BASE_URL + "/api/mobile/index.php?version=4&module=seccodehtml&sechash="+idhash;
-    }
 
-    public static String getProfileApiUrlByUid(int uid){
-        Uri builtUri = Uri.parse(BASE_URL+"/api/mobile/index.php")
-                .buildUpon()
-                .appendQueryParameter("version","4")
-                .appendQueryParameter("module","profile")
-                .appendQueryParameter("uid",String.valueOf(uid))
-                .build();
-        return builtUri.toString();
-    }
+
 
     public static String getUserProfileUrl(int uid){
         Uri builtUri = Uri.parse(BASE_URL+"/api/mobile/index.php")

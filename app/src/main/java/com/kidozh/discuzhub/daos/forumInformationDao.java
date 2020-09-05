@@ -23,6 +23,9 @@ public interface forumInformationDao {
     @Query("SELECT * FROM bbsInformation WHERE id=:id")
     bbsInformation getForumInformationById(int id);
 
+    @Query("SELECT * FROM bbsInformation WHERE base_url LIKE '%' || :baseURL || '%' ")
+    List<bbsInformation> getBBSInformationsByBaseURL(String baseURL);
+
     @Insert
     void insert(bbsInformation... bbsInformations);
 

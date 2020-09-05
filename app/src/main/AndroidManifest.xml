@@ -50,7 +50,15 @@
             android:name=".activities.UserProfileActivity"
             android:label="@string/title_activity_show_personal_info" />
         <activity android:name=".activities.bbsPrivateMessageDetailActivity" />
-        <activity android:name=".activities.loginByWebViewActivity" />
+        <activity android:name=".activities.WebViewLoginActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https" android:host="ssl.ptlogin2.qq.com" android:path="/jump"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activities.bbsShowPortalActivity"
             android:label="@string/title_activity_bbs_show_portal" />
