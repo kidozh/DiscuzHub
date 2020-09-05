@@ -69,4 +69,7 @@ public interface ViewHistoryDao {
 
     @Query("SELECT COUNT(id) FROM VIEWHISTORY where belongedBBSId=:belongBBSId")
     public Integer getViewHistoryCount(int belongBBSId);
+
+    @Query("DELETE FROM ViewHistory WHERE id not in (SELECT id from ViewHistory ORDER BY id DESC LIMIT 500)")
+    void deleteViewHistoriesByLimit();
 }

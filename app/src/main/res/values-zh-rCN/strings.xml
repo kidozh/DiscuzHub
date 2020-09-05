@@ -559,5 +559,8 @@
     <string name="qq_login_feedback">使用QQ或者TIM登录论坛账号</string>
     <string name="qq_login_title">使用QQ登录论坛账号</string>
     <string name="qq_login_message">你正要使用QQ登陆账号。当您在QQ或者TIM中授权允许账号后，请在随后打开的对话框中选择DiscuzHub来完成登录操作。</string>
+    <string name="preference_title_clear_history_periodically">定时清理多余的浏览历史。</string>
+    <string name="preference_summary_on_clear_history_periodically">应用将会在设备空闲时定期清理多余的浏览历史。（国内定制ROM可能会阻止这一过程）</string>
+    <string name="preference_summary_off_clear_history_periodically">冗余的历史记录不会被清除，这可能导致应用运行时卡顿。</string>
 
 </resources>

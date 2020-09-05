@@ -742,6 +742,10 @@
     <string name="qq_login_feedback">Using QQ or TIM to login the bbs.</string>
     <string name="qq_login_title">Using QQ login</string>
     <string name="qq_login_message">You are logining via QQ. Once you authorize the account in QQ/TIM, please select DiscuzHub in selecting dialog to login via QQ number.</string>
+    <string name="preference_key_clear_history_periodically" translatable="false">preference_key_clear_history_periodically</string>
+    <string name="preference_title_clear_history_periodically">Clear view histories automatically.</string>
+    <string name="preference_summary_on_clear_history_periodically">App will clear over-much view history when device is idle.</string>
+    <string name="preference_summary_off_clear_history_periodically">All view histories will store and may possibly make app run slow.</string>
 
 
 </resources>

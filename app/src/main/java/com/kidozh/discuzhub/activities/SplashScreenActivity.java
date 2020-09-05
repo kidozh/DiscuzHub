@@ -23,6 +23,8 @@ import android.widget.TextView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
+import com.kidozh.discuzhub.works.AutoClearHistoriesWork;
 import com.kidozh.discuzhub.works.PushUserNotificationWork;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.notificationUtils;
@@ -108,6 +110,20 @@ public class SplashScreenActivity extends BaseStatusActivity {
                 break;
         }
         WorkManager.getInstance(this).cancelAllWork();
+
+        // auto clear
+        if(UserPreferenceUtils.autoClearViewHistories(this)){
+            Constraints autoClearConstraints = new Constraints.Builder()
+                    .setRequiresBatteryNotLow(true)
+                    .setRequiresDeviceIdle(true)
+                    .build();
+            PeriodicWorkRequest autoClearRequest = new PeriodicWorkRequest.Builder(AutoClearHistoriesWork.class,1, TimeUnit.DAYS)
+                    .setConstraints(autoClearConstraints)
+                    .build();
+            WorkManager.getInstance(this).enqueue(autoClearRequest);
+        }
+
+
 
         for(int i=0; i<allUsers.size();i++){
 

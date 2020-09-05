@@ -74,4 +74,10 @@ public class UserPreferenceUtils {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(preferenceName,true);
     }
+
+    public static boolean autoClearViewHistories(@NonNull Context context){
+        String preferenceName = context.getString(R.string.preference_key_clear_history_periodically);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(preferenceName,true);
+    }
 }
