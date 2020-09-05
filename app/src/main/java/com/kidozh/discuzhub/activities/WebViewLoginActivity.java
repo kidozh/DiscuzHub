@@ -21,6 +21,8 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
@@ -189,6 +191,18 @@ public class WebViewLoginActivity extends BaseStatusActivity {
         }
     }
 
+    private void triggerQQLoginNoticeDialog(String url){
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this)
+                .setTitle(getString(R.string.qq_login_title))
+                .setMessage(getString(R.string.qq_login_message))
+                .setPositiveButton(android.R.string.ok,
+                        (dialog,which)->{
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                            startActivityForResult(intent,0);
+                        });
+        builder.show();
+    }
+
     public class cookieWebViewClient extends WebViewClient {
         CookieManager cookieManager;
 
@@ -200,9 +214,10 @@ public class WebViewLoginActivity extends BaseStatusActivity {
             if (url.startsWith("wtloginmqq://ptlogin/qlogin")) {
                 // to new
                 Log.d(TAG,"GET redirect URL "+url);
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivityForResult(intent,0);
-                return false;
+                // trigger the dialog
+                triggerQQLoginNoticeDialog(url);
+
+                return true;
             }
             else {
                 webview.loadUrl(url);

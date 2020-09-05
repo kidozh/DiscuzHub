@@ -739,6 +739,9 @@
     <string name="preference_summary_off_collapse_forum_rule">The forum rule will be originally displayed. Click the text to collapse it.</string>
     <string name="bulk_save_user_to_bbs_successfully_template">Saving %1$d users to database.</string>
     <string name="save_user_bbs_not_found">User %1$s verified successfully but no bbs(base url:%2$s) found in database.</string>
+    <string name="qq_login_feedback">Using QQ or TIM to login the bbs.</string>
+    <string name="qq_login_title">Using QQ login</string>
+    <string name="qq_login_message">You are logining via QQ. Once you authorize the account in QQ/TIM, please select DiscuzHub in selecting dialog to login via QQ number.</string>
 
 
 </resources>

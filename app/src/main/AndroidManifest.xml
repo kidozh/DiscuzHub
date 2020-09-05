@@ -50,7 +50,9 @@
             android:name=".activities.UserProfileActivity"
             android:label="@string/title_activity_show_personal_info" />
         <activity android:name=".activities.bbsPrivateMessageDetailActivity" />
-        <activity android:name=".activities.WebViewLoginActivity"
+        <activity
+            android:label="@string/qq_login_feedback"
+            android:name=".activities.WebViewLoginActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT"/>
