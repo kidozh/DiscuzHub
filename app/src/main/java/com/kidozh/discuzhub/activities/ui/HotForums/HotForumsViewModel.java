@@ -82,7 +82,7 @@ public class HotForumsViewModel extends AndroidViewModel {
                 }
                 else {
                     errorMessageMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),
-                            getApplication().getString(R.string.discuz_network_result_null,response.message())));
+                            getApplication().getString(R.string.discuz_network_unsuccessful,response.message())));
 
                 }
                 isLoadingMutableLiveData.postValue(false);

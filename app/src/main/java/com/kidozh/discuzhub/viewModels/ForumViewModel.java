@@ -8,15 +8,18 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.FavoriteForumDatabase;
 import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
+import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.FavoriteForum;
+import com.kidozh.discuzhub.entities.DisplayForumQueryStatus;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ForumResult;
-import com.kidozh.discuzhub.results.UserFriendResult;
+import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -26,44 +29,44 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
+
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ForumViewModel extends AndroidViewModel {
     private String TAG = ForumViewModel.class.getSimpleName();
 
-    public MutableLiveData<URLUtils.ForumStatus> forumStatusMutableLiveData;
+    public MutableLiveData<DisplayForumQueryStatus> forumStatusMutableLiveData;
 
-    bbsInformation curBBS;
-    forumUserBriefInfo curUser;
+    bbsInformation bbsInfo;
+    forumUserBriefInfo userBriefInfo;
     ForumInfo forum;
     private OkHttpClient client;
 
-    public MutableLiveData<Boolean> isLoading, isError, hasLoadAll;
+    public MutableLiveData<Boolean> isLoading, hasLoadAll;
     public MutableLiveData<List<ThreadInfo>> threadInfoListMutableLiveData;
-    public MutableLiveData<String> jsonString, forumDescription, forumRule;
+
     public LiveData<Integer> draftNumberLiveData;
     public MutableLiveData<ForumInfo> forumDetailedInfoMutableLiveData;
     public MutableLiveData<ForumResult> displayForumResultMutableLiveData;
     public LiveData<FavoriteForum> favoriteForumLiveData;
     public MutableLiveData<Boolean> ruleTextCollapse = new MutableLiveData<>(true);
+    public MutableLiveData<ErrorMessage> errorMessageMutableLiveData = new MutableLiveData<>(null);
+    public MutableLiveData<Boolean> loadAllNoticeOnce = new MutableLiveData<>(false);
 
 
 
 
     public ForumViewModel(@NonNull Application application) {
         super(application);
-        forumStatusMutableLiveData = new MutableLiveData<URLUtils.ForumStatus>();
+        forumStatusMutableLiveData = new MutableLiveData<DisplayForumQueryStatus>();
         isLoading = new MutableLiveData<Boolean>(false);
-        isError = new MutableLiveData<Boolean>(false);
-        isError.setValue(false);
+
         isLoading.setValue(false);
-        jsonString = new MutableLiveData<>();
-        forumDescription = new MutableLiveData<>("");
-        forumRule = new MutableLiveData<>("");
+
         hasLoadAll = new MutableLiveData<>(false);
         draftNumberLiveData = bbsThreadDraftDatabase
                 .getInstance(getApplication())
@@ -76,8 +79,8 @@ public class ForumViewModel extends AndroidViewModel {
     }
 
     public void setBBSInfo(@NonNull bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, ForumInfo forum){
-        this.curBBS = bbsInfo;
-        this.curUser = userBriefInfo;
+        this.bbsInfo = bbsInfo;
+        this.userBriefInfo = userBriefInfo;
         this.forum = forum;
         URLUtils.setBBS(bbsInfo);
         client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
@@ -95,98 +98,106 @@ public class ForumViewModel extends AndroidViewModel {
     public LiveData<List<ThreadInfo>> getThreadInfoListLiveData(){
         if(threadInfoListMutableLiveData == null){
             threadInfoListMutableLiveData = new MutableLiveData<>();
-            URLUtils.ForumStatus forumStatus = new URLUtils.ForumStatus(forum.fid,1);
-            setForumStatusAndFetchThread(forumStatus);
+            DisplayForumQueryStatus displayForumQueryStatus = new DisplayForumQueryStatus(forum.fid,1);
+            setForumStatusAndFetchThread(displayForumQueryStatus);
         }
         return threadInfoListMutableLiveData;
     }
 
-    public void setForumStatusAndFetchThread(URLUtils.ForumStatus forumStatus){
-        forumStatusMutableLiveData.postValue(forumStatus);
-        getThreadList(forumStatus);
+    public void setForumStatusAndFetchThread(DisplayForumQueryStatus displayForumQueryStatus){
+        forumStatusMutableLiveData.postValue(displayForumQueryStatus);
+        getThreadList(displayForumQueryStatus);
     }
 
-    public void getThreadList(URLUtils.ForumStatus forumStatus){
+    public void getThreadList(DisplayForumQueryStatus displayForumQueryStatus){
         boolean loading = isLoading.getValue();
-        if(loading){
+        boolean loadAll = hasLoadAll.getValue();
+        if(displayForumQueryStatus.page == 1){
+            loadAll = false;
+            loadAllNoticeOnce.postValue(false);
+        }
+
+        if(loading || loadAll){
             return;
         }
-        isError.postValue(false);
+
         isLoading.postValue(true);
-        Request request = new Request.Builder()
-                .url(URLUtils.getForumUrlByStatus(forumStatus))
-                .build();
-        Log.d(TAG,"Send request to "+ URLUtils.getForumUrlByStatus(forumStatus));
-
-        client.newCall(request).enqueue(new Callback() {
+        Retrofit retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        DiscuzApiService service = retrofit.create(DiscuzApiService.class);
+        Call<ForumResult> forumResultCall = service.forumDisplayResult(displayForumQueryStatus.generateQueryHashMap());
+        forumResultCall.enqueue(new Callback<ForumResult>() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                isLoading.postValue(false);
-                isError.postValue(true);
+            public void onResponse(Call<ForumResult> call, Response<ForumResult> response) {
                 // clear status if page == 1
-                if(forumStatus.page == 1){
-                    threadInfoListMutableLiveData.postValue(new ArrayList<>());
-                }
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                // clear status if page == 1
-                if(forumStatus.page == 1){
-                    threadInfoListMutableLiveData.postValue(new ArrayList<>());
-                }
 
                 if(response.isSuccessful() && response.body()!=null){
-                    String s = response.body().string();
-                    jsonString.postValue(s);
-                    Log.d(TAG,"recv forum thread json "+s);
-                    ForumResult forumResult = bbsParseUtils.parseForumInfo(s);
+                    ForumResult forumResult = response.body();
                     displayForumResultMutableLiveData.postValue(forumResult);
-                    if(forumResult !=null){
-                        Log.d(TAG, "Get forum Result" + forumResult);
-                        // for list display
-                        List<ThreadInfo> threadInfoList = forumResult.forumVariables.forumThreadList;
-                        List<ThreadInfo> currentThreadInfo = threadInfoListMutableLiveData.getValue();
-                        if(currentThreadInfo == null){
-                            currentThreadInfo = new ArrayList<>();
-                        }
+                    Log.d(TAG, "Get forum Result" + forumResult);
+                    if(forumResult.message!=null){
+                        errorMessageMutableLiveData.postValue(forumResult.message.toErrorMessage());
+                    }
 
-                        if(threadInfoList == null){
-                            isError.postValue(true);
-                            if(forumStatus.page != 1){
+                    // for list display
+                    List<ThreadInfo> threadInfoList = forumResult.forumVariables.forumThreadList;
+                    List<ThreadInfo> currentThreadInfo = threadInfoListMutableLiveData.getValue();
+                    if(currentThreadInfo == null || displayForumQueryStatus.page == 1){
+                        currentThreadInfo = new ArrayList<>();
+                    }
+
+                    if(threadInfoList == null){
+
+                        if(displayForumQueryStatus.page != 1){
+                            // rollback
+                            displayForumQueryStatus.page -= 1;
+                            forumStatusMutableLiveData.postValue(displayForumQueryStatus);
+                        }
+                        errorMessageMutableLiveData.postValue(new ErrorMessage(
+                                getApplication().getString(R.string.empty_result),
+                                getApplication().getString(R.string.discuz_network_result_null)
+                        ));
+                    }
+                    else {
+                        currentThreadInfo.addAll(threadInfoList);
+                        threadInfoListMutableLiveData.postValue(currentThreadInfo);
+                        int totalThreadNumber = forumResult.forumVariables.forumInfo.threadCount;
+                        if(currentThreadInfo.size() >= totalThreadNumber){
+                            hasLoadAll.postValue(true);
+                            if(displayForumQueryStatus.page != 1){
                                 // rollback
-                                forumStatus.page -= 1;
-                                forumStatusMutableLiveData.postValue(forumStatus);
+                                displayForumQueryStatus.page -= 1;
+                                forumStatusMutableLiveData.postValue(displayForumQueryStatus);
                             }
                         }
                         else {
-                            currentThreadInfo.addAll(threadInfoList);
-                            threadInfoListMutableLiveData.postValue(currentThreadInfo);
-                            int totalThreadNumber = forumResult.forumVariables.forumInfo.threads;
-                            if(currentThreadInfo.size() >= totalThreadNumber){
-                                hasLoadAll.postValue(true);
-                                if(forumStatus.page != 1){
-                                    // rollback
-                                    forumStatus.page -= 1;
-                                    forumStatusMutableLiveData.postValue(forumStatus);
-                                }
-                            }
-
+                            loadAllNoticeOnce.postValue(false);
                         }
-                        forumDetailedInfoMutableLiveData.postValue(forumResult.forumVariables.forumInfo);
 
                     }
-                    else {
-                        isError.postValue(true);
-                    }
-
+                    forumDetailedInfoMutableLiveData.postValue(forumResult.forumVariables.forumInfo);
                 }
                 else {
-                    isError.postValue(true);
+                    errorMessageMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),
+                            getApplication().getString(R.string.discuz_network_unsuccessful,response.message())));
                 }
                 isLoading.postValue(false);
             }
+
+            @Override
+            public void onFailure(Call<ForumResult> call, Throwable t) {
+                if(displayForumQueryStatus.page == 1){
+                    threadInfoListMutableLiveData.postValue(new ArrayList<>());
+                }
+                errorMessageMutableLiveData.postValue(new ErrorMessage(
+                        getApplication().getString(R.string.discuz_network_failure_template),
+                        t.getLocalizedMessage() == null?t.toString():t.getLocalizedMessage()
+                ));
+                isLoading.postValue(false);
+            }
         });
+
+        Log.d(TAG,"Send request to "+ forumResultCall.request().url().toString());
+
 
     }
 

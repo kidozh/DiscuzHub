@@ -564,7 +564,10 @@
     <string name="preference_summary_off_clear_history_periodically">冗余的历史记录不会被清除，这可能导致应用运行时卡顿。</string>
     <string name="discuz_network_failure_template">网络错误</string>
     <string name="empty_result">空结果</string>
-    <string name="discuz_network_result_null">服务器返回了一个空结果。(%1$s)</string>
+    <string name="discuz_network_unsuccessful">服务器返回了一个结果，但其并不能被解析。（%1$s）</string>
     <string name="discuz_api_error">接口错误</string>
+    <string name="discuz_network_result_null">目前没有条目。</string>
+    <string name="has_load_all_threads_in_forum">已经加载了所有的%1$d条帖子。</string>
+    <string name="all_posts_loaded_template">已经加载了所有的%1$d楼层。</string>
 
 </resources>

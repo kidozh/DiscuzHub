@@ -6,10 +6,15 @@ import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.results.FavoriteForumResult;
 import com.kidozh.discuzhub.results.ApiMessageActionResult;
 import com.kidozh.discuzhub.results.FavoriteThreadResult;
+import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.results.HotForumsResult;
 import com.kidozh.discuzhub.results.LoginResult;
+import com.kidozh.discuzhub.results.SecureInfoResult;
+import com.kidozh.discuzhub.results.ThreadResult;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.results.VariableResults;
+
+import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -17,6 +22,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 public interface DiscuzApiService {
     public static String DISCUZ_API_PATH = "/api/mobile/index.php";
@@ -93,4 +99,13 @@ public interface DiscuzApiService {
 
     @GET(DISCUZ_API_PATH+"?version=4&module=forumindex")
     Call<BBSIndexResult> indexResult();
+
+    @GET(DISCUZ_API_PATH+"?version=4&module=forumdisplay")
+    Call<ForumResult> forumDisplayResult(@QueryMap HashMap<String,String> options);
+
+    @GET(DISCUZ_API_PATH+"?version=4&module=viewthread")
+    Call<ThreadResult> viewThreadResult(@QueryMap HashMap<String,String> options);
+
+    @GET(DISCUZ_API_PATH+"?version=4&module=secure")
+    Call<SecureInfoResult> secureResult(@Query("type") String type);
 }

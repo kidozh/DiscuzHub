@@ -71,6 +71,7 @@ import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.ThreadCount;
 import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.entities.ViewThreadQueryStatus;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
@@ -139,8 +140,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
     Chip mThreadReplyBadge;
     @BindView(R.id.bbs_thread_detail_reply_content)
     TextView mThreadReplyContent;
-    @BindView(R.id.bbs_post_error_textview)
-    TextView noMoreThreadFound;
+    
     @BindView(R.id.bbs_comment_smiley_constraintLayout)
     ConstraintLayout mCommentSmileyConstraintLayout;
     @BindView(R.id.bbs_comment_smiley_tabLayout)
@@ -163,8 +163,14 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
     ImageView mPostCaptchaImageview;
     @BindView(R.id.bbs_post_captcha_editText)
     EditText mPostCaptchaEditText;
-    @BindView(R.id.bbs_post_error_imageview)
-    ImageView errorPostImageview;
+    @BindView(R.id.error_content)
+    TextView errorContent;
+    @BindView(R.id.error_view)
+    View errorView;
+    @BindView(R.id.error_value)
+    TextView errorValue;
+    @BindView(R.id.error_icon)
+    ImageView errorIcon;
     @BindView(R.id.advance_post_icon)
     ImageView mAdvancePostIcon;
 
@@ -237,9 +243,9 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
     }
 
     private void initThreadStatus(){
-        URLUtils.ThreadStatus threadStatus = new URLUtils.ThreadStatus(tid,1);
+        ViewThreadQueryStatus viewThreadQueryStatus = new ViewThreadQueryStatus(tid,1);
         Log.d(TAG,"Set status when init data");
-        threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
+        threadDetailViewModel.threadStatusMutableLiveData.setValue(viewThreadQueryStatus);
     }
 
     private boolean checkWithPerm(int status, int perm){
@@ -283,6 +289,18 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                     authorid = threadResult.threadPostVariables.detailedThreadInfo.authorId;
                 }
                 adapter.setThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue(),authorid);
+                if(adapter.getItemCount() == 0){
+                    errorView.setVisibility(View.VISIBLE);
+                    if(threadDetailViewModel.errorMessageMutableLiveData.getValue() == null){
+                        errorView.setVisibility(View.VISIBLE);
+                        errorIcon.setImageResource(R.drawable.ic_blank_forum_thread_64px);
+                        errorValue.setText("");
+                        errorContent.setText(getString(R.string.discuz_network_result_null));
+                    }
+                }
+                else {
+                    errorView.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -292,26 +310,21 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                 swipeRefreshLayout.setRefreshing(aBoolean);
             }
         });
-
-        threadDetailViewModel.error.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
-                    Toasty.error(getApplication(), getString(R.string.network_failed), Toast.LENGTH_LONG).show();
-                    noMoreThreadFound.setVisibility(View.VISIBLE);
-                    errorPostImageview.setVisibility(View.VISIBLE);
-                    String errorText = threadDetailViewModel.errorText.getValue();
-                    if(errorText == null || errorText.length() == 0){
-                        noMoreThreadFound.setText(R.string.parse_post_failed);
-                    }
-                    else {
-                        noMoreThreadFound.setText(errorText);
-                    }
-
-                }
-
+        
+        threadDetailViewModel.errorMessageMutableLiveData.observe(this, errorMessage ->{
+            if(errorMessage!=null){
+                Toasty.error(getApplication(), 
+                        getString(R.string.discuz_api_error_template,errorMessage.key,errorMessage.content), 
+                        Toast.LENGTH_LONG).show();
+                errorView.setVisibility(View.VISIBLE);
+                errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
+                errorValue.setText(errorMessage.key);
+                errorContent.setText(errorMessage.content);
+                VibrateUtils.vibrateForError(getApplication());
             }
         });
+
+
 
         threadDetailViewModel.pollInfoLiveData.observe(this, new Observer<bbsPollInfo>() {
             @Override
@@ -338,14 +351,14 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
             }
         });
 
-        threadDetailViewModel.threadStatusMutableLiveData.observe(this, new Observer<URLUtils.ThreadStatus>() {
+        threadDetailViewModel.threadStatusMutableLiveData.observe(this, new Observer<ViewThreadQueryStatus>() {
             @Override
-            public void onChanged(URLUtils.ThreadStatus threadStatus) {
+            public void onChanged(ViewThreadQueryStatus viewThreadQueryStatus) {
 
-                Log.d(TAG,"Livedata changed " + threadStatus.datelineAscend);
+                Log.d(TAG,"Livedata changed " + viewThreadQueryStatus.datelineAscend);
                 if(getSupportActionBar()!=null){
 
-                    if(threadStatus.datelineAscend){
+                    if(viewThreadQueryStatus.datelineAscend){
 
                         getSupportActionBar().setSubtitle(getString(R.string.bbs_thread_status_ascend));
                     }
@@ -587,16 +600,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                     }
 
                     Log.d(TAG,"Thread post result error "+ threadResult.isError()+" "+ threadResult.threadPostVariables.message);
-                    if(threadResult.isError()){
 
-                        noMoreThreadFound.setVisibility(View.VISIBLE);
-                        noMoreThreadFound.setText(threadResult.message.content);
-                        errorPostImageview.setVisibility(View.VISIBLE);
-                    }
-                    else {
-                        noMoreThreadFound.setVisibility(View.GONE);
-                        errorPostImageview.setVisibility(View.GONE);
-                    }
 
                     Map<String,String> rewriteRule = threadResult.threadPostVariables.rewriteRule;
                     if(rewriteRule!=null){
@@ -852,7 +856,6 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                             allSmileyInfos = smileyInfoList;
                             // update the UI
                             // viewpager
-                            //adapter.setSmileyInfos(smileyInfoList);
                             // interface with tab
                             for(int i=0;i<cateNum;i++){
                                 mCommentSmileyTabLayout.removeAllTabs();
@@ -927,14 +930,14 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
 
     @Override
     public void setAuthorId(int authorId) {
-        URLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+        ViewThreadQueryStatus viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
 
-        if(threadStatus!=null){
-            threadStatus.setInitAuthorId(authorId);
+        if(viewThreadQueryStatus !=null){
+            viewThreadQueryStatus.setInitAuthorId(authorId);
         }
 
         //threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
-        reloadThePage(threadStatus);
+        reloadThePage(viewThreadQueryStatus);
 
         // refresh it
         threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
@@ -1391,10 +1394,10 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                 super.onScrollStateChanged(recyclerView, newState);
 
                 if(isScrollAtEnd()){
-                    URLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+                    ViewThreadQueryStatus viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
                     boolean isLoading = threadDetailViewModel.isLoading.getValue();
                     boolean hasLoadAll = threadDetailViewModel.hasLoadAll.getValue();
-                    if(!isLoading && threadStatus !=null){
+                    if(!isLoading && viewThreadQueryStatus !=null){
                         if(hasLoadAll){
                             // load all posts
                             if(!notifyLoadAll){
@@ -1404,13 +1407,15 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                                 }
                                 notifyLoadAll = true;
                                 threadDetailViewModel.notifyLoadAll.postValue(true);
-                                Toasty.success(getApplication(),getString(R.string.bbs_forum_thread_load_all),Toast.LENGTH_LONG).show();
+                                Toasty.success(getApplication(),
+                                        getString(R.string.all_posts_loaded_template,adapter.getItemCount()),
+                                        Toast.LENGTH_LONG).show();
                             }
 
                         }
                         else {
-                            threadStatus.page += 1;
-                            threadDetailViewModel.getThreadDetail(threadStatus);
+                            viewThreadQueryStatus.page += 1;
+                            threadDetailViewModel.getThreadDetail(viewThreadQueryStatus);
                         }
 
                     }
@@ -1600,23 +1605,23 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
     }
 
     private void reloadThePage(){
-        URLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
-        if(threadStatus!=null){
+        ViewThreadQueryStatus viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+        if(viewThreadQueryStatus !=null){
 
-            threadStatus.setInitPage(1);
+            viewThreadQueryStatus.setInitPage(1);
         }
         Log.d(TAG,"Set status when reload page");
-        threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
+        threadDetailViewModel.threadStatusMutableLiveData.setValue(viewThreadQueryStatus);
         threadDetailViewModel.notifyLoadAll.setValue(false);
         notifyLoadAll = false;
     }
 
-    private void reloadThePage(URLUtils.ThreadStatus threadStatus){
-        if(threadStatus!=null){
-            threadStatus.setInitPage(1);
+    private void reloadThePage(ViewThreadQueryStatus viewThreadQueryStatus){
+        if(viewThreadQueryStatus !=null){
+            viewThreadQueryStatus.setInitPage(1);
         }
-        Log.d(TAG,"Set status when init data "+threadStatus);
-        threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
+        Log.d(TAG,"Set status when init data "+ viewThreadQueryStatus);
+        threadDetailViewModel.threadStatusMutableLiveData.setValue(viewThreadQueryStatus);
         threadDetailViewModel.notifyLoadAll.setValue(false);
         notifyLoadAll = false;
     }
@@ -1832,13 +1837,13 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        URLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+        ViewThreadQueryStatus viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
         String currentUrl = "";
-        if(threadStatus == null){
+        if(viewThreadQueryStatus == null){
             currentUrl = URLUtils.getViewThreadUrl(tid,"1");
         }
         else {
-            currentUrl = URLUtils.getViewThreadUrl(tid,String.valueOf(threadStatus.page));
+            currentUrl = URLUtils.getViewThreadUrl(tid,String.valueOf(viewThreadQueryStatus.page));
         }
 
         switch (item.getItemId()) {
@@ -1884,28 +1889,28 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
             }
             case R.id.bbs_forum_nav_dateline_sort:{
                 Context context = this;
-                threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
-                Log.d(TAG,"You press sort btn "+threadStatus.datelineAscend);
-                // bbsURLUtils.ThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
-                if(threadStatus!=null){
-                    threadStatus.datelineAscend = !threadStatus.datelineAscend;
-                    Log.d(TAG,"Changed Ascend mode "+threadStatus.datelineAscend);
+                viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+                Log.d(TAG,"You press sort btn "+ viewThreadQueryStatus.datelineAscend);
+                // bbsThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+                if(viewThreadQueryStatus !=null){
+                    viewThreadQueryStatus.datelineAscend = !viewThreadQueryStatus.datelineAscend;
+                    Log.d(TAG,"Changed Ascend mode "+ viewThreadQueryStatus.datelineAscend);
 
 
                     Log.d(TAG,"Apply Ascend mode "+threadDetailViewModel.threadStatusMutableLiveData.getValue().datelineAscend);
-                    reloadThePage(threadStatus);
+                    reloadThePage(viewThreadQueryStatus);
                     Log.d(TAG,"After reload Ascend mode "+threadDetailViewModel.threadStatusMutableLiveData.getValue().datelineAscend);
 
-                    if(threadStatus.datelineAscend){
+                    if(viewThreadQueryStatus.datelineAscend){
                         Toasty.success(context,getString(R.string.bbs_thread_status_ascend),Toast.LENGTH_SHORT).show();
                     }
                     else {
                         Toasty.success(context,getString(R.string.bbs_thread_status_descend),Toast.LENGTH_SHORT).show();
                     }
                     // reload the parameters
-                    Log.d(TAG,"dateline ascend "+threadStatus.datelineAscend);
+                    Log.d(TAG,"dateline ascend "+ viewThreadQueryStatus.datelineAscend);
 
-                    threadDetailViewModel.getThreadDetail(threadStatus);
+                    threadDetailViewModel.getThreadDetail(viewThreadQueryStatus);
 
                     invalidateOptionsMenu();
 
@@ -1988,10 +1993,10 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
 
         if(getSupportActionBar()!=null){
 
-            URLUtils.ThreadStatus ThreadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
-            if(ThreadStatus !=null){
-                Log.d(TAG,"ON CREATE GET ascend mode in menu "+ThreadStatus.datelineAscend);
-                if(ThreadStatus.datelineAscend){
+            ViewThreadQueryStatus ViewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+            if(ViewThreadQueryStatus !=null){
+                Log.d(TAG,"ON CREATE GET ascend mode in menu "+ ViewThreadQueryStatus.datelineAscend);
+                if(ViewThreadQueryStatus.datelineAscend){
                     menu.findItem(R.id.bbs_forum_nav_dateline_sort).setIcon(ContextCompat.getDrawable(getApplication(),R.drawable.vector_drawable_arrow_upward_24px));
                 }
                 else {
@@ -2011,10 +2016,10 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        URLUtils.ThreadStatus ThreadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
-        if(ThreadStatus !=null){
-            Log.d(TAG,"ON PREPARE GET ascend mode in menu "+ThreadStatus.datelineAscend);
-            if(ThreadStatus.datelineAscend){
+        ViewThreadQueryStatus ViewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+        if(ViewThreadQueryStatus !=null){
+            Log.d(TAG,"ON PREPARE GET ascend mode in menu "+ ViewThreadQueryStatus.datelineAscend);
+            if(ViewThreadQueryStatus.datelineAscend){
                 menu.findItem(R.id.bbs_forum_nav_dateline_sort).setIcon(getDrawable(R.drawable.vector_drawable_arrow_upward_24px));
             }
             else {

@@ -38,7 +38,7 @@ public class MyImageGetter implements Html.ImageGetter {
 
     @Override
     public Drawable getDrawable(String source) {
-        Log.d(TAG,"Get drawable "+source);
+        //Log.d(TAG,"Get drawable "+source);
         MyDrawableWrapper myDrawable = new MyDrawableWrapper();
         Drawable drawable = context.getDrawable(R.drawable.vector_drawable_loading_image);
         myDrawable.setDrawable(drawable);
@@ -47,7 +47,7 @@ public class MyImageGetter implements Html.ImageGetter {
         Glide.get(context)
                 .getRegistry()
                 .replace(GlideUrl.class, InputStream.class,factory);
-        Log.d(TAG,"Load image from "+source);
+        //Log.d(TAG,"Load image from "+source);
         if(networkUtils.canDownloadImageOrFile(context) || isFileDownloadAllowed){
 
 

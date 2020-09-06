@@ -135,7 +135,7 @@ public class HotThreadsViewModel extends AndroidViewModel {
                 }
                 else {
                     errorMessageMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),
-                            getApplication().getString(R.string.discuz_network_result_null,response.message())));
+                            getApplication().getString(R.string.discuz_network_unsuccessful,response.message())));
                 }
                 isLoading.postValue(false);
             }

@@ -68,7 +68,7 @@ class GlideImageTarget extends CustomTarget<Drawable> {
         myDrawable.setBounds(0,0,screenWidth,newHeight);
         errorDrawable.setBounds(0,0,screenWidth,newHeight);
 
-        Log.d(TAG,"Failed to load the image in the textview "+width + " "+height+" Scale factor "+rescaleFactor);
+        //Log.d(TAG,"Failed to load the image in the textview "+width + " "+height+" Scale factor "+rescaleFactor);
 
         myDrawable.setDrawable(errorDrawable);
 
@@ -97,14 +97,14 @@ class GlideImageTarget extends CustomTarget<Drawable> {
             @Override
             public void run() {
                 int screenWidth =  textView.getWidth();
-                Log.d(TAG,"Screen width "+screenWidth+" image width "+width);
+                //Log.d(TAG,"Screen width "+screenWidth+" image width "+width);
                 if (screenWidth / width < 3){
                     double rescaleFactor = ((double) screenWidth) / width;
                     if(rescaleFactor <=0){
                         rescaleFactor = 1;
                     }
                     int newHeight = (int) (height * rescaleFactor);
-                    Log.d(TAG,"rescaleFactor "+rescaleFactor+" image new height "+newHeight);
+                    //Log.d(TAG,"rescaleFactor "+rescaleFactor+" image new height "+newHeight);
                     myDrawable.setBounds(0,0,screenWidth,newHeight);
                     drawable.setBounds(0,0,screenWidth,newHeight);
                 }
@@ -112,7 +112,7 @@ class GlideImageTarget extends CustomTarget<Drawable> {
                     myDrawable.setBounds(0,0,width*2,height*2);
                     drawable.setBounds(0,0,width*2,height*2);
                 }
-                Log.d(TAG, "Get bit map "+width);
+                //Log.d(TAG, "Get bit map "+width);
                 myDrawable.setDrawable(drawable);
             }
         });

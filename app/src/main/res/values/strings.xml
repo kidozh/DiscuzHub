@@ -748,8 +748,11 @@
     <string name="preference_summary_off_clear_history_periodically">All view histories will store and may possibly make app run slow.</string>
     <string name="discuz_network_failure_template">Network error</string>
     <string name="empty_result">Empty result</string>
-    <string name="discuz_network_result_null">Get a response from server but a null object.(%1$s)</string>
+    <string name="discuz_network_unsuccessful">Get a response from server but it can\'t be parsed.(%1$s)</string>
     <string name="discuz_api_error">API error</string>
+    <string name="discuz_network_result_null">No item is offered.</string>
+    <string name="has_load_all_threads_in_forum">Has load all %1$d threads in the forum.</string>
+    <string name="all_posts_loaded_template">All %1$d posts are loaded.</string>
 
 
 </resources>

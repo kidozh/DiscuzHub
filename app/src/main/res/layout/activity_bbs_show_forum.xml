@@ -198,30 +198,42 @@
 
 
                 <LinearLayout
-                    android:id="@+id/bbs_forum_error_layout"
+                    android:id="@+id/error_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <ImageView
-                        android:id="@+id/bbs_forum_error_icon"
+                        android:id="@+id/error_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="8dp"
-                        app:srcCompat="@drawable/ic_suggestion_check_error_outline_24px" />
+                        app:srcCompat="@drawable/ic_blank_forum_thread_64px" />
 
                     <TextView
-                        android:id="@+id/bbs_forum_error_textview"
+                        android:id="@+id/error_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:lines="1"
+                        android:textAlignment="center"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/colorTextDefault"
+                        tools:text="@tools:sample/us_phones" />
+
+                    <TextView
+                        android:id="@+id/error_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="8dp"
-                        android:paddingTop="8dp"
                         android:paddingBottom="8dp"
-                        android:textAlignment="center"
-                        tools:text="@tools:sample/cities" />
+                        android:text="@string/discuz_network_result_null"
+                        android:textAlignment="center" />
                 </LinearLayout>
 
                 <Button

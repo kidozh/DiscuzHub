@@ -51,6 +51,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.entities.PostInfo;
+import com.kidozh.discuzhub.entities.ViewThreadQueryStatus;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
@@ -83,7 +84,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
     private OkHttpClient client = new OkHttpClient();
     private bbsInformation bbsInfo;
     private forumUserBriefInfo curUser;
-    private URLUtils.ThreadStatus threadStatus;
+    private ViewThreadQueryStatus viewThreadQueryStatus;
 
     private onFilterChanged mListener;
 
@@ -95,17 +96,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
 
 
-    public PostAdapter(Context context, bbsInformation bbsInfo, forumUserBriefInfo curUser, URLUtils.ThreadStatus threadStatus){
+    public PostAdapter(Context context, bbsInformation bbsInfo, forumUserBriefInfo curUser, ViewThreadQueryStatus viewThreadQueryStatus){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
         this.mContext = context;
         client = networkUtils.getPreferredClient(context);
-        this.threadStatus = threadStatus;
+        this.viewThreadQueryStatus = viewThreadQueryStatus;
     }
 
-    public void setThreadInfoList(List<PostInfo> threadInfoList, URLUtils.ThreadStatus threadStatus, int authorId){
+    public void setThreadInfoList(List<PostInfo> threadInfoList, ViewThreadQueryStatus viewThreadQueryStatus, int authorId){
         this.threadInfoList = threadInfoList;
-        this.threadStatus = threadStatus;
+        this.viewThreadQueryStatus = viewThreadQueryStatus;
         this.authorId = authorId;
         notifyDataSetChanged();
     }
@@ -289,7 +290,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             holder.mRecyclerview.setAdapter(attachmentAdapter);
         }
         registerListener();
-        if(threadStatus.authorId == -1){
+        if(viewThreadQueryStatus.authorId == -1){
             // no author is filtered
             holder.mFilterByAuthorIdBtn.setText(mContext.getString(R.string.bbs_post_only_see_him));
             holder.mFilterByAuthorIdBtn.setOnClickListener(new View.OnClickListener() {

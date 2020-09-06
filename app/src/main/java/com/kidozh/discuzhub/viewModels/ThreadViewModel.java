@@ -11,14 +11,17 @@ import androidx.lifecycle.MutableLiveData;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.daos.FavoriteThreadDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
+import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.PostInfo;
+import com.kidozh.discuzhub.entities.ViewThreadQueryStatus;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadResult;
+import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
@@ -28,11 +31,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ThreadViewModel extends AndroidViewModel {
     private String TAG = ThreadViewModel.class.getSimpleName();
@@ -45,26 +48,26 @@ public class ThreadViewModel extends AndroidViewModel {
     private int tid;
     private forumUserBriefInfo userBriefInfo;
 
-    public MutableLiveData<Boolean> isLoading= new MutableLiveData<>(false)
-            , error= new MutableLiveData<>(false),
+    public MutableLiveData<Boolean> isLoading= new MutableLiveData<>(false),
             hasLoadAll= new MutableLiveData<>(false);
     public MutableLiveData<Boolean> notifyLoadAll = new MutableLiveData<>(false);
     public MutableLiveData<String> formHash, errorText;
     public MutableLiveData<bbsPollInfo> pollInfoLiveData;
     public MutableLiveData<forumUserBriefInfo> bbsPersonInfoMutableLiveData;
     public MutableLiveData<List<PostInfo>> threadCommentInfoListLiveData;
-    public MutableLiveData<URLUtils.ThreadStatus> threadStatusMutableLiveData;
+    public MutableLiveData<ViewThreadQueryStatus> threadStatusMutableLiveData;
     public MutableLiveData<bbsParseUtils.DetailedThreadInfo> detailedThreadInfoMutableLiveData;
     public MutableLiveData<ThreadResult> threadPostResultMutableLiveData;
     private MutableLiveData<SecureInfoResult> secureInfoResultMutableLiveData;
     public LiveData<Boolean> isFavoriteThreadMutableLiveData;
     public LiveData<FavoriteThread> favoriteThreadLiveData;
+    public MutableLiveData<ErrorMessage> errorMessageMutableLiveData = new MutableLiveData<>(null);
     FavoriteThreadDao dao;
 
     public ThreadViewModel(@NonNull Application application) {
         super(application);
         isLoading = new MutableLiveData<>(false);
-        error = new MutableLiveData<>(false);
+
         formHash = new MutableLiveData<>("");
         bbsPersonInfoMutableLiveData = new MutableLiveData<>();
         threadCommentInfoListLiveData = new MutableLiveData<>();
@@ -88,8 +91,8 @@ public class ThreadViewModel extends AndroidViewModel {
 
 
         if(threadStatusMutableLiveData.getValue()==null){
-            URLUtils.ThreadStatus threadStatus = new URLUtils.ThreadStatus(tid,1);
-            threadStatusMutableLiveData.setValue(threadStatus);
+            ViewThreadQueryStatus viewThreadQueryStatus = new ViewThreadQueryStatus(tid,1);
+            threadStatusMutableLiveData.setValue(viewThreadQueryStatus);
         }
         isFavoriteThreadMutableLiveData = dao.isFavoriteItem(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0,tid,"tid");
         if(userBriefInfo == null){
@@ -115,65 +118,54 @@ public class ThreadViewModel extends AndroidViewModel {
     }
 
     public void getSecureInfo(){
-        String url = URLUtils.getSecureParameterURL("post");
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        Log.d(TAG,"Send secure code to "+url);
-        client.newCall(request).enqueue(new Callback() {
+        Retrofit retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        DiscuzApiService service = retrofit.create(DiscuzApiService.class);
+        Call<SecureInfoResult> secureInfoResultCall = service.secureResult("post");
+        secureInfoResultCall.enqueue(new Callback<SecureInfoResult>() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                secureInfoResultMutableLiveData.postValue(null);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(Call<SecureInfoResult> call, Response<SecureInfoResult> response) {
                 if(response.isSuccessful() && response.body()!=null){
-                    String s= response.body().string();
-                    Log.d(TAG,"Recv secure code "+s);
-                    secureInfoResultMutableLiveData.postValue(bbsParseUtils.parseSecureInfoResult(s));
+                    secureInfoResultMutableLiveData.postValue(response.body());
                 }
                 else {
                     secureInfoResultMutableLiveData.postValue(null);
                 }
             }
+
+            @Override
+            public void onFailure(Call<SecureInfoResult> call, Throwable t) {
+                secureInfoResultMutableLiveData.postValue(null);
+            }
         });
     }
 
-    public void getThreadDetail(URLUtils.ThreadStatus threadStatus){
+    public void getThreadDetail(ViewThreadQueryStatus viewThreadQueryStatus){
         isLoading.postValue(true);
-        error.postValue(false);
         hasLoadAll.postValue(false);
-        // bbsURLUtils.ThreadStatus threadStatus = threadStatusMutableLiveData.getValue();
+        // bbsThreadStatus threadStatus = threadStatusMutableLiveData.getValue();
 
-        threadStatusMutableLiveData.postValue(threadStatus);
-        if(threadStatus.page == 1){
+        threadStatusMutableLiveData.postValue(viewThreadQueryStatus);
+        if(viewThreadQueryStatus.page == 1){
             // clear it first
             threadCommentInfoListLiveData.setValue(new ArrayList<>());
         }
-        String apiStr = URLUtils.getThreadCommentUrlByStatus(threadStatus);
-        Log.d(TAG,"Send request to "+apiStr);
-        Request request = new Request.Builder()
-                .url(apiStr)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                error.postValue(true);
-                isLoading.postValue(false);
-            }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
+        Retrofit retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        DiscuzApiService service =  retrofit.create(DiscuzApiService.class);
+        Call<ThreadResult> threadResultCall = service.viewThreadResult(viewThreadQueryStatus.generateQueryHashMap());
 
+        threadResultCall.enqueue(new Callback<ThreadResult>() {
+            @Override
+            public void onResponse(Call<ThreadResult> call, Response<ThreadResult> response) {
                 if(response.isSuccessful() && response.body()!=null){
-                    String s = response.body().string();
                     int totalThreadSize = 0;
-                    Log.d(TAG,"Recv thread JSON "+s);
-                    ThreadResult threadResult = bbsParseUtils.parseThreadPostResult(s);
+                    ThreadResult threadResult = response.body();
                     bbsParseUtils.DetailedThreadInfo detailedThreadInfo = null;
                     threadPostResultMutableLiveData.postValue(threadResult);
-                    if(threadResult !=null && threadResult.threadPostVariables!=null){
+                    if(threadResult.message!=null){
+                        errorMessageMutableLiveData.postValue(threadResult.message.toErrorMessage());
+                    }
+                    if(threadResult.threadPostVariables!=null){
                         // update formhash first
                         if(threadResult.threadPostVariables.formHash !=null){
                             formHash.postValue(threadResult.threadPostVariables.formHash);
@@ -191,23 +183,13 @@ public class ThreadViewModel extends AndroidViewModel {
 
                             bbsPollInfo pollInfo = threadResult.threadPostVariables.pollInfo;
                             if(pollInfoLiveData.getValue() == null && pollInfo !=null){
-                                Log.d(TAG,"recv poll info "+ pollInfo.votersCount);
                                 pollInfoLiveData.postValue(pollInfo);
 
                             }
                             List<PostInfo> postInfoList = threadResult.threadPostVariables.postInfoList;
                             // remove null object
-                            Log.d(TAG,"Recv post info size "+postInfoList.size());
-                            Iterator<PostInfo> iterator = postInfoList.iterator();
-                            while (iterator.hasNext()){
-                                PostInfo postInfo = iterator.next();
-                                if(postInfo.message == null || postInfo.author == null){
-                                    iterator.remove();
-                                }
-                            }
-                            Log.d(TAG,"Recv Non Nullable post info size "+postInfoList.size());
-                            if(postInfoList !=null && postInfoList.size()!=0){
-                                if(threadStatus.page == 1){
+                            if(postInfoList.size()!=0){
+                                if(viewThreadQueryStatus.page == 1){
                                     threadCommentInfoListLiveData.postValue(postInfoList);
                                     totalThreadSize = postInfoList.size();
                                 }
@@ -223,15 +205,15 @@ public class ThreadViewModel extends AndroidViewModel {
                                 }
                             }
                             else {
-                                if(threadStatus.page == 1 && (threadResult == null || threadResult.message !=null)){
+                                if(viewThreadQueryStatus.page == 1 && threadResult.message !=null){
                                     errorText.postValue(getApplication().getString(R.string.parse_failed));
                                 }
                                 hasLoadAll.postValue(true);
                                 // rollback
-                                if(threadStatus.page != 1){
-                                    threadStatus.page -=1;
-                                    Log.d(TAG,"Roll back page when page to "+threadStatus.page);
-                                    threadStatusMutableLiveData.postValue(threadStatus);
+                                if(viewThreadQueryStatus.page != 1){
+                                    viewThreadQueryStatus.page -=1;
+                                    Log.d(TAG,"Roll back page when page to "+ viewThreadQueryStatus.page);
+                                    threadStatusMutableLiveData.postValue(viewThreadQueryStatus);
                                 }
                             }
                         }
@@ -244,13 +226,13 @@ public class ThreadViewModel extends AndroidViewModel {
 
                             if(currentThreadInfoList !=null){
                                 totalThreadCommentsNumber = currentThreadInfoList.size();
-                                Log.d(TAG, "current size "+totalThreadCommentsNumber);
+
                             }
                             else {
-                                Log.d(TAG, "no thread is found ");
+
                             }
 
-                            Log.d(TAG,"PAGE "+threadStatus.page+" MAX POSITION "+maxThreadNumber +" CUR "+totalThreadCommentsNumber+ " "+totalThreadSize);
+                            Log.d(TAG,"PAGE "+ viewThreadQueryStatus.page+" MAX POSITION "+maxThreadNumber +" CUR "+totalThreadCommentsNumber+ " "+totalThreadSize);
                             if(totalThreadSize >= maxThreadNumber +1){
                                 hasLoadAll.postValue(true);
                             }
@@ -260,23 +242,33 @@ public class ThreadViewModel extends AndroidViewModel {
                         }
                     }
                     else {
-                        error.postValue(true);
-                        errorText.postValue(getApplication().getString(R.string.parse_post_failed));
+                        errorMessageMutableLiveData.postValue(new ErrorMessage(
+                                getApplication().getString(R.string.empty_result),
+                                getApplication().getString(R.string.discuz_network_result_null)
+                        ));
                     }
                 }
                 else {
-                    if(threadStatus.page == 1){
-                        errorText.postValue(getApplication().getString(R.string.network_failed));
-                    }
-                    error.postValue(true);
-                    if(threadStatus.page != 1){
-                        threadStatus.page -=1;
-                        Log.d(TAG,"Roll back page when page to "+threadStatus.page);
-                        threadStatusMutableLiveData.postValue(threadStatus);
+                    errorMessageMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),
+                            getApplication().getString(R.string.discuz_network_unsuccessful,response.message())));
+                    if(viewThreadQueryStatus.page != 1){
+                        viewThreadQueryStatus.page -=1;
+                        Log.d(TAG,"Roll back page when page to "+ viewThreadQueryStatus.page);
+                        threadStatusMutableLiveData.postValue(viewThreadQueryStatus);
                     }
                 }
                 isLoading.postValue(false);
             }
+
+            @Override
+            public void onFailure(Call<ThreadResult> call, Throwable t) {
+                errorMessageMutableLiveData.postValue(new ErrorMessage(
+                        getApplication().getString(R.string.discuz_network_failure_template),
+                        t.getLocalizedMessage() == null?t.toString():t.getLocalizedMessage()
+                ));
+                isLoading.postValue(false);
+            }
         });
+        Log.d(TAG,"Send request to "+threadResultCall.request().url().toString());
     }
 }

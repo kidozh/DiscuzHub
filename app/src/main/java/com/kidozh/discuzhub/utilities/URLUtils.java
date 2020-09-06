@@ -5,10 +5,10 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.kidozh.discuzhub.entities.DisplayForumQueryStatus;
 import com.kidozh.discuzhub.entities.PostInfo;
+import com.kidozh.discuzhub.entities.ViewThreadQueryStatus;
 import com.kidozh.discuzhub.entities.bbsInformation;
-
-import java.util.Locale;
 
 public class URLUtils {
     public static String TAG = URLUtils.class.getSimpleName();
@@ -42,10 +42,6 @@ public class URLUtils {
         return BASE_URL + "/member.php?mod="+registerName;
     }
 
-    public static String getBBSRegisterUrl(){
-        return BASE_URL + "/member.php?mod="+bbsInfo.register_name;
-    }
-
     public static String getBBSLogoUrl(){
         return BASE_URL + "/static/image/common/logo.png";
     }
@@ -55,52 +51,11 @@ public class URLUtils {
     }
 
 
-
-    public static String getBBSForumInfoApi(){
-        return BASE_URL + "/api/mobile/index.php?version=4&module=forumindex";
-    }
-
     public static String getBBSMedalImageURL(String image){
         return BASE_URL+String.format("/static/image/common/%s",image);
     }
 
 
-
-
-
-    public static class ForumStatus{
-        public int fid,page,perPage=10;
-        public boolean hasLoadAll = false;
-        // orderby:[dateline,replies,views]
-        public String orderBy="";
-        // filter:
-        public String filter="",filterId="";
-
-        public ForumStatus(int fid,int page){
-            this.fid = fid;
-            this.page = page;
-        }
-
-
-
-        public void clear(){
-            this.page=1;
-            this.perPage = 15;
-            this.orderBy = "";
-            this.filterId = "";
-            this.filter = "";
-        }
-
-        public void setInitAuthorId(int authorId){
-            this.page = 1;
-            this.hasLoadAll = false;
-        }
-
-        public void setInitPage(int page){
-            this.page = page;
-            this.hasLoadAll = false;
-        }
-    }
 
     public static final String FILTER_TYPE_POLL = "FILTER_TYPE_POLL",
             FILTER_TYPE_NEWEST = "FILTER_TYPE_NEWEST",
@@ -109,116 +64,6 @@ public class URLUtils {
             FILTER_TYPE_DIGEST = "FILTER_TYPE_DIGEST",
             FILTER_TYPE_ID = "FILTER_TYPE_ID";
 
-    public static String getForumUrlByFid(int fid,int page){
-        return BASE_URL+String.format("/api/mobile/index.php?version=4&module=forumdisplay&fid=%s&page=%s&ppp=15",fid,page);
-    }
-
-    public static String getForumUrlByStatus(ForumStatus status){
-
-        Uri.Builder uriBuilder = Uri.parse(BASE_URL+"/api/mobile/index.php")
-                .buildUpon()
-                .appendQueryParameter("version","4")
-                .appendQueryParameter("module","forumdisplay")
-                .appendQueryParameter("fid",String.valueOf(status.fid))
-                .appendQueryParameter("page",String.valueOf(status.page))
-                .appendQueryParameter("ppp",String.valueOf(status.perPage));
-        if(!status.orderBy.equals("")){
-            uriBuilder.appendQueryParameter("orderby",status.orderBy);
-        }
-
-        if(!status.filter.equals("")){
-
-            uriBuilder.appendQueryParameter("filter",status.filter);
-            switch (status.filter){
-                case ("specialtype"):{
-                    uriBuilder.appendQueryParameter("specialtype","poll");
-                    break;
-                }
-                case ("lastpost"):{
-                    uriBuilder.appendQueryParameter("orderby","lastpost");
-                    break;
-                }
-                case ("heat"):{
-                    uriBuilder.appendQueryParameter("orderby","heats");
-                    break;
-                }
-                case ("digest"):{
-                    uriBuilder.appendQueryParameter("digest","1");
-                    break;
-                }
-            }
-        }
-        Log.d(TAG,"Type id "+status.filterId);
-        if(!status.filterId.equals("")){
-
-            uriBuilder.appendQueryParameter("filter","typeid")
-                    .appendQueryParameter("typeid",status.filterId);
-        }
-
-
-        Uri uri = uriBuilder.build();
-        return uri.toString();
-    }
-
-
-
-    private static String getThreadCommentUrlByFid(int tid,int page){
-        return BASE_URL+String.format("/api/mobile/index.php?version=4&module=viewthread&tid=%s&page=%s&ppp=15",tid,page);
-    }
-
-    public static class ThreadStatus{
-        public int tid,page=1,perPage=15;
-        public int authorId = -1;
-        public boolean hasLoadAll = false;
-        // ordertype:1 -> descend 2:-? ascend
-        public boolean datelineAscend = true;
-
-        public ThreadStatus(int tid, int page) {
-            this.tid = tid;
-            this.page = page;
-        }
-
-        public void clear(){
-            this.page=1;
-            this.perPage = 15;
-        }
-
-        public void setInitAuthorId(int authorId){
-            this.page = 1;
-            this.authorId = authorId;
-            this.hasLoadAll = false;
-        }
-
-        public void setInitPage(int page){
-            this.page = page;
-            this.hasLoadAll = false;
-        }
-    }
-
-    public static String getThreadCommentUrlByStatus(ThreadStatus status){
-
-        Uri.Builder uriBuilder = Uri.parse(BASE_URL+"/api/mobile/index.php")
-                .buildUpon()
-                .appendQueryParameter("version","4")
-                .appendQueryParameter("module","viewthread")
-                .appendQueryParameter("tid",String.valueOf(status.tid))
-                .appendQueryParameter("page",String.valueOf(status.page))
-                .appendQueryParameter("ppp",String.valueOf(status.perPage))
-                .appendQueryParameter("pollsubmit","1");
-        if(status.authorId != -1){
-            uriBuilder.appendQueryParameter("authorid",String.valueOf(status.authorId));
-        }
-
-        if(status.datelineAscend){
-            uriBuilder.appendQueryParameter("ordertype","2");
-        }
-        else {
-            uriBuilder.appendQueryParameter("ordertype","1");
-        }
-
-        Uri uri = uriBuilder.build();
-        return uri.toString();
-    }
 
     public static String getSmallAvatarUrlByUid(String uid){
         return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=small",uid);
@@ -256,12 +101,6 @@ public class URLUtils {
         return uri.toString();
     }
 
-
-
-    public static String getLoginWebUrl(){
-        return BASE_URL+"/member.php?mod=logging&action=login";
-    }
-
     public static String getLoginWebURL(@NonNull bbsInformation bbsInfo){
         return bbsInfo.base_url + "/member.php?mod=logging&action=login";
     }
@@ -270,9 +109,6 @@ public class URLUtils {
         return BASE_URL + "/api/mobile/index.php?version=4&module=login&mod=logging&action=login";
     }
 
-    public static String getUserProfileUrl(){
-        return BASE_URL + "/api/mobile/index.php?version=4&module=profile";
-    }
 
     // login
 
@@ -366,10 +202,6 @@ public class URLUtils {
     }
 
 
-
-    public static String getHotThreadUrl(int page){
-        return BASE_URL+"/api/mobile/index.php?version=4&module=hotthread&page="+page ;
-    }
 
     public static String getPublicPMApiUrl(int page){
         return BASE_URL+"/api/mobile/index.php?version=4&module=publicpm&page="+page ;

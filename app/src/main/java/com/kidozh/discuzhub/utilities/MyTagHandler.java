@@ -59,7 +59,7 @@ public class MyTagHandler implements Html.TagHandler {
             String imgURL = images[0].getSource();
 
             // 使图片可点击并监听点击事件
-            Log.d(TAG,"set Onclick span "+imgURL+" length "+len);
+            //Log.d(TAG,"set Onclick span "+imgURL+" length "+len);
 
             output.setSpan(new MyTagHandler.ClickableImage(mContext, imgURL), len - 1, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
@@ -79,7 +79,7 @@ public class MyTagHandler implements Html.TagHandler {
         @Override
         public void onClick(View widget) {
             // 进行图片点击之后的处理 usually textview
-            Log.d(TAG,"You pressed image "+widget.toString()+" URL "+url);
+            //Log.d(TAG,"You pressed image "+widget.toString()+" URL "+url);
             OkHttpClient client = networkUtils.getPreferredClient(mContext);
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
 
@@ -103,7 +103,7 @@ public class MyTagHandler implements Html.TagHandler {
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            Log.d(TAG,"The resource is not loaded...");
+                            //Log.d(TAG,"The resource is not loaded...");
                             Handler mainHandler = new Handler(context.getMainLooper());
 
                             Runnable myRunnable = new Runnable() {
@@ -123,7 +123,7 @@ public class MyTagHandler implements Html.TagHandler {
 
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            Log.d(TAG,"The resource is loaded and ready to open in external activity...");
+                            //Log.d(TAG,"The resource is loaded and ready to open in external activity...");
                             Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
                             intent.putExtra("URL",url);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

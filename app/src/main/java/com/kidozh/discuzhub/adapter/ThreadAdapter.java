@@ -161,7 +161,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 else {
                     // provided by label
                     String type = threadType.get(String.valueOf(threadInfo.typeId));
-                    Log.d(TAG, "Get thread type "+type);
+
                     if(type !=null){
                         Spanned threadSpanned = Html.fromHtml(type);
                         SpannableString threadSpannableString = new SpannableString(threadSpanned);
