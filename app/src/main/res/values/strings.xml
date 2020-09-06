@@ -749,6 +749,7 @@
     <string name="discuz_network_failure_template">Network error</string>
     <string name="empty_result">Empty result</string>
     <string name="discuz_network_result_null">Get a response from server but a null object.(%1$s)</string>
+    <string name="discuz_api_error">API error</string>
 
 
 </resources>

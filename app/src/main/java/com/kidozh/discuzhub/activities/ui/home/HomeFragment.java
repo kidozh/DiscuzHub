@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -47,8 +48,14 @@ public class HomeFragment extends Fragment {
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.bbs_portal_recyclerview)
     RecyclerView portalRecyclerView;
-    @BindView(R.id.bbs_portal_error_text)
-    TextView bbsPortalErrorText;
+    @BindView(R.id.error_view)
+    View errorView;
+    @BindView(R.id.error_icon)
+    ImageView errorIcon;
+    @BindView(R.id.error_value)
+    TextView errorValue;
+    @BindView(R.id.error_content)
+    TextView errorContent;
     @BindView(R.id.bbs_portal_refresh_page)
     Button bbsPortalRefreshPageBtn;
 
@@ -142,28 +149,16 @@ public class HomeFragment extends Fragment {
 
             }
         });
-        homeViewModel.errorText.observe(getViewLifecycleOwner(), errorText -> {
-            if(errorText!=null){
 
-                if(errorText.equals("mobile_is_closed")){
-                    bbsPortalErrorText.setText(R.string.bbs_mobile_is_closed);
-                }
-                else if(errorText.equals("user_banned")){
-                    bbsPortalErrorText.setText(R.string.bbs_user_banned);
-                }
-                else {
-
-                    bbsPortalErrorText.setText(Html.fromHtml(errorText), TextView.BufferType.SPANNABLE);
-
-                }
-                bbsPortalErrorText.setVisibility(View.VISIBLE);
-                bbsPortalRefreshPageBtn.setVisibility(View.VISIBLE);
-            }
-            else {
-                bbsPortalErrorText.setVisibility(View.GONE);
-                bbsPortalRefreshPageBtn.setVisibility(View.GONE);
+        homeViewModel.errorMessageMutableLiveData.observe(getViewLifecycleOwner(),errorMessage -> {
+            if(errorMessage!=null){
+                errorView.setVisibility(View.VISIBLE);
+                errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
+                errorValue.setText(errorMessage.key);
+                errorContent.setText(errorMessage.content);
             }
         });
+
         homeViewModel.userBriefInfoMutableLiveData.observe(getViewLifecycleOwner(), new Observer<forumUserBriefInfo>() {
             @Override
             public void onChanged(forumUserBriefInfo userBriefInfo) {

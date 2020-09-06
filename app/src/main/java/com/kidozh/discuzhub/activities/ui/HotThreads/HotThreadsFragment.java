@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.activities.ui.HotThreads;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,14 +43,17 @@ public class HotThreadsFragment extends Fragment {
     RecyclerView dashboardRecyclerview;
     @BindView(R.id.fragment_dashboard_swipeRefreshLayout)
     SwipeRefreshLayout dashboardSwipeRefreshLayout;
-    @BindView(R.id.fragment_hot_thread_no_item_textView)
-    TextView noItemFoundTextview;
-    @BindView(R.id.fragment_hot_thread_empty_icon)
-    ImageView emptyIconImageview;
+    @BindView(R.id.error_content)
+    TextView errorContent;
+    @BindView(R.id.error_icon)
+    ImageView errorIcon;
+    @BindView(R.id.error_value)
+    TextView errorValue;
+    @BindView(R.id.error_view)
+    View errorView;
     ThreadAdapter forumThreadAdapter;
-    bbsInformation curBBS;
-    forumUserBriefInfo curUser;
-    private forumUserBriefInfo userBriefInfo;
+    bbsInformation bbsInfo;
+    forumUserBriefInfo userBriefInfo;
     private OkHttpClient client = new OkHttpClient();
     private static int globalPage = 1;
     private Boolean isClientRunning = false;
@@ -60,7 +62,7 @@ public class HotThreadsFragment extends Fragment {
 
     }
 
-    public static HotThreadsFragment newInstance(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+    public static HotThreadsFragment newInstance(@NonNull bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
         HotThreadsFragment fragment = new HotThreadsFragment();
         Bundle args = new Bundle();
         args.putSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
@@ -73,20 +75,10 @@ public class HotThreadsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            curBBS = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-            URLUtils.setBBS(curBBS);
+            bbsInfo = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
             userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
-            Log.d(TAG,"Hot thread recv get user "+userBriefInfo);
             client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
         }
-    }
-
-    private HotThreadsFragment(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
-        curBBS = bbsInformation;
-        this.userBriefInfo = userBriefInfo;
-        curUser = userBriefInfo;
-        URLUtils.setBBS(curBBS);
-
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -107,8 +99,8 @@ public class HotThreadsFragment extends Fragment {
 
     private void configureClient(){
         client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
-        if(curBBS !=null){
-            hotThreadsViewModel.setBBSInfo(curBBS,userBriefInfo);
+        if(bbsInfo !=null){
+            hotThreadsViewModel.setBBSInfo(bbsInfo,userBriefInfo);
         }
 
     }
@@ -116,7 +108,7 @@ public class HotThreadsFragment extends Fragment {
     private void configureThreadRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         dashboardRecyclerview.setLayoutManager(linearLayoutManager);
-        forumThreadAdapter = new ThreadAdapter(getContext(),null,null,curBBS,userBriefInfo);
+        forumThreadAdapter = new ThreadAdapter(getContext(),null,null,bbsInfo,userBriefInfo);
         dashboardRecyclerview.setAdapter(forumThreadAdapter);
         dashboardRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         dashboardRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -154,31 +146,12 @@ public class HotThreadsFragment extends Fragment {
             @Override
             public void onRefresh() {
                 hotThreadsViewModel.setPageNumAndFetchThread(1);
-                //globalPage = 1;
-                //getPageInfo(globalPage);
-
             }
         });
     }
 
     private void getIntentInfo(){
-        if(curBBS != null){
-            hotThreadsViewModel.setBBSInfo(curBBS,curUser);
-            return;
-        }
-//        Intent intent = getActivity().getIntent();
-
-//        curBBS = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-//        curUser = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-//        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        if(curBBS == null){
-            getActivity().finish();
-        }
-        else {
-            Log.d(TAG,"get bbs name "+curBBS.site_name);
-            URLUtils.setBBS(curBBS);
-            hotThreadsViewModel.setBBSInfo(curBBS,curUser);
-        }
+        hotThreadsViewModel.setBBSInfo(bbsInfo,userBriefInfo);
     }
 
     private void bindVieModel(){
@@ -189,14 +162,15 @@ public class HotThreadsFragment extends Fragment {
                 forumThreadAdapter.setThreadInfoList(threadInfos,null);
                 dashBoardViewModel.hotThreadCountMutableLiveData.postValue(forumThreadAdapter.getItemCount());
                 if(forumThreadAdapter.threadInfoList == null || forumThreadAdapter.threadInfoList.size() == 0){
-                    noItemFoundTextview.setVisibility(View.VISIBLE);
-                    emptyIconImageview.setVisibility(View.VISIBLE);
-                    noItemFoundTextview.setText(R.string.empty_hot_threads);
-                    emptyIconImageview.setImageResource(R.drawable.ic_empty_hot_thread_64px);
+                    
+                    errorView.setVisibility(View.VISIBLE);
+                    errorContent.setText(R.string.empty_result);
+                    errorContent.setText(R.string.empty_hot_threads);
+                    errorIcon.setImageResource(R.drawable.ic_empty_hot_thread_64px);
                 }
                 else {
-                    noItemFoundTextview.setVisibility(View.GONE);
-                    emptyIconImageview.setVisibility(View.GONE);
+                    errorView.setVisibility(View.GONE);
+                    
                 }
             }
         });
@@ -206,29 +180,16 @@ public class HotThreadsFragment extends Fragment {
                 dashboardSwipeRefreshLayout.setRefreshing(aBoolean);
             }
         });
-        hotThreadsViewModel.isError.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-
-                if(aBoolean){
-                    noItemFoundTextview.setVisibility(View.VISIBLE);
-                    emptyIconImageview.setVisibility(View.VISIBLE);
-                    emptyIconImageview.setImageResource(R.drawable.ic_error_outline_24px);
-                    String errorText = hotThreadsViewModel.errorTextLiveData.getValue();
-                    if(errorText == null || errorText.length() == 0){
-                        noItemFoundTextview.setText(R.string.parse_failed);
-                    }
-                    else {
-                        noItemFoundTextview.setText(errorText);
-                    }
-
-                }
-                else {
-//                    noItemFoundTextview.setVisibility(View.GONE);
-//                    emptyIconImageview.setVisibility(View.GONE);
-                }
+        hotThreadsViewModel.errorMessageMutableLiveData.observe(getViewLifecycleOwner(),errorMessage -> {
+            if(errorMessage!=null){
+                errorView.setVisibility(View.VISIBLE);
+                errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
+                errorValue.setText(errorMessage.key);
+                errorContent.setText(errorMessage.content);
+                
             }
         });
+        
         hotThreadsViewModel.resultMutableLiveData.observe(getViewLifecycleOwner(), displayThreadsResult -> {
             if(getContext() instanceof BaseStatusInteract && displayThreadsResult!=null){
                 ((BaseStatusInteract) getContext()).setBaseResult(displayThreadsResult,
