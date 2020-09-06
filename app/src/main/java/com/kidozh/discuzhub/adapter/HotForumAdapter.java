@@ -63,20 +63,12 @@ public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotFor
         holder.hotForumName.setText(hotForum.name);
         if(hotForum.todayPosts >= 100){
             holder.hotForumTodayPosts.setText(R.string.forum_today_posts_over_much);
-            holder.hotForumTodayPosts.setBackgroundColor(context.getColor(R.color.colorAlizarin));
+            holder.hotForumTodayPosts.setTextColor(context.getColor(R.color.colorAlizarin));
         }
         else {
             holder.hotForumTodayPosts.setText(String.valueOf(hotForum.todayPosts));
-            holder.hotForumTodayPosts.setBackgroundColor(context.getColor(R.color.colorPrimary));
+            holder.hotForumTodayPosts.setTextColor(context.getColor(R.color.colorPrimary));
         }
-
-        if(hotForum.lastPoster.length() == 0){
-            holder.lastPoster.setText(R.string.unset);
-        }
-        else {
-            holder.lastPoster.setText(hotForum.lastPoster);
-        }
-
         holder.lastPostTime.setText(hotForum.lastpost);
         if(hotForum.lastPostSubject.length() == 0){
             holder.lastPostSubject.setText(R.string.unset);
@@ -102,33 +94,6 @@ public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotFor
             }
         });
 
-        holder.lastPostCardview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ThreadInfo threadInfo = new ThreadInfo();
-                threadInfo.fid = hotForum.fid;
-                threadInfo.tid = hotForum.lastPostTid;
-                threadInfo.subject = hotForum.lastPostSubject;
-                Intent intent = new Intent(context, ViewThreadActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);
-                intent.putExtra("FID",threadInfo.fid);
-                intent.putExtra("TID",threadInfo.tid);
-                intent.putExtra("SUBJECT",threadInfo.subject);
-                intent.putExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,true);
-
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
-                        (Activity) context,
-                        Pair.create(holder.lastPostSubject, "bbs_thread_subject")
-                );
-                VibrateUtils.vibrateForClick(context);
-
-                Bundle bundle = options.toBundle();
-                context.startActivity(intent,bundle);
-            }
-        });
-
 
     }
 
@@ -151,10 +116,7 @@ public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotFor
         TextView hotForumName;
         @BindView(R.id.item_hot_forum_today_posts)
         TextView hotForumTodayPosts;
-        @BindView(R.id.hot_forum_last_post_cardview)
-        CardView lastPostCardview;
-        @BindView(R.id.hot_forum_last_poster)
-        TextView lastPoster;
+
         @BindView(R.id.hot_forum_last_post_time)
         TextView lastPostTime;
         @BindView(R.id.hot_forum_last_post_subject)

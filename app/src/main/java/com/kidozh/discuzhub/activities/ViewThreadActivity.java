@@ -1767,7 +1767,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                                 reloadThePage();
                                 threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
                                 //getThreadComment();
-                                Toasty.success(getApplicationContext(), getString(R.string.discuz_error,returnedMessage.value,returnedMessage.string), Toast.LENGTH_LONG).show();
+                                Toasty.success(getApplicationContext(), getString(R.string.discuz_api_error_template,returnedMessage.value,returnedMessage.string), Toast.LENGTH_LONG).show();
                             }
                         });
                     } else {
@@ -1780,7 +1780,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                                     Toasty.error(getApplicationContext(), getString(R.string.network_failed), Toast.LENGTH_LONG).show();
                                 }
                                 else {
-                                    Toasty.error(getApplicationContext(), getString(R.string.discuz_error,returnedMessage.value,returnedMessage.string), Toast.LENGTH_LONG).show();
+                                    Toasty.error(getApplicationContext(), getString(R.string.discuz_api_error_template,returnedMessage.value,returnedMessage.string), Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
@@ -2227,13 +2227,13 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
             if(messageResult!=null){
                 String key = messageResult.key;
                 if(favorite && key.equals("favorite_do_success")){
-                    Toasty.success(getApplication(),getString(R.string.discuz_error,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                    Toasty.success(getApplication(),getString(R.string.discuz_api_error_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
                 }
                 else if(!favorite && key.equals("do_success")){
-                    Toasty.success(getApplication(),getString(R.string.discuz_error,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                    Toasty.success(getApplication(),getString(R.string.discuz_api_error_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
                 }
                 else {
-                    Toasty.warning(getApplication(),getString(R.string.discuz_error,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                    Toasty.warning(getApplication(),getString(R.string.discuz_api_error_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
                 }
             }
             else {

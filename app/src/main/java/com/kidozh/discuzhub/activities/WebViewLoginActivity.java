@@ -21,8 +21,6 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
-
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
@@ -34,24 +32,17 @@ import com.kidozh.discuzhub.results.LoginResult;
 import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
-import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.Cookie;
 import retrofit2.Retrofit;
 
@@ -326,7 +317,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
                             @Override
                             public void run() {
                                 Toasty.error(getApplicationContext(),
-                                        getString(R.string.discuz_error,messageResult.key,messageResult.content),
+                                        getString(R.string.discuz_api_error_template,messageResult.key,messageResult.content),
                                         Toast.LENGTH_SHORT
                                 ).show();
                             }
@@ -349,7 +340,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
                         @Override
                         public void run() {
                             Toasty.error(getApplicationContext(),
-                                    getString(R.string.discuz_error,String.valueOf(response.code()),response.message()),
+                                    getString(R.string.discuz_api_error_template,String.valueOf(response.code()),response.message()),
                                     Toast.LENGTH_SHORT
                             ).show();
                         }

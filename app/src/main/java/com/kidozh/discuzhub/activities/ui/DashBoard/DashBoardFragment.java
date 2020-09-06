@@ -107,6 +107,7 @@ public class DashBoardFragment extends Fragment {
     private void bindTabLayoutAndViewPager2(){
         viewModel.setFavoriteThreadInfo(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0);
         viewPager.setAdapter(new DashBoardViewPagerAdapter(getChildFragmentManager(),getLifecycle()));
+        viewPager.setUserInputEnabled(false);
 
         viewModel.FavoriteThreadNumber.observe(getViewLifecycleOwner(), integer -> {
             Log.d(TAG,"get favorite thread number "+integer);
@@ -128,6 +129,24 @@ public class DashBoardFragment extends Fragment {
                 Objects.requireNonNull(tabLayout.getTabAt(3)).removeBadge();
             }
 
+        });
+
+        viewModel.hotThreadCountMutableLiveData.observe(getViewLifecycleOwner(), integer -> {
+            if(integer > 0){
+                Objects.requireNonNull(tabLayout.getTabAt(0)).getOrCreateBadge().setNumber(integer);
+            }
+            else {
+                Objects.requireNonNull(tabLayout.getTabAt(0)).removeBadge();
+            }
+        });
+
+        viewModel.hotForumCountMutableLiveData.observe(getViewLifecycleOwner(),integer -> {
+            if(integer > 0){
+                Objects.requireNonNull(tabLayout.getTabAt(1)).getOrCreateBadge().setNumber(integer);
+            }
+            else {
+                Objects.requireNonNull(tabLayout.getTabAt(1)).removeBadge();
+            }
         });
 
 

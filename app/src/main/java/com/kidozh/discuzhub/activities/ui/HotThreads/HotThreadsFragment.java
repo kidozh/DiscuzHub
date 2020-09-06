@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ui.DashBoard.DashBoardViewModel;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -38,6 +39,7 @@ import okhttp3.OkHttpClient;
 public class HotThreadsFragment extends Fragment {
     private static final String TAG = HotThreadsFragment.class.getSimpleName();
     private HotThreadsViewModel hotThreadsViewModel;
+    private DashBoardViewModel dashBoardViewModel;
     @BindView(R.id.fragment_hot_thread_recyclerview)
     RecyclerView dashboardRecyclerview;
     @BindView(R.id.fragment_dashboard_swipeRefreshLayout)
@@ -90,6 +92,7 @@ public class HotThreadsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         hotThreadsViewModel = new ViewModelProvider(this).get(HotThreadsViewModel.class);
+        dashBoardViewModel = new ViewModelProvider(this).get(DashBoardViewModel.class);
         View root = inflater.inflate(R.layout.fragment_hot_thread, container, false);
         ButterKnife.bind(this,root);
         getIntentInfo();
@@ -184,6 +187,7 @@ public class HotThreadsFragment extends Fragment {
             public void onChanged(List<ThreadInfo> threadInfos) {
 
                 forumThreadAdapter.setThreadInfoList(threadInfos,null);
+                dashBoardViewModel.hotThreadCountMutableLiveData.postValue(forumThreadAdapter.getItemCount());
                 if(forumThreadAdapter.threadInfoList == null || forumThreadAdapter.threadInfoList.size() == 0){
                     noItemFoundTextview.setVisibility(View.VISIBLE);
                     emptyIconImageview.setVisibility(View.VISIBLE);

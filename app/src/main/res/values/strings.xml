@@ -697,7 +697,7 @@
     <string name="favorite_thread_not_prepared">Favoriting or unfavoriting the thread is not prepared. Please wait util the thread is loaded.</string>
     <string name="sync_favorite_thread_start">Start to sync favorite thread from %1$s.</string>
     <string name="sync_favorite_thread_load_all">All favorite threads are loaded.</string>
-    <string name="discuz_error" translatable="false">%2$s (%1$s)</string>
+    <string name="discuz_api_error_template" translatable="false">%2$s (%1$s)</string>
     <string name="favoite_status_sync">Synced</string>
     <string name="favorite_description">Set a description for the favorite</string>
     <string name="forum_today_post">Today posts (%1$d)</string>
@@ -746,6 +746,9 @@
     <string name="preference_title_clear_history_periodically">Clear view histories automatically.</string>
     <string name="preference_summary_on_clear_history_periodically">App will clear over-much view history when device is idle.</string>
     <string name="preference_summary_off_clear_history_periodically">All view histories will store and may possibly make app run slow.</string>
+    <string name="discuz_network_failure_template">Network error (%1$s)</string>
+    <string name="empty_result">Empty result</string>
+    <string name="discuz_network_result_null">Get a response from server but a null object.(%1$s)</string>
 
 
 </resources>

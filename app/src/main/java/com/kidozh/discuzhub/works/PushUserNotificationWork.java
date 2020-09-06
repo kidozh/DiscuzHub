@@ -182,7 +182,7 @@ public class PushUserNotificationWork extends Worker {
 
     private void pushNewUserNotification(@NonNull UserNoteListResult.UserNotification notification){
         int notificationId = userBriefInfo.getId();
-        notificationUtils.createBBSUpdateChannel(context,bbsInformation);
+        notificationUtils.createUsersUpdateChannel(context);
         String notificationContent = notification.note;
         String notificationTag = String.valueOf(notification.id);
         notificationContent = notificationContent.replaceAll("<.*?>","");

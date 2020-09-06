@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.kidozh.discuzhub.daos.FavoriteForumDao;
 import com.kidozh.discuzhub.daos.FavoriteThreadDao;
@@ -19,6 +20,9 @@ public class DashBoardViewModel extends AndroidViewModel {
 
     public LiveData<Integer> FavoriteThreadNumber;
     public LiveData<Integer> favoriteForumNumber;
+    public MutableLiveData<Integer> hotThreadCountMutableLiveData = new MutableLiveData<>(0),
+                                    hotForumCountMutableLiveData= new MutableLiveData<>(0);
+
     FavoriteThreadDao dao;
     FavoriteForumDao forumDao;
 

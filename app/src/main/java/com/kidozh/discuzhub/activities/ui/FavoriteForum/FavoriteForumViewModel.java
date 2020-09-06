@@ -12,8 +12,6 @@ import androidx.paging.PagedList;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.daos.FavoriteForumDao;
-import com.kidozh.discuzhub.daos.FavoriteForumDao;
-import com.kidozh.discuzhub.database.FavoriteForumDatabase;
 import com.kidozh.discuzhub.database.FavoriteForumDatabase;
 import com.kidozh.discuzhub.entities.FavoriteForum;
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -99,7 +97,7 @@ public class FavoriteForumViewModel extends AndroidViewModel {
                     if(result.isError()){
                         networkState.postValue(bbsConstUtils.NETWORK_STATUS_FAILED);
                         errorMsgKey.postValue(result.message.key);
-                        errorMsgContent.postValue(getApplication().getString(R.string.discuz_error,result.message.key,result.message.content));
+                        errorMsgContent.postValue(getApplication().getString(R.string.discuz_api_error_template,result.message.key,result.message.content));
                     }
                     else {
                         totalCount.postValue(result.FavoriteForumVariable.count);

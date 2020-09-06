@@ -11,17 +11,20 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.HotForumsResult;
+import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
 import java.io.IOException;
 
-import okhttp3.Call;
+
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Retrofit;
 
 public class HotForumsViewModel extends AndroidViewModel {
     private final static String TAG = HotForumsViewModel.class.getSimpleName();
@@ -32,6 +35,7 @@ public class HotForumsViewModel extends AndroidViewModel {
     public MutableLiveData<Boolean> isLoadingMutableLiveData = new MutableLiveData<>(false),
             isErrorMutableLiveData = new MutableLiveData<>(false);
     public MutableLiveData<String> errorString = new MutableLiveData<>("");
+    public MutableLiveData<String> errorValueString = new MutableLiveData<>("");
 
     private MutableLiveData<HotForumsResult> hotForumsResultMutableLiveData;
     public HotForumsViewModel(@NonNull Application application) {
@@ -55,50 +59,47 @@ public class HotForumsViewModel extends AndroidViewModel {
 
     public void loadHotForums(){
         isLoadingMutableLiveData.postValue(true);
-        Request request = new Request.Builder()
-                .url(URLUtils.getHotForumURL())
-                .build();
-        Log.d(TAG,"Send request to "+request.url().toString());
-        client.newCall(request).enqueue(new Callback() {
+        Retrofit retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        DiscuzApiService service = retrofit.create(DiscuzApiService.class);
+        Call<HotForumsResult> hotForumsResultCall = service.hotForumResult();
+
+        hotForumsResultCall.enqueue(new retrofit2.Callback<HotForumsResult>() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                isErrorMutableLiveData.postValue(true);
+            public void onResponse(Call<HotForumsResult> call, retrofit2.Response<HotForumsResult> response) {
                 isLoadingMutableLiveData.postValue(false);
-                errorString.postValue(getApplication().getString(R.string.network_failed));
+                if(response.isSuccessful() && response.body() !=null){
+                    HotForumsResult result = response.body();
+                    hotForumsResultMutableLiveData.postValue(result);
+                    if(result.message!=null){
+                        isErrorMutableLiveData.postValue(true);
+                        errorValueString.postValue(result.message.key);
+                        errorString.postValue(result.message.content);
+                    }
+                    else {
+                        if(result.variables.hotForumList == null){
+                            isErrorMutableLiveData.postValue(true);
+                            errorValueString.postValue(getApplication().getString(R.string.empty_result));
+                            errorString.postValue(getApplication().getString(R.string.parse_hot_forum_list_null));
+                        }
+                        else {
+                            isErrorMutableLiveData.postValue(false);
+                        }
+                    }
+                }
+                else {
+                    isErrorMutableLiveData.postValue(true);
+                    errorValueString.postValue(String.valueOf(response.code()));
+                    errorString.postValue(getApplication().getString(R.string.discuz_network_result_null,response.message()));
+                }
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful() && response.body()!=null){
-                    String s = response.body().string();
-                    Log.d(TAG,"Recv hot forum "+s);
-                    HotForumsResult result = bbsParseUtils.getHotForumsResult(s);
-                    hotForumsResultMutableLiveData.postValue(result);
-                    if(result == null){
-                        isErrorMutableLiveData.postValue(true);
-                        errorString.postValue(getApplication().getString(R.string.parse_failed));
-                    }
-                    else {
-                        if(result.message!=null){
-                            isErrorMutableLiveData.postValue(true);
-                            errorString.postValue(result.message.content);
-                        }
-                        else {
-                            if(result.variables.hotForumList == null){
-                                isErrorMutableLiveData.postValue(true);
-                                errorString.postValue(getApplication().getString(R.string.parse_hot_forum_list_null));
-                            }
-                            else {
-                                isErrorMutableLiveData.postValue(false);
-                            }
-                        }
-                    }
-
-                }
-                else {
-                    errorString.postValue(getApplication().getString(R.string.network_failed));
-                }
+            public void onFailure(Call<HotForumsResult> call, Throwable t) {
+                isErrorMutableLiveData.postValue(true);
                 isLoadingMutableLiveData.postValue(false);
+                errorValueString.postValue(t.getLocalizedMessage());
+                errorString.postValue(getApplication().
+                        getString(R.string.discuz_network_failure_template,t.toString()));
             }
         });
     }

@@ -562,5 +562,8 @@
     <string name="preference_title_clear_history_periodically">定时清理多余的浏览历史。</string>
     <string name="preference_summary_on_clear_history_periodically">应用将会在设备空闲时定期清理多余的浏览历史。（国内定制ROM可能会阻止这一过程）</string>
     <string name="preference_summary_off_clear_history_periodically">冗余的历史记录不会被清除，这可能导致应用运行时卡顿。</string>
+    <string name="discuz_network_failure_template">因网络问题访问服务器失败 (%1$s)</string>
+    <string name="empty_result">为空的结果</string>
+    <string name="discuz_network_result_null">服务器返回了一个空结果。(%1$s)</string>
 
 </resources>

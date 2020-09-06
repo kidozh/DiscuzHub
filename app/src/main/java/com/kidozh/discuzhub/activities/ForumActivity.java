@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.activities;
 
-import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -1024,13 +1023,13 @@ public class ForumActivity
             if(messageResult!=null){
                 String key = messageResult.key;
                 if(favorite && key.equals("favorite_do_success")){
-                    Toasty.success(getApplication(),getString(R.string.discuz_error,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                    Toasty.success(getApplication(),getString(R.string.discuz_api_error_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
                 }
                 else if(!favorite && key.equals("do_success")){
-                    Toasty.success(getApplication(),getString(R.string.discuz_error,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                    Toasty.success(getApplication(),getString(R.string.discuz_api_error_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
                 }
                 else {
-                    Toasty.warning(getApplication(),getString(R.string.discuz_error,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                    Toasty.warning(getApplication(),getString(R.string.discuz_api_error_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
                 }
             }
             else {
