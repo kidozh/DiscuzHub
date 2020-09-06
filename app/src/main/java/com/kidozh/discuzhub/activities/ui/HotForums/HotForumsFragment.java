@@ -71,7 +71,7 @@ public class HotForumsFragment extends Fragment {
     @BindView(R.id.error_content)
     TextView errorText;
     @BindView(R.id.error_value)
-    TextView errorValueT;
+    TextView errorValue;
 
     @BindView(R.id.fragment_hotforum_recyclerview)
     RecyclerView recyclerView;
@@ -112,17 +112,19 @@ public class HotForumsFragment extends Fragment {
                 swipeRefreshLayout.setRefreshing(aBoolean);
             }
         });
-
-        viewModel.isErrorMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
-                    errorText.setText(viewModel.errorString.getValue());
-                    emptyIcon.setImageResource(R.drawable.ic_error_outline_24px);
-                    emptyView.setVisibility(View.VISIBLE);
-                }
+        viewModel.errorMessageMutableLiveData.observe(getViewLifecycleOwner(),errorMessage -> {
+            if(errorMessage!=null){
+                Log.d(TAG,"Set error message "+errorMessage.key);
+                emptyView.setVisibility(View.VISIBLE);
+                errorText.setText(errorMessage.content);
+                errorValue.setText(errorMessage.key);
+                emptyIcon.setImageResource(R.drawable.ic_error_outline_24px);
+            }
+            else {
+                emptyView.setVisibility(View.GONE);
             }
         });
+
 
         viewModel.getHotForumsResult().observe(getViewLifecycleOwner(), new Observer<HotForumsResult>() {
             @Override
@@ -134,9 +136,6 @@ public class HotForumsFragment extends Fragment {
                 if(hotForumsResult == null ||
                         hotForumsResult.variables == null){
 
-                    errorText.setText(R.string.empty_hot_forum);
-                    emptyIcon.setImageResource(R.drawable.ic_user_group_empty_24dp);
-                    emptyView.setVisibility(View.VISIBLE);
                 }
                 else {
                     if(hotForumsResult.variables.hotForumList == null
@@ -144,6 +143,7 @@ public class HotForumsFragment extends Fragment {
                         errorText.setText(R.string.empty_hot_forum);
                         emptyIcon.setImageResource(R.drawable.ic_user_group_empty_24dp);
                         emptyView.setVisibility(View.VISIBLE);
+
                     }
                     else {
                         emptyView.setVisibility(View.GONE);

@@ -746,7 +746,7 @@
     <string name="preference_title_clear_history_periodically">Clear view histories automatically.</string>
     <string name="preference_summary_on_clear_history_periodically">App will clear over-much view history when device is idle.</string>
     <string name="preference_summary_off_clear_history_periodically">All view histories will store and may possibly make app run slow.</string>
-    <string name="discuz_network_failure_template">Network error (%1$s)</string>
+    <string name="discuz_network_failure_template">Network error</string>
     <string name="empty_result">Empty result</string>
     <string name="discuz_network_result_null">Get a response from server but a null object.(%1$s)</string>
 
