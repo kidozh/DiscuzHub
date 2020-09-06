@@ -28,6 +28,8 @@ import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.networkUtils;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
@@ -76,7 +78,7 @@ public class HotForumsFragment extends Fragment {
     @BindView(R.id.fragment_hotforum_recyclerview)
     RecyclerView recyclerView;
 
-    @BindView(R.id.hot_forum_empty_view)
+    @BindView(R.id.error_view)
     View emptyView;
 
     @Override
@@ -135,7 +137,7 @@ public class HotForumsFragment extends Fragment {
                 }
                 if(hotForumsResult == null ||
                         hotForumsResult.variables == null){
-
+                    adapter.setHotForumList(new ArrayList<>());
                 }
                 else {
                     if(hotForumsResult.variables.hotForumList == null
@@ -152,8 +154,9 @@ public class HotForumsFragment extends Fragment {
 
                     Log.d(TAG,"Get hot forums "+hotForumsResult.variables.hotForumList);
                     adapter.setHotForumList(hotForumsResult.variables.hotForumList);
-                    dashBoardViewModel.hotForumCountMutableLiveData.postValue(adapter.getItemCount());
+
                 }
+                dashBoardViewModel.hotForumCountMutableLiveData.postValue(adapter.getItemCount());
             }
         });
 
