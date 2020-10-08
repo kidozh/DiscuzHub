@@ -39,7 +39,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.notificationUtils;
 import com.kidozh.discuzhub.viewModels.MainDrawerViewModel;
 import com.mikepenz.materialdrawer.holder.ImageHolder;
@@ -540,7 +540,7 @@ public class DrawerActivity extends BaseStatusActivity implements
             @Override
             public void set(ImageView imageView, Uri uri, Drawable placeholder, String tag) {
                 super.set(imageView, uri, placeholder, tag);
-                OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(getApplication()));
+                OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(getApplication()));
                 Glide.get(getApplication()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
                 Glide.with(getApplication())
                         .load(uri)

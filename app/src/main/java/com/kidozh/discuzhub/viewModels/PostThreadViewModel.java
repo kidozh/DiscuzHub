@@ -17,7 +17,7 @@ import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.PostParameterResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public class PostThreadViewModel extends AndroidViewModel {
         this.curUser = userBriefInfo;
         this.fid = fid;
         URLUtils.setBBS(bbsInfo);
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
     }
 
     public MutableLiveData<PostParameterResult> getThreadPostParameterResultMutableLiveData() {

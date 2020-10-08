@@ -24,11 +24,9 @@ import com.kidozh.discuzhub.results.ThreadResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -87,7 +85,7 @@ public class ThreadViewModel extends AndroidViewModel {
         this.forum = forum;
         this.tid = tid;
         URLUtils.setBBS(bbsInfo);
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
 
 
         if(threadStatusMutableLiveData.getValue()==null){
@@ -118,7 +116,7 @@ public class ThreadViewModel extends AndroidViewModel {
     }
 
     public void getSecureInfo(){
-        Retrofit retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService service = retrofit.create(DiscuzApiService.class);
         Call<SecureInfoResult> secureInfoResultCall = service.secureResult("post");
         secureInfoResultCall.enqueue(new Callback<SecureInfoResult>() {
@@ -150,7 +148,7 @@ public class ThreadViewModel extends AndroidViewModel {
             threadCommentInfoListLiveData.setValue(new ArrayList<>());
         }
 
-        Retrofit retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService service =  retrofit.create(DiscuzApiService.class);
         Call<ThreadResult> threadResultCall = service.viewThreadResult(viewThreadQueryStatus.generateQueryHashMap());
 

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +18,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -52,7 +50,7 @@ import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.viewModels.UserProfileViewModel;
 
 import java.io.InputStream;
@@ -65,7 +63,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.OkHttpClient;
 
 public class UserProfileActivity extends BaseStatusActivity implements
         UserFriendFragment.OnFragmentInteractionListener,
@@ -139,7 +136,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
         // making it circle
 
 
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(this,bbsInfo.useSafeClient));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(this,bbsInfo.useSafeClient));
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
         int avatar_num = userId % 16;
@@ -208,7 +205,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
         if(getSupportActionBar()!=null){
             getSupportActionBar().setTitle(bbsInfo.site_name);
         }
-        client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
         if(userBriefInfo!=null && userId == Integer.parseInt(userBriefInfo.uid)){
             personalInfoFollowBtn.setVisibility(View.GONE);
             personalInfoPMBtn.setVisibility(View.GONE);
@@ -236,7 +233,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
 
                     // for avatar rendering
-                    OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(getApplication(),bbsInfo.useSafeClient));
+                    OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(getApplication(),bbsInfo.useSafeClient));
                     Glide.get(getApplicationContext()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
                     int uid = userProfileResult.userProfileVariableResult.space.uid;
                     int avatar_num = uid % 16;

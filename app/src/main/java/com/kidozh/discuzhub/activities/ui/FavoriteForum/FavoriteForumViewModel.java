@@ -19,7 +19,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.FavoriteForumResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +64,7 @@ public class FavoriteForumViewModel extends AndroidViewModel {
 
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
         FavoriteForumListData = new LivePagedListBuilder<>(dao.getFavoriteItemPageListByBBSId(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0),myPagingConfig).build();
     }
 
@@ -80,7 +80,7 @@ public class FavoriteForumViewModel extends AndroidViewModel {
 
     private void getFavoriteItem(int page){
         networkState.postValue(bbsConstUtils.NETWORK_STATUS_LOADING);
-        Retrofit retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService apiService = retrofit.create(DiscuzApiService.class);
         Call<FavoriteForumResult> favoriteCall;
         favoriteCall = apiService.getFavoriteForumResult(page);

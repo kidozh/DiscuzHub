@@ -38,7 +38,7 @@ import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
@@ -185,7 +185,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             int avatarResource = mContext.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",mContext.getPackageName());
 
-            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(mContext));
+            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(mContext));
             Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
             String source = URLUtils.getSmallAvatarUrlByUid(threadInfo.authorId);
             RequestOptions options = new RequestOptions()
@@ -380,7 +380,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             int avatarResource = mContext.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",mContext.getPackageName());
 
-            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(mContext));
+            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(mContext));
             Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
             String source = URLUtils.getDefaultAvatarUrlByUid(threadInfo.authorId);
             RequestOptions options = new RequestOptions()

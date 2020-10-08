@@ -12,7 +12,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.UserProfileResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.IOException;
 
@@ -44,7 +44,7 @@ public class UserProfileViewModel extends AndroidViewModel {
         this.curUser = userBriefInfo;
         this.uid = uid;
         URLUtils.setBBS(bbsInfo);
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
     }
 
     public MutableLiveData<UserProfileResult> getUserProfileResultLiveData(){

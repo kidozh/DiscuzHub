@@ -1,8 +1,6 @@
 package com.kidozh.discuzhub.adapter;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +18,7 @@ import com.kidozh.discuzhub.entities.SuggestURLInfo;
 import com.kidozh.discuzhub.results.AddCheckResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -116,7 +114,7 @@ public class IntroSuggestionAdapter extends RecyclerView.Adapter<IntroSuggestion
         URLUtils.setBaseUrl(base_url);
         String query_url = URLUtils.getBBSForumInformationUrl();
         // judge the url
-        OkHttpClient client = networkUtils.getPreferredClient(context,useSafeClient);
+        OkHttpClient client = NetworkUtils.getPreferredClient(context,useSafeClient);
         Request request;
         try{
             URL url = new URL(query_url);

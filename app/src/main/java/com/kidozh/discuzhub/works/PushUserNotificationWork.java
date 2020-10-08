@@ -28,7 +28,7 @@ import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.notificationUtils;
 
 import java.util.HashSet;
@@ -116,11 +116,11 @@ public class PushUserNotificationWork extends Worker {
     private Result fetchAndParseInfo(){
         // fetch the information from server now
 
-        OkHttpClient client = networkUtils.getPreferredClientWithCookieJarByUserWithDefaultHeader(context,userBriefInfo);
+        OkHttpClient client = NetworkUtils.getPreferredClientWithCookieJarByUserWithDefaultHeader(context,userBriefInfo);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         Set<String> notificationSituation = prefs.getStringSet(context.getString(R.string.preference_key_recv_notification_situation),new HashSet<>());
 
-        Retrofit retrofit = networkUtils.getRetrofitInstance(bbsInformation.base_url,client);
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInformation.base_url,client);
         DiscuzApiService apiService = retrofit.create(DiscuzApiService.class);
         Call<UserNoteListResult> userNoteListResultCall = apiService.userNotificationListResult(1);
 

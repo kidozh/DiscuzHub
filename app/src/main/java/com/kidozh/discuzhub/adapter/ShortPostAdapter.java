@@ -18,7 +18,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.InputStream;
 import java.util.List;
@@ -59,7 +59,7 @@ public class ShortPostAdapter extends RecyclerView.Adapter<ShortPostAdapter.View
         holder.mReplyMessage.setText(replyInfo.message);
 
         // download avatar not regarding data save mode
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(context));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context));
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
         String source = URLUtils.getSmallAvatarUrlByUid(replyInfo.authorId);
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);

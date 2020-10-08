@@ -1,7 +1,6 @@
 package com.kidozh.discuzhub.activities.ui.privateMessages;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,10 +25,9 @@ import com.kidozh.discuzhub.adapter.bbsPrivateMessageAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -166,7 +164,7 @@ public class bbsPrivateMessageFragment extends Fragment {
 
     private void configureIntentData(){
         Log.d(TAG,"Recv user"+userBriefInfo);
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
     }
 
 

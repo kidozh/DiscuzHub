@@ -33,7 +33,7 @@ import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -241,8 +241,8 @@ public class WebViewLoginActivity extends BaseStatusActivity {
         // get cookie from webview first
         forumUserBriefInfo userBriefInfo = new forumUserBriefInfo("","","","","",50,"");
         Log.d(TAG,"Send user id "+userBriefInfo.getId());
-        networkUtils.clearUserCookieInfo(getApplicationContext(),userBriefInfo);
-        OkHttpClient client = networkUtils.getPreferredClientWithCookieJar(getApplicationContext());
+        NetworkUtils.clearUserCookieInfo(getApplicationContext(),userBriefInfo);
+        OkHttpClient client = NetworkUtils.getPreferredClientWithCookieJar(getApplicationContext());
         // networkUtils.clearUserCookieInfo(getApplicationContext(),userBriefInfo);
         String currentUrl = webView.getUrl();
         String cookieString = cookieWebViewClientInstance.cookieManager.getCookie(currentUrl);
@@ -255,13 +255,13 @@ public class WebViewLoginActivity extends BaseStatusActivity {
             Cookie cookie = Cookie.parse(httpUrl,eachCookieString);
             cookieList.add(cookie);
         }
-        networkUtils.clearUserCookieInfo(getApplicationContext(),userBriefInfo);
+        NetworkUtils.clearUserCookieInfo(getApplicationContext(),userBriefInfo);
 
         client.cookieJar().saveFromResponse(httpUrl,cookieList);
         // exact login url
         Retrofit retrofit;
         if(bbsInfo !=null){
-            retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+            retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         }
         else {
             String currentURL = webView.getUrl();
@@ -274,7 +274,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
                     baseURLBuilder.append(urlSegements[i]).append("/");
                 }
             }
-            retrofit = networkUtils.getRetrofitInstance(baseURLBuilder.toString(),client);
+            retrofit = NetworkUtils.getRetrofitInstance(baseURLBuilder.toString(),client);
 
 
         }
@@ -477,12 +477,12 @@ public class WebViewLoginActivity extends BaseStatusActivity {
             for(long insertedId:insertUserIdList){
                 Log.d(TAG,"save user to database id: "+userBriefInfo.getId()+"  "+insertedId);
                 userBriefInfo.setId((int) insertedId);
-                OkHttpClient savedClient = networkUtils.getPreferredClientWithCookieJarByUser(getApplicationContext(),userBriefInfo);
+                OkHttpClient savedClient = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplicationContext(),userBriefInfo);
                 List<Cookie> cookies = client.cookieJar().loadForRequest(httpUrl);
                 Log.d(TAG,"Http url "+httpUrl.toString()+" cookie list size "+cookies.size());
                 savedClient.cookieJar().saveFromResponse(httpUrl,cookies);
                 // manually set the cookie to shared preference
-                SharedPrefsCookiePersistor sharedPrefsCookiePersistor = new SharedPrefsCookiePersistor(context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE));
+                SharedPrefsCookiePersistor sharedPrefsCookiePersistor = new SharedPrefsCookiePersistor(context.getSharedPreferences(NetworkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE));
                 sharedPrefsCookiePersistor.saveAll(savedClient.cookieJar().loadForRequest(httpUrl));
                 Log.d(TAG,"Http url "+httpUrl.toString()+" saved cookie list size "+savedClient.cookieJar().loadForRequest(httpUrl).size());
             }

@@ -80,4 +80,10 @@ public class UserPreferenceUtils {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(preferenceName,true);
     }
+
+    public static boolean dataSaveMode(@NonNull Context context){
+        String preferenceName = context.getString(R.string.preference_key_data_save_mode);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(preferenceName,true);
+    }
 }

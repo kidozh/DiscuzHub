@@ -1,7 +1,6 @@
 package com.kidozh.discuzhub.activities.ui.HotThreads;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +25,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.List;
 
@@ -77,7 +75,7 @@ public class HotThreadsFragment extends Fragment {
         if (getArguments() != null) {
             bbsInfo = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
             userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
-            client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+            client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
         }
     }
 
@@ -98,7 +96,7 @@ public class HotThreadsFragment extends Fragment {
     }
 
     private void configureClient(){
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
         if(bbsInfo !=null){
             hotThreadsViewModel.setBBSInfo(bbsInfo,userBriefInfo);
         }

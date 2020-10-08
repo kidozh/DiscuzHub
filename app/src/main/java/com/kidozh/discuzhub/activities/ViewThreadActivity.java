@@ -89,7 +89,7 @@ import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.viewModels.ThreadViewModel;
 
 import java.io.IOException;
@@ -721,7 +721,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
     }
 
     private void configureClient(){
-        client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
     }
 
     private void configureCommentBtn(){
@@ -2101,7 +2101,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
         protected void onPreExecute() {
             super.onPreExecute();
 
-            retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+            retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
             DiscuzApiService service = retrofit.create(DiscuzApiService.class);
             ThreadResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
             if(result !=null

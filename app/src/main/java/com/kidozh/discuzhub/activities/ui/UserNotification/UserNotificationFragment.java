@@ -28,7 +28,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.List;
 
@@ -142,7 +142,7 @@ public class UserNotificationFragment extends Fragment {
 //        forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
 //        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
 //        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
         Log.d(TAG,"recv user "+userBriefInfo);
         viewModel.setBBSInfo(bbsInfo,userBriefInfo);
     }

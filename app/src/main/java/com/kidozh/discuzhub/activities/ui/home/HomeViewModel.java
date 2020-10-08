@@ -1,8 +1,6 @@
 package com.kidozh.discuzhub.activities.ui.home;
 
 import android.app.Application;
-import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -15,11 +13,8 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.BBSIndexResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
-import java.io.IOException;
 import java.util.List;
 
 
@@ -73,8 +68,8 @@ public class HomeViewModel extends AndroidViewModel {
     public void loadForumCategoryInfo(){
 
 
-        OkHttpClient client = networkUtils.getPreferredClientWithCookieJarByUser(this.getApplication(),userBriefInfo);
-        Retrofit retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        OkHttpClient client = NetworkUtils.getPreferredClientWithCookieJarByUser(this.getApplication(),userBriefInfo);
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService service = retrofit.create(DiscuzApiService.class);
         Call<BBSIndexResult> bbsIndexResultCall = service.indexResult();
         isLoading.postValue(true);

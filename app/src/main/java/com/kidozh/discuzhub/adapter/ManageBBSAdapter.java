@@ -16,7 +16,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
 
 import java.io.InputStream;
@@ -50,7 +50,7 @@ public class ManageBBSAdapter extends RecyclerView.Adapter<ManageBBSAdapter.Mana
         holder.forumPostNumber.setText(numberFormatUtils.getShortNumberText(forumInfo.total_posts));
         holder.forumMemberNumber.setText(numberFormatUtils.getShortNumberText(forumInfo.total_members));
 
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(context));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context));
         URLUtils.setBBS(forumInfo);
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 

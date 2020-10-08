@@ -1,7 +1,6 @@
 package com.kidozh.discuzhub.activities.ui.HotThreads;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -15,18 +14,14 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -61,7 +56,7 @@ public class HotThreadsViewModel extends AndroidViewModel {
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
         URLUtils.setBBS(bbsInfo);
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
     }
 
 
@@ -83,7 +78,7 @@ public class HotThreadsViewModel extends AndroidViewModel {
         // init page
 
         isLoading.postValue(true);
-        Retrofit retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService service = retrofit.create(DiscuzApiService.class);
         Call<DisplayThreadsResult> displayThreadsResultCall = service.hotThreadResult(page);
         displayThreadsResultCall.enqueue(new Callback<DisplayThreadsResult>() {

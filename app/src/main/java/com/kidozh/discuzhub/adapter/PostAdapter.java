@@ -11,6 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -58,7 +59,7 @@ import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
 import org.xml.sax.XMLReader;
@@ -100,7 +101,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
         this.mContext = context;
-        client = networkUtils.getPreferredClient(context);
+        client = NetworkUtils.getPreferredClient(context);
         this.viewThreadQueryStatus = viewThreadQueryStatus;
     }
 
@@ -119,7 +120,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
     @Override
     public PostAdapter.bbsForumThreadCommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        int layoutIdForListItem = R.layout.item_bbs_post;
+        int layoutIdForListItem = R.layout.item_post;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
         replyListener = (onAdapterReply) context;
@@ -249,6 +250,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                 .load(glideUrl)
                 .apply(options)
                 .into(holder.mAvatarImageview);
+        if(UserPreferenceUtils.dataSaveMode(context))
         holder.mAvatarImageview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -411,7 +413,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             Drawable drawable = context.getDrawable(R.drawable.vector_drawable_image_wider_placeholder_stroke);
             myDrawable = new MyDrawableWrapper(drawable);
             // myDrawable.setDrawable(drawable);
-            client = networkUtils.getPreferredClient(mContext);
+            client = NetworkUtils.getPreferredClient(mContext);
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
             Glide.get(mContext)
                     .getRegistry()
@@ -428,7 +430,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                 targetList.add(currentDrawable);
                 urlDrawableMapper.put(source, targetList);
             }
-            if(networkUtils.canDownloadImageOrFile(mContext)){
+            if(NetworkUtils.canDownloadImageOrFile(mContext)){
                 Log.d(TAG,"load the picture from network "+source);
                 GlideUrl glideUrl = new GlideUrl(source,
                         new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
@@ -631,7 +633,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                 }
                 isLoading = true;
                 Log.d(TAG,"You pressed image URL "+url);
-                client = networkUtils.getPreferredClient(mContext);
+                client = NetworkUtils.getPreferredClient(mContext);
                 OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
                 Drawable drawable = mContext.getDrawable(R.drawable.vector_drawable_loading_image);
                 //myDrawable = new MyDrawableWrapper(drawable);

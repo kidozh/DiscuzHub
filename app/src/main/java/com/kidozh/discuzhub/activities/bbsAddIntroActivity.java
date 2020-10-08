@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,7 +32,7 @@ import com.kidozh.discuzhub.results.AddCheckResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.viewModels.AddBBSViewModel;
 
 import java.io.IOException;
@@ -245,7 +244,7 @@ public class bbsAddIntroActivity extends BaseStatusActivity
 
         URLUtils.setBaseUrl(base_url);
         String query_url = URLUtils.getBBSForumInformationUrl();
-        OkHttpClient client = networkUtils.getPreferredClient(this,useSafeClient);
+        OkHttpClient client = NetworkUtils.getPreferredClient(this,useSafeClient);
         Request request;
         try{
             URL url = new URL(query_url);

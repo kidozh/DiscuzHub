@@ -31,7 +31,7 @@ import com.kidozh.discuzhub.utilities.RecyclerItemClickListener;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
 import java.io.IOException;
@@ -99,7 +99,7 @@ public class bbsPollFragment extends Fragment {
             pollInfo = (bbsPollInfo) getArguments().getSerializable(bbsConstUtils.PASS_POLL_KEY);
             userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
             tid = getArguments().getInt(bbsConstUtils.PASS_TID_KEY);
-            client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+            client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
             formhash = getArguments().getString(bbsConstUtils.PASS_FORMHASH_KEY);
         }
     }

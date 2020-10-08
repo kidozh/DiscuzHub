@@ -51,7 +51,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.kidozh.discuzhub.utilities.networkUtils.getPreferredClient;
+import static com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClient;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
     private static final String TAG = NotificationAdapter.class.getSimpleName();

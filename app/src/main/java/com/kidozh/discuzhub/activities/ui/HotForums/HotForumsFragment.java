@@ -26,7 +26,7 @@ import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.HotForumsResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.ArrayList;
 
@@ -56,7 +56,7 @@ public class HotForumsFragment extends Fragment {
             bbsInfo = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
             URLUtils.setBBS(bbsInfo);
             userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
-            client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+            client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
         }
     }
 

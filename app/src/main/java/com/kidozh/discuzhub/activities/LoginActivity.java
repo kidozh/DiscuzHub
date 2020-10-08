@@ -40,7 +40,7 @@ import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.viewModels.LoginViewModel;
 
 import java.io.IOException;
@@ -361,7 +361,7 @@ public class LoginActivity extends BaseStatusActivity {
         if(userBriefInfo !=null){
             savedUserBriefInfo.setId(userBriefInfo.getId());
         }
-        networkUtils.clearUserCookieInfo(getApplicationContext(),savedUserBriefInfo);
+        NetworkUtils.clearUserCookieInfo(getApplicationContext(),savedUserBriefInfo);
 
 
         // exact login url
@@ -558,12 +558,12 @@ public class LoginActivity extends BaseStatusActivity {
             Log.d(TAG,"save user to database id: "+userBriefInfo.getId()+"  "+insertedId);
             userBriefInfo.setId((int) insertedId);
             // transiting data
-            networkUtils.copySharedPrefence(
+            NetworkUtils.copySharedPrefence(
                     context.getSharedPreferences("CookiePersistence",Context.MODE_PRIVATE),
-                    context.getSharedPreferences(networkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE)
+                    context.getSharedPreferences(NetworkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE)
             );
 
-            Log.d(TAG, "Transiting data to preference "+networkUtils.getSharedPreferenceNameByUser(userBriefInfo));
+            Log.d(TAG, "Transiting data to preference "+ NetworkUtils.getSharedPreferenceNameByUser(userBriefInfo));
 
             finishAfterTransition();
         }
@@ -587,7 +587,7 @@ public class LoginActivity extends BaseStatusActivity {
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         viewModel.setBBSInfo(bbsInfo,userBriefInfo);
-        client = networkUtils.getPreferredClientWithCookieJar(getApplicationContext());
+        client = NetworkUtils.getPreferredClientWithCookieJar(getApplicationContext());
         if(bbsInfo == null){
             finishAfterTransition();
         }

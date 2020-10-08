@@ -39,7 +39,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
 
 import java.io.InputStream;
@@ -100,7 +100,7 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
         holder.forumSiteId.setText(forumInfo.mysite_id);
         holder.forumPostNumber.setText(numberFormatUtils.getShortNumberText(forumInfo.total_posts));
         holder.forumMemberNumber.setText(numberFormatUtils.getShortNumberText(forumInfo.total_members));
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(context));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context));
         URLUtils.setBBS(forumInfo);
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 

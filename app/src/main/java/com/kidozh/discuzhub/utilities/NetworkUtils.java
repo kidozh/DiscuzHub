@@ -4,12 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
-import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
@@ -19,20 +15,14 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.X509ExtendedTrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import okhttp3.Cookie;
-import okhttp3.CookieJar;
-import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -40,8 +30,8 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-public class networkUtils {
-    private static String TAG = networkUtils.class.getSimpleName();
+public class NetworkUtils {
+    private static String TAG = NetworkUtils.class.getSimpleName();
     public final static int CONNECT_TIMEOUT =5;
     public final static int READ_TIMEOUT=5;
     public final static int WRITE_TIMEOUT=5;
@@ -409,6 +399,7 @@ public class networkUtils {
     public final static int NETWORK_STATUS_NO_CONNECTION = 0;
     public final static int NETWORK_STATUS_WIFI = 1;
     public final static int NETWORK_STATUS_MOBILE_DATA = 2;
+
 
 
     public static int getConnectedType(Context context) {

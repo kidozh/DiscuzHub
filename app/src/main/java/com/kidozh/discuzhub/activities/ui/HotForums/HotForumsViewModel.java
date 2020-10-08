@@ -14,7 +14,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.HotForumsResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ public class HotForumsViewModel extends AndroidViewModel {
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
         URLUtils.setBBS(bbsInfo);
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
     }
 
     public MutableLiveData<HotForumsResult> getHotForumsResult() {
@@ -54,7 +54,7 @@ public class HotForumsViewModel extends AndroidViewModel {
 
     public void loadHotForums(){
         isLoadingMutableLiveData.postValue(true);
-        Retrofit retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService service = retrofit.create(DiscuzApiService.class);
         Call<HotForumsResult> hotForumsResultCall = service.hotForumResult();
 

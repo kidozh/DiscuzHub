@@ -17,13 +17,11 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsShowPortalActivity;
-import com.kidozh.discuzhub.activities.LoginActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.colorUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.InputStream;
 import java.util.List;
@@ -66,7 +64,7 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
 
         forumUserBriefInfo userInfo = userList.get(position);
         holder.mUserName.setText(userInfo.username);
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(context));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context));
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
         holder.mUserIdx.setText(String.valueOf(position+1));
         Glide.with(context)

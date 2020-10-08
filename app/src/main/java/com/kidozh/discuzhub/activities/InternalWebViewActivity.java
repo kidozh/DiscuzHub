@@ -26,7 +26,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public class InternalWebViewActivity extends BaseStatusActivity {
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         startURL =  intent.getStringExtra(bbsConstUtils.PASS_URL_KEY);
-        client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
     }
 
     void configureActionBar(){

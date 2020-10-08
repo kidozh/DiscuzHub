@@ -21,11 +21,9 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +81,7 @@ public class ForumViewModel extends AndroidViewModel {
         this.userBriefInfo = userBriefInfo;
         this.forum = forum;
         URLUtils.setBBS(bbsInfo);
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
         favoriteForumLiveData = FavoriteForumDatabase.getInstance(getApplication())
                 .getDao()
                 .getFavoriteItemByfid(bbsInfo.getId(),userBriefInfo!=null? userBriefInfo.getUid():0,forum.fid);
@@ -122,7 +120,7 @@ public class ForumViewModel extends AndroidViewModel {
         }
 
         isLoading.postValue(true);
-        Retrofit retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService service = retrofit.create(DiscuzApiService.class);
         Call<ForumResult> forumResultCall = service.forumDisplayResult(displayForumQueryStatus.generateQueryHashMap());
         forumResultCall.enqueue(new Callback<ForumResult>() {

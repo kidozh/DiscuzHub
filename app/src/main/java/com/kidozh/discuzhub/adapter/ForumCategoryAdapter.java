@@ -23,7 +23,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.kidozh.discuzhub.utilities.networkUtils.getPreferredClient;
+import static com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClient;
 
 public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdapter.bbsShowPortalViewHolder> {
     private final static String TAG = ForumCategoryAdapter.class.getSimpleName();

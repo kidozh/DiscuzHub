@@ -3,7 +3,6 @@ package com.kidozh.discuzhub.utilities;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -42,13 +41,13 @@ public class MyImageGetter implements Html.ImageGetter {
         MyDrawableWrapper myDrawable = new MyDrawableWrapper();
         Drawable drawable = context.getDrawable(R.drawable.vector_drawable_loading_image);
         myDrawable.setDrawable(drawable);
-        OkHttpClient client = networkUtils.getPreferredClient(context);
+        OkHttpClient client = NetworkUtils.getPreferredClient(context);
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
         Glide.get(context)
                 .getRegistry()
                 .replace(GlideUrl.class, InputStream.class,factory);
         //Log.d(TAG,"Load image from "+source);
-        if(networkUtils.canDownloadImageOrFile(context) || isFileDownloadAllowed){
+        if(NetworkUtils.canDownloadImageOrFile(context) || isFileDownloadAllowed){
 
 
             Glide.with(context)

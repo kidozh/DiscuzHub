@@ -32,7 +32,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 
 import java.io.InputStream;
@@ -65,7 +65,7 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
     }
 
     void loadImageWithGlideInNetwork(bbsAttachmentViewHolder holder, PostInfo.Attachment attachmentInfo){
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(mContext));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(mContext));
         Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
         String source = URLUtils.getAttachmentURL(attachmentInfo);
 
@@ -111,12 +111,12 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
     private void renderPicture(bbsAttachmentViewHolder holder, int position){
         PostInfo.Attachment attachmentInfo = attachmentInfoList.get(position);
 
-        if(networkUtils.canDownloadImageOrFile(mContext)){
+        if(NetworkUtils.canDownloadImageOrFile(mContext)){
             loadImageWithGlideInNetwork(holder,attachmentInfo);
         }
         else {
             // retrieve file from cache
-            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(mContext));
+            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(mContext));
             Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
             String source = URLUtils.getAttachmentURL(attachmentInfo);
 

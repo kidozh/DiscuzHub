@@ -12,7 +12,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.IOException;
 
@@ -45,7 +45,7 @@ public class UserNotificationViewModel extends AndroidViewModel {
     public void setBBSInfo(bbsInformation curBBS, forumUserBriefInfo curUser){
         this.curBBS = curBBS;
         this.curUser = curUser;
-        this.client = networkUtils.getPreferredClientWithCookieJarByUser(this.getApplication(),curUser);
+        this.client = NetworkUtils.getPreferredClientWithCookieJarByUser(this.getApplication(),curUser);
     }
 
     public void getUserNotificationByPage(String view, String type,int page){

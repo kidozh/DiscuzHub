@@ -64,7 +64,7 @@ public class bbsSmileyPicker extends PopupWindow {
     }
 
     private void configureClient(){
-        client = networkUtils.getPreferredClientWithCookieJar(mContext);
+        client = NetworkUtils.getPreferredClientWithCookieJar(mContext);
     }
 
     private void getSmileyInfo(){

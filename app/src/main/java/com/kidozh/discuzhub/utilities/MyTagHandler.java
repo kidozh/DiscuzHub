@@ -2,16 +2,13 @@ package com.kidozh.discuzhub.utilities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,7 +17,6 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.RequestListener;
@@ -80,7 +76,7 @@ public class MyTagHandler implements Html.TagHandler {
         public void onClick(View widget) {
             // 进行图片点击之后的处理 usually textview
             //Log.d(TAG,"You pressed image "+widget.toString()+" URL "+url);
-            OkHttpClient client = networkUtils.getPreferredClient(mContext);
+            OkHttpClient client = NetworkUtils.getPreferredClient(mContext);
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
 
             Glide.get(mContext)

@@ -20,7 +20,7 @@ import com.kidozh.discuzhub.works.PushUserNotificationWork;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.notificationUtils;
 import com.kidozh.discuzhub.viewModels.LocalBBSViewModel;
 
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
                     for(int i=0;i<bbsInformationList.size();i++){
                         bbsInformation bbsInfo = bbsInformationList.get(i);
-                        OkHttpClient client = networkUtils.getPreferredClient(getApplicationContext());
+                        OkHttpClient client = NetworkUtils.getPreferredClient(getApplicationContext());
                         URLUtils.setBaseUrl(bbsInfo.base_url);
                         String query_url = URLUtils.getBBSForumInformationUrl();
                         Request request = new Request.Builder().url(query_url).build();

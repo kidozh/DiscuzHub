@@ -27,7 +27,7 @@ import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -147,7 +147,7 @@ public class bbsPublicMessageFragment extends Fragment {
 //        forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
 //        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
 //        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
     }
 
     void getPublicMessage(int page){

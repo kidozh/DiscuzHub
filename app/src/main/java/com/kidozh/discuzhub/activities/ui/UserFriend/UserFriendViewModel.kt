@@ -11,7 +11,7 @@ import com.kidozh.discuzhub.results.UserFriendResult
 import com.kidozh.discuzhub.results.UserFriendResult.UserFriend
 import com.kidozh.discuzhub.utilities.URLUtils
 import com.kidozh.discuzhub.utilities.bbsParseUtils
-import com.kidozh.discuzhub.utilities.networkUtils
+import com.kidozh.discuzhub.utilities.NetworkUtils
 import okhttp3.*
 import java.io.IOException
 import kotlin.math.max
@@ -50,7 +50,7 @@ class UserFriendViewModel(application: Application) : AndroidViewModel(applicati
         this.uid = uid
         this.friendCounts = friendCounts
 
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(), userBriefInfo)
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), userBriefInfo)
     }
 
 

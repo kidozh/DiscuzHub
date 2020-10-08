@@ -2,15 +2,8 @@ package com.kidozh.discuzhub.activities;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -18,9 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.content.ContextCompat;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -29,12 +20,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
-
-import java.util.List;
 
 import es.dmoral.toasty.Toasty;
-import okhttp3.OkHttpClient;
 
 public class SettingsActivity extends BaseStatusActivity {
 

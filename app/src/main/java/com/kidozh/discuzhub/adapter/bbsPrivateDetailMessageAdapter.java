@@ -29,7 +29,7 @@ import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.InputStream;
 import java.util.List;
@@ -99,7 +99,7 @@ public class bbsPrivateDetailMessageAdapter extends RecyclerView.Adapter<bbsPriv
         holder.privateMessageDetailTime.setText(new SpannableString(timeSp));
 
 
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(context));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context));
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
         ConstraintSet constraintSet = new ConstraintSet();

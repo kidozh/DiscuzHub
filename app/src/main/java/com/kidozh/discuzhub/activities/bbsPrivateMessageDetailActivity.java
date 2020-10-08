@@ -2,7 +2,6 @@ package com.kidozh.discuzhub.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -38,7 +37,7 @@ import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -52,7 +51,6 @@ import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -386,7 +384,7 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
         privateMessageInfo = (bbsParseUtils.privateMessage) intent.getSerializableExtra(bbsConstUtils.PASS_PRIVATE_MESSAGE_KEY);
         // parse client
-        client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
         if(bbsInfo == null){
             finishAfterTransition();
         }

@@ -38,7 +38,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.SubForumAdapter;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;
@@ -62,9 +61,8 @@ import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.viewModels.ForumViewModel;
@@ -905,7 +903,7 @@ public class ForumActivity
         protected void onPreExecute() {
             super.onPreExecute();
 
-            retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+            retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
             DiscuzApiService service = retrofit.create(DiscuzApiService.class);
             ForumResult result = forumViewModel.displayForumResultMutableLiveData.getValue();
             dao = FavoriteForumDatabase.getInstance(getApplicationContext()).getDao();

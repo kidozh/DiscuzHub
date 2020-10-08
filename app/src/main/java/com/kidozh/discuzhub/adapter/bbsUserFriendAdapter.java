@@ -24,7 +24,6 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.UserFriendResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 
 import java.io.InputStream;
@@ -33,7 +32,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.kidozh.discuzhub.utilities.networkUtils.getPreferredClient;
+import static com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClient;
 
 public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdapter.ViewHolder> {
     private final static String TAG = bbsUserFriendAdapter.class.getSimpleName();

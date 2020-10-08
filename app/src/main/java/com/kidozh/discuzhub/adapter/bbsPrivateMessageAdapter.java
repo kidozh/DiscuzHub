@@ -31,7 +31,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.InputStream;
 import java.util.List;
@@ -100,7 +100,7 @@ public class bbsPrivateMessageAdapter extends RecyclerView.Adapter<bbsPrivateMes
 
         //holder.privateMessageRecvTime.setText(privateM.vdateLine);
         holder.privateMessageUsername.setText(privateM.toUsername);
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(context));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context));
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
         int avatar_num = position % 16;

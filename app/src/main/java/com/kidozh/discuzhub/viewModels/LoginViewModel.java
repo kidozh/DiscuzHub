@@ -13,7 +13,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.IOException;
 
@@ -55,7 +55,7 @@ public class LoginViewModel extends AndroidViewModel {
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
         URLUtils.setBBS(bbsInfo);
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
         // bbsPersonInfoMutableLiveData.postValue(userBriefInfo);
     }
 

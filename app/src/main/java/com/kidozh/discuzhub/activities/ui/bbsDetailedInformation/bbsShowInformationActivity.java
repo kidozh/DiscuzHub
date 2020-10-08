@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.activities.ui.bbsDetailedInformation;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -40,7 +39,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
 import java.io.InputStream;
@@ -111,7 +110,7 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
         bbsInfoMember.setText(bbsInfo.total_members);
         bbsInfoSiteId.setText(bbsInfo.mysite_id);
         bbsInfoUseSafeClientCheckBox.setChecked(bbsInfo.useSafeClient);
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(networkUtils.getPreferredClient(this));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(this));
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
         Glide.with(this)

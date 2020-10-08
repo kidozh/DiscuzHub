@@ -168,7 +168,7 @@
                         android:nestedScrollingEnabled="true"
                         android:visibility="visible"
                         tools:itemCount="0"
-                        tools:listitem="@layout/item_bbs_post">
+                        tools:listitem="@layout/item_post">
 
 
                     </androidx.recyclerview.widget.RecyclerView>

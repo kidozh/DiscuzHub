@@ -15,7 +15,7 @@ import com.kidozh.discuzhub.results.FavoriteThreadResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.IOException;
 
@@ -41,7 +41,7 @@ public class FavoriteThreadDataSource extends PageKeyedDataSource<Integer, Favor
         this.context = context;
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
-        client = networkUtils.getPreferredClientWithCookieJarByUser(context,userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(context,userBriefInfo);
     }
 
     @Override

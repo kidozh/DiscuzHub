@@ -34,7 +34,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.kidozh.discuzhub.utilities.networkUtils.getPreferredClient;
+import static com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClient;
 
 public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubForumViewHolder> {
     final String TAG = SubForumAdapter.class.getSimpleName();

@@ -19,7 +19,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.FavoriteThreadResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +65,7 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
         this.idType = idType;
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
         favoriteThreadListData = new LivePagedListBuilder<>(dao.getFavoriteItemPageListByBBSId(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0,idType),myPagingConfig).build();
     }
 
@@ -81,7 +81,7 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
 
     private void getFavoriteItem(int page){
         networkState.postValue(bbsConstUtils.NETWORK_STATUS_LOADING);
-        Retrofit retrofit = networkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService apiService = retrofit.create(DiscuzApiService.class);
         Call<FavoriteThreadResult> favoriteCall;
         favoriteCall = apiService.getFavoriteThreadResult(page);

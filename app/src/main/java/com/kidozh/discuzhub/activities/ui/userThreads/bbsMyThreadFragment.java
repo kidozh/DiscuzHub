@@ -1,7 +1,6 @@
 package com.kidozh.discuzhub.activities.ui.userThreads;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ui.HotForums.HotForumsFragment;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
@@ -33,7 +31,7 @@ import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -90,7 +88,7 @@ public class bbsMyThreadFragment extends Fragment {
             bbsInfo = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
             URLUtils.setBBS(bbsInfo);
             userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
-            client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+            client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
         }
     }
 

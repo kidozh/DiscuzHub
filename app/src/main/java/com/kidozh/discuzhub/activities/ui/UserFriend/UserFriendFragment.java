@@ -30,7 +30,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.UserFriendResult;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.List;
 
@@ -132,7 +132,7 @@ public class UserFriendFragment extends Fragment {
         forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        client = networkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
         viewModel = new ViewModelProvider(this).get(UserFriendViewModel.class);
         Log.d(TAG,"Set bbs "+bbsInfo+" user "+userBriefInfo);
         viewModel.setInfo(bbsInfo,userBriefInfo, uid, friendCounts);

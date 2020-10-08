@@ -70,7 +70,7 @@ import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.networkUtils;
+import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 import com.kidozh.discuzhub.viewModels.PostThreadViewModel;
 
@@ -249,7 +249,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
     }
 
     private void configureClient(){
-        client = networkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
     }
 
     private void bindViewModel(){
