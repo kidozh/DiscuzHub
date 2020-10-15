@@ -13,7 +13,8 @@
         android:focusable="auto"
         android:foreground="?attr/selectableItemBackground"
         android:longClickable="true"
-        app:cardElevation="2dp"
+        app:cardElevation="5dp"
+        app:cardMaxElevation="5dp"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,9 +32,9 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:transitionName="user_info_avatar"
-                app:shape_mode="circle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:shape_mode="circle"
                 tools:srcCompat="@tools:sample/avatars[0]" />
 
             <TextView
@@ -91,10 +92,10 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
+                android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bbs_post_publish_date"
-                android:orientation="vertical">
+                app:layout_constraintTop_toBottomOf="@+id/bbs_post_publish_date">
 
                 <LinearLayout
                     android:id="@+id/bbs_post_status_blocked_layout"

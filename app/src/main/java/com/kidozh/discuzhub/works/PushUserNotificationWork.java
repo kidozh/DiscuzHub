@@ -18,7 +18,7 @@ import androidx.work.WorkerParameters;
 
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ViewThreadActivity;
+import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.database.BBSInformationDatabase;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -190,7 +190,7 @@ public class PushUserNotificationWork extends Worker {
         PendingIntent pendingIntent;
         if(notification.notificationExtraInfo != null){
 
-            Intent intent = new Intent(context, ViewThreadActivity.class);
+            Intent intent = new Intent(context, ThreadActivity.class);
             intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
             intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             intent.putExtra("TID",notification.notificationExtraInfo.tid);

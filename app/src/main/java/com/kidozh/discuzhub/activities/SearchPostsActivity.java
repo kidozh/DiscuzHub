@@ -3,9 +3,7 @@ package com.kidozh.discuzhub.activities;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -21,33 +19,25 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.ForumInfo;
-import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.results.ThreadResult;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
-import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
 
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dmoral.toasty.Toasty;
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 
@@ -295,7 +285,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
                             }
 
                             putThreadInfo.tid = tid;
-                            Intent intent = new Intent(context, ViewThreadActivity.class);
+                            Intent intent = new Intent(context, ThreadActivity.class);
                             intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                             intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                             intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -382,7 +372,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
                     Log.d(TAG, "Find the current " + redirectPid + " tid " + redirectTid);
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(context, ViewThreadActivity.class);
+                    Intent intent = new Intent(context, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -407,7 +397,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
 
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(context, ViewThreadActivity.class);
+                    Intent intent = new Intent(context, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);

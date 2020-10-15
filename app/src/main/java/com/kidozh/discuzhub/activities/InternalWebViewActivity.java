@@ -203,7 +203,7 @@ public class InternalWebViewActivity extends BaseStatusActivity {
                     Log.d(TAG, "Find the current " + redirectPid + " tid " + redirectTid);
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(context, ViewThreadActivity.class);
+                    Intent intent = new Intent(context, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -221,7 +221,7 @@ public class InternalWebViewActivity extends BaseStatusActivity {
                     int redirectTid = Integer.parseInt(tidString);
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(context, ViewThreadActivity.class);
+                    Intent intent = new Intent(context, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);

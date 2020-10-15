@@ -116,13 +116,13 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 
 
-public class ViewThreadActivity extends BaseStatusActivity implements SmileyFragment.OnSmileyPressedInteraction,
+public class ThreadActivity extends BaseStatusActivity implements SmileyFragment.OnSmileyPressedInteraction,
         PostAdapter.onFilterChanged,
         PostAdapter.onAdapterReply,
         PostAdapter.OnLinkClicked,
         bbsPollFragment.OnFragmentInteractionListener,
         ThreadCountAdapter.OnRecommendBtnPressed{
-    private final static String TAG = ViewThreadActivity.class.getSimpleName();
+    private final static String TAG = ThreadActivity.class.getSimpleName();
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.bbs_thread_detail_recyclerview)
@@ -988,7 +988,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                 if(redirectTid != tid){
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(this, ViewThreadActivity.class);
+                    Intent intent = new Intent(this, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -1033,7 +1033,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                 }
                 ThreadInfo putThreadInfo = new ThreadInfo();
                 putThreadInfo.tid = redirectTid;
-                Intent intent = new Intent(this, ViewThreadActivity.class);
+                Intent intent = new Intent(this, ThreadActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -1225,7 +1225,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                                     }
 
                                     putThreadInfo.tid = tid;
-                                    Intent intent = new Intent(context, ViewThreadActivity.class);
+                                    Intent intent = new Intent(context, ThreadActivity.class);
                                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);

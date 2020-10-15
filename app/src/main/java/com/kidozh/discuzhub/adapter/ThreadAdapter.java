@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +17,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,7 +28,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ViewThreadActivity;
+import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
@@ -205,7 +202,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mContext, ViewThreadActivity.class);
+                    Intent intent = new Intent(mContext, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);
@@ -394,7 +391,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mContext, ViewThreadActivity.class);
+                    Intent intent = new Intent(mContext, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);
@@ -513,7 +510,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mContext, ViewThreadActivity.class);
+                    Intent intent = new Intent(mContext, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);

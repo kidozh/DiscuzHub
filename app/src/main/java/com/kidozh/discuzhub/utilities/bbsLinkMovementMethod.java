@@ -21,7 +21,7 @@ import android.text.Layout;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.InternalWebViewActivity;
-import com.kidozh.discuzhub.activities.ViewThreadActivity;
+import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.activities.ForumActivity;
 import com.kidozh.discuzhub.entities.ForumInfo;
@@ -210,7 +210,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                             }
 
                             putThreadInfo.tid = tid;
-                            Intent intent = new Intent(context, ViewThreadActivity.class);
+                            Intent intent = new Intent(context, ThreadActivity.class);
                             intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                             intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                             intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -297,7 +297,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                     Log.d(TAG, "Find the current " + redirectPid + " tid " + redirectTid);
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(context, ViewThreadActivity.class);
+                    Intent intent = new Intent(context, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
@@ -322,7 +322,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
 
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(context, ViewThreadActivity.class);
+                    Intent intent = new Intent(context, ThreadActivity.class);
                     intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                     intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);

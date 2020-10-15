@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ViewThreadActivity;
+import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.activities.ForumActivity;
 import com.kidozh.discuzhub.entities.ForumInfo;
@@ -32,7 +32,6 @@ import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.GlideImageGetter;
-import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
@@ -127,7 +126,7 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
                             threadInfo.fid = history.fid;
                             threadInfo.tid = history.tid;
                             threadInfo.subject = history.description;
-                            Intent intent = new Intent(context, ViewThreadActivity.class);
+                            Intent intent = new Intent(context, ThreadActivity.class);
                             intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                             intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                             intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);

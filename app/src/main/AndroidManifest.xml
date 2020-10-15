@@ -84,7 +84,7 @@
             android:name=".activities.ForumActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activities.ViewThreadActivity"
+            android:name=".activities.ThreadActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.SplashScreenActivity"
