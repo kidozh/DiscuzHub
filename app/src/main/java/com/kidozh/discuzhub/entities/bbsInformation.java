@@ -39,6 +39,16 @@ public class bbsInformation implements Serializable {
         this.id = id;
     }
 
+    public int getAPIVersion(){
+        try{
+            return Integer.parseInt(version);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
     public bbsInformation(String base_url, String site_name, String discuz_version,
                           String charset,
                           String version, String plugin_version, String total_posts,

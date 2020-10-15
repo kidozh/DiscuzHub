@@ -697,7 +697,7 @@
     <string name="favorite_thread_not_prepared">Favoriting or unfavoriting the thread is not prepared. Please wait util the thread is loaded.</string>
     <string name="sync_favorite_thread_start">Start to sync favorite thread from %1$s.</string>
     <string name="sync_favorite_thread_load_all">All favorite threads are loaded.</string>
-    <string name="discuz_api_error_template" translatable="false">%2$s (%1$s)</string>
+    <string name="discuz_api_message_template" translatable="false">%2$s (%1$s)</string>
     <string name="favoite_status_sync">Synced</string>
     <string name="favorite_description">Set a description for the favorite</string>
     <string name="forum_today_post">Today posts (%1$d)</string>
@@ -754,6 +754,7 @@
     <string name="has_load_all_threads_in_forum">Has load all %1$d threads in the forum.</string>
     <string name="all_posts_loaded_template">All %1$d posts are loaded.</string>
     <string name="search">Search</string>
+    <string name="bbs_api_advance">AD+</string>
 
 
 </resources>

@@ -317,7 +317,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
                             @Override
                             public void run() {
                                 Toasty.error(getApplicationContext(),
-                                        getString(R.string.discuz_api_error_template,messageResult.key,messageResult.content),
+                                        getString(R.string.discuz_api_message_template,messageResult.key,messageResult.content),
                                         Toast.LENGTH_SHORT
                                 ).show();
                             }
@@ -340,7 +340,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
                         @Override
                         public void run() {
                             Toasty.error(getApplicationContext(),
-                                    getString(R.string.discuz_api_error_template,String.valueOf(response.code()),response.message()),
+                                    getString(R.string.discuz_api_message_template,String.valueOf(response.code()),response.message()),
                                     Toast.LENGTH_SHORT
                             ).show();
                         }

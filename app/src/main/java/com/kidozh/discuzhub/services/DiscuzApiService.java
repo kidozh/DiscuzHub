@@ -34,7 +34,7 @@ public interface DiscuzApiService {
     Call<FavoriteForumResult> getFavoriteForumResult(@Query("page") int page);
 
     @FormUrlEncoded
-    @POST(DISCUZ_API_PATH+"?version=4&module=favthread&type=thread&ac=favorite")
+    @POST(DISCUZ_API_PATH+"?version=4&module=favthread&type=thread&ac=favorite&favoritesubmit=true")
     Call<ApiMessageActionResult> favoriteThreadActionResult(
             @Query("formhash") String formhash,
             @Query("id") int tid,
@@ -44,7 +44,7 @@ public interface DiscuzApiService {
     );
 
     @FormUrlEncoded
-    @POST(DISCUZ_API_PATH+"?version=4&module=favthread&type=all&ac=favorite&op=delete&inajax=1")
+    @POST(DISCUZ_API_PATH+"?version=4&module=favthread&type=all&ac=favorite&op=delete&inajax=1&favoritesubmit=true")
     Call<ApiMessageActionResult> unfavoriteThreadActionResult(
             @Field("formhash") String formhash,
             @Field("deletesubmit") String submit,
@@ -55,9 +55,9 @@ public interface DiscuzApiService {
     );
 
     @FormUrlEncoded
-    @POST(DISCUZ_API_PATH+"?version=4&module=favforum&type=forum&ac=favorite")
+    @POST(DISCUZ_API_PATH+"?version=4&module=favforum&type=forum&ac=favorite&favoritesubmit=true")
     Call<ApiMessageActionResult> favoriteForumActionResult(
-            @Query("formhash") String formhash,
+            @Query("hash") String formhash,
             @Query("id") int tid,
             @Field("description") String description
 
@@ -65,9 +65,9 @@ public interface DiscuzApiService {
     );
 
     @FormUrlEncoded
-    @POST(DISCUZ_API_PATH+"?version=4&module=favforum&type=all&ac=favorite&op=delete&inajax=1")
+    @POST(DISCUZ_API_PATH+"?version=4&module=favforum&type=all&ac=favorite&op=delete&inajax=1&favoritesubmit=true")
     Call<ApiMessageActionResult> unfavoriteForumActionResult(
-            @Field("formhash") String formhash,
+            @Field("hash") String formhash,
             @Field("deletesubmit") String submit,
             @Field("handlekey") String handleKey,
             @Query("favid") int favid
@@ -108,4 +108,16 @@ public interface DiscuzApiService {
 
     @GET(DISCUZ_API_PATH+"?version=4&module=secure")
     Call<SecureInfoResult> secureResult(@Query("type") String type);
+
+    @GET(DISCUZ_API_PATH+"?version=4&module=recommend")
+    Call<ApiMessageActionResult> recommendThread(
+            @Query("hash") String formhash,
+            @Query("tid") int tid
+    );
+
+    @GET(DISCUZ_API_PATH+"?version=4&module=recommend&do=substract")
+    Call<ApiMessageActionResult> unrecommendThread(
+            @Query("hash") String formhash,
+            @Query("tid") int tid
+    );
 }

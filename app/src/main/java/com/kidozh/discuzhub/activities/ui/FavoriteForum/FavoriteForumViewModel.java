@@ -97,7 +97,7 @@ public class FavoriteForumViewModel extends AndroidViewModel {
                     if(result.isError()){
                         networkState.postValue(bbsConstUtils.NETWORK_STATUS_FAILED);
                         errorMsgKey.postValue(result.message.key);
-                        errorMsgContent.postValue(getApplication().getString(R.string.discuz_api_error_template,result.message.key,result.message.content));
+                        errorMsgContent.postValue(getApplication().getString(R.string.discuz_api_message_template,result.message.key,result.message.content));
                     }
                     else {
                         totalCount.postValue(result.FavoriteForumVariable.count);

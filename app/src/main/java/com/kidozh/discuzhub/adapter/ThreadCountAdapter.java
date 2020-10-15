@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.entities.ThreadCount;
 
 import java.util.List;
@@ -25,10 +26,15 @@ public class ThreadCountAdapter extends RecyclerView.Adapter<ThreadCountAdapter.
 
     List<ThreadCount> ThreadCountList;
 
+    private OnRecommendBtnPressed mListener;
+
     @NonNull
     @Override
     public ThreadCountHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
+        if(context instanceof OnRecommendBtnPressed){
+            mListener = (OnRecommendBtnPressed) context;
+        }
         int layoutIdForListItem = R.layout.item_bbs_thread_type;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
@@ -46,6 +52,24 @@ public class ThreadCountAdapter extends RecyclerView.Adapter<ThreadCountAdapter.
     public void onBindViewHolder(@NonNull ThreadCountHolder holder, int position) {
 
         ThreadCount notification = ThreadCountList.get(position);
+        if(mListener !=null){
+            switch (position){
+                case 0:{
+                    holder.itemThreadTypeCardview.setOnClickListener(v -> {
+                        mListener.onRecommend(true);
+                    });
+                    break;
+                }
+                case 1:{
+                    holder.itemThreadTypeCardview.setOnClickListener(v -> {
+                        mListener.onRecommend(false);
+                    });
+                    break;
+                }
+            }
+
+        }
+
 
         if(notification.highlightColorRes == -1){
             holder.itemThreadTypeAvatar.setImageResource(notification.imageResource);
@@ -57,6 +81,7 @@ public class ThreadCountAdapter extends RecyclerView.Adapter<ThreadCountAdapter.
             holder.itemThreadTypeCardview.setBackgroundColor(notification.highlightColorRes);
             holder.itemThreadTypeTextview.setTextColor(context.getColor(R.color.colorPureWhite));
             holder.itemThreadTypeAvatar.setColorFilter(context.getColor(R.color.colorPureWhite));
+
         }
 
     }
@@ -83,6 +108,10 @@ public class ThreadCountAdapter extends RecyclerView.Adapter<ThreadCountAdapter.
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
+    }
+
+    public interface OnRecommendBtnPressed{
+        void onRecommend(boolean recommend);
     }
 
 

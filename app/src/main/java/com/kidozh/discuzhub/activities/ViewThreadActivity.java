@@ -120,7 +120,8 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
         PostAdapter.onFilterChanged,
         PostAdapter.onAdapterReply,
         PostAdapter.OnLinkClicked,
-        bbsPollFragment.OnFragmentInteractionListener{
+        bbsPollFragment.OnFragmentInteractionListener,
+        ThreadCountAdapter.OnRecommendBtnPressed{
     private final static String TAG = ViewThreadActivity.class.getSimpleName();
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -314,7 +315,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
         threadDetailViewModel.errorMessageMutableLiveData.observe(this, errorMessage ->{
             if(errorMessage!=null){
                 Toasty.error(getApplication(), 
-                        getString(R.string.discuz_api_error_template,errorMessage.key,errorMessage.content), 
+                        getString(R.string.discuz_api_message_template,errorMessage.key,errorMessage.content),
                         Toast.LENGTH_LONG).show();
                 errorView.setVisibility(View.VISIBLE);
                 errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
@@ -695,6 +696,24 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
         threadDetailViewModel.favoriteThreadLiveData.observe(this,favoriteThread -> {
             Log.d(TAG,"Get favorite thread in observer"+favoriteThread);
             invalidateOptionsMenu();
+        });
+
+        threadDetailViewModel.recommendResultMutableLiveData.observe(this, apiMessageActionResult -> {
+            if(apiMessageActionResult!=null && apiMessageActionResult.message!=null){
+                MessageResult messageResult = apiMessageActionResult.message;
+                if(messageResult.key.equals("recommend_succeed")){
+                    Toasty.success(getApplicationContext(),getString(R.string.discuz_api_message_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toasty.error(getApplicationContext(),getString(R.string.discuz_api_message_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        threadDetailViewModel.recommendResultErrorMutableLiveData.observe(this,errorMessage -> {
+            if(errorMessage!=null){
+                Toasty.success(getApplicationContext(),getString(R.string.discuz_api_message_template,errorMessage.key,errorMessage.content),Toast.LENGTH_LONG).show();
+            }
         });
     }
 
@@ -1339,6 +1358,11 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
         Log.d(TAG,"You click "+unescapedURL);
     }
 
+    @Override
+    public void onRecommend(boolean recommend) {
+        threadDetailViewModel.recommendThread(tid,recommend);
+    }
+
     public class smileyViewPagerAdapter extends FragmentStatePagerAdapter{
         int cateNum = 0;
 
@@ -1440,7 +1464,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
         if(!UserPreferenceUtils.conciseRecyclerView(getApplicationContext())){
             // not to bind this
             mDetailThreadTypeRecyclerview.setHasFixedSize(true);
-            mDetailThreadTypeRecyclerview.setLayoutManager(new GridLayoutManager(this, 6));
+            mDetailThreadTypeRecyclerview.setLayoutManager(new GridLayoutManager(this, 5));
             mDetailThreadTypeRecyclerview.setAdapter(countAdapter);
         }
 
@@ -1772,7 +1796,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                                 reloadThePage();
                                 threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
                                 //getThreadComment();
-                                Toasty.success(getApplicationContext(), getString(R.string.discuz_api_error_template,returnedMessage.value,returnedMessage.string), Toast.LENGTH_LONG).show();
+                                Toasty.success(getApplicationContext(), getString(R.string.discuz_api_message_template,returnedMessage.value,returnedMessage.string), Toast.LENGTH_LONG).show();
                             }
                         });
                     } else {
@@ -1785,7 +1809,7 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
                                     Toasty.error(getApplicationContext(), getString(R.string.network_failed), Toast.LENGTH_LONG).show();
                                 }
                                 else {
-                                    Toasty.error(getApplicationContext(), getString(R.string.discuz_api_error_template,returnedMessage.value,returnedMessage.string), Toast.LENGTH_LONG).show();
+                                    Toasty.error(getApplicationContext(), getString(R.string.discuz_api_message_template,returnedMessage.value,returnedMessage.string), Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
@@ -2239,13 +2263,13 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
             if(messageResult!=null){
                 String key = messageResult.key;
                 if(favorite && key.equals("favorite_do_success")){
-                    Toasty.success(getApplication(),getString(R.string.discuz_api_error_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                    Toasty.success(getApplication(),getString(R.string.discuz_api_message_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
                 }
                 else if(!favorite && key.equals("do_success")){
-                    Toasty.success(getApplication(),getString(R.string.discuz_api_error_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                    Toasty.success(getApplication(),getString(R.string.discuz_api_message_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
                 }
                 else {
-                    Toasty.warning(getApplication(),getString(R.string.discuz_api_error_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                    Toasty.warning(getApplication(),getString(R.string.discuz_api_message_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
                 }
             }
             else {

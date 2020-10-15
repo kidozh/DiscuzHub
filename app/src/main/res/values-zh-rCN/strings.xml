@@ -570,5 +570,6 @@
     <string name="has_load_all_threads_in_forum">已经加载了所有的%1$d条帖子。</string>
     <string name="all_posts_loaded_template">已经加载了所有的%1$d楼层。</string>
     <string name="search">搜索</string>
+    <string name="bbs_api_advance">高级</string>
 
 </resources>

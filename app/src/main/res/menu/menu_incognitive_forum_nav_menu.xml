@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.kidozh.discuzhub.MainActivity" >
     <item
+        android:id="@+id/bbs_search"
+        android:icon="@drawable/ic_search_24px"
+        android:title="@string/search"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/bbs_favorite"
         android:icon="@drawable/ic_not_favorite_24px"
         android:title="@string/favorite"
@@ -16,7 +22,8 @@
     <item
         android:id="@+id/bbs_forum_nav_show_in_webview"
         android:title="@string/bbs_show_in_internal_browser"
-        app:showAsAction="never|withText" />
+        android:icon="@drawable/ic_open_in_new_24px"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/bbs_forum_nav_show_in_external_browser"
         android:icon="@drawable/ic_open_in_browser_24px"
@@ -24,5 +31,10 @@
         app:showAsAction="never|withText" />
     <item
         android:id="@+id/bbs_settings"
+        android:icon="@drawable/ic_settings_outlined_24px"
         android:title="@string/action_settings" />
+    <item
+        android:id="@+id/bbs_about_app"
+        android:icon="@drawable/ic_info_outlined_24px"
+        android:title="@string/app_about" />
 </menu>

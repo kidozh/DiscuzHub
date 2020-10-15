@@ -42,6 +42,8 @@ import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.notificationUtils;
 import com.kidozh.discuzhub.viewModels.MainDrawerViewModel;
+import com.mikepenz.materialdrawer.holder.BadgeStyle;
+import com.mikepenz.materialdrawer.holder.ColorHolder;
 import com.mikepenz.materialdrawer.holder.ImageHolder;
 import com.mikepenz.materialdrawer.holder.StringHolder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -180,6 +182,22 @@ public class DrawerActivity extends BaseStatusActivity implements
                     bbsProfile.setIdentifier(currentBBSInfo.getId());
                     bbsProfile.setIcon(new ImageHolder(URLUtils.getBBSLogoUrl(currentBBSInfo.base_url)));
                     bbsProfile.setDescription(new StringHolder(currentBBSInfo.base_url));
+                    if(currentBBSInfo.getAPIVersion() > 4){
+                        // marked as advanced
+                        bbsProfile.setBadge(new StringHolder(
+                                getString(R.string.bbs_api_advance)
+                        ));
+                        BadgeStyle badgeStyle = new BadgeStyle();
+
+                        badgeStyle.setBadgeBackground(getDrawable(R.color.colorAccent));
+                        ColorHolder colorHolder= new ColorHolder();
+                        colorHolder.setColorRes$materialdrawer(R.color.colorPureWhite);
+                        badgeStyle.setTextColor(colorHolder);
+
+                        bbsProfile.setBadgeStyle(badgeStyle);
+                    }
+
+
                     accountProfiles.add(bbsProfile);
 
                 }
@@ -896,15 +914,9 @@ public class DrawerActivity extends BaseStatusActivity implements
             super.onPostExecute(integer);
             Log.d(TAG,"view histories number @@@ "+integer+" identifier "+FUNC_VIEW_HISTORY);
             if(integer !=CURRENT_BBS_NULL){
-                ProfileSettingDrawerItem viewHistory = new ProfileSettingDrawerItem();
-                viewHistory.setName(new StringHolder(R.string.view_history));
-                viewHistory.setSelectable(false);
-                viewHistory.setIcon(new ImageHolder(R.drawable.ic_history_24px));
-                viewHistory.setIdentifier(FUNC_VIEW_HISTORY);
-                viewHistory.setDescription(new StringHolder(R.string.preference_summary_on_record_history));
-                viewHistory.setBadge(new StringHolder(String.valueOf(integer)));
 
-                MaterialDrawerSliderViewExtensionsKt.updateItem(slider,viewHistory);
+                MaterialDrawerSliderViewExtensionsKt.updateBadge(slider,FUNC_VIEW_HISTORY, new StringHolder(String.valueOf(integer)));
+                //MaterialDrawerSliderViewExtensionsKt.updateItem(slider,viewHistory);
                 if(slider.getItemAdapter().getFastAdapter() !=null){
                     slider.getItemAdapter().getFastAdapter().notifyAdapterDataSetChanged();
                 }

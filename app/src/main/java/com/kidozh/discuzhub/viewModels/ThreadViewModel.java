@@ -1,6 +1,7 @@
 package com.kidozh.discuzhub.viewModels;
 
 import android.app.Application;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.results.ApiMessageActionResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
@@ -57,9 +59,11 @@ public class ThreadViewModel extends AndroidViewModel {
     public MutableLiveData<bbsParseUtils.DetailedThreadInfo> detailedThreadInfoMutableLiveData;
     public MutableLiveData<ThreadResult> threadPostResultMutableLiveData;
     private MutableLiveData<SecureInfoResult> secureInfoResultMutableLiveData;
+    public MutableLiveData<ApiMessageActionResult> recommendResultMutableLiveData = new MutableLiveData<>(null);
     public LiveData<Boolean> isFavoriteThreadMutableLiveData;
     public LiveData<FavoriteThread> favoriteThreadLiveData;
-    public MutableLiveData<ErrorMessage> errorMessageMutableLiveData = new MutableLiveData<>(null);
+    public MutableLiveData<ErrorMessage> errorMessageMutableLiveData = new MutableLiveData<>(null),
+            recommendResultErrorMutableLiveData = new MutableLiveData<>(null);
     FavoriteThreadDao dao;
 
     public ThreadViewModel(@NonNull Application application) {
@@ -268,5 +272,45 @@ public class ThreadViewModel extends AndroidViewModel {
             }
         });
         Log.d(TAG,"Send request to "+threadResultCall.request().url().toString());
+    }
+
+    public void recommendThread(int tid, boolean recommend){
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        DiscuzApiService service = retrofit.create(DiscuzApiService.class);
+        String formHashValue = formHash.getValue();
+        if(TextUtils.isEmpty(formHashValue)){
+            return;
+        }
+        Call<ApiMessageActionResult> recommendCall;
+        if(recommend){
+            recommendCall = service.recommendThread(formHashValue,tid);
+        }
+        else {
+            recommendCall = service.unrecommendThread(formHashValue,tid);
+        }
+
+        recommendCall.enqueue(new Callback<ApiMessageActionResult>() {
+            @Override
+            public void onResponse(Call<ApiMessageActionResult> call, Response<ApiMessageActionResult> response) {
+                if(response.isSuccessful() && response.body()!=null){
+                    ApiMessageActionResult recommendMessageResult = response.body();
+                    recommendResultMutableLiveData.postValue(recommendMessageResult);
+                }
+                else {
+                    recommendResultErrorMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),
+                            getApplication().getString(R.string.discuz_network_unsuccessful,
+                                    response.message()
+                            )
+                    ));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiMessageActionResult> call, Throwable t) {
+                recommendResultErrorMutableLiveData.postValue(new ErrorMessage(getApplication().getString(R.string.discuz_network_failure_template),
+                        t.getLocalizedMessage() == null?t.toString():t.getLocalizedMessage()));
+            }
+        });
+
     }
 }

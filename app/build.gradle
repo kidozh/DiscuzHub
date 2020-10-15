@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.kidozh.discuzhub"
         minSdkVersion 23
-        targetSdkVersion 29
-        versionCode 17
-        versionName "2.5"
+        targetSdkVersion 30
+        versionCode 18
+        versionName "2.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -40,9 +40,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.core:core:1.3.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
-    def material_version = '1.3.0-alpha02'
+    implementation 'androidx.core:core:1.3.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    def material_version = '1.3.0-alpha03'
     implementation "com.google.android.material:material:$material_version"
     api "com.google.android.material:material:$material_version"
 
@@ -57,9 +57,9 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
     implementation 'androidx.navigation:navigation-ui:2.3.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    testImplementation 'junit:junit:4.13.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     def glide_version = '4.11.0'
 
@@ -67,7 +67,7 @@ dependencies {
     implementation "com.github.bumptech.glide:okhttp3-integration:$glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
 
-    def butter_knife_version = '10.2.1'
+    def butter_knife_version = '10.2.3'
     implementation "com.jakewharton:butterknife:$butter_knife_version"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butter_knife_version"
 
@@ -109,7 +109,7 @@ dependencies {
     // (Java only)
     implementation "androidx.work:work-runtime:$work_version"
 
-    def jackson_version = '2.11.0'
+    def jackson_version = '2.11.3'
     implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
     implementation "com.fasterxml.jackson.core:jackson-core:$jackson_version"
     implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
@@ -119,14 +119,14 @@ dependencies {
     implementation 'com.google.guava:guava:29.0-jre'
 
     api 'com.google.guava:guava:29.0-jre'
-    implementation "androidx.core:core-ktx:1.3.0"
+    implementation 'androidx.core:core-ktx:1.3.2'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // for material drawer
     implementation "androidx.annotation:annotation:1.1.0"
     // Add for NavController support
-    def lastestMaterialDrawerRelease = "8.1.4"
+    def lastestMaterialDrawerRelease = '8.1.6'
     implementation "com.mikepenz:materialdrawer:${lastestMaterialDrawerRelease}"
 
     implementation "com.mikepenz:materialdrawer-nav:${lastestMaterialDrawerRelease}"

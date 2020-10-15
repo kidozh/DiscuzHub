@@ -57,7 +57,6 @@ import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.GlideImageGetter;
-import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -65,7 +64,6 @@ import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
-import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.viewModels.ForumViewModel;
 
 import java.io.IOException;
@@ -225,7 +223,7 @@ public class ForumActivity
             Log.d(TAG,"recv error message "+errorMessage);
             if(errorMessage!=null){
                 Toasty.error(getApplicationContext(),
-                        getString(R.string.discuz_api_error_template,errorMessage.key,errorMessage.content),
+                        getString(R.string.discuz_api_message_template,errorMessage.key,errorMessage.content),
                         Toast.LENGTH_LONG).show();
                 errorView.setVisibility(View.VISIBLE);
                 errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
@@ -1052,13 +1050,13 @@ public class ForumActivity
             if(messageResult!=null){
                 String key = messageResult.key;
                 if(favorite && key.equals("favorite_do_success")){
-                    Toasty.success(getApplication(),getString(R.string.discuz_api_error_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                    Toasty.success(getApplication(),getString(R.string.discuz_api_message_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
                 }
                 else if(!favorite && key.equals("do_success")){
-                    Toasty.success(getApplication(),getString(R.string.discuz_api_error_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                    Toasty.success(getApplication(),getString(R.string.discuz_api_message_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
                 }
                 else {
-                    Toasty.warning(getApplication(),getString(R.string.discuz_api_error_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
+                    Toasty.warning(getApplication(),getString(R.string.discuz_api_message_template,messageResult.key,messageResult.content),Toast.LENGTH_LONG).show();
                 }
             }
             else {
