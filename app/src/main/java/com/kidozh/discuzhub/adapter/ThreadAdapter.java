@@ -138,6 +138,9 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holderRaw, int position) {
         ThreadInfo threadInfo = threadInfoList.get(position);
+        if(threadInfo == null ){
+            return;
+        }
         if(holderRaw instanceof PinnedViewHolder){
             PinnedViewHolder holder = (PinnedViewHolder) holderRaw;
             Spanned sp = Html.fromHtml(threadInfo.subject);

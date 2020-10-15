@@ -106,7 +106,7 @@ public class HotThreadsFragment extends Fragment {
     private void configureThreadRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         dashboardRecyclerview.setLayoutManager(linearLayoutManager);
-        forumThreadAdapter = new ThreadAdapter(getContext(),null,null,bbsInfo,userBriefInfo);
+        forumThreadAdapter = new ThreadAdapter(null,null,bbsInfo,userBriefInfo);
         dashboardRecyclerview.setAdapter(forumThreadAdapter);
         dashboardRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         dashboardRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {

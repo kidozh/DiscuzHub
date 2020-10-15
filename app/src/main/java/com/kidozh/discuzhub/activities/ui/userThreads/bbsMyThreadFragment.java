@@ -121,7 +121,7 @@ public class bbsMyThreadFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 linearLayoutManager.getOrientation());
         myThreadRecyclerview.addItemDecoration(dividerItemDecoration);
-        adapter = new ThreadAdapter(getContext(),null,"",bbsInfo,userBriefInfo);
+        adapter = new ThreadAdapter(null,"",bbsInfo,userBriefInfo);
         myThreadRecyclerview.setAdapter(adapter);
 
     }

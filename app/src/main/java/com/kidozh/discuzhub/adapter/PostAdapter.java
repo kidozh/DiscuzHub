@@ -51,6 +51,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
+import com.kidozh.discuzhub.dialogs.PostThreadInsertLinkDialogFragment;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.ViewThreadQueryStatus;
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -69,6 +70,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -106,7 +108,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
     }
 
     public void setThreadInfoList(List<PostInfo> threadInfoList, ViewThreadQueryStatus viewThreadQueryStatus, int authorId){
-        this.threadInfoList = threadInfoList;
+
+        List<PostInfo> currentThreadInfo = threadInfoList;
+        Iterator<PostInfo> iterator = threadInfoList.iterator();
+        while (iterator.hasNext()){
+            PostInfo postInfo = iterator.next();
+            if(postInfo.message == null || postInfo.message == null){
+                iterator.remove();
+            }
+        }
+        this.threadInfoList = currentThreadInfo;
         this.viewThreadQueryStatus = viewThreadQueryStatus;
         this.authorId = authorId;
         notifyDataSetChanged();
@@ -133,7 +144,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
     @Override
     public void onBindViewHolder(@NonNull PostAdapter.bbsForumThreadCommentViewHolder holder, int position) {
         PostInfo threadInfo = threadInfoList.get(position);
-        if(threadInfo == null){
+        Log.d(TAG,"+ Pos "+position+" Thread info "+threadInfo+ threadInfo.author);
+        if(threadInfo.author == null){
             return;
         }
         holder.mThreadPublisher.setText(threadInfo.author);
