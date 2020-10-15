@@ -71,10 +71,20 @@ public class ShortPostAdapter extends RecyclerView.Adapter<ShortPostAdapter.View
             avatar_num = -avatar_num;
         }
         int avatarResource = context.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",context.getPackageName());
-        Glide.with(context)
-                .load(glideUrl)
-                .apply(RequestOptions.placeholderOf(avatarResource).error(avatarResource))
-                .into(holder.mReplyerAvatar);
+        if(NetworkUtils.canDownloadImageOrFile(context)){
+            Glide.with(context)
+                    .load(glideUrl)
+                    .apply(RequestOptions.placeholderOf(avatarResource).error(avatarResource))
+                    .into(holder.mReplyerAvatar);
+        }
+        else {
+            Glide.with(context)
+                    .load(glideUrl)
+                    .apply(RequestOptions.placeholderOf(avatarResource).error(avatarResource))
+                    .onlyRetrieveFromCache(true)
+                    .into(holder.mReplyerAvatar);
+        }
+
     }
 
     @Override

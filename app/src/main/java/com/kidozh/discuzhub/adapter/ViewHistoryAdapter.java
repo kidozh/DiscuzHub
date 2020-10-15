@@ -70,8 +70,8 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
             holder.name.setText(history.name);
             if(history.description!=null){
                 Spanned sp = Html.fromHtml(history.description,
-                        new GlideImageGetter(holder.description),
-                        new MyTagHandler(context,holder.description,holder.description));
+                        new GlideImageGetter(holder.description,userBriefInfo),
+                        new GlideImageGetter.HtmlTagHandler(context,holder.description));
                 SpannableString spannableString = new SpannableString(sp);
                 holder.description.setText(spannableString, TextView.BufferType.SPANNABLE);
 

@@ -3,6 +3,8 @@ package com.kidozh.discuzhub.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -400,29 +402,44 @@ public class NetworkUtils {
     public final static int NETWORK_STATUS_WIFI = 1;
     public final static int NETWORK_STATUS_MOBILE_DATA = 2;
 
+    public static boolean isOnline(Context context) {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
 
+    public static boolean isWifiConnected(@NonNull Context context){
+        ConnectivityManager connMgr =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-    public static int getConnectedType(Context context) {
-        int netType = 0;
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        if (networkInfo == null) {
-            return NETWORK_STATUS_NO_CONNECTION;
+        if(connMgr == null){
+            return false;
         }
-        int nType = networkInfo.getType();
-        if (nType == ConnectivityManager.TYPE_WIFI) {
-            //WIFI
-            netType = NETWORK_STATUS_WIFI;
-        } else if (nType == ConnectivityManager.TYPE_MOBILE) {
-            netType = NETWORK_STATUS_MOBILE_DATA;
+        else {
+            NetworkCapabilities capabilities = connMgr.getNetworkCapabilities(
+                    connMgr.getActiveNetwork()
+            );
+            if(capabilities == null){
+                return false;
+            }
+            if(capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI_AWARE)
+            ){
+                return true;
+            }
         }
-        return netType;
+        return false;
+
     }
 
     public static boolean isNetworkConnected(Context context) {
         if (context != null) {
             ConnectivityManager mConnectivityManager = (ConnectivityManager) context
                     .getSystemService(Context.CONNECTIVITY_SERVICE);
+            if(mConnectivityManager == null){
+                return false;
+            }
             NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
             if (mNetworkInfo != null) {
                 return mNetworkInfo.isAvailable();
@@ -433,7 +450,7 @@ public class NetworkUtils {
 
     public static boolean canDownloadImageOrFile(Context context){
         // for debug
-        if(getConnectedType(context) == NETWORK_STATUS_WIFI){
+        if(isWifiConnected(context)){
             return true;
         }
         else {

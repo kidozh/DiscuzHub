@@ -133,6 +133,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
     @Override
     public void onBindViewHolder(@NonNull PostAdapter.bbsForumThreadCommentViewHolder holder, int position) {
         PostInfo threadInfo = threadInfoList.get(position);
+        if(threadInfo == null){
+            return;
+        }
         holder.mThreadPublisher.setText(threadInfo.author);
         if(threadInfo.authorId == authorId){
             holder.isAuthorLabel.setVisibility(View.VISIBLE);
@@ -242,15 +245,26 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                 .error(mContext.getDrawable(avatarResource))
                 //.diskCacheStrategy(DiskCacheStrategy.ALL)
                 ;
+
         GlideUrl glideUrl = new GlideUrl(source,
                 new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
                 );
+        if(NetworkUtils.canDownloadImageOrFile(context)){
+            Glide.with(mContext)
+                    .load(glideUrl)
+                    .apply(options)
+                    .into(holder.mAvatarImageview);
+        }
+        else {
+            Glide.with(mContext)
+                    .load(glideUrl)
+                    .apply(options)
+                    .onlyRetrieveFromCache(true)
+                    .into(holder.mAvatarImageview);
+        }
 
-        Glide.with(mContext)
-                .load(glideUrl)
-                .apply(options)
-                .into(holder.mAvatarImageview);
-        if(UserPreferenceUtils.dataSaveMode(context))
+
+
         holder.mAvatarImageview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

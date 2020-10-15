@@ -56,6 +56,7 @@ import com.kidozh.discuzhub.results.ApiMessageActionResult;
 import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
+import com.kidozh.discuzhub.utilities.GlideImageGetter;
 import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -86,10 +87,9 @@ public class ForumActivity
     Toolbar toolbar;
     @BindView(R.id.bbs_forum_fab)
     FloatingActionButton fab;
-    @BindView(R.id.bbs_forum_description_textview)
-    TextView mForumDesciption;
     @BindView(R.id.bbs_forum_alert_textview)
     TextView mForumAlert;
+
     @BindView(R.id.bbs_forum_rule_textview)
     TextView mForumRule;
     @BindView(R.id.bbs_forum_thread_number_textview)
@@ -240,7 +240,6 @@ public class ForumActivity
             @Override
             public void onChanged(ForumResult forumResult) {
                 setBaseResult(forumResult,forumResult!=null?forumResult.forumVariables:null);
-
                 // deal with sublist
                 if(forumResult !=null && forumResult.forumVariables!=null){
                     subForumAdapter.setSubForumInfoList(forumResult.forumVariables.subForumLists);
@@ -271,9 +270,9 @@ public class ForumActivity
                 if(! mForumRule.getText().equals(forumInfo.rules)){
                     String s = forumInfo.rules;
                     if(s!=null && s.length() !=0){
-                        MyTagHandler myTagHandler = new MyTagHandler(getApplication(),mForumRule,mForumInfoCardView);
-                        MyImageGetter myImageGetter = new MyImageGetter(getApplication(),mForumRule,mForumInfoCardView);
-                        Spanned sp = Html.fromHtml(s,myImageGetter,myTagHandler);
+                        GlideImageGetter glideImageGetter  = new GlideImageGetter(mForumRule,userBriefInfo);
+                        GlideImageGetter.HtmlTagHandler htmlTagHandler = new GlideImageGetter.HtmlTagHandler(getApplicationContext(),mForumRule);
+                        Spanned sp = Html.fromHtml(s,glideImageGetter,htmlTagHandler);
                         SpannableString spannableString = new SpannableString(sp);
                         // mForumAlert.setAutoLinkMask(Linkify.ALL);
                         mForumRule.setMovementMethod(new bbsLinkMovementMethod(ForumActivity.this));
@@ -282,17 +281,18 @@ public class ForumActivity
                     }
                     else {
                         mForumRule.setText(R.string.bbs_rule_not_set);
+                        mForumRule.setVisibility(View.GONE);
                     }
                 }
 
 
                 // for description
-                if(!mForumDesciption.getText().equals(forumInfo.description)){
+                if(!mForumAlert.getText().equals(forumInfo.description)){
                     String s = forumInfo.description;
                     if(s!=null && s.length() !=0){
-                        MyTagHandler myTagHandler = new MyTagHandler(getApplication(),mForumAlert,mForumInfoCardView);
-                        MyImageGetter myImageGetter = new MyImageGetter(getApplication(),mForumAlert,mForumInfoCardView);
-                        Spanned sp = Html.fromHtml(s,myImageGetter,myTagHandler);
+                        GlideImageGetter glideImageGetter  = new GlideImageGetter(mForumAlert,userBriefInfo);
+                        GlideImageGetter.HtmlTagHandler htmlTagHandler = new GlideImageGetter.HtmlTagHandler(getApplicationContext(),mForumRule);
+                        Spanned sp = Html.fromHtml(s,glideImageGetter,htmlTagHandler);
                         SpannableString spannableString = new SpannableString(sp);
                         // mForumAlert.setAutoLinkMask(Linkify.ALL);
                         mForumAlert.setMovementMethod(new bbsLinkMovementMethod(ForumActivity.this));
@@ -300,6 +300,7 @@ public class ForumActivity
                     }
                     else {
                         mForumAlert.setText(R.string.bbs_forum_description_not_set);
+                        mForumAlert.setVisibility(View.GONE);
                     }
                 }
 
@@ -521,7 +522,7 @@ public class ForumActivity
         mRecyclerview.setLayoutManager(linearLayoutManager);
         mRecyclerview.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
 
-        adapter = new ThreadAdapter(this,null,fid,bbsInfo,userBriefInfo);
+        adapter = new ThreadAdapter(null,fid,bbsInfo,userBriefInfo);
         mRecyclerview.setAdapter(adapter);
         mRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

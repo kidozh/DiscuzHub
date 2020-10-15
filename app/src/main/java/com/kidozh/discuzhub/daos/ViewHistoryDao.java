@@ -40,6 +40,9 @@ public interface ViewHistoryDao {
     @Query("SELECT * FROM ViewHistory WHERE (belongedBBSId=:bbsId AND tid=:tid) ORDER BY recordAt DESC")
     List<ViewHistory> getViewHistoryByBBSIdAndTid(int bbsId, int tid);
 
+    @Query("SELECT EXISTS(SELECT * FROM ViewHistory WHERE (belongedBBSId=:bbsId AND tid=:tid))")
+    LiveData<Boolean> isThreadViewHistoryExist(int bbsId, int tid);
+
     @Insert
     public void insert(ViewHistory... viewHistories);
 
