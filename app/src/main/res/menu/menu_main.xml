@@ -9,9 +9,11 @@
         app:showAsAction="ifRoom" />
     <item android:id="@+id/bbs_settings"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_settings_outlined_24px"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/bbs_about_app"
-        android:icon="@drawable/vector_drawable_verified_user_24px"
-        android:title="@string/app_about" />
+        android:icon="@drawable/ic_info_outlined_24px"
+        android:title="@string/app_about"
+        app:showAsAction="ifRoom"/>
 </menu>

@@ -711,6 +711,13 @@ public class ForumActivity
                 startActivity(intent);
                 return true;
             }
+            case R.id.bbs_search:{
+                Intent intent = new Intent(this, SearchPostsActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                startActivity(intent);
+                return true;
+            }
             case R.id.bbs_forum_nav_show_in_external_browser:{
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentUrl));
                 Log.d(TAG,"Inputted URL "+currentUrl);

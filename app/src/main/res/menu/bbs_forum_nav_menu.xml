@@ -3,15 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/bbs_forum_nav_draft_box"
-        android:icon="@drawable/vector_drawable_drafts_24px"
-        android:title="@string/bbs_draft_box"
+        android:id="@+id/bbs_search"
+        android:icon="@drawable/ic_search_24px"
+        android:title="@string/search"
+        android:visible="true"
         app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/bbs_favorite"
         android:icon="@drawable/ic_not_favorite_24px"
         android:title="@string/favorite"
         android:visible="true"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/bbs_forum_nav_draft_box"
+        android:icon="@drawable/vector_drawable_drafts_24px"
+        android:title="@string/bbs_draft_box"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/bbs_share"
@@ -29,9 +36,9 @@
         app:showAsAction="never|withText" />
     <item
         android:id="@+id/bbs_forum_nav_show_in_external_browser"
-        android:icon="@drawable/vector_drawable_open_in_browser_24px"
+        android:icon="@drawable/ic_open_in_browser_24px"
         android:title="@string/bbs_show_in_external_browser"
-        app:showAsAction="never|withText" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/bbs_settings"
         android:title="@string/action_settings" />

@@ -1966,6 +1966,13 @@ public class ViewThreadActivity extends BaseStatusActivity implements SmileyFrag
 
                 return true;
             }
+            case R.id.bbs_search:{
+                Intent intent = new Intent(this, SearchPostsActivity.class);
+                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                startActivity(intent);
+                return true;
+            }
             case R.id.bbs_about_app:{
                 Intent intent = new Intent(this,aboutAppActivity.class);
                 startActivity(intent);
