@@ -133,10 +133,11 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="true"
         android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-<!--        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"-->
-<!--        >-->
+        <!--        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"-->
+        <!--        >-->
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/bbs_thread_detail_swipeRefreshLayout"
@@ -219,6 +220,8 @@
                     android:id="@+id/bbs_comment_constraintLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layout_constrainedHeight="true"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintBottom_toTopOf="@+id/bbs_comment_smiley_constraintLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent">
@@ -291,7 +294,6 @@
                         android:text="@string/bbs_thread_comment"
                         android:textSize="12sp"
                         app:iconPadding="0dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/bbs_thread_detail_comment_editText" />
 
@@ -313,7 +315,6 @@
                         android:id="@+id/bbs_post_captcha_imageview"
                         android:layout_width="64dp"
                         android:layout_height="32dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/bbs_thread_detail_comment_editText"
                         app:layout_constraintTop_toBottomOf="@+id/bbs_thread_detail_comment_editText"
                         tools:srcCompat="@tools:sample/backgrounds/scenic" />
