@@ -2,6 +2,7 @@ package com.kidozh.discuzhub.services;
 
 import com.kidozh.discuzhub.results.BBSIndexResult;
 import com.kidozh.discuzhub.results.BaseResult;
+import com.kidozh.discuzhub.results.BuyThreadResult;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.results.FavoriteForumResult;
 import com.kidozh.discuzhub.results.ApiMessageActionResult;
@@ -119,5 +120,18 @@ public interface DiscuzApiService {
     Call<ApiMessageActionResult> unrecommendThread(
             @Query("hash") String formhash,
             @Query("tid") int tid
+    );
+
+    @GET(DISCUZ_API_PATH+"?version=4&module=buythread")
+    Call<BuyThreadResult> getThreadPriceInfo(
+            @Query("tid") int tid
+    );
+
+    @FormUrlEncoded
+    @POST(DISCUZ_API_PATH+"?version=4&module=buythread&paysubmit=yes")
+    Call<BuyThreadResult> buyThread(
+            @Field("tid") int tid,
+            @Field("formhash") String formhash,
+            @Query("handlekey") String pay
     );
 }

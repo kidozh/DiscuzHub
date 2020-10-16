@@ -78,6 +78,7 @@ import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ApiMessageActionResult;
+import com.kidozh.discuzhub.results.BuyThreadResult;
 import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadResult;
@@ -121,6 +122,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         PostAdapter.onAdapterReply,
         PostAdapter.OnLinkClicked,
         bbsPollFragment.OnFragmentInteractionListener,
+        ThreadPropertiesAdapter.OnThreadPropertyClicked,
         ThreadCountAdapter.OnRecommendBtnPressed{
     private final static String TAG = ThreadActivity.class.getSimpleName();
     @BindView(R.id.toolbar)
@@ -407,10 +409,22 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 }
 
                 if(detailedThreadInfo.price!=0){
-                    threadPropertyList.add(
-                            new ThreadCount(R.drawable.ic_price_outlined_24px,
-                                    getString(R.string.thread_price,detailedThreadInfo.price),getColor(R.color.colorPumpkin))
-                    );
+                    if(detailedThreadInfo.price > 0){
+                        threadPropertyList.add(
+                                new ThreadCount(R.drawable.ic_price_outlined_24px,
+                                        getString(R.string.thread_price,detailedThreadInfo.price),
+                                        getColor(R.color.colorPumpkin),
+                                        ThreadCount.PROPERTY_BUY
+                                )
+                        );
+                    }
+                    else {
+                        threadPropertyList.add(
+                                new ThreadCount(R.drawable.ic_price_outlined_24px,
+                                        getString(R.string.thread_price,detailedThreadInfo.price),getColor(R.color.colorPumpkin))
+                        );
+                    }
+
                 }
 
                 if(detailedThreadInfo.readperm!=0){
@@ -710,9 +724,50 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             }
         });
 
-        threadDetailViewModel.recommendResultErrorMutableLiveData.observe(this,errorMessage -> {
+        threadDetailViewModel.interactErrorMutableLiveData.observe(this,errorMessage -> {
             if(errorMessage!=null){
                 Toasty.success(getApplicationContext(),getString(R.string.discuz_api_message_template,errorMessage.key,errorMessage.content),Toast.LENGTH_LONG).show();
+            }
+        });
+        Context context = this;
+
+        threadDetailViewModel.threadPriceInfoMutableLiveData.observe(this,buyThreadResult -> {
+            if(buyThreadResult !=null && buyThreadResult.variableResults!=null){
+                BuyThreadResult.BuyThreadVariableResult variableResult = buyThreadResult.variableResults;
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                        .setTitle(R.string.buy_thread_title)
+                        .setMessage(
+                                getString(R.string.buy_thread_dialog_message,
+                                        variableResult.author,
+                                        String.valueOf(variableResult.price),
+                                        variableResult.credit == null?"":variableResult.credit.title,
+                                        String.valueOf(variableResult.balance))
+                        )
+                        .setPositiveButton(android.R.string.ok, ((dialog, which) -> {
+                            Toasty.info(this,getString(R.string.buy_thread_send),Toast.LENGTH_SHORT).show();
+                            threadDetailViewModel.buyThread(tid);
+                        }))
+                        ;
+                builder.show();
+            }
+
+
+        });
+        threadDetailViewModel.buyThreadResultMutableLiveData.observe(this,buyThreadResult -> {
+            if(buyThreadResult!=null && buyThreadResult.message!=null){
+                String key = buyThreadResult.message.key;
+                if(key.equals("thread_pay_succeed")){
+                    Toasty.success(this,getString(R.string.discuz_api_message_template,
+                            buyThreadResult.message.key,
+                            buyThreadResult.message.content)).show();
+                    reloadThePage();
+                }
+                else {
+                    Toasty.warning(this,getString(R.string.discuz_api_message_template,
+                            buyThreadResult.message.key,
+                            buyThreadResult.message.content)).show();
+                }
             }
         });
     }
@@ -1361,6 +1416,18 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     @Override
     public void onRecommend(boolean recommend) {
         threadDetailViewModel.recommendThread(tid,recommend);
+    }
+
+    @Override
+    public void buyThreadPropertyClicked() {
+
+        // buy the thread dialog
+        Toasty.info(this,getString(R.string.buy_thread_loading),Toast.LENGTH_SHORT).show();
+        threadDetailViewModel.getThreadPriceInfo(tid);
+        // prompt dialog first
+
+
+
     }
 
     public class smileyViewPagerAdapter extends FragmentStatePagerAdapter{

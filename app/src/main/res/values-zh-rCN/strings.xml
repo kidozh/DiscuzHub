@@ -571,5 +571,9 @@
     <string name="all_posts_loaded_template">已经加载了所有的%1$d楼层。</string>
     <string name="search">搜索</string>
     <string name="bbs_api_advance">高级</string>
+    <string name="buy_thread_loading">正在发送交易意愿</string>
+    <string name="buy_thread_title">购买主题帖子</string>
+    <string name="buy_thread_dialog_message">从%1$s作者的手中购买本主题，这将花费你%2$s %3$s，你的余额为%4$s  %3$s。</string>
+    <string name="buy_thread_send">正在发送交易请求。</string>
 
 </resources>

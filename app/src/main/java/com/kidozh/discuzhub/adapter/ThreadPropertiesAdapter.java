@@ -23,11 +23,16 @@ public class ThreadPropertiesAdapter extends RecyclerView.Adapter<ThreadProperti
     private Context context;
 
     List<ThreadCount> threadNotificationList;
+    OnThreadPropertyClicked mListener;
 
     @NonNull
     @Override
     public ThreadPropertiesAdapter.bbsThreadPropertiesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
+        if(context instanceof OnThreadPropertyClicked){
+            mListener = (OnThreadPropertyClicked) context;
+        }
+
         int layoutIdForListItem = R.layout.item_bbs_thread_property;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
@@ -58,6 +63,17 @@ public class ThreadPropertiesAdapter extends RecyclerView.Adapter<ThreadProperti
             holder.itemThreadTypeCardview.setBackgroundColor(notification.highlightColorRes);
             holder.itemThreadTypeCardview.getBackground().setAlpha(25);
         }
+        // bind information
+        if(mListener != null){
+            if(notification.property == ThreadCount.PROPERTY_BUY){
+                holder.itemThreadTypeCardview.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mListener.buyThreadPropertyClicked();
+                    }
+                });
+            }
+        }
 
     }
 
@@ -83,5 +99,9 @@ public class ThreadPropertiesAdapter extends RecyclerView.Adapter<ThreadProperti
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
+    }
+
+    public interface OnThreadPropertyClicked{
+        public void buyThreadPropertyClicked();
     }
 }

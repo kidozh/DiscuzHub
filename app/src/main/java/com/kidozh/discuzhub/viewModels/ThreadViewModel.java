@@ -21,6 +21,7 @@ import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ApiMessageActionResult;
+import com.kidozh.discuzhub.results.BuyThreadResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
@@ -63,7 +64,10 @@ public class ThreadViewModel extends AndroidViewModel {
     public LiveData<Boolean> isFavoriteThreadMutableLiveData;
     public LiveData<FavoriteThread> favoriteThreadLiveData;
     public MutableLiveData<ErrorMessage> errorMessageMutableLiveData = new MutableLiveData<>(null),
-            recommendResultErrorMutableLiveData = new MutableLiveData<>(null);
+            interactErrorMutableLiveData = new MutableLiveData<>(null);
+    public MutableLiveData<BuyThreadResult> threadPriceInfoMutableLiveData = new MutableLiveData<>(null),
+            buyThreadResultMutableLiveData = new MutableLiveData<>(null);
+    
     FavoriteThreadDao dao;
 
     public ThreadViewModel(@NonNull Application application) {
@@ -297,7 +301,7 @@ public class ThreadViewModel extends AndroidViewModel {
                     recommendResultMutableLiveData.postValue(recommendMessageResult);
                 }
                 else {
-                    recommendResultErrorMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),
+                    interactErrorMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),
                             getApplication().getString(R.string.discuz_network_unsuccessful,
                                     response.message()
                             )
@@ -307,10 +311,68 @@ public class ThreadViewModel extends AndroidViewModel {
 
             @Override
             public void onFailure(Call<ApiMessageActionResult> call, Throwable t) {
-                recommendResultErrorMutableLiveData.postValue(new ErrorMessage(getApplication().getString(R.string.discuz_network_failure_template),
+                interactErrorMutableLiveData.postValue(new ErrorMessage(getApplication().getString(R.string.discuz_network_failure_template),
                         t.getLocalizedMessage() == null?t.toString():t.getLocalizedMessage()));
             }
         });
 
+    }
+
+    public void getThreadPriceInfo(int tid){
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        DiscuzApiService service = retrofit.create(DiscuzApiService.class);
+
+        Call<BuyThreadResult> buyThreadResultCall = service.getThreadPriceInfo(tid);
+        Log.d(TAG,"Send price information "+buyThreadResultCall.request().toString());
+        buyThreadResultCall.enqueue(new Callback<BuyThreadResult>() {
+            @Override
+            public void onResponse(Call<BuyThreadResult> call, Response<BuyThreadResult> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    threadPriceInfoMutableLiveData.postValue(response.body());
+                    Log.d(TAG,"Get price information "+response.toString()+response.body());
+                }
+                else {
+                    interactErrorMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),
+                            getApplication().getString(R.string.discuz_network_unsuccessful,
+                                    response.message()
+                            )
+                    ));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BuyThreadResult> call, Throwable t) {
+                interactErrorMutableLiveData.postValue(new ErrorMessage(getApplication().getString(R.string.discuz_network_failure_template),
+                        t.getLocalizedMessage() == null?t.toString():t.getLocalizedMessage()));
+            }
+        });
+    }
+
+    public void buyThread(int tid){
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        DiscuzApiService service = retrofit.create(DiscuzApiService.class);
+        String formHashValue = formHash.getValue();
+        Call<BuyThreadResult> buyThreadResultCall = service.buyThread(tid,formHashValue,"pay");
+        buyThreadResultCall.enqueue(new Callback<BuyThreadResult>() {
+            @Override
+            public void onResponse(Call<BuyThreadResult> call, Response<BuyThreadResult> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    buyThreadResultMutableLiveData.postValue(response.body());
+                }
+                else {
+                    interactErrorMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),
+                            getApplication().getString(R.string.discuz_network_unsuccessful,
+                                    response.message()
+                            )
+                    ));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BuyThreadResult> call, Throwable t) {
+                interactErrorMutableLiveData.postValue(new ErrorMessage(getApplication().getString(R.string.discuz_network_failure_template),
+                        t.getLocalizedMessage() == null?t.toString():t.getLocalizedMessage()));
+            }
+        });
     }
 }
