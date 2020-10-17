@@ -961,13 +961,15 @@ public class ForumActivity
 
                         messageResult = result.message;
                         String key = result.message.key;
-                        if(favorite && key.equals("favorite_do_success")
-                        ){
+                        if(favorite && key.equals("favorite_do_success")){
                             dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteForum.idKey);
                             dao.insert(favoriteForum);
                         }
-                        else if(!favorite && key.equals("do_success")
-                        ){
+                        if(favorite && key.equals("favorite_repeat")){
+                            dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteForum.idKey);
+                            dao.insert(favoriteForum);
+                        }
+                        else if(!favorite && key.equals("do_success")){
                             if(favoriteForum !=null){
                                 dao.delete(favoriteForum);
                             }
