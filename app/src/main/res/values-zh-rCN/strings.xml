@@ -577,5 +577,18 @@
     <string name="buy_thread_send">正在发送交易请求。</string>
     <string name="thread_buy_price">售价： %1$d (点击以购买本贴)</string>
     <string name="thread_reward_price">悬赏： %1$d</string>
+    <string name="report_post">举报不当内容</string>
+    <string name="report_post_title">举报%1$s的不当内容</string>
+    <string name="report_reason_title">选择此内容的不当行为</string>
+    <string name="report_option_spam">垃圾广告</string>
+    <string name="report_option_violating_content">违规内容</string>
+    <string name="report_option_bump">恶意灌水</string>
+    <string name="report_option_repeat_post">重复发帖</string>
+    <string name="report_option_others">其他</string>
+    <string name="report_extra_content_hint">请填写举报内容（200个字）</string>
+    <string name="report_reason_required">需要选择一个不当内容</string>
+    <string name="report_input_reason_required">举报需要一个确切的理由，请键入你的理由吧。</string>
+    <string name="api_message_return_null">我们收到一个回复，但是无内容，此操作失败。</string>
+    <string name="report_login_required">举报不当内容需要登录后使用。</string>
 
 </resources>

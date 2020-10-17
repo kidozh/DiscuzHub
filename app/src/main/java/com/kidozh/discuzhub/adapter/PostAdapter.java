@@ -12,6 +12,7 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -29,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -83,7 +85,7 @@ import okhttp3.OkHttpClient;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThreadCommentViewHolder> {
     private final static String TAG = PostAdapter.class.getSimpleName();
-    private List<PostInfo> threadInfoList = new ArrayList<>();
+    private List<PostInfo> postInfoList = new ArrayList<>();
     private Context mContext,context;
     public String subject;
     private OkHttpClient client = new OkHttpClient();
@@ -96,7 +98,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
     private AdapterView.OnItemClickListener listener;
     private onAdapterReply replyListener;
     private OnLinkClicked onLinkClickedListener;
+    private OnAdvanceOptionClicked onAdvanceOptionClickedListener;
     private int authorId = 0;
+
 
 
 
@@ -109,24 +113,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         this.viewThreadQueryStatus = viewThreadQueryStatus;
     }
 
-    public void setThreadInfoList(List<PostInfo> threadInfoList, ViewThreadQueryStatus viewThreadQueryStatus, int authorId){
+    public void setThreadInfoList(List<PostInfo> postInfoList, ViewThreadQueryStatus viewThreadQueryStatus, int authorId){
 
-        List<PostInfo> currentThreadInfo = threadInfoList;
-        Iterator<PostInfo> iterator = threadInfoList.iterator();
+        List<PostInfo> currentThreadInfo = postInfoList;
+        Iterator<PostInfo> iterator = postInfoList.iterator();
         while (iterator.hasNext()){
             PostInfo postInfo = iterator.next();
             if(postInfo.message == null || postInfo.message == null){
                 iterator.remove();
             }
         }
-        this.threadInfoList = currentThreadInfo;
+        this.postInfoList = currentThreadInfo;
         this.viewThreadQueryStatus = viewThreadQueryStatus;
         this.authorId = authorId;
         notifyDataSetChanged();
     }
 
     public List<PostInfo> getThreadInfoList() {
-        return threadInfoList;
+        return postInfoList;
     }
 
     @NonNull
@@ -138,6 +142,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         boolean shouldAttachToParentImmediately = false;
         replyListener = (onAdapterReply) context;
         onLinkClickedListener = (OnLinkClicked) context;
+        if(context instanceof OnAdvanceOptionClicked){
+            onAdvanceOptionClickedListener = (OnAdvanceOptionClicked) context;
+        }
 
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
         return new bbsForumThreadCommentViewHolder(view);
@@ -145,13 +152,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
     @Override
     public void onBindViewHolder(@NonNull PostAdapter.bbsForumThreadCommentViewHolder holder, int position) {
-        PostInfo threadInfo = threadInfoList.get(position);
-        Log.d(TAG,"+ Pos "+position+" Thread info "+threadInfo+ threadInfo.author);
-        if(threadInfo.author == null){
+        PostInfo postInfo = postInfoList.get(position);
+        Log.d(TAG,"+ Pos "+position+" Thread info "+postInfo+ postInfo.author);
+        if(postInfo.author == null){
             return;
         }
-        holder.mThreadPublisher.setText(threadInfo.author);
-        if(threadInfo.authorId == authorId){
+        holder.mThreadPublisher.setText(postInfo.author);
+        if(postInfo.authorId == authorId){
             holder.isAuthorLabel.setVisibility(View.VISIBLE);
         }
         else {
@@ -159,7 +166,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
         }
         // parse status
-        int status = threadInfo.status;
+        int status = postInfo.status;
         int BACKGROUND_ALPHA = 25;
         final int POST_HIDDEN = 1, POST_WARNED = 2, POST_REVISED = 4, POST_MOBILE = 8;
         if((status & POST_HIDDEN) != 0){
@@ -197,9 +204,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         }
 
 
-        //Log.d(TAG,"Thread info "+position+" Total size "+threadInfoList.size());
+        //Log.d(TAG,"Thread info "+position+" Total size "+postInfoList.size());
 
-        String decodeString = threadInfo.message;
+        String decodeString = postInfo.message;
         // extract quote message
         //String quoteRegexInVer4 = "^<div class=.reply_wrap.>.*?</div><br />";
         String quoteRegexInVer4 = "^<div class=\"reply_wrap\">(.+?)</div><br .>";
@@ -281,13 +288,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
 
         //DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
-        //holder.mPublishDate.setText(df.format(threadInfo.publishAt));
-        holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext,threadInfo.publishAt));
+        //holder.mPublishDate.setText(df.format(postInfo.publishAt));
+        holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext,postInfo.publishAt));
 
-        holder.mThreadType.setText(context.getString(R.string.post_index_number,threadInfo.position));
+        holder.mThreadType.setText(context.getString(R.string.post_index_number,postInfo.position));
 
 
-        int avatar_num = threadInfo.authorId % 16;
+        int avatar_num = postInfo.authorId % 16;
         if(avatar_num < 0){
             avatar_num = -avatar_num;
         }
@@ -296,7 +303,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
         Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-        String source = URLUtils.getSmallAvatarUrlByUid(threadInfo.authorId);
+        String source = URLUtils.getSmallAvatarUrlByUid(postInfo.authorId);
         RequestOptions options = new RequestOptions()
                 .placeholder(mContext.getDrawable(avatarResource))
                 .error(mContext.getDrawable(avatarResource))
@@ -329,7 +336,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
 
-                intent.putExtra("UID",threadInfo.authorId);
+                intent.putExtra("UID",postInfo.authorId);
                 ActivityOptions options = ActivityOptions
                         .makeSceneTransitionAnimation((Activity) mContext, holder.mAvatarImageview, "user_info_avatar");
 
@@ -346,9 +353,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             }
         });
 
-        if(threadInfo.getAllAttachments() != null){
+        // advance option
+        if(bbsInfo.getAPIVersion() > 4){
+            holder.mPostAdvanceOptionImageView.setVisibility(View.VISIBLE);
+            // bind option
+            holder.mPostAdvanceOptionImageView.setOnClickListener(v -> {
+                Log.d(TAG,"Press advance option btn");
+                showPopupMenu(holder.mPostAdvanceOptionImageView,postInfo);
+            });
+        }
+        else {
+            holder.mPostAdvanceOptionImageView.setVisibility(View.GONE);
+        }
+
+
+        if(postInfo.getAllAttachments() != null){
             bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter(mContext);
-            attachmentAdapter.attachmentInfoList = threadInfo.getAllAttachments();
+            attachmentAdapter.attachmentInfoList = postInfo.getAllAttachments();
             holder.mRecyclerview.setNestedScrollingEnabled(false);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
             holder.mRecyclerview.setLayoutManager(linearLayoutManager);
@@ -356,7 +377,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         }
         else {
             bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter(mContext);
-            attachmentAdapter.attachmentInfoList = threadInfo.getAllAttachments();
+            attachmentAdapter.attachmentInfoList = postInfo.getAllAttachments();
             holder.mRecyclerview.setNestedScrollingEnabled(false);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
             holder.mRecyclerview.setLayoutManager(linearLayoutManager);
@@ -369,7 +390,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             holder.mFilterByAuthorIdBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.setAuthorId(threadInfo.authorId);
+                    mListener.setAuthorId(postInfo.authorId);
                 }
             });
         }
@@ -389,6 +410,34 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
     }
 
+    public void showPopupMenu(View view,PostInfo postInfo){
+        if(onAdvanceOptionClickedListener ==null){
+            return;
+        }
+        PopupMenu popupMenu = new PopupMenu(context,view);
+        popupMenu.inflate(R.menu.post_option);
+        // listen to this
+
+        popupMenu.setOnMenuItemClickListener(item -> {
+
+            switch (item.getItemId()){
+                case R.id.action_report_post:{
+                    onAdvanceOptionClickedListener.reportPost(postInfo);
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            popupMenu.setForceShowIcon(true);
+        }
+
+        popupMenu.show();
+
+    }
+
+
     private void registerListener(){
         if (context instanceof onFilterChanged) {
             mListener = (onFilterChanged) context;
@@ -400,11 +449,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
     @Override
     public int getItemCount() {
-        if(threadInfoList == null){
+        if(postInfoList == null){
             return 0;
         }
         else {
-            return threadInfoList.size();
+            return postInfoList.size();
         }
 
     }
@@ -439,6 +488,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         TextView isAuthorLabel;
         @BindView(R.id.bbs_thread_quote_content)
         TextView mPostQuoteContent;
+        @BindView(R.id.bbs_post_advance_option)
+        ImageView mPostAdvanceOptionImageView;
         public bbsForumThreadCommentViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
@@ -839,6 +890,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
     public interface OnLinkClicked{
         public void onLinkClicked(String url);
+    }
+
+    public interface OnAdvanceOptionClicked{
+        public void reportPost(PostInfo postInfo);
     }
     
 

@@ -68,6 +68,8 @@ import com.kidozh.discuzhub.daos.FavoriteThreadDao;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
+import com.kidozh.discuzhub.dialogs.ManageAdapterHelpDialogFragment;
+import com.kidozh.discuzhub.dialogs.ReportPostDialogFragment;
 import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.ThreadCount;
@@ -124,6 +126,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         PostAdapter.OnLinkClicked,
         bbsPollFragment.OnFragmentInteractionListener,
         ThreadPropertiesAdapter.OnThreadPropertyClicked,
+        PostAdapter.OnAdvanceOptionClicked,
+        ReportPostDialogFragment.ReportDialogListener,
         ThreadCountAdapter.OnRecommendBtnPressed{
     private final static String TAG = ThreadActivity.class.getSimpleName();
     @BindView(R.id.toolbar)
@@ -729,7 +733,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
         threadDetailViewModel.interactErrorMutableLiveData.observe(this,errorMessage -> {
             if(errorMessage!=null){
-                Toasty.success(getApplicationContext(),getString(R.string.discuz_api_message_template,errorMessage.key,errorMessage.content),Toast.LENGTH_LONG).show();
+                Toasty.error(getApplicationContext(),getString(R.string.discuz_api_message_template,errorMessage.key,errorMessage.content),Toast.LENGTH_LONG).show();
             }
         });
         Context context = this;
@@ -771,6 +775,29 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                             buyThreadResult.message.key,
                             buyThreadResult.message.content)).show();
                 }
+            }
+        });
+
+        threadDetailViewModel.reportResultMutableLiveData.observe(this, apiMessageActionResult -> {
+            if(apiMessageActionResult != null){
+                if(apiMessageActionResult.message !=null){
+                    if(apiMessageActionResult.message.key.equals("report_succeed")){
+                        Toasty.success(this,
+                                getString(R.string.discuz_api_message_template,apiMessageActionResult.message.key,apiMessageActionResult.message.content),
+                                Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Toasty.error(this,
+                                getString(R.string.discuz_api_message_template,apiMessageActionResult.message.key,apiMessageActionResult.message.content),
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+                else {
+                    Toasty.error(this,
+                            getString(R.string.api_message_return_null),
+                            Toast.LENGTH_LONG).show();
+                }
+
             }
         });
     }
@@ -1440,6 +1467,25 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
 
 
+    }
+
+    @Override
+    public void reportPost(PostInfo postInfo) {
+        if(userBriefInfo == null){
+            Toasty.warning(this,getString(R.string.report_login_required),Toast.LENGTH_LONG).show();
+        }
+        else {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            ReportPostDialogFragment reportPostDialogFragment = new ReportPostDialogFragment(postInfo);
+            reportPostDialogFragment.show(fragmentManager,ReportPostDialogFragment.class.getSimpleName());
+        }
+
+
+    }
+
+    @Override
+    public void onReportSubmit(int pid,String reportReason,boolean reportForOtherReason) {
+        threadDetailViewModel.reportPost(pid,reportReason,reportForOtherReason);
     }
 
     public class smileyViewPagerAdapter extends FragmentStatePagerAdapter{

@@ -60,7 +60,8 @@ public class ThreadViewModel extends AndroidViewModel {
     public MutableLiveData<bbsParseUtils.DetailedThreadInfo> detailedThreadInfoMutableLiveData;
     public MutableLiveData<ThreadResult> threadPostResultMutableLiveData;
     private MutableLiveData<SecureInfoResult> secureInfoResultMutableLiveData;
-    public MutableLiveData<ApiMessageActionResult> recommendResultMutableLiveData = new MutableLiveData<>(null);
+    public MutableLiveData<ApiMessageActionResult> recommendResultMutableLiveData = new MutableLiveData<>(null),
+            reportResultMutableLiveData = new MutableLiveData<>(null);
     public LiveData<Boolean> isFavoriteThreadMutableLiveData;
     public LiveData<FavoriteThread> favoriteThreadLiveData;
     public MutableLiveData<ErrorMessage> errorMessageMutableLiveData = new MutableLiveData<>(null),
@@ -346,6 +347,43 @@ public class ThreadViewModel extends AndroidViewModel {
                         t.getLocalizedMessage() == null?t.toString():t.getLocalizedMessage()));
             }
         });
+    }
+
+    public void reportPost(int pid, String message, boolean isOtherReason){
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        DiscuzApiService service = retrofit.create(DiscuzApiService.class);
+        String formHashValue = formHash.getValue();
+        Call<ApiMessageActionResult> reportPostCall;
+
+        if(isOtherReason){
+            reportPostCall = service.reportPost(formHashValue,pid,getApplication().getString(R.string.report_option_others),message);
+        }
+        else {
+            reportPostCall = service.reportPost(formHashValue,pid,message,message);
+        }
+        Log.d(TAG,"Report to "+reportPostCall.request().url().toString());
+        reportPostCall.enqueue(new Callback<ApiMessageActionResult>() {
+            @Override
+            public void onResponse(Call<ApiMessageActionResult> call, Response<ApiMessageActionResult> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    reportResultMutableLiveData.postValue(response.body());
+                }
+                else {
+                    interactErrorMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),
+                            getApplication().getString(R.string.discuz_network_unsuccessful,
+                                    response.message()
+                            )
+                    ));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiMessageActionResult> call, Throwable t) {
+                interactErrorMutableLiveData.postValue(new ErrorMessage(getApplication().getString(R.string.discuz_network_failure_template),
+                        t.getLocalizedMessage() == null?t.toString():t.getLocalizedMessage()));
+            }
+        });
+
     }
 
     public void buyThread(int tid){

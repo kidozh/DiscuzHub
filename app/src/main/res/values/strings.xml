@@ -761,6 +761,19 @@
     <string name="buy_thread_send">Sending the purchase process.</string>
     <string name="thread_buy_price">Price: %1$d (Click to purchase the thread)</string>
     <string name="thread_reward_price">Reward: %1$d</string>
+    <string name="report_post">Report post</string>
+    <string name="report_post_title">Report %1$s post</string>
+    <string name="report_reason_title">What\'s your opinion towards this?</string>
+    <string name="report_option_spam">Spam</string>
+    <string name="report_option_violating_content">Violating content</string>
+    <string name="report_option_bump">Malicious bump</string>
+    <string name="report_option_repeat_post">Repeat post</string>
+    <string name="report_option_others">Others</string>
+    <string name="report_extra_content_hint">Please input report reason(200 characters).</string>
+    <string name="report_reason_required">Report reason required.</string>
+    <string name="report_input_reason_required">Exact reason is needed when you specify report reason as others.</string>
+    <string name="api_message_return_null">Null message got, the operation would not be finished.</string>
+    <string name="report_login_required">Login required when reporting.</string>
 
 
 </resources>

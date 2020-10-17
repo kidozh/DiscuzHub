@@ -134,4 +134,13 @@ public interface DiscuzApiService {
             @Field("formhash") String formhash,
             @Query("handlekey") String pay
     );
+
+    @POST(DISCUZ_API_PATH+"?version=5&module=report&reportsubmit=true&rtype=post&inajax=1")
+    Call<ApiMessageActionResult> reportPost(
+        @Query("formhash") String formhash,
+        @Query("rid") int pid,
+        @Query("report_select") String option,
+        @Query("message") String message
+    );
+
 }
