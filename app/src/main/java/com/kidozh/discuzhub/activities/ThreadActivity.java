@@ -412,7 +412,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                     if(detailedThreadInfo.price > 0){
                         threadPropertyList.add(
                                 new ThreadCount(R.drawable.ic_price_outlined_24px,
-                                        getString(R.string.thread_price,detailedThreadInfo.price),
+                                        getString(R.string.thread_buy_price,detailedThreadInfo.price),
                                         getColor(R.color.colorPumpkin),
                                         ThreadCount.PROPERTY_BUY
                                 )
@@ -421,7 +421,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                     else {
                         threadPropertyList.add(
                                 new ThreadCount(R.drawable.ic_price_outlined_24px,
-                                        getString(R.string.thread_price,detailedThreadInfo.price),getColor(R.color.colorPumpkin))
+                                        getString(R.string.thread_reward_price,detailedThreadInfo.price),getColor(R.color.colorPumpkin))
                         );
                     }
 

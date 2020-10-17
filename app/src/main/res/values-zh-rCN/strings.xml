@@ -575,5 +575,7 @@
     <string name="buy_thread_title">购买主题帖子</string>
     <string name="buy_thread_dialog_message">从%1$s作者的手中购买本主题，这将花费你%2$s %3$s，你的余额为%4$s  %3$s。</string>
     <string name="buy_thread_send">正在发送交易请求。</string>
+    <string name="thread_buy_price">售价： %1$d (点击以购买本贴)</string>
+    <string name="thread_reward_price">悬赏： %1$d</string>
 
 </resources>

@@ -759,6 +759,8 @@
     <string name="buy_thread_title">Buy the thread</string>
     <string name="buy_thread_dialog_message">Are you sure to buy the thread from%1$s in *%2$s* %3$s. Your remain balance will be %4$s  %3$s?</string>
     <string name="buy_thread_send">Sending the purchase process.</string>
+    <string name="thread_buy_price">Price: %1$d (Click to purchase the thread)</string>
+    <string name="thread_reward_price">Reward: %1$d</string>
 
 
 </resources>
