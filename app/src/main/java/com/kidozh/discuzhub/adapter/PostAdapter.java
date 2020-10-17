@@ -74,6 +74,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -195,16 +197,59 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         }
 
 
-        Log.d(TAG,"Thread info "+position+" Total size "+threadInfoList.size());
+        //Log.d(TAG,"Thread info "+position+" Total size "+threadInfoList.size());
 
         String decodeString = threadInfo.message;
-        if(decodeString == null){
-            return;
+        // extract quote message
+        //String quoteRegexInVer4 = "^<div class=.reply_wrap.>.*?</div><br />";
+        String quoteRegexInVer4 = "^<div class=\"reply_wrap\">(.+?)</div><br .>";
+
+        // remove it if possible
+        Pattern quotePatternInVer4 = Pattern.compile(quoteRegexInVer4,Pattern.DOTALL);
+        Matcher quoteMatcherInVer4 = quotePatternInVer4.matcher(decodeString);
+        Log.d(TAG,"Get message "+decodeString);
+        // delete it first
+
+        if(quoteMatcherInVer4.find()){
+
+            //decodeString = quoteMatcherInVer4.replaceAll("");
+            String quoteString = quoteMatcherInVer4.group(1);
+            Log.d(TAG,"Get quote String : "+quoteString);
+            holder.mPostQuoteContent.setVisibility(View.VISIBLE);
+            // set html
+            HtmlTagHandler HtmlTagHandler = new HtmlTagHandler(mContext,holder.mPostQuoteContent);
+            Spanned sp = Html.fromHtml(quoteString,new MyImageGetter(holder.mPostQuoteContent),HtmlTagHandler);
+            SpannableString spannableString = new SpannableString(sp);
+
+            holder.mPostQuoteContent.setText(spannableString, TextView.BufferType.SPANNABLE);
+            holder.mPostQuoteContent.setFocusable(true);
+            holder.mPostQuoteContent.setTextIsSelectable(true);
+            holder.mPostQuoteContent.setMovementMethod(new bbsLinkMovementMethod(new bbsLinkMovementMethod.OnLinkClickedListener() {
+                @Override
+                public boolean onLinkClicked(String url) {
+                    if(onLinkClickedListener !=null){
+                        if(url.toLowerCase().startsWith("http://") || url.toLowerCase().startsWith("https://")){
+                            onLinkClickedListener.onLinkClicked(url);
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+
+
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            }));
         }
-        decodeString = decodeString.replace("&amp;","&")
-                .replace("&lt;","<")
-                .replace("&gt;",">")
-                .replace("&nbsp;"," ");
+        else {
+            holder.mPostQuoteContent.setVisibility(View.GONE);
+        }
+        decodeString = quoteMatcherInVer4.replaceAll("");
+
+
 
         HtmlTagHandler HtmlTagHandler = new HtmlTagHandler(mContext,holder.mContent);
         Spanned sp = Html.fromHtml(decodeString,new MyImageGetter(holder.mContent),HtmlTagHandler);
@@ -392,6 +437,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         View mPostStatusEditedView;
         @BindView(R.id.bbs_post_is_author)
         TextView isAuthorLabel;
+        @BindView(R.id.bbs_thread_quote_content)
+        TextView mPostQuoteContent;
         public bbsForumThreadCommentViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);

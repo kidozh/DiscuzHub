@@ -88,7 +88,7 @@
             <LinearLayout
                 android:id="@+id/bbs_thread_post_status"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
@@ -173,6 +173,27 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/bbs_thread_quote_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/PostQuotePartBackgroundColor"
+                android:drawableStart="@drawable/ic_post_quote_24px"
+                android:drawablePadding="8dp"
+                android:padding="4dp"
+                android:paddingBottom="4dp"
+                android:textAlignment="viewStart"
+                android:textSize="12sp"
+                android:visibility="visible"
+                app:layout_constraintCircleRadius="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_thread_post_status"
+                tools:text="@tools:sample/cities" />
+
 
             <TextView
                 android:id="@+id/bbs_thread_content"
@@ -187,8 +208,10 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bbs_thread_post_status"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_thread_quote_content"
                 tools:text="@tools:sample/lorem" />
+
+
 
             <TextView
                 android:id="@+id/bbs_thread_type"

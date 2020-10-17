@@ -36,6 +36,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -176,6 +177,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     ImageView errorIcon;
     @BindView(R.id.advance_post_icon)
     ImageView mAdvancePostIcon;
+    @BindView(R.id.bbs_thread_nestedScrollView)
+    NestedScrollView nestedScrollView;
 
     public String subject;
     public int tid, fid;
@@ -967,16 +970,25 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     @Override
     public void replyToSomeOne(int position) {
         PostInfo threadCommentInfo = adapter.getThreadInfoList().get(position);
+
         selectedThreadComment = threadCommentInfo;
         mThreadReplyBadge.setText(threadCommentInfo.author);
         mThreadReplyBadge.setVisibility(View.VISIBLE);
         mCommentEditText.setHint(String.format("@%s",threadCommentInfo.author));
         String decodeString = threadCommentInfo.message;
+        // filter quote
+        String quoteRegexInVer4 = "^<div class=\"reply_wrap\">(.+?)</div><br .>";
+
+        // remove it if possible
+        Pattern quotePatternInVer4 = Pattern.compile(quoteRegexInVer4,Pattern.DOTALL);
+        Matcher quoteMatcherInVer4 = quotePatternInVer4.matcher(decodeString);
+        decodeString = quoteMatcherInVer4.replaceAll("");
 
         Spanned sp = Html.fromHtml(decodeString);
 
         mThreadReplyContent.setText(sp, TextView.BufferType.SPANNABLE);
         mThreadReplyContent.setVisibility(View.VISIBLE);
+
         mThreadReplyBadge.setOnCloseIconClickListener(new View.OnClickListener(){
 
             @Override

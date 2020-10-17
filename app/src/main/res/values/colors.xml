@@ -66,6 +66,7 @@
     <color name="MaterialColorBlueGrey">#607D8B</color>
 
     <color name="ThreadTypeBackgroundColor">@color/colorCloud</color>
+    <color name="PostQuotePartBackgroundColor">@color/colorCloud</color>
 
 
 

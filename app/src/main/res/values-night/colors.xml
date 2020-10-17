@@ -16,6 +16,7 @@
     <color name="colorUnSafeStatus">#CF6679</color>
 
     <color name="ThreadTypeBackgroundColor">#212121</color>
+    <color name="PostQuotePartBackgroundColor">@color/colorWetasphalt</color>
 
 
 </resources>

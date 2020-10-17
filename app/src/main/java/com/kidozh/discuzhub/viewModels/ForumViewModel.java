@@ -42,7 +42,7 @@ public class ForumViewModel extends AndroidViewModel {
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
     ForumInfo forum;
-    private OkHttpClient client;
+    public OkHttpClient client;
 
     public MutableLiveData<Boolean> isLoading, hasLoadAll;
     public MutableLiveData<List<ThreadInfo>> threadInfoListMutableLiveData;
@@ -198,6 +198,8 @@ public class ForumViewModel extends AndroidViewModel {
 
 
     }
+
+
 
 
 

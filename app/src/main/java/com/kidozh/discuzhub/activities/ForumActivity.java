@@ -909,7 +909,7 @@ public class ForumActivity
         protected void onPreExecute() {
             super.onPreExecute();
 
-            retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+            retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,forumViewModel.client);
             DiscuzApiService service = retrofit.create(DiscuzApiService.class);
             ForumResult result = forumViewModel.displayForumResultMutableLiveData.getValue();
             dao = FavoriteForumDatabase.getInstance(getApplicationContext()).getDao();
@@ -926,6 +926,7 @@ public class ForumActivity
                 }
                 else {
                     Log.d(TAG,"Favorite id "+ favoriteForum.favid);
+
                     if(favoriteForum.favid == 0){
                         // just remove it from database
                     }
