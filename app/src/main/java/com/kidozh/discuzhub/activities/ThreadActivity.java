@@ -1545,7 +1545,9 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if(isScrollAtEnd()){
+                if(!recyclerView.canScrollVertically(1)
+                        && newState==RecyclerView.SCROLL_STATE_IDLE){
+                    //Log.d(TAG,"Recyclerview can scroll vert ");
                     ViewThreadQueryStatus viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
                     boolean isLoading = threadDetailViewModel.isLoading.getValue();
                     boolean hasLoadAll = threadDetailViewModel.hasLoadAll.getValue();
@@ -1569,22 +1571,9 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                             viewThreadQueryStatus.page += 1;
                             threadDetailViewModel.getThreadDetail(viewThreadQueryStatus);
                         }
-
                     }
 
                 }
-            }
-
-            public boolean isScrollAtEnd(){
-
-                if (mRecyclerview.computeVerticalScrollExtent() + mRecyclerview.computeVerticalScrollOffset()
-                        >= mRecyclerview.computeVerticalScrollRange()){
-                    return true;
-                }
-                else {
-                    return false;
-                }
-
             }
         });
         countAdapter = new ThreadCountAdapter();
