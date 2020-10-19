@@ -30,6 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,7 +69,6 @@ import com.kidozh.discuzhub.daos.FavoriteThreadDao;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
-import com.kidozh.discuzhub.dialogs.ManageAdapterHelpDialogFragment;
 import com.kidozh.discuzhub.dialogs.ReportPostDialogFragment;
 import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.PostInfo;
@@ -132,7 +132,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     private final static String TAG = ThreadActivity.class.getSimpleName();
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.bbs_thread_detail_recyclerview)
+    @BindView(R.id.posts_recyclerview)
     RecyclerView mRecyclerview;
 
     @BindView(R.id.bbs_thread_detail_swipeRefreshLayout)
@@ -149,8 +149,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     @BindView(R.id.bbs_thread_detail_reply_content)
     TextView mThreadReplyContent;
     
-    @BindView(R.id.bbs_comment_smiley_constraintLayout)
-    ConstraintLayout mCommentSmileyConstraintLayout;
+    @BindView(R.id.smiley_root_layout)
+    View SmileyRootLayout;
     @BindView(R.id.bbs_comment_smiley_tabLayout)
     TabLayout mCommentSmileyTabLayout;
     @BindView(R.id.bbs_comment_smiley_viewPager)
@@ -181,8 +181,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     ImageView errorIcon;
     @BindView(R.id.advance_post_icon)
     ImageView mAdvancePostIcon;
-    @BindView(R.id.bbs_thread_nestedScrollView)
-    NestedScrollView nestedScrollView;
+
 
     public String subject;
     public int tid, fid;
@@ -209,10 +208,14 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     private ThreadViewModel threadDetailViewModel;
 
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bbs_show_thread);
+
         ButterKnife.bind(this);
         threadDetailViewModel = new ViewModelProvider(this).get(ThreadViewModel.class);
         configureIntentData();
@@ -894,7 +897,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         mCommentEmoijBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mCommentSmileyConstraintLayout.getVisibility() == View.GONE){
+                if(SmileyRootLayout.getVisibility() == View.GONE){
                     // smiley picker not visible
                     mCommentEmoijBtn.setImageDrawable(getDrawable(R.drawable.vector_drawable_keyboard_24px));
 
@@ -904,13 +907,13 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                     if(imm !=null){
                         imm.hideSoftInputFromWindow(mCommentEditText.getWindowToken(),0);
                     }
-                    mCommentSmileyConstraintLayout.setVisibility(View.VISIBLE);
+                    SmileyRootLayout.setVisibility(View.VISIBLE);
 
                     // tab layout binding...
                     getSmileyInfo();
                 }
                 else {
-                    mCommentSmileyConstraintLayout.setVisibility(View.GONE);
+                    SmileyRootLayout.setVisibility(View.GONE);
                     mCommentEmoijBtn.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp));
                 }
 
@@ -921,8 +924,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         mCommentEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus && mCommentSmileyConstraintLayout.getVisibility() == View.VISIBLE){
-                    mCommentSmileyConstraintLayout.setVisibility(View.GONE);
+                if(hasFocus && SmileyRootLayout.getVisibility() == View.VISIBLE){
+                    SmileyRootLayout.setVisibility(View.GONE);
                     mCommentEmoijBtn.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp));
                 }
             }
@@ -1716,7 +1719,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                if(mCommentSmileyConstraintLayout.getVisibility() == View.VISIBLE){
+                                if(SmileyRootLayout.getVisibility() == View.VISIBLE){
                                     mCommentEmoijBtn.callOnClick();
                                 }
                                 mCommentBtn.setText(R.string.bbs_thread_comment);
@@ -1912,7 +1915,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                if(mCommentSmileyConstraintLayout.getVisibility() == View.VISIBLE){
+                                if(SmileyRootLayout.getVisibility() == View.VISIBLE){
                                     mCommentEmoijBtn.callOnClick();
                                 }
                                 mCommentBtn.setText(R.string.bbs_thread_comment);

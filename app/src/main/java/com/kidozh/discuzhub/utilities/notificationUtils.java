@@ -56,24 +56,4 @@ public class notificationUtils {
 
         }
     }
-
-    public static void createBBSUpdateChannel(@NonNull Context context,@NonNull bbsInformation bbsInfo) {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = context.getString(R.string.channel_name_bbs_information,bbsInfo.site_name,bbsInfo.getId());
-            String description = context.getString(R.string.channel_description_bbs_information,bbsInfo.site_name);
-            String bbsChannelId = context.getString(R.string.channel_id_bbs_information,bbsInfo.getId());
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel(bbsChannelId, name, importance);
-            channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
-            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-            if(notificationManager!=null){
-                notificationManager.createNotificationChannel(channel);
-            }
-
-        }
-    }
 }

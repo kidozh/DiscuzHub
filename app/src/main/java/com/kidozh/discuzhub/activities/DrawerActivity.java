@@ -172,7 +172,7 @@ public class DrawerActivity extends BaseStatusActivity implements
                 List<IProfile> accountProfiles = new ArrayList<>();
                 for(int i=0;i<bbsInformations.size(); i++){
                     bbsInformation currentBBSInfo = bbsInformations.get(i);
-                    notificationUtils.createBBSUpdateChannel(getApplicationContext(),currentBBSInfo);
+                    notificationUtils.createUsersUpdateChannel(getApplicationContext());
                     //URLUtils.setBBS(currentBBSInfo);
                     Log.d(TAG,"Load url "+URLUtils.getBBSLogoUrl(currentBBSInfo.base_url));
                     ProfileDrawerItem bbsProfile = new ProfileDrawerItem();

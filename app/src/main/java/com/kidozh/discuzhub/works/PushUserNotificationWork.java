@@ -95,7 +95,6 @@ public class PushUserNotificationWork extends Worker {
                 .getInstance(context)
                 .getForumInformationDao()
                 .getForumInformationById(userBriefInfo.belongedBBSID);
-        notificationUtils.createBBSUpdateChannel(context,bbsInformation);
         // needs to set it
         if(bbsInformation == null){
             return Result.failure();
@@ -217,7 +216,7 @@ public class PushUserNotificationWork extends Worker {
 
     private void pushGroupNotification(int newNum,int totalNum){
         int notificationId = userBriefInfo.getId();
-        notificationUtils.createBBSUpdateChannel(context,bbsInformation);
+        notificationUtils.createUsersUpdateChannel(context);
 
         Notification newUpdateNotification = new NotificationCompat.Builder(context, notificationUtils.userUpdateNotificationId)
                 .setSmallIcon(R.drawable.ic_account_box_24px)
