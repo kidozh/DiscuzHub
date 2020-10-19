@@ -67,6 +67,9 @@
 
     <color name="ThreadTypeBackgroundColor">@color/colorCloud</color>
     <color name="PostQuotePartBackgroundColor">@color/colorCloud</color>
+    <color name="colorControlNormal">?attr/colorControlNormal</color>
+    <color name="colorControlHighlight">?attr/colorControlHighlight</color>
+    <color name="colorControlActivated">?attr/colorControlActivated</color>
 
 
 
