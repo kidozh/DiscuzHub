@@ -774,6 +774,9 @@
     <string name="report_input_reason_required">Exact reason is needed when you specify report reason as others.</string>
     <string name="api_message_return_null">Null message got, the operation would not be finished.</string>
     <string name="report_login_required">Login required when reporting.</string>
+    <string name="api_error_result">API error</string>
+    <string name="network_state_unavaliable_error_key">Network Unavaliable</string>
+    <string name="network_state_unavaliable_error_content">We could not find a active network interface. Turn off flight mode or turn on wifi, celluar and bluetooth network.</string>
 
 
 </resources>

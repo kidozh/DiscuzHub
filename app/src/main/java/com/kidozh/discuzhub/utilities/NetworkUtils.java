@@ -17,6 +17,7 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
 import java.io.IOException;
@@ -407,6 +408,11 @@ public class NetworkUtils {
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    public static ErrorMessage getOfflineErrorMessage(Context context){
+        return new ErrorMessage(context.getString(R.string.network_state_unavaliable_error_key),
+                context.getString(R.string.network_state_unavaliable_error_content));
     }
 
     public static boolean isWifiConnected(@NonNull Context context){

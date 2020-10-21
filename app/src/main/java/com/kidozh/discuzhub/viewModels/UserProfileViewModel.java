@@ -56,6 +56,7 @@ public class UserProfileViewModel extends AndroidViewModel {
     }
 
     public void loadUserProfile(){
+
         isLoading.postValue(true);
         Request request = new Request.Builder()
                 .url(URLUtils.getUserProfileUrl(uid))

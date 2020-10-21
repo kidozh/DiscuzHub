@@ -158,7 +158,7 @@ public class FavoriteForumFragment extends Fragment {
         });
         mViewModel.resultMutableLiveData.observe(getViewLifecycleOwner(),favoriteForumResult -> {
             if(getContext() instanceof BaseStatusInteract){
-                ((BaseStatusInteract) getContext()).setBaseResult(favoriteForumResult,favoriteForumResult!=null?favoriteForumResult.FavoriteForumVariable:null);
+                ((BaseStatusInteract) getContext()).setBaseResult(favoriteForumResult,favoriteForumResult!=null?favoriteForumResult.favoriteForumVariable:null);
             }
         });
     }
@@ -179,6 +179,9 @@ public class FavoriteForumFragment extends Fragment {
             if(count == -1){
                 syncFavoriteThreadProgressBar.setVisibility(View.VISIBLE);
                 syncFavoriteThreadProgressBar.setIndeterminate(true);
+            }
+            else {
+                syncFavoriteThreadProgressBar.setVisibility(View.GONE);
             }
 
         });

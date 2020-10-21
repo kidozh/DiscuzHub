@@ -53,6 +53,11 @@ public class HotForumsViewModel extends AndroidViewModel {
     }
 
     public void loadHotForums(){
+        if(!NetworkUtils.isOnline(getApplication())){
+            errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()));
+            isLoadingMutableLiveData.postValue(false);
+            return;
+        }
         isLoadingMutableLiveData.postValue(true);
         Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService service = retrofit.create(DiscuzApiService.class);
@@ -68,6 +73,11 @@ public class HotForumsViewModel extends AndroidViewModel {
                     if(result.message!=null){
                         errorMessageMutableLiveData.postValue(result.message.toErrorMessage());
 
+                    }
+                    else if(result.error!=null){
+                        errorMessageMutableLiveData.postValue(new ErrorMessage(
+                                getApplication().getString(R.string.api_error_result),
+                                result.error));
                     }
                     else {
                         if(result.variables.hotForumList == null){

@@ -80,6 +80,7 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
 
 
     private void getFavoriteItem(int page){
+
         networkState.postValue(bbsConstUtils.NETWORK_STATUS_LOADING);
         Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService apiService = retrofit.create(DiscuzApiService.class);
@@ -94,14 +95,15 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
                 if(response.isSuccessful() && response.body()!=null){
                     FavoriteThreadResult result = response.body();
                     resultMutableLiveData.postValue(result);
+                    Log.d(TAG,"Get response result "+result.isError()+response.raw().toString());
                     if(result.isError()){
                         networkState.postValue(bbsConstUtils.NETWORK_STATUS_FAILED);
-                        errorMsgKey.postValue(result.message.key);
-                        errorMsgContent.postValue(getApplication().getString(R.string.discuz_api_message_template,result.message.key,result.message.content));
+                        errorMsgKey.postValue(result.getErrorMessage().key);
+                        errorMsgContent.postValue(result.getErrorMessage().content);
                     }
-                    else {
+                    else if(result.favoriteThreadVariable !=null) {
                         totalCount.postValue(result.favoriteThreadVariable.count);
-                        Log.d(TAG,"Get cnt "+result.favoriteThreadVariable.count + " "+result.favoriteThreadVariable.favoriteThreadList);
+                        //Log.d(TAG,"Get cnt "+result.favoriteThreadVariable.count + " "+result.favoriteThreadVariable.favoriteThreadList);
                         newFavoriteThread.postValue(result.favoriteThreadVariable.favoriteThreadList);
                         List<FavoriteThread> curFavoriteThreadList =
                                 favoriteThreadInServer.getValue() == null ? new ArrayList<>()

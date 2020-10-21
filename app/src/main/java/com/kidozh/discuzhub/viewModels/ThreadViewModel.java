@@ -147,6 +147,11 @@ public class ThreadViewModel extends AndroidViewModel {
     }
 
     public void getThreadDetail(ViewThreadQueryStatus viewThreadQueryStatus){
+        if(!NetworkUtils.isOnline(getApplication())){
+            isLoading.postValue(false);
+            errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()));
+            return;
+        }
         isLoading.postValue(true);
         hasLoadAll.postValue(false);
         // bbsThreadStatus threadStatus = threadStatusMutableLiveData.getValue();

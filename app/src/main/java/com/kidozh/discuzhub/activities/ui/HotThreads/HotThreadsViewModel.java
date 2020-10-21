@@ -76,7 +76,11 @@ public class HotThreadsViewModel extends AndroidViewModel {
 
     private void getThreadList(int page){
         // init page
-
+        if(!NetworkUtils.isOnline(getApplication())){
+            errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()));
+            isLoading.postValue(false);
+            return;
+        }
         isLoading.postValue(true);
         Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService service = retrofit.create(DiscuzApiService.class);

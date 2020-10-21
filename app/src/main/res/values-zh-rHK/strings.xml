@@ -593,5 +593,8 @@
     <string name="report_input_reason_required">舉報需要一個確切的理由，請鍵入你的理由吧。 </string>
     <string name="api_message_return_null">我們收到一個回复，但是無內容，此操作失敗。 </string>
     <string name="report_login_required">舉報不當內容需要登錄後使用。 </string>
+    <string name="api_error_result">接口錯誤</string>
+    <string name="network_state_unavaliable_error_key">互聯網不可用</string>
+    <string name="network_state_unavaliable_error_content">目前沒有一個可用的網絡接口。嘗試著關閉飛行模式，打開Wi-Fi，數據以及藍牙連接後試試？</string>
 
 </resources>

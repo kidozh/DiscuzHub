@@ -75,6 +75,7 @@ public class PostThreadViewModel extends AndroidViewModel {
     }
 
     public void loadThreadPostParameter(){
+
         Request request = new Request.Builder()
                 .url(URLUtils.getCheckPostUrl(fid))
                 .build();

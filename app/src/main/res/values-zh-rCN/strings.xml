@@ -590,5 +590,8 @@
     <string name="report_input_reason_required">举报需要一个确切的理由，请键入你的理由吧。</string>
     <string name="api_message_return_null">我们收到一个回复，但是无内容，此操作失败。</string>
     <string name="report_login_required">举报不当内容需要登录后使用。</string>
+    <string name="api_error_result">接口错误</string>
+    <string name="network_state_unavaliable_error_key">互联网不可用</string>
+    <string name="network_state_unavaliable_error_content">目前没有一个可用的网络接口。尝试着关闭飞行模式，打开WLAN，数据以及蓝牙连接后试试？</string>
 
 </resources>

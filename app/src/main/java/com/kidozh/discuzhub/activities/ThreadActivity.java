@@ -622,7 +622,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                         }
                     }
 
-                    Log.d(TAG,"Thread post result error "+ threadResult.isError()+" "+ threadResult.threadPostVariables.message);
+                    //Log.d(TAG,"Thread post result error "+ threadResult.isError()+" "+ threadResult.threadPostVariables.message);
 
 
                     Map<String,String> rewriteRule = threadResult.threadPostVariables.rewriteRule;

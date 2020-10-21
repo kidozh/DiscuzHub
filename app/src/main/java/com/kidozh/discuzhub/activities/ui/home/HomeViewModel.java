@@ -66,6 +66,11 @@ public class HomeViewModel extends AndroidViewModel {
     }
 
     public void loadForumCategoryInfo(){
+        if(!NetworkUtils.isOnline(getApplication())){
+            isLoading.postValue(false);
+            errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()));
+            return;
+        }
 
 
         OkHttpClient client = NetworkUtils.getPreferredClientWithCookieJarByUser(this.getApplication(),userBriefInfo);

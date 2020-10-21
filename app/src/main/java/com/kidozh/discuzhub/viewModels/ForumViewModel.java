@@ -108,6 +108,11 @@ public class ForumViewModel extends AndroidViewModel {
     }
 
     public void getThreadList(DisplayForumQueryStatus displayForumQueryStatus){
+        if(!NetworkUtils.isOnline(getApplication())){
+            errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()));
+            isLoading.postValue(false);
+            return;
+        }
         boolean loading = isLoading.getValue();
         boolean loadAll = hasLoadAll.getValue();
         if(displayForumQueryStatus.page == 1){

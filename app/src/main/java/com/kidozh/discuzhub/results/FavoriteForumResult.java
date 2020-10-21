@@ -10,7 +10,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FavoriteForumResult extends BaseResult {
     @JsonProperty("Variables")
-    public FavoriteForumVariable FavoriteForumVariable;
+    public FavoriteForumVariable favoriteForumVariable;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class FavoriteForumVariable extends VariableResults{

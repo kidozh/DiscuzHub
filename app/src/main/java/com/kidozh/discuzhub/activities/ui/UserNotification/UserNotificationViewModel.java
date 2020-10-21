@@ -50,6 +50,7 @@ public class UserNotificationViewModel extends AndroidViewModel {
 
     public void getUserNotificationByPage(String view, String type,int page){
 
+
         if(isLoading != null && isLoading.getValue() != null && isLoading.getValue()){
             return;
         }

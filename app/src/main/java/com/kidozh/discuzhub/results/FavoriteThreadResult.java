@@ -1,5 +1,8 @@
 package com.kidozh.discuzhub.results;
 
+import android.telecom.TelecomManager;
+import android.text.TextUtils;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,14 +26,6 @@ public class FavoriteThreadResult extends BaseResult {
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         public int count;
 
-    }
-
-
-
-
-
-    public boolean isError(){
-        return this.message != null;
     }
 
 }

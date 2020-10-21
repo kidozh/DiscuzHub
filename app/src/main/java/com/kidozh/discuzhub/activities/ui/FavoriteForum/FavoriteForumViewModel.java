@@ -96,21 +96,21 @@ public class FavoriteForumViewModel extends AndroidViewModel {
                     resultMutableLiveData.postValue(result);
                     if(result.isError()){
                         networkState.postValue(bbsConstUtils.NETWORK_STATUS_FAILED);
-                        errorMsgKey.postValue(result.message.key);
-                        errorMsgContent.postValue(getApplication().getString(R.string.discuz_api_message_template,result.message.key,result.message.content));
+                        errorMsgKey.postValue(result.getErrorMessage().key);
+                        errorMsgContent.postValue(getApplication().getString(R.string.discuz_api_message_template,result.getErrorMessage().key,result.getErrorMessage().content));
                     }
-                    else {
-                        totalCount.postValue(result.FavoriteForumVariable.count);
-                        Log.d(TAG,"Get cnt "+result.FavoriteForumVariable.count + " "+result.FavoriteForumVariable.FavoriteForumList);
-                        newFavoriteForum.postValue(result.FavoriteForumVariable.FavoriteForumList);
+                    else if(result.favoriteForumVariable !=null) {
+                        totalCount.postValue(result.favoriteForumVariable.count);
+                        Log.d(TAG,"Get cnt "+result.favoriteForumVariable.count + " "+result.favoriteForumVariable.FavoriteForumList);
+                        newFavoriteForum.postValue(result.favoriteForumVariable.FavoriteForumList);
                         List<FavoriteForum> curFavoriteForumList =
                                 FavoriteForumInServer.getValue() == null ? new ArrayList<>()
                                 : FavoriteForumInServer.getValue();
-                        curFavoriteForumList.addAll(result.FavoriteForumVariable.FavoriteForumList);
+                        curFavoriteForumList.addAll(result.favoriteForumVariable.FavoriteForumList);
                         FavoriteForumInServer.postValue(curFavoriteForumList);
 
                         // recursive
-                        if(result.FavoriteForumVariable.count > curFavoriteForumList.size()){
+                        if(result.favoriteForumVariable.count > curFavoriteForumList.size()){
                             getFavoriteItem(page+1);
                         }
                     }

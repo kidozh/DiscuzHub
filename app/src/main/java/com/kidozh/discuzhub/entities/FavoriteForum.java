@@ -35,7 +35,10 @@ public class FavoriteForum implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public int spaceUid;
     @NonNull
-    public String title="", description = "", author="";
+    public String title="", description = "";
+    @NonNull
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public String author = "";
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="s")
     @JsonProperty("dateline")
     public Date date;
