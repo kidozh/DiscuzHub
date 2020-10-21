@@ -5,107 +5,144 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/bbs_thread_detail_swipeRefreshLayout"
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/comment_smiley_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.core.widget.NestedScrollView
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:background="@color/colorBackgroundDefault">
 
-            <LinearLayout
+            <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:descendantFocusability="blocksDescendants"
-                android:orientation="vertical">
-
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:theme="?attr/actionBarTheme">
-
-
-                </androidx.appcompat.widget.Toolbar>
+                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
                 <LinearLayout
-                    android:id="@+id/thread_header_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:descendantFocusability="blocksDescendants"
-                    android:fitsSystemWindows="true"
                     android:orientation="vertical">
 
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/bbs_thread_property_recyclerview"
+                    <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        tools:itemCount="1">
+                        android:theme="?attr/actionBarTheme">
 
-                    </androidx.recyclerview.widget.RecyclerView>
 
-                    <TextView
-                        android:id="@+id/bbs_thread_subject"
+                    </androidx.appcompat.widget.Toolbar>
+
+                    <LinearLayout
+                        android:id="@+id/thread_header_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_forum_description_outlined_24px"
-                        android:drawablePadding="8dp"
-                        android:textAlignment="viewStart"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:textStyle="bold"
-                        android:transitionName="bbs_thread_subject" />
+                        android:descendantFocusability="blocksDescendants"
+                        android:fitsSystemWindows="true"
+                        android:orientation="vertical">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/bbs_thread_interactive_recyclerview"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
 
-                        android:clipChildren="true"
-                        android:clipToPadding="true"
-                        android:nestedScrollingEnabled="false"
-                        tools:itemCount="1" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/bbs_thread_property_recyclerview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            tools:itemCount="1">
 
-                    <androidx.fragment.app.FragmentContainerView
-                        android:id="@+id/bbs_thread_poll_fragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        </androidx.recyclerview.widget.RecyclerView>
 
                         <TextView
-                            android:id="@+id/bbs_thread_comment_number"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/bbs_thread_subject"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
+                            android:drawableStart="@drawable/ic_forum_description_outlined_24px"
+                            android:drawablePadding="8dp"
+                            android:textAlignment="viewStart"
                             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                            android:textSize="24sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:text="45" />
+                            android:textStyle="bold"
+                            android:transitionName="bbs_thread_subject" />
 
-                        <TextView
-                            android:id="@+id/bbs_thread_view_number"
-                            android:layout_width="wrap_content"
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/bbs_thread_interactive_recyclerview"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_thread_view_16px"
-                            android:textSize="18sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:text="46" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            android:clipChildren="true"
+                            android:clipToPadding="true"
+                            android:nestedScrollingEnabled="false"
+                            tools:itemCount="1" />
+
+                        <androidx.fragment.app.FragmentContainerView
+                            android:id="@+id/bbs_thread_poll_fragment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/bbs_thread_comment_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                                android:textSize="24sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:text="45" />
+
+                            <TextView
+                                android:id="@+id/bbs_thread_view_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="0dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:drawableStart="@drawable/ic_thread_view_24px"
+                                android:drawablePadding="8dp"
+                                android:gravity="center_vertical"
+                                android:textSize="18sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:text="46" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:clipToPadding="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/bbs_thread_detail_swipeRefreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/posts_recyclerview"
@@ -159,11 +196,10 @@
 
 
                 </LinearLayout>
-
-            </LinearLayout>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         </androidx.core.widget.NestedScrollView>
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
     <LinearLayout

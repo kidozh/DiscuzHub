@@ -44,8 +44,6 @@ public class SmileyFragment extends Fragment {
 
     SmileyAdapter adapter;
 
-    // TODO: Rename and change types of parameters
-
     private List<bbsParseUtils.smileyInfo> curSmileyInfos = new ArrayList<>();
 
     private OnSmileyPressedInteraction mListener;

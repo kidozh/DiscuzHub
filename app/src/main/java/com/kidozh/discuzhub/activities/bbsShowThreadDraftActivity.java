@@ -50,7 +50,7 @@ public class bbsShowThreadDraftActivity extends BaseStatusActivity implements re
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bbs_show_thread_draft);
+        setContentView(R.layout.activity_view_thread_draft);
         ButterKnife.bind(this);
         configureIntentData();
         configureActionBar();

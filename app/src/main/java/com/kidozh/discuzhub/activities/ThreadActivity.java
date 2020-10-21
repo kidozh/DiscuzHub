@@ -30,14 +30,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -214,7 +212,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bbs_show_thread);
+        setContentView(R.layout.activity_view_thread);
 
         ButterKnife.bind(this);
         threadDetailViewModel = new ViewModelProvider(this).get(ThreadViewModel.class);
