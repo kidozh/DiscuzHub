@@ -20,6 +20,7 @@ import android.widget.ImageView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.SmileyAdapter;
+import com.kidozh.discuzhub.databinding.FragmentSmileyBinding;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 
 import java.util.ArrayList;
@@ -75,14 +76,15 @@ public class SmileyFragment extends Fragment {
         }
     }
 
-    @BindView(R.id.smiley_recyclerview)
-    RecyclerView recyclerView;
+    
+    FragmentSmileyBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_smiley, container, false);
+        binding = FragmentSmileyBinding.inflate(inflater,container,false);
+        return binding.getRoot();
     }
 
     @Override
@@ -94,7 +96,7 @@ public class SmileyFragment extends Fragment {
 
     void configureRecyclerView(){
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 6, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManager);
+        binding.smileyRecyclerview.setLayoutManager(layoutManager);
 
         adapter = new SmileyAdapter(getContext(), (v1, position) -> {
             ImageView img = (ImageView) v1;
@@ -102,7 +104,7 @@ public class SmileyFragment extends Fragment {
         });
 
         adapter.setSmileyInfos(curSmileyInfos);
-        recyclerView.setAdapter(adapter);
+        binding.smileyRecyclerview.setAdapter(adapter);
     }
 
     private void smileyClick(Drawable d, int position) {

@@ -33,7 +33,6 @@ import com.kidozh.discuzhub.utilities.NetworkUtils;
 import java.io.IOException;
 import java.util.List;
 
-import butterknife.BindView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
