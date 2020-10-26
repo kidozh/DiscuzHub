@@ -30,9 +30,6 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
 import java.util.Objects;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link DashBoardFragment#newInstance} factory method to
@@ -97,7 +94,6 @@ public class DashBoardFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this,view);
         viewModel = new ViewModelProvider(this).get(DashBoardViewModel.class);
         bindTabLayoutAndViewPager2();
     }

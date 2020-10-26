@@ -79,7 +79,7 @@ public class FavoriteThreadFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.favorite_thread_fragment, container, false);
+        return inflater.inflate(R.layout.fragment_favorite_thread, container, false);
     }
 
     @BindView(R.id.blank_favorite_thread_view)

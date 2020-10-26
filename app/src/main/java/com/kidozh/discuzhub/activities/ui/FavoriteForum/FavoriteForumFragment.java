@@ -2,7 +2,6 @@ package com.kidozh.discuzhub.activities.ui.FavoriteForum;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,16 +19,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ui.FavoriteForum.FavoriteForumViewModel;
 import com.kidozh.discuzhub.adapter.FavoriteForumAdapter;
 import com.kidozh.discuzhub.daos.FavoriteForumDao;
 import com.kidozh.discuzhub.database.FavoriteForumDatabase;
+import com.kidozh.discuzhub.databinding.FragmentFavoriteThreadBinding;
 import com.kidozh.discuzhub.entities.FavoriteForum;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
-import com.kidozh.discuzhub.results.BaseResult;
-import com.kidozh.discuzhub.results.VariableResults;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 
 import java.util.ArrayList;
@@ -74,11 +71,13 @@ public class FavoriteForumFragment extends Fragment {
     }
 
     FavoriteForumAdapter adapter;
+    FragmentFavoriteThreadBinding binding;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.favorite_thread_fragment, container, false);
+        binding = FragmentFavoriteThreadBinding.inflate(inflater,container,false);
+        return binding.getRoot();
     }
 
     @BindView(R.id.blank_favorite_thread_view)

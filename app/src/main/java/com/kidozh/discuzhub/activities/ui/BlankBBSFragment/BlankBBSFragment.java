@@ -73,8 +73,7 @@ public class BlankBBSFragment extends Fragment {
         }
     }
 
-    @BindView(R.id.add_a_bbs_btn)
-    Button addBBSBtn;
+
     FragmentBlankBbsBinding binding;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,9 +86,8 @@ public class BlankBBSFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this,view);
 
-        addBBSBtn.setOnClickListener(new View.OnClickListener() {
+        binding.addABbsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), bbsAddIntroActivity.class);
