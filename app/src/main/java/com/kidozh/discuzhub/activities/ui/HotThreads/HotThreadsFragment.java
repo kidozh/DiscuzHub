@@ -20,6 +20,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.DashBoard.DashBoardViewModel;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;
+import com.kidozh.discuzhub.databinding.FragmentHotThreadBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
@@ -37,24 +38,13 @@ public class HotThreadsFragment extends Fragment {
     private static final String TAG = HotThreadsFragment.class.getSimpleName();
     private HotThreadsViewModel hotThreadsViewModel;
     private DashBoardViewModel dashBoardViewModel;
-    @BindView(R.id.fragment_hot_thread_recyclerview)
-    RecyclerView dashboardRecyclerview;
-    @BindView(R.id.fragment_dashboard_swipeRefreshLayout)
-    SwipeRefreshLayout dashboardSwipeRefreshLayout;
-    @BindView(R.id.error_content)
-    TextView errorContent;
-    @BindView(R.id.error_icon)
-    ImageView errorIcon;
-    @BindView(R.id.error_value)
-    TextView errorValue;
-    @BindView(R.id.error_view)
-    View errorView;
+    FragmentHotThreadBinding binding;
+    
+
     ThreadAdapter forumThreadAdapter;
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
-    private OkHttpClient client = new OkHttpClient();
-    private static int globalPage = 1;
-    private Boolean isClientRunning = false;
+
 
     public HotThreadsFragment(){
 
@@ -75,7 +65,7 @@ public class HotThreadsFragment extends Fragment {
         if (getArguments() != null) {
             bbsInfo = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
             userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
-            client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
+
         }
     }
 
@@ -96,7 +86,6 @@ public class HotThreadsFragment extends Fragment {
     }
 
     private void configureClient(){
-        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
         if(bbsInfo !=null){
             hotThreadsViewModel.setBBSInfo(bbsInfo,userBriefInfo);
         }
@@ -105,11 +94,11 @@ public class HotThreadsFragment extends Fragment {
 
     private void configureThreadRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        dashboardRecyclerview.setLayoutManager(linearLayoutManager);
+        binding.fragmentHotThreadRecyclerview.setLayoutManager(linearLayoutManager);
         forumThreadAdapter = new ThreadAdapter(null,null,bbsInfo,userBriefInfo);
-        dashboardRecyclerview.setAdapter(forumThreadAdapter);
-        dashboardRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
-        dashboardRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.fragmentHotThreadRecyclerview.setAdapter(forumThreadAdapter);
+        binding.fragmentHotThreadRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+        binding.fragmentHotThreadRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -127,8 +116,8 @@ public class HotThreadsFragment extends Fragment {
 
             public boolean isScrollAtEnd(){
 
-                if (dashboardRecyclerview.computeVerticalScrollExtent() + dashboardRecyclerview.computeVerticalScrollOffset()
-                        >= dashboardRecyclerview.computeVerticalScrollRange()){
+                if (binding.fragmentHotThreadRecyclerview.computeVerticalScrollExtent() + binding.fragmentHotThreadRecyclerview.computeVerticalScrollOffset()
+                        >= binding.fragmentHotThreadRecyclerview.computeVerticalScrollRange()){
                     return true;
                 }
                 else {
@@ -140,7 +129,7 @@ public class HotThreadsFragment extends Fragment {
     }
 
     private void configureSwipeRefreshLayout(){
-        dashboardSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 hotThreadsViewModel.setPageNumAndFetchThread(1);
@@ -161,13 +150,13 @@ public class HotThreadsFragment extends Fragment {
                 dashBoardViewModel.hotThreadCountMutableLiveData.postValue(forumThreadAdapter.getItemCount());
                 if(forumThreadAdapter.threadInfoList == null || forumThreadAdapter.threadInfoList.size() == 0){
                     
-                    errorView.setVisibility(View.VISIBLE);
-                    errorContent.setText(R.string.empty_result);
-                    errorContent.setText(R.string.empty_hot_threads);
-                    errorIcon.setImageResource(R.drawable.ic_empty_hot_thread_64px);
+                    binding.errorView.setVisibility(View.VISIBLE);
+                    binding.errorContent.setText(R.string.empty_result);
+                    binding.errorContent.setText(R.string.empty_hot_threads);
+                    binding.errorIcon.setImageResource(R.drawable.ic_empty_hot_thread_64px);
                 }
                 else {
-                    errorView.setVisibility(View.GONE);
+                    binding.errorView.setVisibility(View.GONE);
                     
                 }
             }
@@ -175,15 +164,15 @@ public class HotThreadsFragment extends Fragment {
         hotThreadsViewModel.isLoading.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                dashboardSwipeRefreshLayout.setRefreshing(aBoolean);
+                binding.swipeRefreshLayout.setRefreshing(aBoolean);
             }
         });
         hotThreadsViewModel.errorMessageMutableLiveData.observe(getViewLifecycleOwner(),errorMessage -> {
             if(errorMessage!=null){
-                errorView.setVisibility(View.VISIBLE);
-                errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
-                errorValue.setText(errorMessage.key);
-                errorContent.setText(errorMessage.content);
+                binding.errorView.setVisibility(View.VISIBLE);
+                binding.errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
+                binding.errorValue.setText(errorMessage.key);
+                binding.errorContent.setText(errorMessage.content);
                 
             }
         });
