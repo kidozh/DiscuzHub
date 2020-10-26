@@ -20,6 +20,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.DashBoard.DashBoardViewModel;
 import com.kidozh.discuzhub.adapter.HotForumAdapter;
+import com.kidozh.discuzhub.databinding.FragmentHotForumBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
@@ -30,8 +31,6 @@ import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
 
 public class HotForumsFragment extends Fragment {
@@ -63,28 +62,17 @@ public class HotForumsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_hot_forum, container, false);
+        binding = FragmentHotForumBinding.inflate(inflater,container,false);
+        return binding.getRoot();
     }
 
-    @BindView(R.id.fragment_hotforum_swipeRefreshLayout)
-    SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.error_icon)
-    ImageView emptyIcon;
-    @BindView(R.id.error_content)
-    TextView errorText;
-    @BindView(R.id.error_value)
-    TextView errorValue;
+    FragmentHotForumBinding binding;
 
-    @BindView(R.id.fragment_hotforum_recyclerview)
-    RecyclerView recyclerView;
-
-    @BindView(R.id.error_view)
-    View emptyView;
+    
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this,view);
         viewModel = new ViewModelProvider(this).get(HotForumsViewModel.class);
         viewModel.setBBSInfo(bbsInfo,userBriefInfo);
         dashBoardViewModel = new ViewModelProvider(this).get(DashBoardViewModel.class);
@@ -101,9 +89,9 @@ public class HotForumsFragment extends Fragment {
 
     private void configureRecyclerview(){
         adapter = new HotForumAdapter(bbsInfo,userBriefInfo);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
+        binding.fragmentHotforumRecyclerview.setLayoutManager(new GridLayoutManager(getContext(),2));
+        binding.fragmentHotforumRecyclerview.setHasFixedSize(true);
+        binding.fragmentHotforumRecyclerview.setAdapter(adapter);
 
     }
 
@@ -111,19 +99,19 @@ public class HotForumsFragment extends Fragment {
         viewModel.isLoadingMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                swipeRefreshLayout.setRefreshing(aBoolean);
+                binding.fragmentHotforumSwipeRefreshLayout.setRefreshing(aBoolean);
             }
         });
         viewModel.errorMessageMutableLiveData.observe(getViewLifecycleOwner(),errorMessage -> {
             if(errorMessage!=null){
                 Log.d(TAG,"Set error message "+errorMessage.key);
-                emptyView.setVisibility(View.VISIBLE);
-                errorText.setText(errorMessage.content);
-                errorValue.setText(errorMessage.key);
-                emptyIcon.setImageResource(R.drawable.ic_error_outline_24px);
+                binding.errorView.setVisibility(View.VISIBLE);
+                binding.errorContent.setText(errorMessage.content);
+                binding.errorValue.setText(errorMessage.key);
+                binding.errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
             }
             else {
-                emptyView.setVisibility(View.GONE);
+                binding.errorView.setVisibility(View.GONE);
             }
         });
 
@@ -142,13 +130,13 @@ public class HotForumsFragment extends Fragment {
                 else {
                     if(hotForumsResult.variables.hotForumList == null
                     || hotForumsResult.variables.hotForumList.size() == 0){
-                        errorText.setText(R.string.empty_hot_forum);
-                        emptyIcon.setImageResource(R.drawable.ic_user_group_empty_24dp);
-                        emptyView.setVisibility(View.VISIBLE);
+                        binding.errorContent.setText(R.string.empty_hot_forum);
+                        binding.errorIcon.setImageResource(R.drawable.ic_user_group_empty_24dp);
+                        binding.errorView.setVisibility(View.VISIBLE);
 
                     }
                     else {
-                        emptyView.setVisibility(View.GONE);
+                        binding.errorView.setVisibility(View.GONE);
 
                     }
 
@@ -164,7 +152,7 @@ public class HotForumsFragment extends Fragment {
     }
 
     private void configureSwipeRefreshLayout(){
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        binding.fragmentHotforumSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 viewModel.loadHotForums();

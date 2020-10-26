@@ -24,6 +24,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.FavoriteThreadAdapter;
 import com.kidozh.discuzhub.daos.FavoriteThreadDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
+import com.kidozh.discuzhub.databinding.FragmentFavoriteThreadBinding;
 import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -33,8 +34,6 @@ import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
 public class FavoriteThreadFragment extends Fragment {
@@ -75,21 +74,16 @@ public class FavoriteThreadFragment extends Fragment {
     }
 
     FavoriteThreadAdapter adapter;
+    FragmentFavoriteThreadBinding binding;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_favorite_thread, container, false);
+        binding = FragmentFavoriteThreadBinding.inflate(inflater,container,false);
+        return binding.getRoot();
     }
 
-    @BindView(R.id.blank_favorite_thread_view)
-    View blankFavoriteThreadView;
-    @BindView(R.id.favorite_thread_recyclerview)
-    RecyclerView favoriteThreadRecyclerview;
-    @BindView(R.id.favorite_thread_swipelayout)
-    SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.favorite_thread_sync_progressbar)
-    ProgressBar syncFavoriteThreadProgressBar;
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -101,7 +95,6 @@ public class FavoriteThreadFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this,view);
         mViewModel = new ViewModelProvider(this).get(FavoriteThreadViewModel.class);
         mViewModel.setInfo(bbsInfo,userBriefInfo,idType);
         configureRecyclerview();
@@ -111,28 +104,28 @@ public class FavoriteThreadFragment extends Fragment {
     }
 
     private void configureRecyclerview(){
-        favoriteThreadRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.favoriteThreadRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new FavoriteThreadAdapter();
         adapter.setInformation(bbsInfo,userBriefInfo);
         mViewModel.getFavoriteItemListData().observe(getViewLifecycleOwner(),adapter::submitList);
-        favoriteThreadRecyclerview.setAdapter(adapter);
-        favoriteThreadRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+        binding.favoriteThreadRecyclerview.setAdapter(adapter);
+        binding.favoriteThreadRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
     }
 
     private void configureSwipeRefreshLayout(){
         if(userBriefInfo !=null){
-            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            binding.favoriteThreadSwipelayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    syncFavoriteThreadProgressBar.setVisibility(View.GONE);
+                    binding.favoriteThreadSyncProgressbar.setVisibility(View.GONE);
                     Toasty.info(getContext(),getString(R.string.sync_favorite_thread_start,bbsInfo.site_name), Toast.LENGTH_SHORT).show();
                     mViewModel.startSyncFavoriteThread();
-                    swipeRefreshLayout.setRefreshing(false);
+                    binding.favoriteThreadSwipelayout.setRefreshing(false);
                 }
             });
         }
         else {
-            swipeRefreshLayout.setEnabled(false);
+            binding.favoriteThreadSwipelayout.setEnabled(false);
         }
 
     }
@@ -142,10 +135,10 @@ public class FavoriteThreadFragment extends Fragment {
 
         mViewModel.getFavoriteItemListData().observe(getViewLifecycleOwner(),favoriteThreads -> {
             if(favoriteThreads.size() == 0){
-                blankFavoriteThreadView.setVisibility(View.VISIBLE);
+                binding.blankFavoriteThreadView.setVisibility(View.VISIBLE);
             }
             else {
-                blankFavoriteThreadView.setVisibility(View.GONE);
+                binding.blankFavoriteThreadView.setVisibility(View.GONE);
             }
         });
         mViewModel.errorMsgContent.observe(getViewLifecycleOwner(),error->{
@@ -180,8 +173,8 @@ public class FavoriteThreadFragment extends Fragment {
     private void bindSyncStatus(){
         mViewModel.totalCount.observe(getViewLifecycleOwner(), count ->{
             if(count == -1){
-                syncFavoriteThreadProgressBar.setVisibility(View.VISIBLE);
-                syncFavoriteThreadProgressBar.setIndeterminate(true);
+                binding.favoriteThreadSyncProgressbar.setVisibility(View.VISIBLE);
+                binding.favoriteThreadSyncProgressbar.setIndeterminate(true);
             }
 
         });
@@ -193,19 +186,19 @@ public class FavoriteThreadFragment extends Fragment {
 
                 }
                 else if(count > favoriteThreads.size()){
-                    syncFavoriteThreadProgressBar.setVisibility(View.VISIBLE);
-                    syncFavoriteThreadProgressBar.setMax(count);
+                    binding.favoriteThreadSyncProgressbar.setVisibility(View.VISIBLE);
+                    binding.favoriteThreadSyncProgressbar.setMax(count);
 
-                    syncFavoriteThreadProgressBar.setProgress(favoriteThreads.size());
+                    binding.favoriteThreadSyncProgressbar.setProgress(favoriteThreads.size());
 
                 }
                 else {
-                    syncFavoriteThreadProgressBar.setVisibility(View.GONE);
+                    binding.favoriteThreadSyncProgressbar.setVisibility(View.GONE);
                     //Toasty.success(getContext(),getString(R.string.sync_favorite_thread_load_all),Toast.LENGTH_LONG).show();
                 }
             }
             else {
-                syncFavoriteThreadProgressBar.setVisibility(View.GONE);
+                binding.favoriteThreadSyncProgressbar.setVisibility(View.GONE);
             }
 
         });
