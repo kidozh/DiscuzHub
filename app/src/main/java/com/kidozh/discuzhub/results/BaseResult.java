@@ -21,7 +21,7 @@ public class BaseResult {
     public String error="";
 
     public boolean isError(){
-        return this.message != null || TextUtils.isEmpty(error);
+        return this.message != null || !TextUtils.isEmpty(error);
     }
 
     public ErrorMessage getErrorMessage(){

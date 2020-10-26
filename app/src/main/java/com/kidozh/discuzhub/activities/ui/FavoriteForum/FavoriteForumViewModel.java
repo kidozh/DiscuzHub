@@ -13,6 +13,7 @@ import androidx.paging.PagedList;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.daos.FavoriteForumDao;
 import com.kidozh.discuzhub.database.FavoriteForumDatabase;
+import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.FavoriteForum;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -34,8 +35,7 @@ public class FavoriteForumViewModel extends AndroidViewModel {
 
     private static final String TAG = FavoriteForumViewModel.class.getSimpleName();
     public MutableLiveData<Integer> networkState = new MutableLiveData<>(bbsConstUtils.NETWORK_STATUS_SUCCESSFULLY);
-    public MutableLiveData<String> errorMsgKey = new MutableLiveData<>(""),
-            errorMsgContent = new MutableLiveData<>("");
+    public MutableLiveData<ErrorMessage> errorMessageMutableLiveData = new MutableLiveData<>(null);
     private LiveData<PagedList<FavoriteForum>> FavoriteForumListData;
     @NonNull
     public MutableLiveData<Integer> totalCount = new MutableLiveData<>(-1);
@@ -79,6 +79,10 @@ public class FavoriteForumViewModel extends AndroidViewModel {
 
 
     private void getFavoriteItem(int page){
+        if(!NetworkUtils.isOnline(getApplication())){
+            errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()));
+            return;
+        }
         networkState.postValue(bbsConstUtils.NETWORK_STATUS_LOADING);
         Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService apiService = retrofit.create(DiscuzApiService.class);
@@ -96,8 +100,7 @@ public class FavoriteForumViewModel extends AndroidViewModel {
                     resultMutableLiveData.postValue(result);
                     if(result.isError()){
                         networkState.postValue(bbsConstUtils.NETWORK_STATUS_FAILED);
-                        errorMsgKey.postValue(result.getErrorMessage().key);
-                        errorMsgContent.postValue(getApplication().getString(R.string.discuz_api_message_template,result.getErrorMessage().key,result.getErrorMessage().content));
+                        errorMessageMutableLiveData.postValue(new ErrorMessage(result.getErrorMessage().key,result.getErrorMessage().content));
                     }
                     else if(result.favoriteForumVariable !=null) {
                         totalCount.postValue(result.favoriteForumVariable.count);
@@ -118,14 +121,18 @@ public class FavoriteForumViewModel extends AndroidViewModel {
                 else {
                     Log.d(TAG,"Get favorite response failed"+response.body());
                     networkState.postValue(bbsConstUtils.NETWORK_STATUS_FAILED);
-                    errorMsgContent.postValue(getApplication().getString(R.string.network_failed));
+                    errorMessageMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),
+                            getApplication().getString(R.string.discuz_network_unsuccessful,response.message())));
                 }
             }
 
             @Override
             public void onFailure(Call<FavoriteForumResult> call, Throwable t) {
                 networkState.postValue(bbsConstUtils.NETWORK_STATUS_FAILED);
-                errorMsgContent.postValue(getApplication().getString(R.string.network_failed));
+                errorMessageMutableLiveData.postValue(new ErrorMessage(
+                        getApplication().getString(R.string.discuz_network_failure_template),
+                        t.getLocalizedMessage() == null?t.toString():t.getLocalizedMessage()
+                ));
                 t.printStackTrace();
             }
         });

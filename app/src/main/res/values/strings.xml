@@ -776,7 +776,7 @@
     <string name="report_login_required">Login required when reporting.</string>
     <string name="api_error_result">API error</string>
     <string name="network_state_unavaliable_error_key">Network Unavaliable</string>
-    <string name="network_state_unavaliable_error_content">We could not find a active network interface. Turn off flight mode or turn on wifi, celluar and bluetooth network.</string>
+    <string name="network_state_unavaliable_error_content">We could not find an active network interface. Turn off flight mode or turn on wifi, celluar and bluetooth network.</string>
 
 
 </resources>

@@ -70,14 +70,9 @@ public class HotForumsViewModel extends AndroidViewModel {
                 if(response.isSuccessful() && response.body() !=null){
                     HotForumsResult result = response.body();
                     hotForumsResultMutableLiveData.postValue(result);
-                    if(result.message!=null){
-                        errorMessageMutableLiveData.postValue(result.message.toErrorMessage());
+                    if(result.getErrorMessage()!=null){
+                        errorMessageMutableLiveData.postValue(result.getErrorMessage());
 
-                    }
-                    else if(result.error!=null){
-                        errorMessageMutableLiveData.postValue(new ErrorMessage(
-                                getApplication().getString(R.string.api_error_result),
-                                result.error));
                     }
                     else {
                         if(result.variables.hotForumList == null){

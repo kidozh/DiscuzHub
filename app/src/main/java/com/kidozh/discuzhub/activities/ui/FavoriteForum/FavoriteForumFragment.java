@@ -150,11 +150,12 @@ public class FavoriteForumFragment extends Fragment {
                 blankFavoriteThreadView.setVisibility(View.GONE);
             }
         });
-        mViewModel.errorMsgContent.observe(getViewLifecycleOwner(),error->{
-            if(!TextUtils.isEmpty(error)){
-                Toasty.error(getContext(),error,Toast.LENGTH_SHORT).show();
-            }
 
+        mViewModel.errorMessageMutableLiveData.observe(getViewLifecycleOwner(),errorMessage -> {
+            if(errorMessage!=null){
+                Toasty.error(getContext(),getString(R.string.discuz_api_message_template,
+                        errorMessage.key,errorMessage.content),Toast.LENGTH_SHORT).show();
+            }
         });
         mViewModel.resultMutableLiveData.observe(getViewLifecycleOwner(),favoriteForumResult -> {
             if(getContext() instanceof BaseStatusInteract){

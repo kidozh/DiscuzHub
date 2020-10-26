@@ -35,6 +35,7 @@ import com.kidozh.discuzhub.adapter.forumUsersAdapter;
 import com.kidozh.discuzhub.callback.forumSwipeToDeleteUserCallback;
 import com.kidozh.discuzhub.database.BBSInformationDatabase;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
+import com.kidozh.discuzhub.databinding.ActivityBbsShowInformationBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -51,16 +52,9 @@ import butterknife.ButterKnife;
 
 public class bbsShowInformationActivity extends BaseStatusActivity implements forumSwipeToDeleteUserCallback.onSwipedInteraction{
     private final static String TAG = bbsShowInformationActivity.class.getSimpleName();
-    @BindView(R.id.show_bbs_information_name)
-    TextView bbsInfoName;
-    @BindView(R.id.show_bbs_information_avatar)
-    ImageView bbsInfoAvatar;
-    @BindView(R.id.show_bbs_information_post_number)
-    TextView bbsInfoPost;
-    @BindView(R.id.show_bbs_information_siteid)
-    TextView bbsInfoSiteId;
-    @BindView(R.id.show_bbs_information_member_number)
-    TextView bbsInfoMember;
+    
+    
+
     @BindView(R.id.show_bbs_information_recyclerview)
     RecyclerView bbsInfoRecyclerview;
     @BindView(R.id.show_bbs_information_use_safe_client_switch)
@@ -80,10 +74,14 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
     private Observer bbsUserObserver;
     private LiveData<List<forumUserBriefInfo>> bbsUserInfoLiveDatas;
 
+    ActivityBbsShowInformationBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bbs_show_information);
+        binding = ActivityBbsShowInformationBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         ButterKnife.bind(this);
         configureIntent();
         configureViewModel();
@@ -105,10 +103,10 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
     }
 
     private void setInformation(){
-        bbsInfoName.setText(bbsInfo.site_name);
-        bbsInfoPost.setText(bbsInfo.total_posts);
-        bbsInfoMember.setText(bbsInfo.total_members);
-        bbsInfoSiteId.setText(bbsInfo.mysite_id);
+        binding.showBbsInformationName.setText(bbsInfo.site_name);
+        binding.showBbsInformationPostNumber.setText(bbsInfo.total_posts);
+        binding.showBbsInformationMemberNumber.setText(bbsInfo.total_members);
+        binding.showBbsInformationSiteid.setText(bbsInfo.mysite_id);
         bbsInfoUseSafeClientCheckBox.setChecked(bbsInfo.useSafeClient);
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(this));
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
@@ -118,7 +116,7 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
                 .error(R.drawable.vector_drawable_bbs)
                 .placeholder(R.drawable.vector_drawable_bbs)
                 .centerInside()
-                .into(bbsInfoAvatar);
+                .into(binding.showBbsInformationAvatar);
     }
 
     private void configureRecyclerview(){
@@ -230,8 +228,8 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity,
-                        Pair.create(bbsInfoName, "bbs_info_name"),
-                        Pair.create(bbsInfoAvatar, "bbs_info_avatar")
+                        Pair.create(binding.showBbsInformationName, "bbs_info_name"),
+                        Pair.create(binding.showBbsInformationAvatar, "bbs_info_avatar")
 
 
                 );

@@ -8,9 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +23,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.LoginActivity;
 import com.kidozh.discuzhub.adapter.ForumCategoryAdapter;
+import com.kidozh.discuzhub.databinding.ActivityBbsForumIndexBinding;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -36,41 +34,24 @@ import com.kidozh.discuzhub.utilities.URLUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import okhttp3.OkHttpClient;
-
 public class HomeFragment extends Fragment {
     private static final String TAG = HomeFragment.class.getSimpleName();
 
     private HomeViewModel homeViewModel;
-    @BindView(R.id.swipeRefreshLayout)
-    SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.bbs_portal_recyclerview)
-    RecyclerView portalRecyclerView;
-    @BindView(R.id.error_view)
-    View errorView;
-    @BindView(R.id.error_icon)
-    ImageView errorIcon;
-    @BindView(R.id.error_value)
-    TextView errorValue;
-    @BindView(R.id.error_content)
-    TextView errorContent;
-    @BindView(R.id.bbs_portal_refresh_page)
-    Button bbsPortalRefreshPageBtn;
+
 
     ForumCategoryAdapter adapter;
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
 
-    private OkHttpClient client = new OkHttpClient();
+    ActivityBbsForumIndexBinding activityBbsForumIndexBinding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater,container,savedInstanceState);
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-
-        View root = inflater.inflate(R.layout.activity_bbs_forum_index, container, false);
-        ButterKnife.bind(this,root);
+        activityBbsForumIndexBinding = ActivityBbsForumIndexBinding.inflate(getLayoutInflater());
+        View root = activityBbsForumIndexBinding.getRoot();
         getIntentInfo();
 
         configurePortalRecyclerview();
@@ -129,7 +110,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void configureSwipeRefreshLayout(){
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        activityBbsForumIndexBinding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 homeViewModel.loadForumCategoryInfo();
@@ -152,10 +133,10 @@ public class HomeFragment extends Fragment {
 
         homeViewModel.errorMessageMutableLiveData.observe(getViewLifecycleOwner(),errorMessage -> {
             if(errorMessage!=null){
-                errorView.setVisibility(View.VISIBLE);
-                errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
-                errorValue.setText(errorMessage.key);
-                errorContent.setText(errorMessage.content);
+                activityBbsForumIndexBinding.errorView.setVisibility(View.VISIBLE);
+                activityBbsForumIndexBinding.errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
+                activityBbsForumIndexBinding.errorValue.setText(errorMessage.key);
+                activityBbsForumIndexBinding.errorContent.setText(errorMessage.content);
             }
         });
 
@@ -192,10 +173,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
-                    swipeRefreshLayout.setRefreshing(true);
+                    activityBbsForumIndexBinding.swipeRefreshLayout.setRefreshing(true);
                 }
                 else {
-                    swipeRefreshLayout.setRefreshing(false);
+                    activityBbsForumIndexBinding.swipeRefreshLayout.setRefreshing(false);
                 }
 
             }
@@ -210,15 +191,15 @@ public class HomeFragment extends Fragment {
 
 
     private void configurePortalRecyclerview(){
-        portalRecyclerView.setHasFixedSize(true);
-        portalRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        activityBbsForumIndexBinding.bbsPortalRecyclerview.setHasFixedSize(true);
+        activityBbsForumIndexBinding.bbsPortalRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new ForumCategoryAdapter(getContext(),null,bbsInfo,userBriefInfo);
-        portalRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
-        portalRecyclerView.setAdapter(adapter);
+        activityBbsForumIndexBinding.bbsPortalRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+        activityBbsForumIndexBinding.bbsPortalRecyclerview.setAdapter(adapter);
     }
 
     private void configureRefreshBtn(){
-        bbsPortalRefreshPageBtn.setOnClickListener(new View.OnClickListener() {
+        activityBbsForumIndexBinding.bbsPortalRefreshPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 homeViewModel.loadForumCategoryInfo();
