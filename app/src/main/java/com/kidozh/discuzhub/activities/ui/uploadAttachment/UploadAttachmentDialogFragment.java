@@ -29,6 +29,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.UploadAttachmentInfoAdapter;
+import com.kidozh.discuzhub.databinding.DialogUploadAttachmentBinding;
 import com.kidozh.discuzhub.entities.UploadAttachment;
 import com.kidozh.discuzhub.results.PostParameterResult;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -37,28 +38,16 @@ import com.kidozh.discuzhub.viewModels.PostThreadViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
 public class UploadAttachmentDialogFragment extends BottomSheetDialogFragment {
     private final String TAG = UploadAttachmentDialogFragment.class.getSimpleName();
 
-    @BindView(R.id.upload_attachment_chipGroup)
-    ChipGroup uploadAttachmentTypeChipGroup;
-    @BindView(R.id.upload_attachment_notice)
-    TextView uploadAttachmentNotice;
-    @BindView(R.id.upload_attachment_file_recyclerview)
-    RecyclerView uploadAttachmentRecyclerview;
-    @BindView(R.id.upload_attachment_btn)
-    Button uploadAttachmentBtn;
-    @BindView(R.id.upload_attachment_progressBar)
-    ProgressBar uploadAttachmentProgressbar;
+    
+    DialogUploadAttachmentBinding binding;
 
     PostThreadViewModel viewModel;
     UploadAttachmentInfoAdapter adapter;
-
-    private BottomSheetBehavior mBehavior;
 
     public static UploadAttachmentDialogFragment newInstance(PostThreadViewModel viewModel){
         UploadAttachmentDialogFragment uploadAttachmentDialogFragment = new UploadAttachmentDialogFragment();
@@ -71,13 +60,11 @@ public class UploadAttachmentDialogFragment extends BottomSheetDialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-        View view = View.inflate(getContext(), R.layout.dialog_upload_attachment, null);
-        ButterKnife.bind(this,view);
+        binding = DialogUploadAttachmentBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+
         dialog.setContentView(view);
 
-        // configure viewmodel
-        //viewModel =  new ViewModelProvider(this).get(PostThreadViewModel.class);
-        mBehavior = BottomSheetBehavior.from((View) view.getParent());
 
         configureAttachmentRecyclerview();
         configureChipGroup();
@@ -96,16 +83,16 @@ public class UploadAttachmentDialogFragment extends BottomSheetDialogFragment {
     }
 
     public void configureAttachmentRecyclerview(){
-        uploadAttachmentRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.uploadAttachmentFileRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new UploadAttachmentInfoAdapter();
 
-        uploadAttachmentRecyclerview.setHasFixedSize(true);
-        uploadAttachmentRecyclerview.setAdapter(adapter);
+        binding.uploadAttachmentFileRecyclerview.setHasFixedSize(true);
+        binding.uploadAttachmentFileRecyclerview.setAdapter(adapter);
 
     }
 
     public void configureChipGroup(){
-        uploadAttachmentTypeChipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+        binding.uploadAttachmentChipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
             @SuppressLint("ResourceType")
             @Override
             public void onCheckedChanged(ChipGroup group, int checkedId) {
@@ -122,7 +109,7 @@ public class UploadAttachmentDialogFragment extends BottomSheetDialogFragment {
                             Chip selectedChip = (Chip) group.getChildAt(i);
                             if(selectedChip.isChecked()){
                                 String selectedType = allowableType.get(i);
-                                uploadAttachmentBtn.setText(getString(R.string.bbs_upload,selectedType));
+                                binding.uploadAttachmentBtn.setText(getString(R.string.bbs_upload,selectedType));
 
                                 break;
                             }
@@ -130,19 +117,19 @@ public class UploadAttachmentDialogFragment extends BottomSheetDialogFragment {
                     }
                     else if(checkedId == -1) {
                         // clear state
-                        uploadAttachmentBtn.setText(R.string.bbs_upload_an_attachment);
+                        binding.uploadAttachmentBtn.setText(R.string.bbs_upload_an_attachment);
                     }
                 }
 
             }
         });
-        uploadAttachmentBtn.setText(R.string.bbs_upload_an_attachment);
+        binding.uploadAttachmentBtn.setText(R.string.bbs_upload_an_attachment);
 
 
     }
 
     private void configureBtn(){
-        uploadAttachmentBtn.setOnClickListener(view->{
+        binding.uploadAttachmentBtn.setOnClickListener(view->{
             Intent intent = getChooseFileIntent();
             if(getActivity()!=null){
                 getActivity().startActivityForResult(intent, bbsConstUtils.REQUEST_CODE_UPLOAD_ATTACHMENT);
@@ -172,7 +159,7 @@ public class UploadAttachmentDialogFragment extends BottomSheetDialogFragment {
                     typeChip.setText(type);
                     typeChip.setCheckable(true);
                     typeChip.setClickable(true);
-                    uploadAttachmentTypeChipGroup.addView(typeChip);
+                    binding.uploadAttachmentChipGroup.addView(typeChip);
                 }
             }
         });
@@ -180,10 +167,10 @@ public class UploadAttachmentDialogFragment extends BottomSheetDialogFragment {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
-                    uploadAttachmentProgressbar.setVisibility(View.VISIBLE);
+                    binding.uploadAttachmentProgressBar.setVisibility(View.VISIBLE);
                 }
                 else {
-                    uploadAttachmentProgressbar.setVisibility(View.GONE);
+                    binding.uploadAttachmentProgressBar.setVisibility(View.GONE);
                 }
             }
         });
@@ -203,8 +190,8 @@ public class UploadAttachmentDialogFragment extends BottomSheetDialogFragment {
         }
         PostParameterResult.UploadSize uploadSize = postParameterResult.permissionVariables.allowPerm.uploadSize;
         List<String> allowableType = uploadSize.getAllowableFileSuffix();
-        for(int i=0;i<uploadAttachmentTypeChipGroup.getChildCount();i++){
-            Chip curChip = (Chip) uploadAttachmentTypeChipGroup.getChildAt(i);
+        for(int i=0;i<binding.uploadAttachmentChipGroup.getChildCount();i++){
+            Chip curChip = (Chip) binding.uploadAttachmentChipGroup.getChildAt(i);
             if(curChip.isChecked() && i<allowableType.size()){
                 return allowableType.get(i);
             }

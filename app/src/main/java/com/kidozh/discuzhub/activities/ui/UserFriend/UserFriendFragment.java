@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.bbsUserFriendAdapter;
+import com.kidozh.discuzhub.databinding.FragmentUserFriendBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -34,8 +35,6 @@ import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
 
 /**
@@ -90,22 +89,16 @@ public class UserFriendFragment extends Fragment {
             friendCounts = getArguments().getInt(FRIEND_COUNTS);
         }
     }
+    
+    FragmentUserFriendBinding binding;
 
-    @BindView(R.id.user_friend_recyclerview)
-    RecyclerView userFriendRecyclerview;
-    @BindView(R.id.user_friend_empty_imageView)
-    ImageView userFriendImageView;
-    @BindView(R.id.user_friend_error_textview)
-    TextView noFriendTextView;
-    @BindView(R.id.user_friend_swipe_refreshLayout)
-    SwipeRefreshLayout userFriendSwipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_user_friend, container, false);
-        ButterKnife.bind(this,view);
+        binding = FragmentUserFriendBinding.inflate(inflater,container,false);
+        View view = binding.getRoot();
         return view;
     }
 
@@ -140,14 +133,14 @@ public class UserFriendFragment extends Fragment {
 
     private void configureRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        userFriendRecyclerview.setLayoutManager(linearLayoutManager);
+        binding.userFriendRecyclerview.setLayoutManager(linearLayoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 linearLayoutManager.getOrientation());
-        userFriendRecyclerview.addItemDecoration(dividerItemDecoration);
+        binding.userFriendRecyclerview.addItemDecoration(dividerItemDecoration);
         adapter = new bbsUserFriendAdapter(null,bbsInfo,userBriefInfo);
-        userFriendRecyclerview.setAdapter(adapter);
+        binding.userFriendRecyclerview.setAdapter(adapter);
 
-        userFriendRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.userFriendRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -159,8 +152,8 @@ public class UserFriendFragment extends Fragment {
 
             public boolean isScrollAtEnd(){
 
-                if (userFriendRecyclerview.computeVerticalScrollExtent() + userFriendRecyclerview.computeVerticalScrollOffset()
-                        >= userFriendRecyclerview.computeVerticalScrollRange()){
+                if (binding.userFriendRecyclerview.computeVerticalScrollExtent() + binding.userFriendRecyclerview.computeVerticalScrollOffset()
+                        >= binding.userFriendRecyclerview.computeVerticalScrollRange()){
                     return true;
                 }
                 else {
@@ -179,22 +172,22 @@ public class UserFriendFragment extends Fragment {
                 if(userFriends == null || userFriends.size() == 0){
                     // check for privacy
                     if(viewModel.getPrivacyMutableLiveData().getValue()!=null && viewModel.getPrivacyMutableLiveData().getValue() == false){
-                        noFriendTextView.setVisibility(View.VISIBLE);
-                        userFriendImageView.setVisibility(View.VISIBLE);
-                        noFriendTextView.setText(R.string.bbs_no_friend);
-                        userFriendImageView.setImageResource(R.drawable.ic_empty_friend_64px);
+                        binding.userFriendErrorTextview.setVisibility(View.VISIBLE);
+                        binding.userFriendEmptyImageView.setVisibility(View.VISIBLE);
+                        binding.userFriendErrorTextview.setText(R.string.bbs_no_friend);
+                        binding.userFriendEmptyImageView.setImageResource(R.drawable.ic_empty_friend_64px);
                     }
                     else {
-                        noFriendTextView.setVisibility(View.VISIBLE);
-                        userFriendImageView.setVisibility(View.VISIBLE);
-                        userFriendImageView.setImageResource(R.drawable.ic_privacy_24px);
-                        noFriendTextView.setText(R.string.bbs_privacy_protect_alert);
+                        binding.userFriendErrorTextview.setVisibility(View.VISIBLE);
+                        binding.userFriendEmptyImageView.setVisibility(View.VISIBLE);
+                        binding.userFriendEmptyImageView.setImageResource(R.drawable.ic_privacy_24px);
+                        binding.userFriendErrorTextview.setText(R.string.bbs_privacy_protect_alert);
                     }
 
                 }
                 else {
-                    noFriendTextView.setVisibility(View.GONE);
-                    userFriendImageView.setVisibility(View.GONE);
+                    binding.userFriendErrorTextview.setVisibility(View.GONE);
+                    binding.userFriendEmptyImageView.setVisibility(View.GONE);
                 }
             }
         });
@@ -202,10 +195,10 @@ public class UserFriendFragment extends Fragment {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
-                    userFriendSwipeRefreshLayout.setRefreshing(true);
+                    binding.userFriendSwipeRefreshLayout.setRefreshing(true);
                 }
                 else {
-                    userFriendSwipeRefreshLayout.setRefreshing(false);
+                    binding.userFriendSwipeRefreshLayout.setRefreshing(false);
                 }
             }
         });
@@ -213,22 +206,22 @@ public class UserFriendFragment extends Fragment {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
-                    noFriendTextView.setVisibility(View.VISIBLE);
-                    userFriendImageView.setVisibility(View.VISIBLE);
-                    userFriendImageView.setImageResource(R.drawable.ic_error_outline_24px);
+                    binding.userFriendErrorTextview.setVisibility(View.VISIBLE);
+                    binding.userFriendEmptyImageView.setVisibility(View.VISIBLE);
+                    binding.userFriendEmptyImageView.setImageResource(R.drawable.ic_error_outline_24px);
                     String errorText = viewModel.getErrorTextMutableLiveData().getValue();
                     if(errorText == null || errorText.length() == 0){
-                        noFriendTextView.setText(R.string.network_failed);
+                        binding.userFriendErrorTextview.setText(R.string.network_failed);
 
                     }
                     else {
-                        noFriendTextView.setText(errorText);
+                        binding.userFriendErrorTextview.setText(errorText);
                     }
 
                 }
                 else {
-//                    noFriendTextView.setVisibility(View.GONE);
-//                    userFriendImageView.setVisibility(View.GONE);
+//                    binding.userFriendErrorTextview.setVisibility(View.GONE);
+//                    binding.userFriendEmptyImageView.setVisibility(View.GONE);
                 }
             }
         });
@@ -236,10 +229,10 @@ public class UserFriendFragment extends Fragment {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
-                    noFriendTextView.setVisibility(View.VISIBLE);
-                    userFriendImageView.setVisibility(View.VISIBLE);
-                    userFriendImageView.setImageResource(R.drawable.ic_privacy_24px);
-                    noFriendTextView.setText(R.string.bbs_privacy_protect_alert);
+                    binding.userFriendErrorTextview.setVisibility(View.VISIBLE);
+                    binding.userFriendEmptyImageView.setVisibility(View.VISIBLE);
+                    binding.userFriendEmptyImageView.setImageResource(R.drawable.ic_privacy_24px);
+                    binding.userFriendErrorTextview.setText(R.string.bbs_privacy_protect_alert);
                 }
             }
         });
@@ -254,7 +247,7 @@ public class UserFriendFragment extends Fragment {
 
 
     private void configureSwipeRefreshLayout(){
-        userFriendSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        binding.userFriendSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 viewModel.setPage(1);

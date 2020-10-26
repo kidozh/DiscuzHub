@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.MedalAdapter;
+import com.kidozh.discuzhub.databinding.FragmentMedalListBinding;
 import com.kidozh.discuzhub.results.UserProfileResult;
 
 import java.util.List;
@@ -63,22 +64,20 @@ public class MedalFragment extends Fragment {
         }
     }
 
-    @BindView(R.id.medal_recyclerview)
-    RecyclerView recyclerView;
-    @BindView(R.id.medal_empty_view)
-    View emptyView;
 
+    
+    FragmentMedalListBinding binding;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_medal_list, container, false);
-        ButterKnife.bind(this,view);
+        binding = FragmentMedalListBinding.inflate(inflater,container,false);
+
         // Set the adapter
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
+        binding.medalRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.medalRecyclerview.setAdapter(adapter);
         adapter.setMedalList(medalList);
 
-        return view;
+        return binding.getRoot();
     }
 
     @Override
@@ -86,10 +85,10 @@ public class MedalFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         // detect if no medal found
         if(medalList == null || medalList.size() == 0){
-            emptyView.setVisibility(View.VISIBLE);
+            binding.medalEmptyView.setVisibility(View.VISIBLE);
         }
         else {
-            emptyView.setVisibility(View.GONE);
+            binding.medalEmptyView.setVisibility(View.GONE);
         }
     }
 

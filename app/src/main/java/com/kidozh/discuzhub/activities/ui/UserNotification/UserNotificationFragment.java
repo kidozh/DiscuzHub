@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.NotificationAdapter;
+import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
+import com.kidozh.discuzhub.databinding.FragmentBbsNotificationBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -54,24 +56,16 @@ public class UserNotificationFragment extends Fragment {
         // Required empty public constructor
     }
 
-    @BindView(R.id.fragment_bbs_notification_recyclerview)
-    RecyclerView bbsNotificationRecyclerview;
-    @BindView(R.id.fragment_bbs_notification_swipeRefreshLayout)
-    SwipeRefreshLayout bbsNotificationSwipeRefreshLayout;
-    @BindView(R.id.fragment_bbs_notification_empty_view)
-    View bbsNotificationEmptyView;
-    @BindView(R.id.empty_icon)
-    ImageView emptyImageview;
-    @BindView(R.id.empty_content)
-    TextView emptyTextview;
 
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
-    ForumInfo forum;
-    private OkHttpClient client = new OkHttpClient();
+    
+    FragmentBbsNotificationBinding binding;
+    ContentEmptyInformationBinding emptyBinding;
+
+
     NotificationAdapter adapter;
     private int globalPage = 1;
-    private Boolean hasLoadAll = false;
     private String type, view;
 
     UserNotificationViewModel viewModel;
@@ -117,8 +111,10 @@ public class UserNotificationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        binding = FragmentBbsNotificationBinding.inflate(inflater,container,false);
+        emptyBinding = binding.fragmentBbsNotificationEmptyView;
         viewModel = new ViewModelProvider(this).get(UserNotificationViewModel.class);
-        return inflater.inflate(R.layout.fragment_bbs_notification, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -133,31 +129,26 @@ public class UserNotificationFragment extends Fragment {
     }
 
     private void configureEmptyView(){
-        emptyImageview.setImageResource(R.drawable.ic_empty_notification_64px);
-        emptyTextview.setText(R.string.empty_notification);
+        emptyBinding.emptyIcon.setImageResource(R.drawable.ic_empty_notification_64px);
+        emptyBinding.emptyContent.setText(R.string.empty_notification);
     }
 
     private void configureIntentData(){
-//        Intent intent = getActivity().getIntent();
-//        forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
-//        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-//        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
         Log.d(TAG,"recv user "+userBriefInfo);
         viewModel.setBBSInfo(bbsInfo,userBriefInfo);
     }
 
     private void configureRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        bbsNotificationRecyclerview.setLayoutManager(linearLayoutManager);
+        binding.fragmentBbsNotificationRecyclerview.setLayoutManager(linearLayoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 linearLayoutManager.getOrientation());
-        bbsNotificationRecyclerview.addItemDecoration(dividerItemDecoration);
+        binding.fragmentBbsNotificationRecyclerview.addItemDecoration(dividerItemDecoration);
         adapter = new NotificationAdapter(bbsInfo,userBriefInfo);
-        bbsNotificationRecyclerview.setAdapter(adapter);
+        binding.fragmentBbsNotificationRecyclerview.setAdapter(adapter);
 
 
-        bbsNotificationRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.fragmentBbsNotificationRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -171,8 +162,8 @@ public class UserNotificationFragment extends Fragment {
 
             public boolean isScrollAtEnd(){
 
-                if (bbsNotificationRecyclerview.computeVerticalScrollExtent() + bbsNotificationRecyclerview.computeVerticalScrollOffset()
-                        >= bbsNotificationRecyclerview.computeVerticalScrollRange()){
+                if (binding.fragmentBbsNotificationRecyclerview.computeVerticalScrollExtent() + binding.fragmentBbsNotificationRecyclerview.computeVerticalScrollOffset()
+                        >= binding.fragmentBbsNotificationRecyclerview.computeVerticalScrollRange()){
                     return true;
                 }
                 else {
@@ -217,7 +208,7 @@ public class UserNotificationFragment extends Fragment {
         viewModel.isLoading.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                bbsNotificationSwipeRefreshLayout.setRefreshing(aBoolean);
+                binding.fragmentBbsNotificationSwipeRefreshLayout.setRefreshing(aBoolean);
             }
         });
 
@@ -228,16 +219,16 @@ public class UserNotificationFragment extends Fragment {
                     if(globalPage == 1 &&
                             (adapter.getNotificationDetailInfoList() ==null || adapter.getNotificationDetailInfoList().size() == 0)){
 
-                        bbsNotificationEmptyView.setVisibility(View.VISIBLE);
+                        emptyBinding.emptyView.setVisibility(View.VISIBLE);
                     }
                     else {
-                        bbsNotificationEmptyView.setVisibility(View.GONE);
+                        emptyBinding.emptyView.setVisibility(View.GONE);
                     }
 
 
                 }
                 else {
-                    bbsNotificationEmptyView.setVisibility(View.GONE);
+                    emptyBinding.emptyView.setVisibility(View.GONE);
                 }
 
             }
@@ -246,20 +237,20 @@ public class UserNotificationFragment extends Fragment {
             @Override
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
-                    bbsNotificationEmptyView.setVisibility(View.VISIBLE);
+                    emptyBinding.emptyView.setVisibility(View.VISIBLE);
                     if(globalPage > 1){
                         globalPage -= 1;
                     }
                 }
                 else {
-                    bbsNotificationEmptyView.setVisibility(View.GONE);
+                    emptyBinding.emptyView.setVisibility(View.GONE);
                 }
             }
         });
     }
 
     void configureSwipeRefreshLayout(){
-        bbsNotificationSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        binding.fragmentBbsNotificationSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 globalPage = 1;
