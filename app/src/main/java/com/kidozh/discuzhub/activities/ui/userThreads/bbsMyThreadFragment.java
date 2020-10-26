@@ -22,6 +22,9 @@ import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;
+import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
+import com.kidozh.discuzhub.databinding.FragmentBbsMyThreadBinding;
+import com.kidozh.discuzhub.databinding.UserProfileInfoListFragmentBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -54,23 +57,13 @@ public class bbsMyThreadFragment extends Fragment {
         // Required empty public constructor
     }
 
-    @BindView(R.id.fragment_my_thread_recyclerview)
-    RecyclerView myThreadRecyclerview;
-    @BindView(R.id.fragment_my_thread_swipeRefreshLayout)
-    SwipeRefreshLayout myThreadSwipeRefreshLayout;
-    @BindView(R.id.fragment_my_thread_empty_view)
-    View myThreadEmptyView;
-    @BindView(R.id.empty_icon)
-    ImageView emptyImageview;
-    @BindView(R.id.empty_content)
-    TextView emptyTextview;
-
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
-    ForumInfo forum;
     private OkHttpClient client;
     ThreadAdapter adapter;
     private int globalPage = 1;
+    FragmentBbsMyThreadBinding binding;
+    ContentEmptyInformationBinding emptyBinding;
 
     public static bbsMyThreadFragment newInstance(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
         bbsMyThreadFragment fragment = new bbsMyThreadFragment();
@@ -96,7 +89,9 @@ public class bbsMyThreadFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bbs_my_thread, container, false);
+        binding = FragmentBbsMyThreadBinding.inflate(inflater,container,false);
+        emptyBinding = binding.fragmentMyThreadEmptyView;
+        return binding.getRoot();
     }
 
     @Override
@@ -111,23 +106,23 @@ public class bbsMyThreadFragment extends Fragment {
 
 
     private void configureEmptyView(){
-        emptyImageview.setImageResource(R.drawable.ic_empty_my_post_list);
-        emptyTextview.setText(R.string.empty_post_list);
+        emptyBinding.emptyIcon.setImageResource(R.drawable.ic_empty_my_post_list);
+        emptyBinding.emptyContent.setText(R.string.empty_post_list);
     }
 
     private void configureRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        myThreadRecyclerview.setLayoutManager(linearLayoutManager);
+        binding.fragmentMyThreadRecyclerview.setLayoutManager(linearLayoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 linearLayoutManager.getOrientation());
-        myThreadRecyclerview.addItemDecoration(dividerItemDecoration);
+        binding.fragmentMyThreadRecyclerview.addItemDecoration(dividerItemDecoration);
         adapter = new ThreadAdapter(null,"",bbsInfo,userBriefInfo);
-        myThreadRecyclerview.setAdapter(adapter);
+        binding.fragmentMyThreadRecyclerview.setAdapter(adapter);
 
     }
 
     void configureSwipeRefreshLayout(){
-        myThreadSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        binding.fragmentMyThreadSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 globalPage = 1;
@@ -138,7 +133,7 @@ public class bbsMyThreadFragment extends Fragment {
     }
 
     void getMyThread(int page){
-        myThreadSwipeRefreshLayout.setRefreshing(true);
+        binding.fragmentMyThreadSwipeRefreshLayout.setRefreshing(true);
         String apiStr = URLUtils.getUserThreadUrl(page);
         Request request = new Request.Builder()
                 .url(apiStr)
@@ -152,7 +147,7 @@ public class bbsMyThreadFragment extends Fragment {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        myThreadSwipeRefreshLayout.setRefreshing(false);
+                        binding.fragmentMyThreadSwipeRefreshLayout.setRefreshing(false);
                     }
                 });
             }
@@ -162,7 +157,7 @@ public class bbsMyThreadFragment extends Fragment {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        myThreadSwipeRefreshLayout.setRefreshing(false);
+                        binding.fragmentMyThreadSwipeRefreshLayout.setRefreshing(false);
                     }
                 });
 
@@ -188,10 +183,10 @@ public class bbsMyThreadFragment extends Fragment {
                                     adapter.addThreadInfoList(threadInfoList, null);
                                 }
                                 if(threadInfoList == null || threadInfoList.size() == 0){
-                                    myThreadEmptyView.setVisibility(View.VISIBLE);
+                                    emptyBinding.emptyView.setVisibility(View.VISIBLE);
                                 }
                                 else {
-                                    myThreadEmptyView.setVisibility(View.GONE);
+                                    emptyBinding.emptyView.setVisibility(View.GONE);
                                 }
 
                             }
@@ -201,7 +196,7 @@ public class bbsMyThreadFragment extends Fragment {
                     }
                 }
                 else {
-                    myThreadEmptyView.setVisibility(View.VISIBLE);
+                    emptyBinding.emptyView.setVisibility(View.VISIBLE);
                 }
             }
         });

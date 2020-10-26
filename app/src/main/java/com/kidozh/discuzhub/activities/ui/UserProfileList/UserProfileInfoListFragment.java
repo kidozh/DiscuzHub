@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.UserProfileItemAdapter;
+import com.kidozh.discuzhub.databinding.UserProfileInfoListFragmentBinding;
 import com.kidozh.discuzhub.entities.UserProfileItem;
 
 import java.time.temporal.Temporal;
@@ -35,14 +36,9 @@ public class UserProfileInfoListFragment extends Fragment {
     private String title = "";
     List<UserProfileItem> userProfileItemList = new ArrayList<>();
 
-    @BindView(R.id.user_profile_info_title)
-    TextView userProfileTitle;
-    @BindView(R.id.user_profile_info_recyclerview)
-    RecyclerView userProfileRecyclerview;
-    @BindView(R.id.user_profile_info_empty_view)
-    View userProfileEmptyView;
 
     UserProfileItemAdapter adapter;
+    UserProfileInfoListFragmentBinding binding;
 
     public UserProfileInfoListFragment(){
 
@@ -64,9 +60,9 @@ public class UserProfileInfoListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.user_profile_info_list_fragment, container, false);
-        ButterKnife.bind(this,view);
-        return view;
+        binding = UserProfileInfoListFragmentBinding.inflate(inflater,container,false);
+        
+        return binding.getRoot();
     }
 
     @Override
@@ -79,12 +75,12 @@ public class UserProfileInfoListFragment extends Fragment {
     }
 
     private void configureRecyclerview(){
-        userProfileRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.userProfileInfoRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new UserProfileItemAdapter();
-        userProfileRecyclerview.setAdapter(adapter);
+        binding.userProfileInfoRecyclerview.setAdapter(adapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL);
-        userProfileRecyclerview.addItemDecoration(dividerItemDecoration);
+        binding.userProfileInfoRecyclerview.addItemDecoration(dividerItemDecoration);
     }
 
     private void bindViewModel(){
@@ -94,7 +90,7 @@ public class UserProfileInfoListFragment extends Fragment {
         mViewModel.titleMutableLivedata.observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                userProfileTitle.setText(s);
+                binding.userProfileInfoTitle.setText(s);
             }
         });
 
@@ -102,10 +98,10 @@ public class UserProfileInfoListFragment extends Fragment {
             @Override
             public void onChanged(List<UserProfileItem> userProfileItems) {
                 if(userProfileItems == null || userProfileItems.size() == 0){
-                    userProfileEmptyView.setVisibility(View.VISIBLE);
+                    binding.userProfileInfoEmptyView.setVisibility(View.VISIBLE);
                 }
                 else {
-                    userProfileEmptyView.setVisibility(View.GONE);
+                    binding.userProfileInfoEmptyView.setVisibility(View.GONE);
                 }
                 adapter.setUserProfileItemList(userProfileItemList);
             }
