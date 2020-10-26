@@ -233,19 +233,22 @@ public class ManageBBSActivity extends BaseStatusActivity
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:   //返回键的id
-                this.finishAfterTransition();
-                return false;
-            case R.id.show_help_info:
-                showHelpDialog();
-                return false;
-            case R.id.add_item:
-                Intent intent = new Intent(this, AddIntroActivity.class);
-                startActivity(intent);
-                return false;
-            default:
-                return super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        if(id == android.R.id.home){
+            this.finishAfterTransition();
+            return true;
+        }
+        else if(id == R.id.show_help_info){
+            showHelpDialog();
+            return true;
+        }
+        else if(id == R.id.add_item){
+            Intent intent = new Intent(this, AddIntroActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else {
+            return super.onOptionsItemSelected(item);
         }
     }
 

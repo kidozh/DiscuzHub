@@ -158,7 +158,8 @@ public class DrawerActivity extends BaseStatusActivity implements
                 // empty
                 // show bbs page
 
-            } else {
+            }
+            else {
                 // bind to headview
 
                 List<IProfile> accountProfiles = new ArrayList<>();
@@ -688,19 +689,15 @@ public class DrawerActivity extends BaseStatusActivity implements
         binding.bbsPortalNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.navigation_home:{
-                        binding.bbsPortalNavViewpager.setCurrentItem(0);
-                        break;
-                    }
-                    case R.id.navigation_dashboard:{
-                        binding.bbsPortalNavViewpager.setCurrentItem(1);
-                        break;
-                    }
-                    case R.id.navigation_notifications:{
-                        binding.bbsPortalNavViewpager.setCurrentItem(2);
-                        break;
-                    }
+                int id = item.getItemId();
+                if(id == R.id.navigation_home){
+                    binding.bbsPortalNavViewpager.setCurrentItem(0);
+                }
+                else if(id == R.id.navigation_dashboard){
+                    binding.bbsPortalNavViewpager.setCurrentItem(1);
+                }
+                else if(id == R.id.navigation_notifications){
+                    binding.bbsPortalNavViewpager.setCurrentItem(2);
                 }
                 return false;
             }
@@ -843,39 +840,40 @@ public class DrawerActivity extends BaseStatusActivity implements
 
         int id = item.getItemId();
         Log.d(TAG,"You pressed id "+id);
-        switch (id){
-
-            case R.id.bbs_settings:{
-                Intent intent = new Intent(this,SettingsActivity.class);
-                startActivity(intent);
-                return true;
-            }
-
-            case R.id.bbs_about_app:{
-                Intent intent = new Intent(this, AboutAppActivity.class);
-                startActivity(intent);
-                return true;
-            }
-            case R.id.bbs_share:{
-                bbsInformation bbsInfo = viewModel.currentBBSInformationMutableLiveData.getValue();
-                if(bbsInfo !=null){
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_template,
-                            bbsInfo.site_name,bbsInfo.base_url));
-                    sendIntent.setType("text/plain");
-
-                    Intent shareIntent = Intent.createChooser(sendIntent, null);
-                    startActivity(shareIntent);
-                }
-                else {
-                    Toasty.info(this,getString(R.string.no_bbs_found_in_db), Toast.LENGTH_SHORT).show();
-                }
-                return true;
-
-            }
+        if(id == android.R.id.home){
+            this.finishAfterTransition();
+            return false;
         }
-        return super.onOptionsItemSelected(item);
+        else if(id == R.id.bbs_share){
+            bbsInformation bbsInfo = viewModel.currentBBSInformationMutableLiveData.getValue();
+            if(bbsInfo !=null){
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_template,
+                        bbsInfo.site_name,bbsInfo.base_url));
+                sendIntent.setType("text/plain");
+
+                Intent shareIntent = Intent.createChooser(sendIntent, null);
+                startActivity(shareIntent);
+            }
+            else {
+                Toasty.info(this,getString(R.string.no_bbs_found_in_db), Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        }
+        else if(id == R.id.bbs_settings){
+            Intent intent = new Intent(this,SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if(id == R.id.bbs_about_app){
+            Intent intent = new Intent(this, AboutAppActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

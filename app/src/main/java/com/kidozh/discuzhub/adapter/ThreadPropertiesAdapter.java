@@ -89,7 +89,7 @@ public class ThreadPropertiesAdapter extends RecyclerView.Adapter<ThreadProperti
 
         public bbsThreadPropertiesViewHolder(@NonNull View itemView) {
             super(itemView);
-            itemThreadTypeAvatar = itemView.findViewById(R.id.item_bbs_thread_type_cardview);
+            itemThreadTypeCardview = itemView.findViewById(R.id.item_bbs_thread_type_cardview);
             itemThreadTypeAvatar = itemView.findViewById(R.id.item_bbs_thread_type_avatar);
             itemThreadTypeTextview = itemView.findViewById(R.id.item_bbs_thread_type_value);
         }

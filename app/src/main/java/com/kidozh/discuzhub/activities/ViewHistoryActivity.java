@@ -172,22 +172,17 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case android.R.id.home:{
-                //返回键的id
-                this.finishAfterTransition();
-                return false;
-            }
-            case R.id.bbs_draft_nav_menu_sort:{
-                return false;
-            }
-            case R.id.bbs_draft_nav_menu_swipe_delte:{
-                // transaction all
-                showDeleteAllDraftDialog();
-            }
-            default:
-                return super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        if(id == android.R.id.home){
+            this.finishAfterTransition();
+            return true;
+        }
+        else if(id == R.id.bbs_draft_nav_menu_swipe_delte){
+            showDeleteAllDraftDialog();
+            return true;
+        }
+        else {
+            return super.onOptionsItemSelected(item);
         }
     }
 

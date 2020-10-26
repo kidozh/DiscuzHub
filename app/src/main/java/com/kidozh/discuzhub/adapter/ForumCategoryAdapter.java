@@ -29,7 +29,6 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
     private final static String TAG = ForumCategoryAdapter.class.getSimpleName();
     Context mContext;
     List<BBSIndexResult.ForumCategory> forumCategoryList;
-    public String jsonString;
     bbsInformation bbsInfo;
     forumUserBriefInfo curUser;
     List<ForumInfo> allForumInfo;
@@ -38,8 +37,8 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
         this.mContext = context;
     }
 
-    public ForumCategoryAdapter(String jsonString, bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
-        this.jsonString = jsonString;
+    public ForumCategoryAdapter( bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+
         this.bbsInfo = bbsInformation;
         this.curUser = userBriefInfo;
     }
@@ -76,7 +75,7 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
             //holder.mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext,DividerItemDecoration.VERTICAL));
         }
 
-        ForumAdapter adapter = new ForumAdapter(jsonString,bbsInfo,curUser);
+        ForumAdapter adapter = new ForumAdapter(bbsInfo,curUser);
         holder.mRecyclerView.setAdapter(adapter);
         List<ForumInfo> forumInfoListInTheCategory = category.getForumListInTheCategory(allForumInfo);
         adapter.setForumInfoList(forumInfoListInTheCategory);

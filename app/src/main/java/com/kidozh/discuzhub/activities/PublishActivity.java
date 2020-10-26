@@ -1429,54 +1429,49 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case android.R.id.home:{
-                //返回键的id
-                this.finishAfterTransition();
-                return false;
-            }
-            case R.id.bbs_toolbar_send_item:{
-                if(needCaptcha() && TextUtils.isEmpty(binding.bbsPostCaptchaEditText.getText())){
-                    Toasty.warning(getApplicationContext(),getString(R.string.captcha_required),Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                if(checkIfThreadCanBePosted()){
-                    // ensure whether user is agreed to publish
-                    if(!isAPostReply()){
-                        PostThreadConfirmDialogFragment fragment = new PostThreadConfirmDialogFragment(postThreadViewModel);
-                        fragment.show(getSupportFragmentManager(),PostThreadConfirmDialogFragment.class.getSimpleName());
-                    }
-                    else {
-                        new publishThreadTask().execute();
-                    }
-
-
-                }
-                else {
-                    // calling a prompt?
-                    Toasty.warning(this,getString(R.string.bbs_post_thread_subject_required),Toast.LENGTH_SHORT).show();
-
-                }
-                Log.d(TAG,"You press send item");
+        int id = item.getItemId();
+        if(id == android.R.id.home){
+            this.finishAfterTransition();
+            return true;
+        }
+        else if(id == R.id.bbs_toolbar_send_item){
+            if(needCaptcha() && TextUtils.isEmpty(binding.bbsPostCaptchaEditText.getText())){
+                Toasty.warning(getApplicationContext(),getString(R.string.captcha_required),Toast.LENGTH_SHORT).show();
                 return true;
-
             }
-            case R.id.bbs_post_thread_toolbar_save_draft:{
+            if(checkIfThreadCanBePosted()){
+                // ensure whether user is agreed to publish
                 if(!isAPostReply()){
-                    bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
-                    addThreadDraftTask task = new addThreadDraftTask(this,threadDraft,true);
-                    task.execute();
+                    PostThreadConfirmDialogFragment fragment = new PostThreadConfirmDialogFragment(postThreadViewModel);
+                    fragment.show(getSupportFragmentManager(),PostThreadConfirmDialogFragment.class.getSimpleName());
                 }
                 else {
-                    Toasty.info(getApplicationContext(),getString(R.string.bbs_save_draft_not_support_when_replying),Toast.LENGTH_LONG).show();
+                    new publishThreadTask().execute();
                 }
 
-                return true;
 
             }
-            default:
-                return super.onOptionsItemSelected(item);
+            else {
+                // calling a prompt?
+                Toasty.warning(this,getString(R.string.bbs_post_thread_subject_required),Toast.LENGTH_SHORT).show();
+
+            }
+            return true;
+        }
+        else if(id == R.id.bbs_post_thread_toolbar_save_draft){
+            if(!isAPostReply()){
+                bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+                addThreadDraftTask task = new addThreadDraftTask(this,threadDraft,true);
+                task.execute();
+            }
+            else {
+                Toasty.info(getApplicationContext(),getString(R.string.bbs_save_draft_not_support_when_replying),Toast.LENGTH_LONG).show();
+            }
+
+            return true;
+        }
+        else {
+            return super.onOptionsItemSelected(item);
         }
     }
 

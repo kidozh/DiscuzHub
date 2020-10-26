@@ -579,7 +579,7 @@ public class LoginActivity extends BaseStatusActivity {
 
             getSupportActionBar().setSubtitle(bbsInfo.site_name);
             // clear it first
-            getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE).edit().clear().commit();
+            getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE).edit().clear().apply();
 
         }
 

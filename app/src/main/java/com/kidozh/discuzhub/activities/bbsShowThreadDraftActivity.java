@@ -100,20 +100,21 @@ public class bbsShowThreadDraftActivity extends BaseStatusActivity implements re
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:   //返回键的id
-                this.finishAfterTransition();
-                return false;
-            case R.id.bbs_draft_nav_menu_sort:{
-                return false;
-            }
-            case R.id.bbs_draft_nav_menu_swipe_delte:{
-                // transaction all
-                showDeleteAllDraftDialog();
-            }
-            default:
-                return super.onOptionsItemSelected(item);
+        if(item.getItemId() == android.R.id.home){
+            this.finishAfterTransition();
+            return false;
         }
+        else if(item.getItemId() == R.id.bbs_draft_nav_menu_sort){
+            return false;
+        }
+        else if(item.getItemId() == R.id.bbs_draft_nav_menu_swipe_delte){
+            showDeleteAllDraftDialog();
+            return false;
+        }
+        else {
+            return super.onOptionsItemSelected(item);
+        }
+
     }
 
     @Override

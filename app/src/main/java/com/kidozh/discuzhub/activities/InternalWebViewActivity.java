@@ -152,135 +152,20 @@ public class InternalWebViewActivity extends BaseStatusActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_close_web:{
-                finishAfterTransition();
-                return false;
-            }
-            case android.R.id.home:
-                if(binding.webview.canGoBack()){
-                    binding.webview.goBack();
-                }
-                else {
-                    finishAfterTransition();
-                }
-
-                return false;
-
+        int id = item.getItemId();
+        if(id == R.id.action_close_web){
+            finishAfterTransition();
+            return true;
         }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public static boolean parseURLAndOpen(Context context,
-                                          bbsInformation bbsInfo,
-                                          forumUserBriefInfo userBriefInfo,
-                                          String url) {
-        // simple unescape
-        url = url
-                .replace("&amp;","&")
-                .replace("&lt;","<")
-                .replace("&gt;",">")
-                .replace("&nbsp;"," ");
-        final String finalURL = url;
-        Log.d(TAG, "Parse and open URL " + url);
-
-        Uri uri = Uri.parse(url);
-        Uri baseUri = Uri.parse(bbsInfo.base_url);
-        Uri clickedUri = Uri.parse(url);
-        if (clickedUri.getHost() == null || clickedUri.getHost().equals(baseUri.getHost())) {
-            if (uri != null && uri.getPath() != null) {
-                if (uri.getQueryParameter("mod") != null
-                        && uri.getQueryParameter("mod").equals("redirect")
-                        && uri.getQueryParameter("goto") != null
-                        && uri.getQueryParameter("goto").equals("findpost")
-                        && uri.getQueryParameter("pid") != null
-                        && uri.getQueryParameter("ptid") != null) {
-                    String pidString = uri.getQueryParameter("pid");
-                    String tidString = uri.getQueryParameter("ptid");
-                    int redirectTid = Integer.parseInt(tidString);
-                    int redirectPid = Integer.parseInt(pidString);
-                    Log.d(TAG, "Find the current " + redirectPid + " tid " + redirectTid);
-                    ThreadInfo putThreadInfo = new ThreadInfo();
-                    putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(context, ThreadActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
-                    intent.putExtra("FID", 0);
-                    intent.putExtra("TID", redirectTid);
-                    intent.putExtra("SUBJECT", url);
-                    VibrateUtils.vibrateForClick(context);
-
-                    context.startActivity(intent);
-                    return true;
-                } else if (uri.getQueryParameter("mod") != null
-                        && uri.getQueryParameter("mod").equals("viewthread")
-                        && uri.getQueryParameter("tid") != null) {
-                    String tidString = uri.getQueryParameter("tid");
-                    int redirectTid = Integer.parseInt(tidString);
-                    ThreadInfo putThreadInfo = new ThreadInfo();
-                    putThreadInfo.tid = redirectTid;
-                    Intent intent = new Intent(context, ThreadActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
-                    intent.putExtra("FID", 0);
-                    intent.putExtra("TID", redirectTid);
-                    intent.putExtra("SUBJECT", url);
-                    VibrateUtils.vibrateForClick(context);
-
-                    context.startActivity(intent);
-                    return true;
-
-                } else if (uri.getQueryParameter("mod") != null
-                        && uri.getQueryParameter("mod").equals("forumdisplay")
-                        && uri.getQueryParameter("fid") != null) {
-                    String fidString = uri.getQueryParameter("fid");
-                    int fid = Integer.parseInt(fidString);
-                    Intent intent = new Intent(context, ForumActivity.class);
-                    ForumInfo clickedForum = new ForumInfo();
-                    clickedForum.fid = fid;
-
-                    intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY, clickedForum);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                    Log.d(TAG, "put base url " + bbsInfo.base_url);
-                    VibrateUtils.vibrateForClick(context);
-                    context.startActivity(intent);
-                    return true;
-
-                }
-                else if(uri.getQueryParameter("mod")!=null
-                        && uri.getQueryParameter("mod").equals("space")
-                        && uri.getQueryParameter("uid")!=null) {
-                    String uidStr = uri.getQueryParameter("uid");
-                    int uid = Integer.parseInt(uidStr);
-                    Intent intent = new Intent(context, UserProfileActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                    intent.putExtra("UID", uid);
-
-
-                    context.startActivity(intent);
-                    return true;
-                }
-
-                Intent intent = new Intent(context, InternalWebViewActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                intent.putExtra(bbsConstUtils.PASS_URL_KEY, url);
-                Log.d(TAG, "Inputted URL " + url);
-                context.startActivity(intent);
-                return true;
-
+        else if(id == android.R.id.home){
+            if(binding.webview.canGoBack()){
+                binding.webview.goBack();
             }
             else {
-                return false;
+                finishAfterTransition();
             }
-
+            return true;
         }
-        else {
-            return false;
-        }
+        return super.onOptionsItemSelected(item);
     }
 }

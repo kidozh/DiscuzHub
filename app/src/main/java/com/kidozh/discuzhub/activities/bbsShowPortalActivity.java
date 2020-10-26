@@ -319,56 +319,54 @@ public class bbsShowPortalActivity extends BaseStatusActivity
         String currentUrl = URLUtils.getPortalPageUrl();
 
         int id = item.getItemId();
-        switch (id){
-            case android.R.id.home:{
-                this.finishAfterTransition();
-                return false;
-            }
-            case R.id.bbs_forum_nav_personal_center:{
-                Intent intent = new Intent(this, UserProfileActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                intent.putExtra("UID",userBriefInfo.uid);
-                startActivity(intent);
-                return true;
-            }
-            case R.id.bbs_settings:{
-                Intent intent = new Intent(this,SettingsActivity.class);
-                startActivity(intent);
-                return true;
-            }
-            case R.id.bbs_forum_nav_draft_box:{
-                Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                startActivity(intent);
-                return true;
-            }
-            case R.id.bbs_forum_nav_show_in_webview:{
-                Intent intent = new Intent(this, InternalWebViewActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                intent.putExtra(bbsConstUtils.PASS_URL_KEY,currentUrl);
-                Log.d(TAG,"Inputted URL "+currentUrl);
-                startActivity(intent);
-                return true;
-            }
-            case R.id.bbs_forum_nav_show_in_external_browser:{
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentUrl));
-                Log.d(TAG,"Inputted URL "+currentUrl);
-                startActivity(intent);
-                return true;
-            }
-            case R.id.bbs_about_app:{
-                Intent intent = new Intent(this, AboutAppActivity.class);
-                startActivity(intent);
-                return true;
-            }
-
-            default:{
-                return super.onOptionsItemSelected(item);
-            }
+        if(id == android.R.id.home){
+            this.finishAfterTransition();
+            return false;
         }
+        else if(id == R.id.bbs_forum_nav_personal_center){
+            Intent intent = new Intent(this, UserProfileActivity.class);
+            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra("UID",userBriefInfo.uid);
+            startActivity(intent);
+            return true;
+        }
+        else if(id == R.id.bbs_settings){
+            Intent intent = new Intent(this,SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if(id == R.id.bbs_forum_nav_draft_box){
+            Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
+            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            startActivity(intent);
+            return true;
+        }
+        else if(id == R.id.bbs_forum_nav_show_in_webview){
+            Intent intent = new Intent(this, InternalWebViewActivity.class);
+            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(bbsConstUtils.PASS_URL_KEY,currentUrl);
+            Log.d(TAG,"Inputted URL "+currentUrl);
+            startActivity(intent);
+            return true;
+        }
+        else if(id == R.id.bbs_forum_nav_show_in_external_browser){
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentUrl));
+            Log.d(TAG,"Inputted URL "+currentUrl);
+            startActivity(intent);
+            return true;
+        }
+        else if(id == R.id.bbs_about_app){
+            Intent intent = new Intent(this, AboutAppActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else {
+            return super.onOptionsItemSelected(item);
+        }
+
     }
 
     @Override

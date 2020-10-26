@@ -41,12 +41,11 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private String TAG = ForumAdapter.class.getSimpleName();
     private Context mContext;
     private List<ForumInfo> forumInfoList;
-    private String jsonString;
     private bbsInformation bbsInfo;
     private forumUserBriefInfo curUser;
 
-    ForumAdapter(String jsonObject, bbsInformation bbsInformation, forumUserBriefInfo curUser){
-        this.jsonString = jsonObject;
+    ForumAdapter(bbsInformation bbsInformation, forumUserBriefInfo curUser){
+
         this.bbsInfo = bbsInformation;
         this.curUser = curUser;
     }

@@ -193,7 +193,7 @@ public class HomeFragment extends Fragment {
     private void configurePortalRecyclerview(){
         activityBbsForumIndexBinding.bbsPortalRecyclerview.setHasFixedSize(true);
         activityBbsForumIndexBinding.bbsPortalRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ForumCategoryAdapter(getContext(),null,bbsInfo,userBriefInfo);
+        adapter = new ForumCategoryAdapter(bbsInfo,userBriefInfo);
         activityBbsForumIndexBinding.bbsPortalRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         activityBbsForumIndexBinding.bbsPortalRecyclerview.setAdapter(adapter);
     }
