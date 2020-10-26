@@ -529,7 +529,7 @@ public class DrawerActivity extends BaseStatusActivity implements
                             return true;
                         }
                         case (FOOTER_ABOUT):{
-                            Intent intent = new Intent(activity,aboutAppActivity.class);
+                            Intent intent = new Intent(activity, AboutAppActivity.class);
                             startActivity(intent);
                             return true;
                         }
@@ -860,7 +860,7 @@ public class DrawerActivity extends BaseStatusActivity implements
             }
 
             case R.id.bbs_about_app:{
-                Intent intent = new Intent(this,aboutAppActivity.class);
+                Intent intent = new Intent(this, AboutAppActivity.class);
                 startActivity(intent);
                 return true;
             }

@@ -13,31 +13,22 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.databinding.ActivityAboutAppBinding;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class aboutAppActivity extends BaseStatusActivity {
-    @BindView(R.id.about_app_version)
-    TextView appVersionTextview;
-    @BindView(R.id.about_contact_us)
-    CardView contactUsCardView;
-    @BindView(R.id.about_homepage)
-    CardView homepageCardView;
-    @BindView(R.id.about_github_project)
-    CardView githubProjectCardView;
-    @BindView(R.id.about_privacy_policy)
-    CardView privacyPolicyCardView;
-    @BindView(R.id.about_terms_of_use)
-    CardView termsOfUseCardView;
-    @BindView(R.id.about_open_source_lib)
-    CardView openSourceLibCardview;
+public class AboutAppActivity extends BaseStatusActivity {
+
+
+    ActivityAboutAppBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about_app);
-        ButterKnife.bind(this);
+        binding = ActivityAboutAppBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         configureActionBar();
         renderVersionText();
         configureCardView();
@@ -48,16 +39,16 @@ public class aboutAppActivity extends BaseStatusActivity {
         try{
             PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(),0);
             String version = packageInfo.versionName;
-            appVersionTextview.setText(getString(R.string.app_version_template,version));
+            binding.aboutAppVersion.setText(getString(R.string.app_version_template,version));
         }
         catch (Exception e){
-            appVersionTextview.setText(R.string.welcome);
+            binding.aboutAppVersion.setText(R.string.welcome);
         }
 
     }
 
     void configureCardView(){
-        contactUsCardView.setOnClickListener(new View.OnClickListener() {
+        binding.aboutContactUs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -67,35 +58,35 @@ public class aboutAppActivity extends BaseStatusActivity {
                 startActivity(data);
             }
         });
-        homepageCardView.setOnClickListener(new View.OnClickListener() {
+        binding.aboutHomepage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discuzhub.kidozh.com/"));
                 startActivity(intent);
             }
         });
-        githubProjectCardView.setOnClickListener(new View.OnClickListener() {
+        binding.aboutGithubProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/kidozh/DiscuzHub"));
                 startActivity(intent);
             }
         });
-        privacyPolicyCardView.setOnClickListener(new View.OnClickListener() {
+        binding.aboutPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discuzhub.kidozh.com/privacy_policy/"));
                 startActivity(intent);
             }
         });
-        termsOfUseCardView.setOnClickListener(new View.OnClickListener() {
+        binding.aboutTermsOfUse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discuzhub.kidozh.com/term_of_use/"));
                 startActivity(intent);
             }
         });
-        openSourceLibCardview.setOnClickListener(new View.OnClickListener() {
+        binding.aboutOpenSourceLib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discuzhub.kidozh.com/open_source_licence/"));

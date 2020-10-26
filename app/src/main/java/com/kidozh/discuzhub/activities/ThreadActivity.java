@@ -2113,7 +2113,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 return true;
             }
             case R.id.bbs_about_app:{
-                Intent intent = new Intent(this,aboutAppActivity.class);
+                Intent intent = new Intent(this, AboutAppActivity.class);
                 startActivity(intent);
                 return true;
             }

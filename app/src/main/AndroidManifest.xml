@@ -39,7 +39,7 @@
         <activity
             android:name=".activities.bbsAddIntroActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.aboutAppActivity" />
+        <activity android:name=".activities.AboutAppActivity" />
         <activity android:name=".activities.InternalWebViewActivity" />
         <activity
             android:name=".activities.appWelcomeActivity"

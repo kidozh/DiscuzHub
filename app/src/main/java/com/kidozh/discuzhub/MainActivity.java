@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.kidozh.discuzhub.activities.AboutAppActivity;
 import com.kidozh.discuzhub.activities.SettingsActivity;
 import com.kidozh.discuzhub.activities.SplashScreenActivity;
-import com.kidozh.discuzhub.activities.aboutAppActivity;
 import com.kidozh.discuzhub.activities.bbsAddIntroActivity;
 import com.kidozh.discuzhub.adapter.forumInformationAdapter;
 import com.kidozh.discuzhub.callback.forumSwipeToDeleteCallback;
@@ -389,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.bbs_about_app:{
-                Intent intent = new Intent(this, aboutAppActivity.class);
+                Intent intent = new Intent(this, AboutAppActivity.class);
                 startActivity(intent);
                 return true;
             }
