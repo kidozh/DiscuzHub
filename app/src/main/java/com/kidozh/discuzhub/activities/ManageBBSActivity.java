@@ -31,8 +31,7 @@ import com.kidozh.discuzhub.viewModels.ManageBBSViewModel;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 public class ManageBBSActivity extends BaseStatusActivity
         implements RecyclerViewItemTouchCallback.onInteraction{

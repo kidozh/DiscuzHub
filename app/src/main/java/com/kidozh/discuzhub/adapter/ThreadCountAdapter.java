@@ -17,8 +17,6 @@ import com.kidozh.discuzhub.entities.ThreadCount;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class ThreadCountAdapter extends RecyclerView.Adapter<ThreadCountAdapter.ThreadCountHolder> {
 

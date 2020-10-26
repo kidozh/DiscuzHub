@@ -32,8 +32,7 @@ import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 

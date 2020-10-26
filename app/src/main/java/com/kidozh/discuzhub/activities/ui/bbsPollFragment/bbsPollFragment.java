@@ -38,7 +38,7 @@ import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 import java.io.IOException;
 import java.util.List;
 
-import butterknife.BindView;
+
 import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.Callback;

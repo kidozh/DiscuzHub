@@ -21,8 +21,7 @@ import com.kidozh.discuzhub.databinding.FragmentBbsNotificationMessagePortalBind
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -108,7 +107,6 @@ public class bbsNotificationMessagePortalFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         //super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this,view);
         Log.d(TAG,"Pre-load message fragment "+filter);
         preLoadMessagesFragment();
         if(filter.equals("FILTER_PRIVATE_MESSAGE")){

@@ -26,8 +26,6 @@ import com.kidozh.discuzhub.utilities.NetworkUtils;
 import java.io.InputStream;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.ViewHolder> {
 
@@ -106,7 +104,6 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
 
         ViewHolder(View view){
             super(view);
-            ButterKnife.bind(this,view);
             mUserAvatar = view.findViewById(R.id.forum_user_avatar);
             mUserName = view.findViewById(R.id.forum_user_name);
             mUserCardview = view.findViewById(R.id.forum_user_cardview);

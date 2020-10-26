@@ -23,8 +23,7 @@ import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 public class ThreadDraftAdapter extends RecyclerView.Adapter<ThreadDraftAdapter.ViewHolder> {
 

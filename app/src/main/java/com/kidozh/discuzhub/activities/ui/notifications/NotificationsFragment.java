@@ -31,8 +31,6 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class NotificationsFragment extends Fragment {
     private static final String TAG = NotificationsFragment.class.getSimpleName();

@@ -39,8 +39,6 @@ import com.kidozh.discuzhub.utilities.NetworkUtils;
 import java.io.InputStream;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
 

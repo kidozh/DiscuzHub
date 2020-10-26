@@ -33,8 +33,6 @@ import com.kidozh.discuzhub.utilities.notificationUtils;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class SplashScreenActivity extends BaseStatusActivity {
     private static final String TAG = SplashScreenActivity.class.getSimpleName();

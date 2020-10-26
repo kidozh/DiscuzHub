@@ -23,8 +23,6 @@ import com.kidozh.discuzhub.utilities.bbsConstUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotForumViewHolder> {
     private final static String TAG = HotForumAdapter.class.getSimpleName();

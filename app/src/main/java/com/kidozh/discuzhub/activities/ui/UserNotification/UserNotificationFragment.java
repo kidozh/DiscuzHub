@@ -34,8 +34,6 @@ import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
 
 /**
@@ -120,7 +118,6 @@ public class UserNotificationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this,view);
         configureIntentData();
         configureRecyclerview();
         configureSwipeRefreshLayout();

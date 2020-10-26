@@ -92,8 +92,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.Callback;

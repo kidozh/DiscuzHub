@@ -73,8 +73,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import es.dmoral.toasty.Toasty;
 import retrofit2.Retrofit;
 

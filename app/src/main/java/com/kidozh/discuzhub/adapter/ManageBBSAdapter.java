@@ -22,8 +22,6 @@ import com.kidozh.discuzhub.utilities.numberFormatUtils;
 import java.io.InputStream;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class ManageBBSAdapter extends RecyclerView.Adapter<ManageBBSAdapter.ManageBBSViewHolder> {
     private List<bbsInformation> bbsInformationList;
@@ -86,7 +84,6 @@ public class ManageBBSAdapter extends RecyclerView.Adapter<ManageBBSAdapter.Mana
 
         public ManageBBSViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
             forumAvatar = itemView.findViewById(R.id.item_forum_information_avatar);
             forumName = itemView.findViewById(R.id.item_forum_information_name);
             forumHost = itemView.findViewById(R.id.item_forum_information_host);

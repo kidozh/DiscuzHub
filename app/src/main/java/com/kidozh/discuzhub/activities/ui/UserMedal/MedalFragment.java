@@ -21,8 +21,6 @@ import com.kidozh.discuzhub.results.UserProfileResult;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * A fragment representing a list of Items.

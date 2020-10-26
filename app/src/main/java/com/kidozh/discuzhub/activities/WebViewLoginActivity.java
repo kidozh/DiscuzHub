@@ -38,9 +38,6 @@ import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;

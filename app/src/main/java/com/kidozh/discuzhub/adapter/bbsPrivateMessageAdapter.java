@@ -36,8 +36,7 @@ import com.kidozh.discuzhub.utilities.NetworkUtils;
 import java.io.InputStream;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 public class bbsPrivateMessageAdapter extends RecyclerView.Adapter<bbsPrivateMessageAdapter.ViewHolder> {
     private static final String TAG = bbsPrivateMessageAdapter.class.getSimpleName();

@@ -32,8 +32,6 @@ import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import java.io.InputStream;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClient;
 
@@ -211,7 +209,6 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView mTodayPosts;
         public ConciseForumViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
             mBBSForumImage = itemView.findViewById(R.id.bbs_forum_imageview);
             mForumName = itemView.findViewById(R.id.bbs_forum_name);
             mCardview = itemView.findViewById(R.id.bbs_forum_cardview);

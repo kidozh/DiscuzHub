@@ -23,8 +23,7 @@ import com.kidozh.discuzhub.widgets.PinchImageView;
 
 import java.io.File;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import es.dmoral.toasty.Toasty;
 
 public class showImageFullscreenActivity extends BaseStatusActivity {
@@ -38,7 +37,6 @@ public class showImageFullscreenActivity extends BaseStatusActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityShowImageFullscreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ButterKnife.bind(this);
 
         configureActionBar();
         loadImage();

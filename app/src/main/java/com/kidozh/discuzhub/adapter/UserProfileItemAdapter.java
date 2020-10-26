@@ -15,8 +15,6 @@ import com.kidozh.discuzhub.entities.UserProfileItem;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class UserProfileItemAdapter extends RecyclerView.Adapter<UserProfileItemAdapter.UserProfileItemViewHolder> {
     private List<UserProfileItem> userProfileItemList;

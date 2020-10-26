@@ -62,8 +62,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class UserProfileActivity extends BaseStatusActivity implements
         UserFriendFragment.OnFragmentInteractionListener,

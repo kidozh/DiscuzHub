@@ -48,8 +48,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import cn.gavinliu.android.lib.shapedimageview.ShapedImageView;
 
 
@@ -606,7 +604,6 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         public ConciseThreadViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
             mThreadPublisher = itemView.findViewById(R.id.bbs_post_publisher);
             mPublishDate = itemView.findViewById(R.id.bbs_post_publish_date);
             mTitle = itemView.findViewById(R.id.bbs_thread_title);

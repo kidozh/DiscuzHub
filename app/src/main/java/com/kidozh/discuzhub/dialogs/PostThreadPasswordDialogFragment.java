@@ -17,8 +17,7 @@ import androidx.fragment.app.DialogFragment;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.databinding.DialogSetThreadPasswordBinding;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 public class PostThreadPasswordDialogFragment extends DialogFragment {
     private static String TAG = PostThreadPasswordDialogFragment.class.getSimpleName();

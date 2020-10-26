@@ -16,8 +16,6 @@ import com.kidozh.discuzhub.results.UserProfileResult;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link } and makes a call to the

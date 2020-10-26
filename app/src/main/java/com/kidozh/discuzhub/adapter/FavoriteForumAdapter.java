@@ -27,8 +27,6 @@ import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class FavoriteForumAdapter extends PagedListAdapter<FavoriteForum, FavoriteForumAdapter.FavoriteForumViewHolder> {
     private static final String TAG = FavoriteForumAdapter.class.getSimpleName();

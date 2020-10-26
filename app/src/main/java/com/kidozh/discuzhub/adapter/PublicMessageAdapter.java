@@ -20,8 +20,7 @@ import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 public class PublicMessageAdapter extends RecyclerView.Adapter<PublicMessageAdapter.ViewHolder> {
 

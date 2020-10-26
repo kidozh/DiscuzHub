@@ -26,8 +26,7 @@ import com.kidozh.discuzhub.viewModels.PostThreadViewModel;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 public class PostThreadConfirmDialogFragment extends DialogFragment {
     private static String TAG = PostThreadConfirmDialogFragment.class.getSimpleName();

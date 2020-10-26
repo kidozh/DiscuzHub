@@ -36,8 +36,6 @@ import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistoryAdapter.ViewHistoryViewHolder> {
 

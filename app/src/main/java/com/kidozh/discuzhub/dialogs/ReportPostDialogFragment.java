@@ -24,8 +24,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.databinding.DialogReportBinding;
 import com.kidozh.discuzhub.entities.PostInfo;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import es.dmoral.toasty.Toasty;
 
 public class ReportPostDialogFragment extends DialogFragment {

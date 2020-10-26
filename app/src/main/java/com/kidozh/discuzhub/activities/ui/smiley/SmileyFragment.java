@@ -26,8 +26,8 @@ import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,7 +90,7 @@ public class SmileyFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this,view);
+
         configureRecyclerView();
     }
 

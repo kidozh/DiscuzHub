@@ -34,8 +34,6 @@ import com.kidozh.discuzhub.utilities.NetworkUtils;
 import java.io.InputStream;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class bbsPrivateDetailMessageAdapter extends RecyclerView.Adapter<bbsPrivateDetailMessageAdapter.ViewHolder> {
 

@@ -14,8 +14,6 @@ import com.kidozh.discuzhub.R;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class bbsDetailInformationAdapter extends RecyclerView.Adapter<bbsDetailInformationAdapter.ViewHolder> {
 

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -28,9 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
-import com.kidozh.discuzhub.MainActivity;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.LoginActivity;
 import com.kidozh.discuzhub.activities.ui.bbsDetailedInformation.bbsShowInformationActivity;
@@ -45,9 +44,8 @@ import com.kidozh.discuzhub.utilities.numberFormatUtils;
 
 import java.io.InputStream;
 import java.util.List;
+import com.kidozh.discuzhub.database.BBSInformationDatabase;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class forumInformationAdapter extends RecyclerView.Adapter<forumInformationAdapter.ViewHolder> {
     public static String TAG = forumInformationAdapter.class.getSimpleName();
@@ -255,7 +253,7 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
 
     public void showUndoSnackbar(final bbsInformation deletedForumInfo, final int position) {
         Log.d(TAG,"SHOW REMOVED POS "+position);
-        new MainActivity.removeNewForumInformationTask(deletedForumInfo, context).execute();
+        new removeNewForumInformationTask(deletedForumInfo, context).execute();
 
         View view = activity.findViewById(R.id.forum_information_coordinatorLayout);
         Snackbar snackbar = Snackbar.make(view, R.string.delete_forum_information,
@@ -274,49 +272,81 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
         // insert to database
         bbsInformationList.add(position,deletedForumInfo);
         notifyDataSetChanged();
-        new MainActivity.addNewForumInformationTask(deletedForumInfo, context).execute();
+        new addNewForumInformationTask(deletedForumInfo, context).execute();
+    }
+
+    public static class addNewForumInformationTask extends AsyncTask<Void, Void, Void> {
+        private bbsInformation forumInfo;
+        private Context context;
+        public addNewForumInformationTask(bbsInformation bbsInformation, Context context){
+            this.forumInfo = bbsInformation;
+            this.context = context;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            BBSInformationDatabase.getInstance(context)
+                    .getForumInformationDao().insert(forumInfo);
+            Log.d(TAG, "add forum into database"+forumInfo.site_name);
+            return null;
+        }
+
+    }
+
+    public static class removeNewForumInformationTask extends AsyncTask<Void, Void, Void> {
+        private bbsInformation forumInfo;
+        private Context context;
+        public removeNewForumInformationTask(bbsInformation bbsInformation, Context context){
+            this.forumInfo = bbsInformation;
+            this.context = context;
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            BBSInformationDatabase
+                    .getInstance(context)
+                    .getForumInformationDao().delete(forumInfo);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Log.d(TAG,"Remove forum "+this.forumInfo.site_name);
+        }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.item_forum_information_avatar)
+        
         ImageView forumAvatar;
-        @BindView(R.id.item_forum_information_name)
         TextView forumName;
-        @BindView(R.id.item_forum_information_host)
         TextView forumHost;
-        @BindView(R.id.item_forum_information_siteid)
         TextView forumSiteId;
-        @BindView(R.id.item_forum_information_post_number)
         TextView forumPostNumber;
-        @BindView(R.id.item_forum_information_posts_icon)
-        ImageView forumPostIcon;
-        @BindView(R.id.item_forum_information_member_number)
         TextView forumMemberNumber;
-        @BindView(R.id.item_forum_information_member_icon)
-        ImageView forumMemberIcon;
-        @BindView(R.id.item_forum_information_user_recyclerview)
         RecyclerView forumUserRecyclerview;
-        @BindView(R.id.item_forum_information_integrity)
         ImageView forumIntegrityStatus;
-        @BindView(R.id.item_forum_information_qq_connect)
         ImageView qqConnectIcon;
-        @BindView(R.id.item_forum_information_qq_connect_label)
         TextView qqConnectLabel;
-        @BindView(R.id.item_forum_information_anonymous_btn)
         Button enterAsAnonymous;
-        @BindView(R.id.item_forum_information_sign_in_btn)
         Button registerBtn;
-        @BindView(R.id.item_forum_information_cardview)
         CardView forumInfoCardview;
-        @BindView(R.id.item_forum_information_add_an_account_btn)
         Button addAnAccountBtn;
-
-
-
-
+        
         ViewHolder(View view){
             super(view);
-            ButterKnife.bind(this,view);
+            forumAvatar = view.findViewById(R.id.item_forum_information_avatar);
+            forumName = view.findViewById(R.id.item_forum_information_name);
+            forumHost = view.findViewById(R.id.item_forum_information_host);
+            forumSiteId = view.findViewById(R.id.item_forum_information_siteid);
+            forumPostNumber = view.findViewById(R.id.item_forum_information_post_number);
+            forumMemberNumber = view.findViewById(R.id.item_forum_information_member_number);
+            forumUserRecyclerview = view.findViewById(R.id.item_forum_information_user_recyclerview);
+            forumIntegrityStatus = view.findViewById(R.id.item_forum_information_integrity);
+            qqConnectIcon = view.findViewById(R.id.item_forum_information_qq_connect);
+            qqConnectLabel = view.findViewById(R.id.item_forum_information_qq_connect_label);
+            enterAsAnonymous = view.findViewById(R.id.item_forum_information_anonymous_btn);
+            registerBtn = view.findViewById(R.id.item_forum_information_sign_in_btn);
+            forumInfoCardview = view.findViewById(R.id.item_forum_information_cardview);
+            addAnAccountBtn = view.findViewById(R.id.item_forum_information_add_an_account_btn);
         }
 
     }
@@ -324,7 +354,6 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
     private class EmptyViewHolder extends ViewHolder{
         EmptyViewHolder(View view){
             super(view);
-            ButterKnife.bind(this,view);
         }
     }
 }

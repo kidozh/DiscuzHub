@@ -25,8 +25,7 @@ import com.kidozh.discuzhub.utilities.URLUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 
 public class PollOptionAdapter extends RecyclerView.Adapter<PollOptionAdapter.ViewHolder> {
     private final String TAG = PollOptionAdapter.class.getSimpleName();

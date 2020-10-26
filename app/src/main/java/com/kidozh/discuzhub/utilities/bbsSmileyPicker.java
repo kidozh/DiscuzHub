@@ -19,13 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.SmileyAdapter;
+import com.kidozh.discuzhub.databinding.PopupwindowSmileyViewBinding;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -49,10 +48,10 @@ public class bbsSmileyPicker extends PopupWindow {
 
     private OkHttpClient client;
 
-    @BindView(R.id.bbs_smiley_tab)
     TabLayout tab;
-    @BindView(R.id.bbs_smiley_recyclerView)
     RecyclerView recyclerView;
+
+    PopupwindowSmileyViewBinding binding;
 
 
     public bbsSmileyPicker(Context context) {
@@ -108,7 +107,9 @@ public class bbsSmileyPicker extends PopupWindow {
 
     private void init() {
         View v = LayoutInflater.from(mContext).inflate(R.layout.popupwindow_smiley_view, null);
-        ButterKnife.bind(this,v);
+
+        tab = v.findViewById(R.id.bbs_smiley_tab);
+        recyclerView = v.findViewById(R.id.bbs_smiley_recyclerView);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 7, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);

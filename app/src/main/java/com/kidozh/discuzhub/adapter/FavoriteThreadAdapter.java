@@ -32,8 +32,6 @@ import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class FavoriteThreadAdapter extends PagedListAdapter<FavoriteThread, FavoriteThreadAdapter.FavoriteThreadViewHolder> {
     private static final String TAG = FavoriteThreadAdapter.class.getSimpleName();

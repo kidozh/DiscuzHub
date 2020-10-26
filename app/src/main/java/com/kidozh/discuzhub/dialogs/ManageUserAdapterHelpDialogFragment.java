@@ -14,7 +14,6 @@ import androidx.fragment.app.DialogFragment;
 
 import com.kidozh.discuzhub.R;
 
-import butterknife.ButterKnife;
 
 public class ManageUserAdapterHelpDialogFragment extends DialogFragment {
     private static String TAG = ManageUserAdapterHelpDialogFragment.class.getSimpleName();
@@ -33,7 +32,6 @@ public class ManageUserAdapterHelpDialogFragment extends DialogFragment {
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         View view = inflater.inflate(R.layout.dialog_help_manage_users, null);
-        ButterKnife.bind(this,view);
 
 
         builder.setView(view)

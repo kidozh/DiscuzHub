@@ -23,8 +23,6 @@ import com.kidozh.discuzhub.viewModels.PostThreadViewModel;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class ManageAdapterHelpDialogFragment extends DialogFragment {
     private static String TAG = ManageAdapterHelpDialogFragment.class.getSimpleName();
@@ -43,8 +41,6 @@ public class ManageAdapterHelpDialogFragment extends DialogFragment {
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         View view = inflater.inflate(R.layout.dialog_help_manage_adapter, null);
-        ButterKnife.bind(this,view);
-
 
         builder.setView(view)
                 // Add action buttons

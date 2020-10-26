@@ -77,8 +77,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import kotlin.jvm.functions.Function3;
 

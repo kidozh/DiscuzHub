@@ -43,8 +43,6 @@ import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import java.util.Collections;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class ManageUserActivity extends BaseStatusActivity
         implements RecyclerViewItemTouchCallback.onInteraction{
