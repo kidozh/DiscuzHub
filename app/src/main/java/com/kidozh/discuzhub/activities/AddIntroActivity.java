@@ -3,7 +3,6 @@ package com.kidozh.discuzhub.activities;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,17 +14,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.IntroSuggestionAdapter;
 import com.kidozh.discuzhub.database.BBSInformationDatabase;
+import com.kidozh.discuzhub.databinding.ActivityBbsAddIntroBinding;
 import com.kidozh.discuzhub.entities.SuggestURLInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.results.AddCheckResult;
@@ -41,8 +36,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -50,35 +43,24 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class bbsAddIntroActivity extends BaseStatusActivity
+public class AddIntroActivity extends BaseStatusActivity
         implements IntroSuggestionAdapter.OnClickSuggestionListener {
-    private static final String TAG = bbsAddIntroActivity.class.getSimpleName();
-    @BindView(R.id.bbs_add_intro_url_edittext)
-    EditText urlEditText;
-    @BindView(R.id.bbs_add_intro_https_checkbox)
-    CheckBox httpsCheckedTextview;
-    @BindView(R.id.bbs_add_intro_recyclerview_header)
-    TextView recyclerviewHeader;
-    @BindView(R.id.bbs_add_intro_recyclerview)
-    RecyclerView recyclerView;
-    @BindView(R.id.bbs_add_intro_continue_button)
-    Button continueBtn;
-    @BindView(R.id.bbs_add_intro_progressBar)
-    ProgressBar progressBar;
-    @BindView(R.id.bbs_add_guide)
-    TextView addBBSGuideTextview;
+    private static final String TAG = AddIntroActivity.class.getSimpleName();
+
 
     IntroSuggestionAdapter adapter;
 
     AddBBSViewModel viewModel;
+    ActivityBbsAddIntroBinding binding;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bbs_add_intro);
-        ButterKnife.bind(this);
+        binding = ActivityBbsAddIntroBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        
         viewModel = new ViewModelProvider(this).get(AddBBSViewModel.class);
         configureRecyclerview();
         bindViewModel();
@@ -88,8 +70,8 @@ public class bbsAddIntroActivity extends BaseStatusActivity
     }
 
     private void configureAddGuide(){
-        addBBSGuideTextview.setPaintFlags(addBBSGuideTextview.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        addBBSGuideTextview.setOnClickListener(new View.OnClickListener() {
+        binding.bbsAddGuide.setPaintFlags(binding.bbsAddGuide.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        binding.bbsAddGuide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -102,9 +84,9 @@ public class bbsAddIntroActivity extends BaseStatusActivity
 
     private void configureRecyclerview(){
         adapter = new IntroSuggestionAdapter();
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
+        binding.bbsAddIntroRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        binding.bbsAddIntroRecyclerview.setHasFixedSize(true);
+        binding.bbsAddIntroRecyclerview.setAdapter(adapter);
         // add examples
         List<SuggestURLInfo> suggestURLInfoList = new ArrayList<>();
         suggestURLInfoList.add(new SuggestURLInfo("https://bbs.nwpu.edu.cn",getString(R.string.bbs_url_example_npubbs),true));
@@ -135,10 +117,10 @@ public class bbsAddIntroActivity extends BaseStatusActivity
             @Override
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
-                    progressBar.setVisibility(View.VISIBLE);
+                    binding.bbsAddIntroProgressBar.setVisibility(View.VISIBLE);
                 }
                 else {
-                    progressBar.setVisibility(View.GONE);
+                    binding.bbsAddIntroProgressBar.setVisibility(View.GONE);
                 }
             }
         });
@@ -193,7 +175,7 @@ public class bbsAddIntroActivity extends BaseStatusActivity
     }
 
     private void configureUrlEditText(){
-        urlEditText.addTextChangedListener(new TextWatcher() {
+        binding.bbsAddIntroUrlEdittext.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -212,7 +194,7 @@ public class bbsAddIntroActivity extends BaseStatusActivity
             }
         });
 
-        httpsCheckedTextview.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        binding.bbsAddIntroHttpsCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 viewModel.useSafeClientLiveData.setValue(isChecked);
@@ -221,10 +203,10 @@ public class bbsAddIntroActivity extends BaseStatusActivity
     }
 
     private void configureContinueBtn(){
-        continueBtn.setOnClickListener(new View.OnClickListener() {
+        binding.bbsAddIntroContinueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String urlString = urlEditText.getText().toString();
+                String urlString = binding.bbsAddIntroUrlEdittext.getText().toString();
                 try{
                     URL url = new URL(urlString);
                     queryBBSInfo(urlString);
@@ -239,7 +221,7 @@ public class bbsAddIntroActivity extends BaseStatusActivity
 
 
     private void queryBBSInfo(String base_url){
-        boolean useSafeClient = httpsCheckedTextview.isChecked();
+        boolean useSafeClient = binding.bbsAddIntroHttpsCheckbox.isChecked();
         viewModel.isLoadingLiveData.postValue(true);
 
         URLUtils.setBaseUrl(base_url);
@@ -330,8 +312,8 @@ public class bbsAddIntroActivity extends BaseStatusActivity
     public void onClickSuggestion(SuggestURLInfo suggestURLInfo) {
         VibrateUtils.vibrateForClick(this);
         // lazy load
-        if(!urlEditText.getText().toString().equals(suggestURLInfo.url)){
-            urlEditText.setText(suggestURLInfo.url);
+        if(!binding.bbsAddIntroUrlEdittext.getText().toString().equals(suggestURLInfo.url)){
+            binding.bbsAddIntroUrlEdittext.setText(suggestURLInfo.url);
         }
 
     }

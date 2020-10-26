@@ -37,15 +37,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.bbsAddIntroActivity"
+            android:name=".activities.AddIntroActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.AboutAppActivity" />
         <activity android:name=".activities.InternalWebViewActivity" />
-        <activity
-            android:name=".activities.appWelcomeActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_app_welcome"
-            android:theme="@style/FullscreenTheme" />
         <activity android:name=".activities.bbsShowThreadDraftActivity" />
         <activity
             android:name=".activities.UserProfileActivity"

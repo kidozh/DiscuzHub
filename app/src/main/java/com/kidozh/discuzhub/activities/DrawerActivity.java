@@ -409,7 +409,7 @@ public class DrawerActivity extends BaseStatusActivity implements
                 else {
                     switch (bbsId){
                         case FUNC_ADD_A_BBS:{
-                            Intent intent = new Intent(activity, bbsAddIntroActivity.class);
+                            Intent intent = new Intent(activity, AddIntroActivity.class);
                             startActivity(intent);
                             return true;
                         }
@@ -502,7 +502,7 @@ public class DrawerActivity extends BaseStatusActivity implements
 
                         }
                         case FUNC_ADD_A_BBS:{
-                            Intent intent = new Intent(activity, bbsAddIntroActivity.class);
+                            Intent intent = new Intent(activity, AddIntroActivity.class);
                             startActivity(intent);
                             return true;
                         }

@@ -7,9 +7,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kidozh.discuzhub.activities.AboutAppActivity;
+import com.kidozh.discuzhub.activities.AddIntroActivity;
 import com.kidozh.discuzhub.activities.SettingsActivity;
 import com.kidozh.discuzhub.activities.SplashScreenActivity;
-import com.kidozh.discuzhub.activities.bbsAddIntroActivity;
 import com.kidozh.discuzhub.adapter.forumInformationAdapter;
 import com.kidozh.discuzhub.callback.forumSwipeToDeleteCallback;
 import com.kidozh.discuzhub.database.BBSInformationDatabase;
@@ -329,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // open a dialog
-                Intent intent = new Intent(context, bbsAddIntroActivity.class);
+                Intent intent = new Intent(context, AddIntroActivity.class);
                 startActivity(intent);
             }
         });

@@ -15,9 +15,6 @@ import android.widget.TextView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.databinding.ActivityAboutAppBinding;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class AboutAppActivity extends BaseStatusActivity {
 
 

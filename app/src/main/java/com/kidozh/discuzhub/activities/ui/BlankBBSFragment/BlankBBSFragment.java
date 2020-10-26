@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.activities.ui.BlankBBSFragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,14 +10,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.bbsAddIntroActivity;
+import com.kidozh.discuzhub.activities.AddIntroActivity;
 import com.kidozh.discuzhub.databinding.FragmentBlankBbsBinding;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,7 +84,7 @@ public class BlankBBSFragment extends Fragment {
         binding.addABbsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), bbsAddIntroActivity.class);
+                Intent intent = new Intent(getActivity(), AddIntroActivity.class);
                 startActivity(intent);
             }
         });

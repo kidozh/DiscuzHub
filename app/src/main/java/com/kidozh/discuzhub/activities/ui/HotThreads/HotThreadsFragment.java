@@ -70,7 +70,8 @@ public class HotThreadsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         hotThreadsViewModel = new ViewModelProvider(this).get(HotThreadsViewModel.class);
         dashBoardViewModel = new ViewModelProvider(this).get(DashBoardViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_hot_thread, container, false);
+        binding = FragmentHotThreadBinding.inflate(inflater,container,false);
+
         getIntentInfo();
 
         configureClient();
@@ -78,7 +79,7 @@ public class HotThreadsFragment extends Fragment {
         configureThreadRecyclerview();
         configureSwipeRefreshLayout();
         bindVieModel();
-        return root;
+        return binding.getRoot();
     }
 
     private void configureClient(){

@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
@@ -246,7 +245,7 @@ public class ManageBBSActivity extends BaseStatusActivity
                 showHelpDialog();
                 return false;
             case R.id.add_item:
-                Intent intent = new Intent(this, bbsAddIntroActivity.class);
+                Intent intent = new Intent(this, AddIntroActivity.class);
                 startActivity(intent);
                 return false;
             default:
