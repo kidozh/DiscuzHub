@@ -17,6 +17,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
 import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment;
 import com.kidozh.discuzhub.database.BBSInformationDatabase;
+import com.kidozh.discuzhub.databinding.FragmentBbsNotificationMessagePortalBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
@@ -37,6 +38,7 @@ public class bbsNotificationMessagePortalFragment extends Fragment {
 
     // TODO: Rename and change types of parameters
     private String filter;
+    FragmentBbsNotificationMessagePortalBinding binding;
 
     public bbsNotificationMessagePortalFragment() {
         // Required empty public constructor
@@ -86,7 +88,8 @@ public class bbsNotificationMessagePortalFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bbs_notification_message_portal, container, false);
+        binding = FragmentBbsNotificationMessagePortalBinding.inflate(inflater,container,false);
+        return binding.getRoot();
     }
 
 
