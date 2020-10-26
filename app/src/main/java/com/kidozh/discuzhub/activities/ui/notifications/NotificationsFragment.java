@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.badge.BadgeDrawable;
@@ -27,6 +26,7 @@ import com.kidozh.discuzhub.activities.ui.UserNotification.UserNotificationFragm
 import com.kidozh.discuzhub.activities.ui.bbsNotificationMessagePortalFragment;
 import com.kidozh.discuzhub.activities.ui.privacyProtect.privacyProtectFragment;
 import com.kidozh.discuzhub.activities.ui.userThreads.bbsMyThreadFragment;
+import com.kidozh.discuzhub.databinding.FragmentNotificationsBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -36,17 +36,11 @@ import butterknife.ButterKnife;
 
 public class NotificationsFragment extends Fragment {
     private static final String TAG = NotificationsFragment.class.getSimpleName();
-    @BindView(R.id.fragment_notifications_viewpager)
-    ViewPager fragmentNotificationViewPager;
-    @BindView(R.id.fragment_notifications_tablayout)
-    TabLayout fragmentNotificationTabLayout;
 
     private NotificationsViewModel notificationsViewModel;
-    private int privateNewMessageNum = -1;
-
-    public NotificationsFragment(int privateMessage){
-        this.privateNewMessageNum = privateMessage;
-    }
+    
+    FragmentNotificationsBinding binding;
+    
     private notificationViewPagerAdapter adapter;
 
     bbsInformation bbsInformation;
@@ -66,10 +60,9 @@ public class NotificationsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         notificationsViewModel = new ViewModelProvider(this).get(NotificationsViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_notifications, container, false);
-        ButterKnife.bind(this,root);
+        binding = FragmentNotificationsBinding.inflate(inflater,container,false);
 
-        return root;
+        return binding.getRoot();
     }
 
     @Override
@@ -82,12 +75,12 @@ public class NotificationsFragment extends Fragment {
 
     void configureViewPager(){
         Log.d(TAG, "Configuring notification fragment");
-        fragmentNotificationTabLayout.setupWithViewPager(fragmentNotificationViewPager);
+        binding.notificationsTablayout.setupWithViewPager(binding.notificationsViewpager);
         adapter  = new notificationViewPagerAdapter(getChildFragmentManager());
-        fragmentNotificationViewPager.setAdapter(adapter);
+        binding.notificationsViewpager.setAdapter(adapter);
         setCustomViewToTabLayout();
 
-        fragmentNotificationTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        binding.notificationsTablayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 Log.d(TAG,"Tab is selected "+tab.getTag());
@@ -149,16 +142,16 @@ public class NotificationsFragment extends Fragment {
         adapter.notifyDataSetChanged();
 
 
-        //fragmentNotificationViewPager.setAdapter(adapter);
-        //fragmentNotificationTabLayout.selectTab(fragmentNotificationTabLayout.getTabAt(position));
+        //binding.notificationsViewpager.setAdapter(adapter);
+        //binding.notificationsTablayout.selectTab(binding.notificationsTablayout.getTabAt(position));
         setCustomViewToTabLayout();
     }
 
     void setCustomViewToTabLayout(){
 
-        for(int i=0;i<fragmentNotificationTabLayout.getTabCount();i++){
+        for(int i=0;i<binding.notificationsTablayout.getTabCount();i++){
 
-            TabLayout.Tab tab = fragmentNotificationTabLayout.getTabAt(i);
+            TabLayout.Tab tab = binding.notificationsTablayout.getTabAt(i);
             int index = i;
             if(BuildConfig.BUILD_TYPE.contentEquals("chinaEdition")){
                 // first is removed!!!
@@ -275,7 +268,7 @@ public class NotificationsFragment extends Fragment {
     }
 
     void showPopupWhenTabSelected(int index){
-        TabLayout.Tab messageTab = fragmentNotificationTabLayout.getTabAt(index);
+        TabLayout.Tab messageTab = binding.notificationsTablayout.getTabAt(index);
         if(messageTab == null|| index >2){
             return;
         }
@@ -289,7 +282,7 @@ public class NotificationsFragment extends Fragment {
         switch (index){
             case 0:{
                 inflater.inflate(R.menu.menu_notification_message,popupMenu.getMenu());
-                TabLayout.Tab messageTabInstance = fragmentNotificationTabLayout.getTabAt(0);
+                TabLayout.Tab messageTabInstance = binding.notificationsTablayout.getTabAt(0);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -315,7 +308,7 @@ public class NotificationsFragment extends Fragment {
             }
             case 1:{
                 inflater.inflate(R.menu.menu_notification_my_thread,popupMenu.getMenu());
-                TabLayout.Tab tab = fragmentNotificationTabLayout.getTabAt(1);
+                TabLayout.Tab tab = binding.notificationsTablayout.getTabAt(1);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -363,7 +356,7 @@ public class NotificationsFragment extends Fragment {
             case 2: {
                 inflater.inflate(R.menu.menu_notification_interact, popupMenu.getMenu());
 
-                TabLayout.Tab tab = fragmentNotificationTabLayout.getTabAt(2);
+                TabLayout.Tab tab = binding.notificationsTablayout.getTabAt(2);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -554,19 +547,19 @@ public class NotificationsFragment extends Fragment {
         }
         try{
             if(noticeNumInfo.pm!=0){
-                BadgeDrawable badgeDrawable = fragmentNotificationTabLayout.getTabAt(0).getOrCreateBadge();
+                BadgeDrawable badgeDrawable = binding.notificationsTablayout.getTabAt(0).getOrCreateBadge();
                 badgeDrawable.setNumber(noticeNumInfo.pm);
             }
             if(noticeNumInfo.mypost!=0){
-                BadgeDrawable badgeDrawable = fragmentNotificationTabLayout.getTabAt(1).getOrCreateBadge();
+                BadgeDrawable badgeDrawable = binding.notificationsTablayout.getTabAt(1).getOrCreateBadge();
                 badgeDrawable.setNumber(noticeNumInfo.mypost);
             }
             if(noticeNumInfo.prompt!=0){
-                BadgeDrawable badgeDrawable = fragmentNotificationTabLayout.getTabAt(3).getOrCreateBadge();
+                BadgeDrawable badgeDrawable = binding.notificationsTablayout.getTabAt(3).getOrCreateBadge();
                 badgeDrawable.setNumber(noticeNumInfo.prompt);
             }
             if(noticeNumInfo.push!=0){
-                BadgeDrawable badgeDrawable = fragmentNotificationTabLayout.getTabAt(2).getOrCreateBadge();
+                BadgeDrawable badgeDrawable = binding.notificationsTablayout.getTabAt(2).getOrCreateBadge();
                 badgeDrawable.setNumber(noticeNumInfo.push);
             }
         }

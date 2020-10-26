@@ -30,9 +30,6 @@ import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import okhttp3.OkHttpClient;
 
 public class HotThreadsFragment extends Fragment {
     private static final String TAG = HotThreadsFragment.class.getSimpleName();
@@ -74,7 +71,6 @@ public class HotThreadsFragment extends Fragment {
         hotThreadsViewModel = new ViewModelProvider(this).get(HotThreadsViewModel.class);
         dashBoardViewModel = new ViewModelProvider(this).get(DashBoardViewModel.class);
         View root = inflater.inflate(R.layout.fragment_hot_thread, container, false);
-        ButterKnife.bind(this,root);
         getIntentInfo();
 
         configureClient();
