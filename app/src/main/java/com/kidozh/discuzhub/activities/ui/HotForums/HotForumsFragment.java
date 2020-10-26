@@ -37,7 +37,6 @@ public class HotForumsFragment extends Fragment {
     private static final String TAG = HotForumsFragment.class.getSimpleName();
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
-    OkHttpClient client;
 
     public static HotForumsFragment newInstance(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
         HotForumsFragment fragment = new HotForumsFragment();
@@ -55,7 +54,6 @@ public class HotForumsFragment extends Fragment {
             bbsInfo = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
             URLUtils.setBBS(bbsInfo);
             userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
-            client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
         }
     }
 
