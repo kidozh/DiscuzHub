@@ -102,29 +102,22 @@ public class ReportPostDialogFragment extends DialogFragment {
                 else {
                     String reason = "";
                     boolean isOtherChecked = checkedReasonId == R.id.report_option_others;
-                    switch (checkedReasonId){
-                        case R.id.report_option_spam:{
-                            reason = getString(R.string.report_option_spam);
-                            break;
-                        }
-                        case R.id.report_option_bump:{
-                            reason = getString(R.string.report_option_bump);
-                            break;
-                        }
-                        case R.id.report_option_violating_content:{
-                            reason = getString(R.string.report_option_violating_content);
-                            break;
-                        }
-                        case R.id.report_option_repeat_post:{
-                            reason = getString(R.string.report_option_repeat_post);
-                            break;
-                        }
-                        case R.id.report_option_others:{
-                            reason = binding.reportInputReason.getText().toString();
-                            break;
-                        }
-
+                    if(checkedReasonId == R.id.report_option_spam){
+                        reason = getString(R.string.report_option_spam);
                     }
+                    else if(checkedReasonId == R.id.report_option_bump){
+                        reason = getString(R.string.report_option_bump);
+                    }
+                    else if(checkedReasonId == R.id.report_option_violating_content){
+                        reason = getString(R.string.report_option_violating_content);
+                    }
+                    else if(checkedReasonId == R.id.report_option_repeat_post){
+                        reason = getString(R.string.report_option_repeat_post);
+                    }
+                    else if(checkedReasonId == R.id.report_option_others){
+                        reason = binding.reportInputReason.getText().toString();
+                    }
+
                     listener.onReportSubmit(postInfo.pid,reason,isOtherChecked);
                 }
             }
