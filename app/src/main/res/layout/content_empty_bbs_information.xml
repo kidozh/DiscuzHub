@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/empty_bbs_information_imageview"
+        android:id="@+id/empty_icon"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginStart="32dp"
@@ -19,10 +19,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/vector_drawable_bbs_empty" />
+        app:srcCompat="@drawable/ic_bbs_empty_24px" />
 
     <TextView
-        android:id="@+id/empty_bbs_information_text"
+        android:id="@+id/empty_content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -32,5 +32,5 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/empty_bbs_information_imageview" />
+        app:layout_constraintTop_toBottomOf="@+id/empty_icon" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,12 +16,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
 import com.kidozh.discuzhub.adapter.PublicMessageAdapter;
+import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
+import com.kidozh.discuzhub.databinding.FragmentPublicMessageBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -33,7 +34,6 @@ import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -43,22 +43,13 @@ import okhttp3.Response;
 public class bbsPublicMessageFragment extends Fragment {
     private final static String TAG = bbsPublicMessageFragment.class.getSimpleName();
 
-    @BindView(R.id.fragment_public_message_recyclerview)
-    RecyclerView publicMessageRecyclerview;
-    @BindView(R.id.fragment_private_message_swipeRefreshLayout)
-    SwipeRefreshLayout publicMessageSwipeRefreshLayout;
-    @BindView(R.id.fragment_public_message_empty_view)
-    View publicMessageEmptyView;
-    @BindView(R.id.empty_bbs_information_imageview)
-    ImageView emptyImageview;
-    @BindView(R.id.empty_bbs_information_text)
-    TextView emptyTextview;
+    FragmentPublicMessageBinding binding;
+    ContentEmptyInformationBinding emptyBinding;
 
     private bbsPrivateMessageFragment.OnNewMessageChangeListener mListener;
 
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
-    ForumInfo forum;
     private OkHttpClient client = new OkHttpClient();
     PublicMessageAdapter adapter;
     private int globalPage = 1;
@@ -95,10 +86,9 @@ public class bbsPublicMessageFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_public_message, container, false);
-        ButterKnife.bind(this,root);
-        Log.d(TAG,"Creating public message page");
-        return root;
+        binding = FragmentPublicMessageBinding.inflate(inflater,container,false);
+        emptyBinding = binding.emptyView;
+        return binding.getRoot();
 
     }
 
@@ -114,22 +104,23 @@ public class bbsPublicMessageFragment extends Fragment {
     }
 
     private void configureEmptyView(){
-        emptyImageview.setImageResource(R.drawable.ic_empty_public_message_64px);
-        emptyTextview.setText(R.string.empty_public_message);
+
+        emptyBinding.emptyIcon.setImageResource(R.drawable.ic_empty_public_message_64px);
+        emptyBinding.emptyContent.setText(R.string.empty_public_message);
     }
 
     void configureRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        publicMessageRecyclerview.setLayoutManager(linearLayoutManager);
+        binding.recyclerview.setLayoutManager(linearLayoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 linearLayoutManager.getOrientation());
-        publicMessageRecyclerview.addItemDecoration(dividerItemDecoration);
+        binding.recyclerview.addItemDecoration(dividerItemDecoration);
         adapter = new PublicMessageAdapter();
-        publicMessageRecyclerview.setAdapter(adapter);
+        binding.recyclerview.setAdapter(adapter);
     }
 
     void configureSwipeRefreshLayout(){
-        publicMessageSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 globalPage = 1;
@@ -151,7 +142,7 @@ public class bbsPublicMessageFragment extends Fragment {
     }
 
     void getPublicMessage(int page){
-        publicMessageSwipeRefreshLayout.setRefreshing(true);
+        binding.swipeRefreshLayout.setRefreshing(true);
         String apiStr = URLUtils.getPublicPMApiUrl(page);
         Request request = new Request.Builder()
                 .url(apiStr)
@@ -166,7 +157,7 @@ public class bbsPublicMessageFragment extends Fragment {
                     @Override
                     public void run() {
                         Log.d(TAG,"ERROR in recv api");
-                        publicMessageSwipeRefreshLayout.setRefreshing(false);
+                        binding.swipeRefreshLayout.setRefreshing(false);
                     }
                 });
             }
@@ -176,7 +167,7 @@ public class bbsPublicMessageFragment extends Fragment {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        publicMessageSwipeRefreshLayout.setRefreshing(false);
+                        binding.swipeRefreshLayout.setRefreshing(false);
                     }
                 });
                 if(response.isSuccessful()&& response.body()!=null){
@@ -194,13 +185,13 @@ public class bbsPublicMessageFragment extends Fragment {
                                 if(page == 1){
                                     adapter.setPublicMessageList(publicMessageList);
                                     if(publicMessageList.size()==0){
-                                        publicMessageEmptyView.setVisibility(View.VISIBLE);
+                                        emptyBinding.emptyView.setVisibility(View.VISIBLE);
                                     }
 
                                 }
                                 else {
                                     if(publicMessageList.size()>0){
-                                        publicMessageEmptyView.setVisibility(View.GONE);
+                                        emptyBinding.emptyView.setVisibility(View.GONE);
                                     }
                                     adapter.addPublicMessageList(publicMessageList);
                                 }
@@ -211,7 +202,7 @@ public class bbsPublicMessageFragment extends Fragment {
                     }
                     else {
 
-                        publicMessageEmptyView.setVisibility(View.VISIBLE);
+                        emptyBinding.emptyView.setVisibility(View.VISIBLE);
 
                     }
 

@@ -60,9 +60,9 @@ public class bbsMyThreadFragment extends Fragment {
     SwipeRefreshLayout myThreadSwipeRefreshLayout;
     @BindView(R.id.fragment_my_thread_empty_view)
     View myThreadEmptyView;
-    @BindView(R.id.empty_bbs_information_imageview)
+    @BindView(R.id.empty_icon)
     ImageView emptyImageview;
-    @BindView(R.id.empty_bbs_information_text)
+    @BindView(R.id.empty_content)
     TextView emptyTextview;
 
     private forumUserBriefInfo userBriefInfo;

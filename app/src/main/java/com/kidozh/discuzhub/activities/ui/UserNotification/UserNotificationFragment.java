@@ -60,9 +60,9 @@ public class UserNotificationFragment extends Fragment {
     SwipeRefreshLayout bbsNotificationSwipeRefreshLayout;
     @BindView(R.id.fragment_bbs_notification_empty_view)
     View bbsNotificationEmptyView;
-    @BindView(R.id.empty_bbs_information_imageview)
+    @BindView(R.id.empty_icon)
     ImageView emptyImageview;
-    @BindView(R.id.empty_bbs_information_text)
+    @BindView(R.id.empty_content)
     TextView emptyTextview;
 
     private forumUserBriefInfo userBriefInfo;

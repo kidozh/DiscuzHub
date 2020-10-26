@@ -228,7 +228,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/vector_drawable_bbs_empty" />
+                        app:srcCompat="@drawable/ic_bbs_empty_24px" />
 
                     <TextView
                         android:id="@+id/show_bbs_information_empty_user_textView"

@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.bbsPrivateMessageAdapter;
+import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
+import com.kidozh.discuzhub.databinding.FragmentBbsPrivateMessageBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -32,8 +34,6 @@ import com.kidozh.discuzhub.utilities.NetworkUtils;
 import java.io.IOException;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -50,26 +50,16 @@ import okhttp3.Response;
  */
 public class bbsPrivateMessageFragment extends Fragment {
     private String TAG = bbsPrivateMessageFragment.class.getSimpleName();
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    
+    FragmentBbsPrivateMessageBinding binding;
+    ContentEmptyInformationBinding emptyInfoBinding;
 
     private OnNewMessageChangeListener mListener;
 
     public bbsPrivateMessageFragment() {
         // Required empty public constructor
     }
-
-    private bbsPrivateMessageFragment(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
-        this.bbsInfo = bbsInfo;
-        this.userBriefInfo = userBriefInfo;
-
-    }
+    
 
     /**
      * Use this factory method to create a new instance of
@@ -104,19 +94,12 @@ public class bbsPrivateMessageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bbs_private_message, container, false);
+        binding = FragmentBbsPrivateMessageBinding.inflate(inflater,container,false);
+        emptyInfoBinding = binding.fragment;
+        return binding.getRoot();
     }
 
-    @BindView(R.id.fragment_private_message_recyclerview)
-    RecyclerView privateMessageRecyclerview;
-    @BindView(R.id.fragment_private_message_swipeRefreshLayout)
-    SwipeRefreshLayout privateMessageSwipeRefreshLayout;
-    @BindView(R.id.fragment_private_message_empty_view)
-    View privateMessageEmptyView;
-    @BindView(R.id.empty_bbs_information_imageview)
-    ImageView emptyImageview;
-    @BindView(R.id.empty_bbs_information_text)
-    TextView emptyTextview;
+
 
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
@@ -130,7 +113,6 @@ public class bbsPrivateMessageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this,view);
         configureIntentData();
         configureRecyclerview();
         configureSwipeRefreshLayout();
@@ -146,19 +128,14 @@ public class bbsPrivateMessageFragment extends Fragment {
         getPrivateMessage(globalPage);
     }
 
-    private void configureEmptyView(){
-        emptyImageview.setImageResource(R.drawable.ic_empty_private_messages_64px);
-        emptyTextview.setText(R.string.empty_private_message);
-    }
-
     private void configureRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        privateMessageRecyclerview.setLayoutManager(linearLayoutManager);
+        binding.recyclerview.setLayoutManager(linearLayoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 linearLayoutManager.getOrientation());
-        privateMessageRecyclerview.addItemDecoration(dividerItemDecoration);
+        binding.recyclerview.addItemDecoration(dividerItemDecoration);
         adapter = new bbsPrivateMessageAdapter(bbsInfo,userBriefInfo);
-        privateMessageRecyclerview.setAdapter(adapter);
+        binding.recyclerview.setAdapter(adapter);
 
     }
 
@@ -167,10 +144,14 @@ public class bbsPrivateMessageFragment extends Fragment {
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
     }
 
-
+    private void configureEmptyView(){
+        emptyInfoBinding.emptyIcon.setImageResource(R.drawable.ic_empty_private_messages_64px);
+        emptyInfoBinding.emptyContent.setText(R.string.empty_private_message);
+    }
 
     void configureSwipeRefreshLayout(){
-        privateMessageSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        
+        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 globalPage = 1;
@@ -182,7 +163,7 @@ public class bbsPrivateMessageFragment extends Fragment {
 
     void getPrivateMessage(int page){
         URLUtils.setBBS(bbsInfo);
-        privateMessageSwipeRefreshLayout.setRefreshing(true);
+        binding.swipeRefreshLayout.setRefreshing(true);
         String apiStr = URLUtils.getPrivatePMApiUrl(page);
         Request request = new Request.Builder()
                 .url(apiStr)
@@ -197,7 +178,7 @@ public class bbsPrivateMessageFragment extends Fragment {
                     @Override
                     public void run() {
                         Log.d(TAG,"ERROR in recv api");
-                        privateMessageSwipeRefreshLayout.setRefreshing(false);
+                        binding.swipeRefreshLayout.setRefreshing(false);
                     }
                 });
             }
@@ -207,7 +188,7 @@ public class bbsPrivateMessageFragment extends Fragment {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        privateMessageSwipeRefreshLayout.setRefreshing(false);
+                        binding.swipeRefreshLayout.setRefreshing(false);
                     }
                 });
                 if(response.isSuccessful()&& response.body()!=null){
@@ -233,10 +214,11 @@ public class bbsPrivateMessageFragment extends Fragment {
                                 if(page == 1){
                                     adapter.setPrivateMessageList(privateMessageList);
                                     if(privateMessageList.size()==0){
-                                        privateMessageEmptyView.setVisibility(View.VISIBLE);
+
+                                        emptyInfoBinding.emptyView.setVisibility(View.VISIBLE);
                                     }
                                     else {
-                                        privateMessageEmptyView.setVisibility(View.GONE);
+                                        emptyInfoBinding.emptyView.setVisibility(View.GONE);
                                     }
                                 }
                                 else {
@@ -251,7 +233,7 @@ public class bbsPrivateMessageFragment extends Fragment {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                privateMessageEmptyView.setVisibility(View.VISIBLE);
+                                emptyInfoBinding.emptyView.setVisibility(View.VISIBLE);
                             }
                         });
 
