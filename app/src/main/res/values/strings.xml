@@ -78,7 +78,7 @@
     <string name="preference_title_data_save_mode">Data saver mode</string>
     <string name="preference_summary_on_data_save">Image and attachments are not downloaded under mobile condition.</string>
     <string name="preference_summary_off_data_save">Image and attachments will be downloaded automactically.</string>
-    <string name="preference_key_data_save_mode">preference_key_data_save_mode</string>
+    <string name="preference_key_data_save_mode" translatable="false">preference_key_data_save_mode</string>
     <string name="bbs_register_account_notification">Since the register process is not provided by the official and many websites always have their own register method which may requires different information. The app avoids the imcompatibility and will guide you to the register website. You can register your account in broswer.</string>
     <string name="bbs_thread_publisher">Author</string>
     <string name="bbs_thread_comment">Comment</string>
@@ -777,6 +777,7 @@
     <string name="api_error_result">API error</string>
     <string name="network_state_unavaliable_error_key">Network Unavaliable</string>
     <string name="network_state_unavaliable_error_content">We could not find an active network interface. Turn off flight mode or turn on wifi, celluar and bluetooth network.</string>
+    <string name="preference_key_last_selected_bbs_identifier" translatable="false">preference_key_last_selected_bbs_identifier</string>
 
 
 </resources>

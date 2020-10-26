@@ -71,6 +71,8 @@
     <color name="colorControlHighlight">?attr/colorControlHighlight</color>
     <color name="colorControlActivated">?attr/colorControlActivated</color>
 
+    <color name="colorAPI5BadgeBackgroundColor">@color/colorAccent</color>
+
 
 
 </resources>

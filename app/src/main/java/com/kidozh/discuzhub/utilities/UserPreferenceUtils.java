@@ -10,8 +10,6 @@ import androidx.annotation.NonNull;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.bbsInformation;
 
-import org.checkerframework.checker.units.qual.C;
-
 public class UserPreferenceUtils {
     private static final String TAG = UserPreferenceUtils.class.getSimpleName();
 
@@ -85,5 +83,19 @@ public class UserPreferenceUtils {
         String preferenceName = context.getString(R.string.preference_key_data_save_mode);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(preferenceName,true);
+    }
+
+    public static int getLastSelectedDrawerItemIdentifier(@NonNull Context context){
+        String preferenceName = context.getString(R.string.preference_key_last_selected_bbs_identifier);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(preferenceName,-1);
+    }
+
+    public static void saveLastSelectedDrawerItemIdentifier(@NonNull Context context, int indentifier){
+        String preferenceName = context.getString(R.string.preference_key_last_selected_bbs_identifier);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(preferenceName,indentifier);
+        editor.apply();
     }
 }

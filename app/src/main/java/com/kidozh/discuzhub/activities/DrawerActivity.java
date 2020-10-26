@@ -2,6 +2,7 @@ package com.kidozh.discuzhub.activities;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -38,6 +39,7 @@ import com.kidozh.discuzhub.databinding.ActivityNewMainDrawerBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.URLUtils;
+import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
@@ -149,6 +151,7 @@ public class DrawerActivity extends BaseStatusActivity implements
     }
 
     private void bindViewModel(){
+
         viewModel.allBBSInformationMutableLiveData.observe(this, bbsInformations -> {
             //binding.materialDrawerSliderView.getItemAdapter().clear();
 
@@ -182,7 +185,7 @@ public class DrawerActivity extends BaseStatusActivity implements
                         ));
                         BadgeStyle badgeStyle = new BadgeStyle();
 
-                        badgeStyle.setBadgeBackground(getDrawable(R.color.colorAccent));
+                        badgeStyle.setBadgeBackground(getDrawable(R.color.colorAPI5BadgeBackgroundColor));
                         ColorHolder colorHolder= new ColorHolder();
                         colorHolder.setColorRes$materialdrawer(R.color.colorPureWhite);
                         badgeStyle.setTextColor(colorHolder);
@@ -197,8 +200,16 @@ public class DrawerActivity extends BaseStatusActivity implements
                 headerView.setProfiles(accountProfiles);
                 // drawerAccountHeader.setProfiles(accountProfiles);
                 if(bbsInformations.size() > 0){
-                    bbsInformation currentBBSInfo = bbsInformations.get(0);
-                    headerView.setActiveProfile(currentBBSInfo.getId(),true);
+
+                    int activeIdentifier = UserPreferenceUtils.getLastSelectedDrawerItemIdentifier(this);
+                    if(activeIdentifier >= 0){
+                        headerView.setActiveProfile(activeIdentifier,true);
+                    }
+                    else {
+                        bbsInformation currentBBSInfo = bbsInformations.get(0);
+                        headerView.setActiveProfile(currentBBSInfo.getId(),true);
+                    }
+
                 }
 
             }
@@ -393,6 +404,7 @@ public class DrawerActivity extends BaseStatusActivity implements
                             bbsInformation curBBS = allBBSList.get(i);
                             if(curBBS.getId() == bbsId){
                                 viewModel.currentBBSInformationMutableLiveData.setValue(curBBS);
+                                UserPreferenceUtils.saveLastSelectedDrawerItemIdentifier(activity,bbsId);
                                 return false;
                             }
                         }
@@ -419,7 +431,7 @@ public class DrawerActivity extends BaseStatusActivity implements
             }
         });
         headerView.attachToSliderView(binding.materialDrawerSliderView);
-
+        Context context = this;
         binding.materialDrawerSliderView.setOnDrawerItemClickListener(new Function3<View, IDrawerItem<?>, Integer, Boolean>() {
             @Override
             public Boolean invoke(View view, IDrawerItem<?> iDrawerItem, Integer integer) {
@@ -631,9 +643,6 @@ public class DrawerActivity extends BaseStatusActivity implements
                     return DashBoardFragment.newInstance(bbsInfo, userBriefInfo);
                 case 2:
                     notificationsFragment = new NotificationsFragment(bbsInfo, userBriefInfo);
-//                    if(noticeNumInfo !=null){
-//                        notificationsFragment.renderTabNumber(noticeNumInfo);
-//                    }
                     return notificationsFragment;
             }
             return HomeFragment.newInstance(bbsInfo,userBriefInfo);
@@ -877,10 +886,24 @@ public class DrawerActivity extends BaseStatusActivity implements
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        int activeIdentifier = UserPreferenceUtils.getLastSelectedDrawerItemIdentifier(this);
+        if(activeIdentifier >= 0){
+            headerView.setActiveProfile(activeIdentifier,true);
+        }
+        else {
+            headerView.setActiveProfile(0,true);
+        }
+    }
+
+    @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
 
         binding.materialDrawerSliderView.saveInstanceState(outState);
         headerView.saveInstanceState(outState);
+
+
         super.onSaveInstanceState(outState);
     }
 
@@ -902,16 +925,9 @@ public class DrawerActivity extends BaseStatusActivity implements
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            Log.d(TAG,"view histories number @@@ "+integer+" identifier "+FUNC_VIEW_HISTORY);
+            Log.d(TAG,"view histories number @@@ "+integer+" identifier "+CURRENT_BBS_NULL);
             if(integer !=CURRENT_BBS_NULL){
-
                 MaterialDrawerSliderViewExtensionsKt.updateBadge(binding.materialDrawerSliderView,FUNC_VIEW_HISTORY, new StringHolder(String.valueOf(integer)));
-                //MaterialDrawerSliderViewExtensionsKt.updateItem(binding.materialDrawerSliderView,viewHistory);
-                if(binding.materialDrawerSliderView.getItemAdapter().getFastAdapter() !=null){
-                    binding.materialDrawerSliderView.getItemAdapter().getFastAdapter().notifyAdapterDataSetChanged();
-                }
-
-                //MaterialDrawerSliderViewExtensionsKt.updateBadge(binding.materialDrawerSliderView,FUNC_VIEW_HISTORY,new StringHolder(String.valueOf(integer)));
             }
 
 
