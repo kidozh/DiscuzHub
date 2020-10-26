@@ -24,6 +24,7 @@ import com.kidozh.discuzhub.activities.ui.FavoriteForum.FavoriteForumFragment;
 import com.kidozh.discuzhub.activities.ui.FavoriteThread.FavoriteThreadFragment;
 import com.kidozh.discuzhub.activities.ui.HotForums.HotForumsFragment;
 import com.kidozh.discuzhub.activities.ui.HotThreads.HotThreadsFragment;
+import com.kidozh.discuzhub.databinding.FragmentDashboardBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
@@ -87,14 +88,11 @@ public class DashBoardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dashboard, container, false);
+        binding = FragmentDashboardBinding.inflate(inflater,container,false);
+        return binding.getRoot();
     }
 
-    @BindView(R.id.dashboard_viewpager2)
-    ViewPager2 viewPager;
-
-    @BindView(R.id.dashboard_tablayout)
-    TabLayout tabLayout;
+    FragmentDashboardBinding binding;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -106,16 +104,16 @@ public class DashBoardFragment extends Fragment {
 
     private void bindTabLayoutAndViewPager2(){
         viewModel.setFavoriteThreadInfo(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0);
-        viewPager.setAdapter(new DashBoardViewPagerAdapter(getChildFragmentManager(),getLifecycle()));
-        viewPager.setUserInputEnabled(false);
+        binding.viewpager2.setAdapter(new DashBoardViewPagerAdapter(getChildFragmentManager(),getLifecycle()));
+        binding.viewpager2.setUserInputEnabled(false);
 
         viewModel.FavoriteThreadNumber.observe(getViewLifecycleOwner(), integer -> {
             Log.d(TAG,"get favorite thread number "+integer);
             if(integer > 0){
-                Objects.requireNonNull(tabLayout.getTabAt(2)).getOrCreateBadge().setNumber(integer);
+                Objects.requireNonNull(binding.tablayout.getTabAt(2)).getOrCreateBadge().setNumber(integer);
             }
             else {
-                Objects.requireNonNull(tabLayout.getTabAt(2)).removeBadge();
+                Objects.requireNonNull(binding.tablayout.getTabAt(2)).removeBadge();
             }
 
         });
@@ -123,34 +121,34 @@ public class DashBoardFragment extends Fragment {
         viewModel.favoriteForumNumber.observe(getViewLifecycleOwner(), integer -> {
             Log.d(TAG,"get favorite thread number "+integer);
             if(integer > 0){
-                Objects.requireNonNull(tabLayout.getTabAt(3)).getOrCreateBadge().setNumber(integer);
+                Objects.requireNonNull(binding.tablayout.getTabAt(3)).getOrCreateBadge().setNumber(integer);
             }
             else {
-                Objects.requireNonNull(tabLayout.getTabAt(3)).removeBadge();
+                Objects.requireNonNull(binding.tablayout.getTabAt(3)).removeBadge();
             }
 
         });
 
         viewModel.hotThreadCountMutableLiveData.observe(getViewLifecycleOwner(), integer -> {
             if(integer > 0){
-                Objects.requireNonNull(tabLayout.getTabAt(0)).getOrCreateBadge().setNumber(integer);
+                Objects.requireNonNull(binding.tablayout.getTabAt(0)).getOrCreateBadge().setNumber(integer);
             }
             else {
-                Objects.requireNonNull(tabLayout.getTabAt(0)).removeBadge();
+                Objects.requireNonNull(binding.tablayout.getTabAt(0)).removeBadge();
             }
         });
 
         viewModel.hotForumCountMutableLiveData.observe(getViewLifecycleOwner(),integer -> {
             if(integer > 0){
-                Objects.requireNonNull(tabLayout.getTabAt(1)).getOrCreateBadge().setNumber(integer);
+                Objects.requireNonNull(binding.tablayout.getTabAt(1)).getOrCreateBadge().setNumber(integer);
             }
             else {
-                Objects.requireNonNull(tabLayout.getTabAt(1)).removeBadge();
+                Objects.requireNonNull(binding.tablayout.getTabAt(1)).removeBadge();
             }
         });
 
 
-        new TabLayoutMediator(tabLayout,viewPager,
+        new TabLayoutMediator(binding.tablayout,binding.viewpager2,
                 (tab, position) -> {
             switch (position){
                 case 0:{

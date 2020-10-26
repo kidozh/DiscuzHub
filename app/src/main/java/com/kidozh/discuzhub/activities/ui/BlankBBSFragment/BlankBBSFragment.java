@@ -15,6 +15,7 @@ import android.widget.Button;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.bbsAddIntroActivity;
+import com.kidozh.discuzhub.databinding.FragmentBlankBbsBinding;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,12 +75,13 @@ public class BlankBBSFragment extends Fragment {
 
     @BindView(R.id.add_a_bbs_btn)
     Button addBBSBtn;
-
+    FragmentBlankBbsBinding binding;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_blank_bbs, container, false);
+        binding = FragmentBlankBbsBinding.inflate(inflater,container,false);
+        return binding.getRoot();
     }
 
     @Override

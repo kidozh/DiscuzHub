@@ -25,6 +25,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.PollOptionAdapter;
+import com.kidozh.discuzhub.databinding.FragmentBbsPollBinding;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.RecyclerItemClickListener;
@@ -104,23 +105,17 @@ public class bbsPollFragment extends Fragment {
         }
     }
 
+    FragmentBbsPollBinding binding;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bbs_poll, container, false);
+        binding = FragmentBbsPollBinding.inflate(inflater,container,false);
+        return binding.getRoot();
     }
 
-    @BindView(R.id.bbs_poll_expire_time)
-    TextView bbsPollExpireTime;
-    @BindView(R.id.bbs_poll_voter_number)
-    TextView bbsPollVoterNumber;
-    @BindView(R.id.bbs_poll_chip_group)
-    ChipGroup bbsPollAttrChipGroup;
-    @BindView(R.id.bbs_poll_option_recyclerview)
-    RecyclerView pollOptionRecyclerview;
-    @BindView(R.id.bbs_poll_vote_btn)
-    Button bbsPollVoteBtn;
+
 
     PollOptionAdapter adapter;
     OkHttpClient client;
@@ -131,6 +126,7 @@ public class bbsPollFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         ButterKnife.bind(this,view);
         Log.d(TAG,"Poll " + pollInfo);
         configurePollInformation();
@@ -140,13 +136,13 @@ public class bbsPollFragment extends Fragment {
     void configurePollInformation(){
         context = getActivity();
 
-        bbsPollExpireTime.setText(
+        binding.bbsPollExpireTime.setText(
                 getString(R.string.poll_expire_at,
                             timeDisplayUtils.getLocalePastTimeString(context,pollInfo.expirations)
                 ));
         Resources res = getResources();
         String votersNumberString = res.getQuantityString(R.plurals.poll_voter_number, pollInfo.votersCount, pollInfo.votersCount);
-        bbsPollVoterNumber.setText(votersNumberString);
+        binding.bbsPollVoterNumber.setText(votersNumberString);
         // add attributes
         Chip chip = new Chip(context);
         chip.setChipBackgroundColor(context.getColorStateList(R.color.chip_background_select_state));
@@ -159,7 +155,7 @@ public class bbsPollFragment extends Fragment {
             chip.setText(R.string.poll_multiple_choices);
             chip.setChipIcon(context.getDrawable(R.drawable.vector_drawable_format_list_bulleted_24px));
         }
-        bbsPollAttrChipGroup.addView(chip);
+        binding.bbsPollChipGroup.addView(chip);
         chip = new Chip(context);
 
 
@@ -174,14 +170,14 @@ public class bbsPollFragment extends Fragment {
             chip.setChipBackgroundColorResource(R.color.colorUnSafeStatus);
         }
         chip.setTextColor(context.getColor(R.color.colorPureWhite));
-        bbsPollAttrChipGroup.addView(chip);
+        binding.bbsPollChipGroup.addView(chip);
         chip = new Chip(context);
         chip.setChipBackgroundColor(context.getColorStateList(R.color.chip_background_select_state));
         chip.setTextColor(context.getColor(R.color.colorPrimary));
         if(pollInfo.resultVisible){
             chip.setText(R.string.poll_visible_after_vote);
             chip.setChipIcon(context.getDrawable(R.drawable.vector_drawable_how_to_vote_24px));
-            bbsPollAttrChipGroup.addView(chip);
+            binding.bbsPollChipGroup.addView(chip);
         }
         configurePollVoteBtn();
         configureRecyclerview();
@@ -191,14 +187,14 @@ public class bbsPollFragment extends Fragment {
 
     void configurePollVoteBtn(){
         if(!pollInfo.allowVote){
-            bbsPollVoteBtn.setVisibility(View.GONE);
+            binding.bbsPollVoteBtn.setVisibility(View.GONE);
         }
         else {
-            bbsPollVoteBtn.setVisibility(View.VISIBLE);
+            binding.bbsPollVoteBtn.setVisibility(View.VISIBLE);
         }
-        bbsPollVoteBtn.setEnabled(false);
-        bbsPollVoteBtn.setText(getString(R.string.poll_vote_progress,0,pollInfo.maxChoices));
-        bbsPollVoteBtn.setOnClickListener(new View.OnClickListener() {
+        binding.bbsPollVoteBtn.setEnabled(false);
+        binding.bbsPollVoteBtn.setText(getString(R.string.poll_vote_progress,0,pollInfo.maxChoices));
+        binding.bbsPollVoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 List<bbsPollInfo.option> options = adapter.getPollOptions();
@@ -206,7 +202,7 @@ public class bbsPollFragment extends Fragment {
 
                 if(pollInfo.allowVote && checkedNumber > 0 && checkedNumber<=pollInfo.maxChoices && formhash!=null){
                     Log.d(TAG,"VOTING "+formhash);
-                    bbsPollVoteBtn.setEnabled(false);
+                    binding.bbsPollVoteBtn.setEnabled(false);
                     FormBody.Builder formBodyBuilder = new FormBody.Builder()
                             .add("formhash",formhash);
                     // append pollanswers[]: id accordingly
@@ -242,15 +238,15 @@ public class bbsPollFragment extends Fragment {
                                 mHandler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        bbsPollVoteBtn.setEnabled(true);
+                                        binding.bbsPollVoteBtn.setEnabled(true);
                                         // need to notify the activity if success
                                         bbsParseUtils.returnMessage message = bbsParseUtils.parseReturnMessage(s);
                                         if(message!=null){
                                             if(message.value.equals("thread_poll_succeed")){
                                                 // toast using
                                                 Toasty.success(context,message.string, Toast.LENGTH_SHORT).show();
-                                                bbsPollVoteBtn.setEnabled(false);
-                                                bbsPollVoteBtn.setText(message.string);
+                                                binding.bbsPollVoteBtn.setEnabled(false);
+                                                binding.bbsPollVoteBtn.setText(message.string);
                                             }
                                             else {
                                                 Toasty.error(context,message.string,Toast.LENGTH_SHORT).show();
@@ -272,16 +268,16 @@ public class bbsPollFragment extends Fragment {
     }
 
     void configureRecyclerview(){
-        //pollOptionRecyclerview.setLayoutManager(new GridLayoutManager(getActivity(),2));
-        pollOptionRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
+        //binding.bbsPollOptionRecyclerview.setLayoutManager(new GridLayoutManager(getActivity(),2));
+        binding.bbsPollOptionRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new PollOptionAdapter();
-        pollOptionRecyclerview.setAdapter(adapter);
+        binding.bbsPollOptionRecyclerview.setAdapter(adapter);
         List<bbsPollInfo.option> options = pollInfo.options;
         if(options!= null && options.size() > 0){
             adapter.setPollOptions(options);
         }
         // recyclerview check
-        pollOptionRecyclerview.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), pollOptionRecyclerview, new RecyclerItemClickListener.OnItemClickListener() {
+        binding.bbsPollOptionRecyclerview.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), binding.bbsPollOptionRecyclerview, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 // if check
@@ -293,16 +289,16 @@ public class bbsPollFragment extends Fragment {
                     int checkedNumber = pollInfo.getCheckedOptionNumber();
 
                     if(checkedNumber <= pollInfo.maxChoices && checkedNumber >0){
-                        bbsPollVoteBtn.setEnabled(true);
-                        bbsPollVoteBtn.setText(getString(R.string.poll_vote_progress,checkedNumber,pollInfo.maxChoices));
+                        binding.bbsPollVoteBtn.setEnabled(true);
+                        binding.bbsPollVoteBtn.setText(getString(R.string.poll_vote_progress,checkedNumber,pollInfo.maxChoices));
                     }
                     else {
-                        bbsPollVoteBtn.setEnabled(false);
-                        bbsPollVoteBtn.setText(getString(R.string.poll_vote_progress,checkedNumber,pollInfo.maxChoices));
+                        binding.bbsPollVoteBtn.setEnabled(false);
+                        binding.bbsPollVoteBtn.setText(getString(R.string.poll_vote_progress,checkedNumber,pollInfo.maxChoices));
                     }
                 }
                 else {
-                    bbsPollVoteBtn.setVisibility(View.GONE);
+                    binding.bbsPollVoteBtn.setVisibility(View.GONE);
                 }
 
             }
