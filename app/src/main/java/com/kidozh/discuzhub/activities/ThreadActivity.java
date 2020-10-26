@@ -1935,143 +1935,138 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         else {
             currentUrl = URLUtils.getViewThreadUrl(tid,String.valueOf(viewThreadQueryStatus.page));
         }
-
-        switch (item.getItemId()) {
-
-            case android.R.id.home:   //返回键的id
-                this.finishAfterTransition();
-                return false;
-            case R.id.bbs_forum_nav_personal_center:{
-                Intent intent = new Intent(this, UserProfileActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                intent.putExtra("UID",String.valueOf(userBriefInfo.uid));
-                startActivity(intent);
-                return true;
-            }
-            case R.id.bbs_settings:{
-                Intent intent = new Intent(this,SettingsActivity.class);
-                startActivity(intent);
-                return true;
-            }
-            case R.id.bbs_forum_nav_draft_box:{
-                Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                startActivity(intent,null);
-                return true;
-
-            }
-            case R.id.bbs_forum_nav_show_in_webview:{
-                Intent intent = new Intent(this, InternalWebViewActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                intent.putExtra(bbsConstUtils.PASS_URL_KEY,currentUrl);
-                Log.d(TAG,"Inputted URL "+currentUrl);
-                startActivity(intent);
-                return true;
-            }
-            case R.id.bbs_forum_nav_show_in_external_browser:{
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentUrl));
-                Log.d(TAG,"Inputted URL "+currentUrl);
-                startActivity(intent);
-                return true;
-            }
-            case R.id.bbs_forum_nav_dateline_sort:{
-                Context context = this;
-                viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
-                Log.d(TAG,"You press sort btn "+ viewThreadQueryStatus.datelineAscend);
-                // bbsThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
-                if(viewThreadQueryStatus !=null){
-                    viewThreadQueryStatus.datelineAscend = !viewThreadQueryStatus.datelineAscend;
-                    Log.d(TAG,"Changed Ascend mode "+ viewThreadQueryStatus.datelineAscend);
-
-
-                    Log.d(TAG,"Apply Ascend mode "+threadDetailViewModel.threadStatusMutableLiveData.getValue().datelineAscend);
-                    reloadThePage(viewThreadQueryStatus);
-                    Log.d(TAG,"After reload Ascend mode "+threadDetailViewModel.threadStatusMutableLiveData.getValue().datelineAscend);
-
-                    if(viewThreadQueryStatus.datelineAscend){
-                        Toasty.success(context,getString(R.string.bbs_thread_status_ascend),Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toasty.success(context,getString(R.string.bbs_thread_status_descend),Toast.LENGTH_SHORT).show();
-                    }
-                    // reload the parameters
-                    Log.d(TAG,"dateline ascend "+ viewThreadQueryStatus.datelineAscend);
-
-                    threadDetailViewModel.getThreadDetail(viewThreadQueryStatus);
-
-                    invalidateOptionsMenu();
-
-                }
-                return true;
-            }
-            case R.id.bbs_share:{
-                ThreadResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
-                if(result!=null && result.threadPostVariables!=null && result.threadPostVariables.detailedThreadInfo!=null){
-                    bbsParseUtils.DetailedThreadInfo detailedThreadInfo = result.threadPostVariables.detailedThreadInfo;
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_template,
-                            detailedThreadInfo.subject,currentUrl));
-                    sendIntent.setType("text/plain");
-
-                    Intent shareIntent = Intent.createChooser(sendIntent, null);
-                    startActivity(shareIntent);
-                    return true;
-                }
-                else {
-                    Toasty.info(this,getString(R.string.share_not_prepared),Toast.LENGTH_SHORT).show();
-                }
-                return true;
-
-            }
-            case R.id.bbs_favorite:{
-                ThreadResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
-                if(result!=null && result.threadPostVariables!=null && result.threadPostVariables.detailedThreadInfo!=null){
-                    bbsParseUtils.DetailedThreadInfo detailedThreadInfo = result.threadPostVariables.detailedThreadInfo;
-                    FavoriteThread favoriteThread = detailedThreadInfo.toFavoriteThread(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0);
-                    // save it to the database
-                    // boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
-                    FavoriteThread favoriteThreadInDB = threadDetailViewModel.favoriteThreadLiveData.getValue();
-                    boolean isFavorite = favoriteThreadInDB != null;
-                    if(isFavorite){
-
-                        Log.d(TAG,"Get Favroite thread"+ favoriteThreadInDB);
-                        new FavoritingThreadAsyncTask(favoriteThreadInDB,false).execute();
-
-                    }
-                    else {
-                        Log.d(TAG,"is Favorite "+isFavorite);
-                        // open up a dialog
-                        launchFavoriteThreadDialog(favoriteThread);
-                        //new FavoritingThreadAsyncTask(favoriteThread,true).execute();
-                    }
-
-                }
-                else {
-                    Toasty.info(this,getString(R.string.favorite_thread_not_prepared),Toast.LENGTH_SHORT).show();
-                }
-
-                return true;
-            }
-            case R.id.bbs_search:{
-                Intent intent = new Intent(this, SearchPostsActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                startActivity(intent);
-                return true;
-            }
-            case R.id.bbs_about_app:{
-                Intent intent = new Intent(this, AboutAppActivity.class);
-                startActivity(intent);
-                return true;
-            }
-
-            default:
-                return super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        if(id == android.R.id.home){
+            this.finishAfterTransition();
+            return true;
         }
+        else if(id == R.id.bbs_forum_nav_personal_center){
+            Intent intent = new Intent(this, UserProfileActivity.class);
+            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra("UID",String.valueOf(userBriefInfo.uid));
+            startActivity(intent);
+            return true;
+        }
+        else if(id == R.id.bbs_settings){
+            Intent intent = new Intent(this,SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if(id == R.id.bbs_forum_nav_draft_box){
+            Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
+            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            startActivity(intent,null);
+            return true;
+        }
+        else if(id == R.id.bbs_forum_nav_show_in_webview){
+            Intent intent = new Intent(this, InternalWebViewActivity.class);
+            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(bbsConstUtils.PASS_URL_KEY,currentUrl);
+            Log.d(TAG,"Inputted URL "+currentUrl);
+            startActivity(intent);
+            return true;
+        }
+        else if(id == R.id.bbs_forum_nav_show_in_external_browser){
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(currentUrl));
+            Log.d(TAG,"Inputted URL "+currentUrl);
+            startActivity(intent);
+            return true;
+        }
+        else if(id == R.id.bbs_forum_nav_dateline_sort){
+            Context context = this;
+            viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+            Log.d(TAG,"You press sort btn "+ viewThreadQueryStatus.datelineAscend);
+            // bbsThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+            if(viewThreadQueryStatus !=null){
+                viewThreadQueryStatus.datelineAscend = !viewThreadQueryStatus.datelineAscend;
+                Log.d(TAG,"Changed Ascend mode "+ viewThreadQueryStatus.datelineAscend);
+
+
+                Log.d(TAG,"Apply Ascend mode "+threadDetailViewModel.threadStatusMutableLiveData.getValue().datelineAscend);
+                reloadThePage(viewThreadQueryStatus);
+                Log.d(TAG,"After reload Ascend mode "+threadDetailViewModel.threadStatusMutableLiveData.getValue().datelineAscend);
+
+                if(viewThreadQueryStatus.datelineAscend){
+                    Toasty.success(context,getString(R.string.bbs_thread_status_ascend),Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toasty.success(context,getString(R.string.bbs_thread_status_descend),Toast.LENGTH_SHORT).show();
+                }
+                // reload the parameters
+                Log.d(TAG,"dateline ascend "+ viewThreadQueryStatus.datelineAscend);
+
+                threadDetailViewModel.getThreadDetail(viewThreadQueryStatus);
+
+                invalidateOptionsMenu();
+
+            }
+            return true;
+        }
+        else if(id == R.id.bbs_share){
+            ThreadResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
+            if(result!=null && result.threadPostVariables!=null && result.threadPostVariables.detailedThreadInfo!=null){
+                bbsParseUtils.DetailedThreadInfo detailedThreadInfo = result.threadPostVariables.detailedThreadInfo;
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_template,
+                        detailedThreadInfo.subject,currentUrl));
+                sendIntent.setType("text/plain");
+
+                Intent shareIntent = Intent.createChooser(sendIntent, null);
+                startActivity(shareIntent);
+                return true;
+            }
+            else {
+                Toasty.info(this,getString(R.string.share_not_prepared),Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        }
+        if(id == R.id.bbs_favorite){
+            ThreadResult result = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
+            if(result!=null && result.threadPostVariables!=null && result.threadPostVariables.detailedThreadInfo!=null){
+                bbsParseUtils.DetailedThreadInfo detailedThreadInfo = result.threadPostVariables.detailedThreadInfo;
+                FavoriteThread favoriteThread = detailedThreadInfo.toFavoriteThread(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0);
+                // save it to the database
+                // boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
+                FavoriteThread favoriteThreadInDB = threadDetailViewModel.favoriteThreadLiveData.getValue();
+                boolean isFavorite = favoriteThreadInDB != null;
+                if(isFavorite){
+
+                    Log.d(TAG,"Get Favroite thread"+ favoriteThreadInDB);
+                    new FavoritingThreadAsyncTask(favoriteThreadInDB,false).execute();
+
+                }
+                else {
+                    Log.d(TAG,"is Favorite "+isFavorite);
+                    // open up a dialog
+                    launchFavoriteThreadDialog(favoriteThread);
+                    //new FavoritingThreadAsyncTask(favoriteThread,true).execute();
+                }
+
+            }
+            else {
+                Toasty.info(this,getString(R.string.favorite_thread_not_prepared),Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if(id == R.id.bbs_search){
+            Intent intent = new Intent(this, SearchPostsActivity.class);
+            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            startActivity(intent);
+            return true;
+        }
+        else if(id == R.id.bbs_about_app){
+            Intent intent = new Intent(this, AboutAppActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else {
+            return super.onOptionsItemSelected(item);
+        }
+        return false;
     }
 
     @Override
