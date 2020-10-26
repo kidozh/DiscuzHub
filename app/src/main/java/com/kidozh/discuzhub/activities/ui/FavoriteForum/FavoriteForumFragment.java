@@ -32,8 +32,6 @@ import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
 public class FavoriteForumFragment extends Fragment {
@@ -80,16 +78,7 @@ public class FavoriteForumFragment extends Fragment {
         return binding.getRoot();
     }
 
-    @BindView(R.id.blank_favorite_thread_view)
-    View blankFavoriteThreadView;
-    @BindView(R.id.favorite_thread_recyclerview)
-    RecyclerView favoriteThreadRecyclerview;
-    @BindView(R.id.favorite_thread_swipelayout)
-    SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.favorite_thread_sync_progressbar)
-    ProgressBar syncFavoriteThreadProgressBar;
-    @BindView(R.id.blank_favorite_thread_notice)
-    TextView blankFavoriteNotice;
+    
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -101,7 +90,7 @@ public class FavoriteForumFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this,view);
+
         mViewModel = new ViewModelProvider(this).get(FavoriteForumViewModel.class);
         mViewModel.setInfo(bbsInfo,userBriefInfo);
         configureRecyclerview();
@@ -111,28 +100,28 @@ public class FavoriteForumFragment extends Fragment {
     }
 
     private void configureRecyclerview(){
-        favoriteThreadRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.favoriteThreadRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new FavoriteForumAdapter();
         adapter.setInformation(bbsInfo,userBriefInfo);
         mViewModel.getFavoriteItemListData().observe(getViewLifecycleOwner(),adapter::submitList);
-        favoriteThreadRecyclerview.setAdapter(adapter);
-        favoriteThreadRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+        binding.favoriteThreadRecyclerview.setAdapter(adapter);
+        binding.favoriteThreadRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
     }
 
     private void configureSwipeRefreshLayout(){
         if(userBriefInfo!=null){
-            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            binding.favoriteThreadSwipelayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    syncFavoriteThreadProgressBar.setVisibility(View.GONE);
+                    binding.favoriteThreadSyncProgressbar.setVisibility(View.GONE);
                     Toasty.info(getContext(),getString(R.string.sync_favorite_forum_start,bbsInfo.site_name), Toast.LENGTH_SHORT).show();
                     mViewModel.startSyncFavoriteForum();
-                    swipeRefreshLayout.setRefreshing(false);
+                    binding.favoriteThreadSwipelayout.setRefreshing(false);
                 }
             });
         }
         else {
-            swipeRefreshLayout.setEnabled(false);
+            binding.favoriteThreadSwipelayout.setEnabled(false);
         }
 
     }
@@ -142,11 +131,11 @@ public class FavoriteForumFragment extends Fragment {
 
         mViewModel.getFavoriteItemListData().observe(getViewLifecycleOwner(),favoriteThreads -> {
             if(favoriteThreads.size() == 0){
-                blankFavoriteThreadView.setVisibility(View.VISIBLE);
-                blankFavoriteNotice.setText(R.string.favorite_forum_not_found);
+                binding.blankFavoriteThreadView.setVisibility(View.VISIBLE);
+                binding.blankFavoriteThreadNotice.setText(R.string.favorite_forum_not_found);
             }
             else {
-                blankFavoriteThreadView.setVisibility(View.GONE);
+                binding.blankFavoriteThreadView.setVisibility(View.GONE);
             }
         });
 
@@ -177,11 +166,11 @@ public class FavoriteForumFragment extends Fragment {
     private void bindSyncStatus(){
         mViewModel.totalCount.observe(getViewLifecycleOwner(), count ->{
             if(count == -1){
-                syncFavoriteThreadProgressBar.setVisibility(View.VISIBLE);
-                syncFavoriteThreadProgressBar.setIndeterminate(true);
+                binding.favoriteThreadSyncProgressbar.setVisibility(View.VISIBLE);
+                binding.favoriteThreadSyncProgressbar.setIndeterminate(true);
             }
             else {
-                syncFavoriteThreadProgressBar.setVisibility(View.GONE);
+                binding.favoriteThreadSyncProgressbar.setVisibility(View.GONE);
             }
 
         });
@@ -193,19 +182,19 @@ public class FavoriteForumFragment extends Fragment {
 
                 }
                 else if(count > favoriteForums.size()){
-                    syncFavoriteThreadProgressBar.setVisibility(View.VISIBLE);
-                    syncFavoriteThreadProgressBar.setMax(count);
+                    binding.favoriteThreadSyncProgressbar.setVisibility(View.VISIBLE);
+                    binding.favoriteThreadSyncProgressbar.setMax(count);
 
-                    syncFavoriteThreadProgressBar.setProgress(favoriteForums.size());
+                    binding.favoriteThreadSyncProgressbar.setProgress(favoriteForums.size());
 
                 }
                 else {
-                    syncFavoriteThreadProgressBar.setVisibility(View.GONE);
+                    binding.favoriteThreadSyncProgressbar.setVisibility(View.GONE);
                     //Toasty.success(getContext(),getString(R.string.sync_favorite_thread_load_all),Toast.LENGTH_LONG).show();
                 }
             }
             else {
-                syncFavoriteThreadProgressBar.setVisibility(View.GONE);
+                binding.favoriteThreadSyncProgressbar.setVisibility(View.GONE);
             }
 
         });
