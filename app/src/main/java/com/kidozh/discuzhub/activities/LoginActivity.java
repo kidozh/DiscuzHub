@@ -33,6 +33,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
+import com.kidozh.discuzhub.databinding.ActivityLoginBbsBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.LoginResult;
@@ -62,46 +63,18 @@ public class LoginActivity extends BaseStatusActivity {
 
     private String TAG = LoginActivity.class.getSimpleName();
 
-    @BindView(R.id.login_bbs_avatar)
-    ImageView bbsAvatar;
-    @BindView(R.id.login_bbs_title)
-    TextView bbsTitle;
-    @BindView(R.id.login_bbs_url)
-    TextView bbsBaseUrl;
-    @BindView(R.id.login_bbs_security_question_spinner)
-    Spinner bbsSecurityQuestionSpinner;
-    @BindView(R.id.login_bbs_security_answer_editText)
-    EditText bbsSecurityAnswerEditText;
-    @BindView(R.id.login_bbs_login_button)
-    Button bbsLoginBtn;
-    @BindView(R.id.login_bbs_login_in_web_button)
-    Button bbsLoginInWebBtn;
-    @BindView(R.id.login_bbs_notice)
-    TextView bbsUnsecureNoticeTextview;
-    @BindView(R.id.login_bbs_account_textInputEditText)
-    TextInputEditText bbsAccountInputEditText;
-    @BindView(R.id.login_bbs_password_textInputEditText)
-    TextInputEditText bbsPasswordInputEditText;
-    @BindView(R.id.login_bbs_account_textInputLayout)
-    TextInputLayout bbsAccountTextInputLayout;
-    @BindView(R.id.login_bbs_password_textInputLayout)
-    TextInputLayout bbsPasswordTextInputLayout;
     LoginViewModel viewModel;
-    @BindView(R.id.login_bbs_captcha_inputLayout)
-    TextInputLayout bbsCaptchaInputLayout;
-    @BindView(R.id.login_bbs_captcha_imageView)
-    ImageView bbsCaptchaImageview;
-    @BindView(R.id.login_bbs_captcha_editText)
-    EditText bbsCaptchaEditText;
 
     private OkHttpClient client;
+    ActivityLoginBbsBinding binding;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_bbs);
-        ButterKnife.bind(this);
+        binding = ActivityLoginBbsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         configureData();
         configureActionBar();
@@ -113,12 +86,12 @@ public class LoginActivity extends BaseStatusActivity {
     }
 
     void setInformation(){
-        bbsTitle.setText(bbsInfo.site_name);
+        binding.loginBbsTitle.setText(bbsInfo.site_name);
         if(userBriefInfo == null){
-            bbsBaseUrl.setText(bbsInfo.base_url);
+            binding.loginBbsUrl.setText(bbsInfo.base_url);
         }
         else {
-            bbsBaseUrl.setText(getString(R.string.user_relogin,userBriefInfo.username));
+            binding.loginBbsUrl.setText(getString(R.string.user_relogin,userBriefInfo.username));
         }
 
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
@@ -131,22 +104,22 @@ public class LoginActivity extends BaseStatusActivity {
                 .error(R.drawable.vector_drawable_bbs)
                 .placeholder(R.drawable.vector_drawable_bbs)
                 .centerInside()
-                .into(bbsAvatar);
-        bbsSecurityQuestionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                .into(binding.loginBbsAvatar);
+        binding.loginBbsSecurityQuestionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position == 0){
-                    bbsSecurityAnswerEditText.setVisibility(View.GONE);
+                    binding.loginBbsSecurityAnswerEditText.setVisibility(View.GONE);
                 }
                 else {
-                    bbsSecurityAnswerEditText.setVisibility(View.VISIBLE);
-                    bbsSecurityAnswerEditText.setHint(bbsSecurityQuestionSpinner.getSelectedItem().toString());
+                    binding.loginBbsSecurityAnswerEditText.setVisibility(View.VISIBLE);
+                    binding.loginBbsSecurityAnswerEditText.setHint(binding.loginBbsSecurityQuestionSpinner.getSelectedItem().toString());
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                bbsSecurityAnswerEditText.setVisibility(View.GONE);
+                binding.loginBbsSecurityAnswerEditText.setVisibility(View.GONE);
             }
         });
         
@@ -154,7 +127,7 @@ public class LoginActivity extends BaseStatusActivity {
     }
 
     void configureEditText(){
-        bbsCaptchaImageview.setOnClickListener(new View.OnClickListener() {
+        binding.loginBbsCaptchaImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewModel.getSecureInfo();
@@ -162,10 +135,10 @@ public class LoginActivity extends BaseStatusActivity {
             }
         });
 
-        bbsAccountInputEditText.addTextChangedListener(new TextWatcher() {
+        binding.loginBbsAccountTextInputEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                bbsAccountTextInputLayout.setErrorEnabled(false);
+                binding.loginBbsAccountTextInputLayout.setErrorEnabled(false);
             }
 
             @Override
@@ -179,10 +152,10 @@ public class LoginActivity extends BaseStatusActivity {
             }
         });
 
-        bbsPasswordInputEditText.addTextChangedListener(new TextWatcher() {
+        binding.loginBbsPasswordTextInputEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                bbsPasswordTextInputLayout.setErrorEnabled(false);
+                binding.loginBbsPasswordTextInputLayout.setErrorEnabled(false);
             }
 
             @Override
@@ -224,13 +197,13 @@ public class LoginActivity extends BaseStatusActivity {
                 if(secureInfoResult != null){
 
                     if(secureInfoResult.secureVariables == null){
-                        bbsCaptchaInputLayout.setVisibility(View.GONE);
-                        bbsCaptchaImageview.setVisibility(View.GONE);
+                        binding.loginBbsCaptchaInputLayout.setVisibility(View.GONE);
+                        binding.loginBbsCaptchaImageView.setVisibility(View.GONE);
                     }
                     else {
-                        bbsCaptchaInputLayout.setVisibility(View.VISIBLE);
-                        bbsCaptchaImageview.setVisibility(View.VISIBLE);
-                        bbsCaptchaImageview.setImageDrawable(getDrawable(R.drawable.ic_captcha_placeholder_24px));
+                        binding.loginBbsCaptchaInputLayout.setVisibility(View.VISIBLE);
+                        binding.loginBbsCaptchaImageView.setVisibility(View.VISIBLE);
+                        binding.loginBbsCaptchaImageView.setImageDrawable(getDrawable(R.drawable.ic_captcha_placeholder_24px));
                         // need a captcha
                         String captchaURL = secureInfoResult.secureVariables.secCodeURL;
                         String captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash);
@@ -249,7 +222,7 @@ public class LoginActivity extends BaseStatusActivity {
                             public void onResponse(Call call, Response response) throws IOException {
                                 if (response.isSuccessful() && response.body() != null) {
                                     // get the session
-                                    bbsCaptchaImageview.post(new Runnable() {
+                                    binding.loginBbsCaptchaImageView.post(new Runnable() {
                                         @Override
                                         public void run() {
 
@@ -271,7 +244,7 @@ public class LoginActivity extends BaseStatusActivity {
                                             Glide.with(getApplication())
                                                     .load(pictureGlideURL)
                                                     .apply(options)
-                                                    .into(bbsCaptchaImageview);
+                                                    .into(binding.loginBbsCaptchaImageView);
                                         }
                                     });
 
@@ -284,41 +257,41 @@ public class LoginActivity extends BaseStatusActivity {
                     }
                 }
                 else {
-                    bbsCaptchaInputLayout.setVisibility(View.GONE);
-                    bbsCaptchaImageview.setVisibility(View.GONE);
+                    binding.loginBbsCaptchaInputLayout.setVisibility(View.GONE);
+                    binding.loginBbsCaptchaImageView.setVisibility(View.GONE);
                 }
             }
         });
     }
 
     void configureLoginBtn(){
-        bbsLoginBtn.setOnClickListener(new View.OnClickListener() {
+        binding.loginBbsLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(bbsAccountInputEditText.getText()!=null && bbsPasswordInputEditText.getText()!=null && bbsCaptchaEditText.getText()!=null){
-                    String account = bbsAccountInputEditText.getText().toString();
-                    String password = bbsPasswordInputEditText.getText().toString();
-                    String captchaText = bbsCaptchaEditText.getText().toString();
+                if(binding.loginBbsAccountTextInputEditText.getText()!=null && binding.loginBbsPasswordTextInputEditText.getText()!=null && binding.loginBbsCaptchaEditText.getText()!=null){
+                    String account = binding.loginBbsAccountTextInputEditText.getText().toString();
+                    String password = binding.loginBbsPasswordTextInputEditText.getText().toString();
+                    String captchaText = binding.loginBbsCaptchaEditText.getText().toString();
                     if(needCaptcha() && captchaText.length() == 0){
-                        bbsCaptchaInputLayout.setError(getString(R.string.field_required));
-                        bbsCaptchaInputLayout.setErrorEnabled(true);
+                        binding.loginBbsCaptchaInputLayout.setError(getString(R.string.field_required));
+                        binding.loginBbsCaptchaInputLayout.setErrorEnabled(true);
                         return;
                     }
                     else {
-                        bbsCaptchaInputLayout.setErrorEnabled(false);
+                        binding.loginBbsCaptchaInputLayout.setErrorEnabled(false);
                     }
 
 
                     if(password.length()==0 || account.length() == 0){
                         if(account.length() == 0){
-                            bbsPasswordTextInputLayout.setErrorEnabled(true);
-                            bbsAccountTextInputLayout.setError(getString(R.string.field_required));
-                            //bbsAccountInputEditText.setError();
+                            binding.loginBbsPasswordTextInputLayout.setErrorEnabled(true);
+                            binding.loginBbsAccountTextInputLayout.setError(getString(R.string.field_required));
+                            //binding.loginBbsAccountTextInputEditText.setError();
                         }
                         if(password.length() == 0){
-                            bbsPasswordTextInputLayout.setErrorEnabled(true);
-                            bbsPasswordTextInputLayout.setError(getString(R.string.field_required));
-                            //bbsPasswordInputEditText.setError();
+                            binding.loginBbsPasswordTextInputLayout.setErrorEnabled(true);
+                            binding.loginBbsPasswordTextInputLayout.setError(getString(R.string.field_required));
+                            //binding.loginBbsPasswordTextInputEditText.setError();
                         }
                         Toasty.warning(getApplicationContext(),getString(R.string.bbs_login_account_password_required),Toast.LENGTH_SHORT).show();
                     }
@@ -334,7 +307,7 @@ public class LoginActivity extends BaseStatusActivity {
             }
         });
 
-        bbsLoginInWebBtn.setOnClickListener(new View.OnClickListener() {
+        binding.loginBbsLoginInWebButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), WebViewLoginActivity.class);
@@ -349,13 +322,13 @@ public class LoginActivity extends BaseStatusActivity {
         if(viewModel.getSecureInfoResultMutableLiveData().getValue() == null){
             return;
         }
-        if(bbsAccountInputEditText.getText() == null
-                || bbsPasswordInputEditText.getText() == null){
+        if(binding.loginBbsAccountTextInputEditText.getText() == null
+                || binding.loginBbsPasswordTextInputEditText.getText() == null){
             return;
         }
-        String account = bbsAccountInputEditText.getText().toString();
-        String password = bbsPasswordInputEditText.getText().toString();
-        String captcha = bbsCaptchaEditText.getText().toString();
+        String account = binding.loginBbsAccountTextInputEditText.getText().toString();
+        String password = binding.loginBbsPasswordTextInputEditText.getText().toString();
+        String captcha = binding.loginBbsCaptchaEditText.getText().toString();
         forumUserBriefInfo savedUserBriefInfo = new forumUserBriefInfo("","","","","",50,"");
         //Log.d(TAG,"Send user id "+userBriefInfo.getId());
         if(userBriefInfo !=null){
@@ -375,13 +348,13 @@ public class LoginActivity extends BaseStatusActivity {
                 .add("loginfield", "username")
                 .add("cookietime", "2592000")
 
-                .add("questionid",String.valueOf(bbsSecurityQuestionSpinner.getSelectedItemPosition()))
+                .add("questionid",String.valueOf(binding.loginBbsSecurityQuestionSpinner.getSelectedItemPosition()))
 
                 .add("quickforward", "yes")
                 .add("handlekey", "1s")
 
                 .add("referer",bbsInfo.base_url);
-        String answer = bbsSecurityAnswerEditText.getText().toString();
+        String answer = binding.loginBbsSecurityAnswerEditText.getText().toString();
         switch (getCharsetType()){
             case CHARSET_GBK:{
                 try {
@@ -574,10 +547,10 @@ public class LoginActivity extends BaseStatusActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             if(bbsInfo.isSecureClient()){
-                bbsUnsecureNoticeTextview.setVisibility(View.GONE);
+                binding.loginBbsNotice.setVisibility(View.GONE);
             }
             else {
-                bbsUnsecureNoticeTextview.setVisibility(View.VISIBLE);
+                binding.loginBbsNotice.setVisibility(View.VISIBLE);
             }
         }
     }

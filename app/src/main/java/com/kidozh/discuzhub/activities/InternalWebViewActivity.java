@@ -2,6 +2,7 @@ package com.kidozh.discuzhub.activities;
 
 import androidx.annotation.NonNull;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,6 +21,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.databinding.ActivityShowWebPageBinding;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -38,22 +40,19 @@ import okhttp3.HttpUrl;
 public class InternalWebViewActivity extends BaseStatusActivity {
     private final static String TAG = InternalWebViewActivity.class.getSimpleName();
 
-    @BindView(R.id.show_web_page_webview)
-    WebView webView;
-    @BindView(R.id.show_web_page_progressBar)
-    ProgressBar webViewProgressbar;
-
     String startURL;
-
-    boolean first = true;
+    
 
     cookieWebViewClient cookieClient;
+    
+    ActivityShowWebPageBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_web_page);
-        ButterKnife.bind(this);
+        binding = ActivityShowWebPageBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         getIntentInfo();
         configureActionBar();
         configureWebview();
@@ -77,7 +76,7 @@ public class InternalWebViewActivity extends BaseStatusActivity {
     }
 
     void configureWebview(){
-        WebSettings webSettings = webView.getSettings();
+        WebSettings webSettings = binding.webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
@@ -87,7 +86,7 @@ public class InternalWebViewActivity extends BaseStatusActivity {
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setLoadsImagesAutomatically(true);
         cookieClient = new cookieWebViewClient();
-        cookieClient.cookieManager.setAcceptThirdPartyCookies(webView,true);
+        cookieClient.cookieManager.setAcceptThirdPartyCookies(binding.webview,true);
         // set cookie
         HttpUrl currentHttpUrl = HttpUrl.parse(startURL);
         if(currentHttpUrl!=null){
@@ -102,9 +101,9 @@ public class InternalWebViewActivity extends BaseStatusActivity {
         }
 
 
-        webView.setWebViewClient(cookieClient);
+        binding.webview.setWebViewClient(cookieClient);
 
-        webView.loadUrl(startURL);
+        binding.webview.loadUrl(startURL);
 
 
 
@@ -128,14 +127,14 @@ public class InternalWebViewActivity extends BaseStatusActivity {
                 getSupportActionBar().setIcon(new BitmapDrawable(getApplicationContext().getResources(),favicon));
                 getSupportActionBar().setTitle(url);
             }
-            webViewProgressbar.setVisibility(View.VISIBLE);
+            binding.progressbar.setVisibility(View.VISIBLE);
             super.onPageStarted(view, url, favicon);
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            webViewProgressbar.setVisibility(View.GONE);
+            binding.progressbar.setVisibility(View.GONE);
         }
 
         @Override
@@ -159,8 +158,8 @@ public class InternalWebViewActivity extends BaseStatusActivity {
                 return false;
             }
             case android.R.id.home:
-                if(webView.canGoBack()){
-                    webView.goBack();
+                if(binding.webview.canGoBack()){
+                    binding.webview.goBack();
                 }
                 else {
                     finishAfterTransition();

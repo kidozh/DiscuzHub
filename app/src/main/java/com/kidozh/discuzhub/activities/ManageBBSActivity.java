@@ -23,6 +23,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.ManageBBSAdapter;
 import com.kidozh.discuzhub.callback.RecyclerViewItemTouchCallback;
 import com.kidozh.discuzhub.database.BBSInformationDatabase;
+import com.kidozh.discuzhub.databinding.ActivityManageBbsBinding;
 import com.kidozh.discuzhub.dialogs.ManageAdapterHelpDialogFragment;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.viewModels.ManageBBSViewModel;
@@ -37,26 +38,21 @@ public class ManageBBSActivity extends BaseStatusActivity
         implements RecyclerViewItemTouchCallback.onInteraction{
     final static String TAG = ManageBBSActivity.class.getSimpleName();
 
-    @BindView(R.id.bbs_recyclerview)
-    RecyclerView recyclerview;
-    @BindView(R.id.add_a_user)
-    Button addUserBtn;
-    @BindView(R.id.empty_user_view)
-    View emptyUserView;
-    @BindView(R.id.manage_bbs_coordinatorLayout)
-    CoordinatorLayout coordinatorLayout;
 
     ManageBBSViewModel viewModel;
     // bbsInformation bbsInfo;
 
     ManageBBSAdapter adapter;
+    
+    ActivityManageBbsBinding binding;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manage_bbs);
+        binding = ActivityManageBbsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         ButterKnife.bind(this);
         viewModel = new ViewModelProvider(this).get(ManageBBSViewModel.class);
         configureActionBar();
@@ -76,9 +72,9 @@ public class ManageBBSActivity extends BaseStatusActivity
     }
 
     void configureRecyclerView(){
-        recyclerview.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ManageBBSAdapter();
-        recyclerview.setAdapter(adapter);
+        binding.recyclerview.setAdapter(adapter);
         // swipe to delete
         // swipe to delete support
         RecyclerViewItemTouchCallback callback = new RecyclerViewItemTouchCallback(this);
@@ -86,8 +82,8 @@ public class ManageBBSActivity extends BaseStatusActivity
         //forumSwipeToDeleteUserCallback swipeToDeleteUserCallback = new forumSwipeToDeleteUserCallback(adapter);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(recyclerview);
-        recyclerview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        itemTouchHelper.attachToRecyclerView(binding.recyclerview);
+        binding.recyclerview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
     void bindViewModel(){
@@ -95,10 +91,10 @@ public class ManageBBSActivity extends BaseStatusActivity
             @Override
             public void onChanged(List<bbsInformation> bbsInformations) {
                 if(bbsInformations == null || bbsInformations.size() == 0){
-                    emptyUserView.setVisibility(View.VISIBLE);
+                    binding.emptyUserView.setVisibility(View.VISIBLE);
                 }
                 else {
-                    emptyUserView.setVisibility(View.GONE);
+                    binding.emptyUserView.setVisibility(View.GONE);
                 }
                 adapter.setBbsInformationList(bbsInformations);
             }
@@ -204,7 +200,7 @@ public class ManageBBSActivity extends BaseStatusActivity
     public void showUndoSnackbar(final bbsInformation bbsInfo, final int position) {
         Log.d(TAG,"SHOW REMOVED POS "+position);
         new removeBBSTask(bbsInfo).execute();
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, getString(R.string.delete_bbs_template,bbsInfo.site_name),
+        Snackbar snackbar = Snackbar.make(binding.manageBbsCoordinatorLayout, getString(R.string.delete_bbs_template,bbsInfo.site_name),
                 Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.bbs_undo_delete, new View.OnClickListener(){
 

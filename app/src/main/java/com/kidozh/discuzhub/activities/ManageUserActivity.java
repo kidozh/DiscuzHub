@@ -31,6 +31,7 @@ import com.kidozh.discuzhub.adapter.forumUsersAdapter;
 import com.kidozh.discuzhub.callback.RecyclerViewItemTouchCallback;
 import com.kidozh.discuzhub.callback.forumSwipeToDeleteUserCallback;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
+import com.kidozh.discuzhub.databinding.ActivityManageUserBinding;
 import com.kidozh.discuzhub.dialogs.ManageAdapterHelpDialogFragment;
 import com.kidozh.discuzhub.dialogs.ManageUserAdapterHelpDialogFragment;
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -49,26 +50,20 @@ public class ManageUserActivity extends BaseStatusActivity
         implements RecyclerViewItemTouchCallback.onInteraction{
     final static String TAG = ManageUserActivity.class.getSimpleName();
 
-    @BindView(R.id.bbs_user_recyclerview)
-    RecyclerView usersRecyclerview;
-    @BindView(R.id.add_a_user)
-    Button addUserBtn;
-    @BindView(R.id.empty_user_view)
-    View emptyUserView;
-    @BindView(R.id.manage_user_coordinatorLayout)
-    CoordinatorLayout manageUserCoordinatorLayout;
 
     bbsShowInformationViewModel viewModel;
 
 
     forumUsersAdapter userAdapter;
+    ActivityManageUserBinding binding;
 
-    private LiveData<List<forumUserBriefInfo>> bbsUserInfoLiveDatas;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manage_user);
+        binding = ActivityManageUserBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         ButterKnife.bind(this);
         viewModel = new ViewModelProvider(this).get(bbsShowInformationViewModel.class);
         configureIntent();
@@ -101,18 +96,18 @@ public class ManageUserActivity extends BaseStatusActivity
     }
 
     void configureRecyclerView(){
-        usersRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        binding.bbsUserRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         userAdapter = new forumUsersAdapter(this, bbsInfo);
-        usersRecyclerview.setAdapter(userAdapter);
+        binding.bbsUserRecyclerview.setAdapter(userAdapter);
         // swipe to delete
         // swipe to delete support
         RecyclerViewItemTouchCallback callback = new RecyclerViewItemTouchCallback(this);
         //forumSwipeToDeleteUserCallback swipeToDeleteUserCallback = new forumSwipeToDeleteUserCallback(userAdapter);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(usersRecyclerview);
+        itemTouchHelper.attachToRecyclerView(binding.bbsUserRecyclerview);
 
-        usersRecyclerview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        binding.bbsUserRecyclerview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
     void fetchUserList(){
@@ -122,10 +117,10 @@ public class ManageUserActivity extends BaseStatusActivity
             public void onChanged(List<forumUserBriefInfo> forumUserBriefInfos) {
                 userAdapter.setUserList(forumUserBriefInfos);
                 if(forumUserBriefInfos == null || forumUserBriefInfos.size() == 0){
-                    emptyUserView.setVisibility(View.VISIBLE);
+                    binding.emptyUserView.setVisibility(View.VISIBLE);
                 }
                 else {
-                    emptyUserView.setVisibility(View.GONE);
+                    binding.emptyUserView.setVisibility(View.GONE);
                 }
             }
         });
@@ -134,7 +129,7 @@ public class ManageUserActivity extends BaseStatusActivity
 
     void configureAddUserBtn(){
         Activity activity =this;
-        addUserBtn.setOnClickListener(new View.OnClickListener() {
+        binding.addAUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity, LoginActivity.class);
@@ -282,7 +277,7 @@ public class ManageUserActivity extends BaseStatusActivity
     public void showUndoSnackbar(final forumUserBriefInfo userBriefInfo, final int position) {
         Log.d(TAG,"SHOW REMOVED POS "+position);
         new removeBBSUserTask(userBriefInfo,this).execute();
-        Snackbar snackbar = Snackbar.make(manageUserCoordinatorLayout, getString(R.string.bbs_delete_user_info_template,userBriefInfo.username,bbsInfo.site_name),
+        Snackbar snackbar = Snackbar.make(binding.manageUserCoordinatorLayout, getString(R.string.bbs_delete_user_info_template,userBriefInfo.username,bbsInfo.site_name),
                 Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.bbs_undo_delete, new View.OnClickListener(){
 

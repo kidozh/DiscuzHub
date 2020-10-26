@@ -1,128 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/thread_post_layout"
+<layout>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
-        <Spinner
-            android:id="@+id/bbs_post_thread_cate_spinner"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/thread_post_layout"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:spinnerMode="dialog"
-            app:layout_constraintBottom_toBottomOf="@+id/bbs_post_thread_subject_editText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/bbs_post_thread_subject_editText" />
-
-        <EditText
-            android:id="@+id/bbs_post_thread_subject_editText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:ems="10"
-            android:hint="@string/bbs_tap_to_enter_title"
-            android:singleLine="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/bbs_post_thread_cate_spinner"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <include
-            android:id="@+id/bbs_post_thread_editor_bar"
-            layout="@layout/content_bbs_post_thread_editor_bar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_subject_editText" />
-
-        <ImageView
-            android:id="@+id/bbs_post_thread_backup_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_editor_bar"
-            app:srcCompat="@drawable/vector_drawable_update_24px" />
-
-        <TextView
-            android:id="@+id/bbs_post_thread_backup_info_textview"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:singleLine="true"
-            android:textAlignment="viewStart"
-            app:layout_constraintBottom_toBottomOf="@+id/bbs_post_thread_backup_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/bbs_post_thread_backup_icon"
-            app:layout_constraintTop_toTopOf="@+id/bbs_post_thread_backup_icon"
-            tools:text="@tools:sample/lorem" />
-
-        <EditText
-            android:id="@+id/bbs_post_thread_message"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:ems="10"
-            android:gravity="start|top"
-            android:hint="@string/bbs_post_thread_message"
-            android:inputType="textMultiLine"
-            android:singleLine="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.6"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bbs_post_captcha_textInputLayout" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/bbs_post_captcha_textInputLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:hint="@string/captcha_required"
-            app:layout_constraintEnd_toStartOf="@+id/bbs_post_captcha_imageview"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_backup_info_textview">
+            <Spinner
+                android:id="@+id/bbs_post_thread_cate_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:spinnerMode="dialog"
+                app:layout_constraintBottom_toBottomOf="@+id/bbs_post_thread_subject_editText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/bbs_post_thread_subject_editText" />
+
+            <EditText
+                android:id="@+id/bbs_post_thread_subject_editText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:hint="@string/bbs_tap_to_enter_title"
+                android:singleLine="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/bbs_post_thread_cate_spinner"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/bbs_post_thread_editor_bar"
+                layout="@layout/content_bbs_post_thread_editor_bar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_subject_editText" />
+
+            <ImageView
+                android:id="@+id/bbs_post_thread_backup_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_editor_bar"
+                app:srcCompat="@drawable/vector_drawable_update_24px" />
+
+            <TextView
+                android:id="@+id/bbs_post_thread_backup_info_textview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:singleLine="true"
+                android:textAlignment="viewStart"
+                app:layout_constraintBottom_toBottomOf="@+id/bbs_post_thread_backup_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/bbs_post_thread_backup_icon"
+                app:layout_constraintTop_toTopOf="@+id/bbs_post_thread_backup_icon"
+                tools:text="@tools:sample/lorem" />
+
+            <EditText
+                android:id="@+id/bbs_post_thread_message"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="@string/bbs_post_thread_message"
+                android:inputType="textMultiLine"
+                android:singleLine="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_post_captcha_editText" />
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/bbs_post_captcha_editText"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:singleLine="true" />
+                android:layout_marginStart="8dp"
+                android:singleLine="true"
+                app:layout_constraintEnd_toStartOf="@+id/bbs_post_captcha_imageview"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_backup_info_textview" />
 
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <ImageView
+                android:id="@+id/bbs_post_captcha_imageview"
+                android:layout_width="64dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="8dp"
+                android:foreground="?attr/selectableItemBackground"
+                app:layout_constraintBottom_toTopOf="@+id/bbs_post_thread_message"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_backup_info_textview"
+                tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
 
-        <ImageView
-            android:id="@+id/bbs_post_captcha_imageview"
-            android:layout_width="64dp"
-            android:layout_height="32dp"
-            android:layout_marginEnd="8dp"
-            android:foreground="?attr/selectableItemBackground"
-            app:layout_constraintBottom_toTopOf="@+id/bbs_post_thread_message"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_backup_info_textview"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

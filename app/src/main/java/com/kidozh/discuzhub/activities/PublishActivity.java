@@ -51,6 +51,8 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.uploadAttachment.UploadAttachmentDialogFragment;
 import com.kidozh.discuzhub.database.UploadAttachmentDatabase;
 import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
+import com.kidozh.discuzhub.databinding.ActivityBbsPostThreadBinding;
+import com.kidozh.discuzhub.databinding.ContentBbsPostThreadEditorBarBinding;
 import com.kidozh.discuzhub.dialogs.PostThreadConfirmDialogFragment;
 import com.kidozh.discuzhub.dialogs.PostThreadInsertLinkDialogFragment;
 import com.kidozh.discuzhub.dialogs.PostThreadPasswordDialogFragment;
@@ -111,35 +113,8 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         PostThreadPasswordDialogFragment.NoticeDialogListener,
         PostThreadInsertLinkDialogFragment.NoticeDialogListener {
     private static String TAG = PublishActivity.class.getSimpleName();
-
-    @BindView(R.id.bbs_post_thread_subject_editText)
-    EditText bbsThreadSubjectEditText;
-    @BindView(R.id.bbs_post_thread_message)
-    EditText bbsThreadMessageEditText;
-    @BindView(R.id.bbs_post_thread_cate_spinner)
-    Spinner mCategorySpinner;
+    
     private EmotionInputHandler handler;
-
-
-    @BindView(R.id.bbs_post_thread_edit_bar_linear_layout)
-    LinearLayout editBar;
-
-    @BindView(R.id.bbs_post_thread_editor_bar)
-    View bbsPostThreadEditorBarInclude;
-    @BindView(R.id.bbs_post_thread_backup_icon)
-    ImageView bbsPostThreadBackupIcon;
-    @BindView(R.id.bbs_post_thread_backup_info_textview)
-    TextView bbsPostThreadBackupInfo;
-    @BindView(R.id.action_insert_photo)
-    ImageView actionInsertPhoto;
-    @BindView(R.id.action_set_password)
-    ImageView actionPassword;
-    @BindView(R.id.action_upload_attachment)
-    ImageView actionUploadAttachment;
-    @BindView(R.id.bbs_post_captcha_imageview)
-    ImageView mPostCaptchaImageview;
-    @BindView(R.id.bbs_post_captcha_editText)
-    TextInputEditText mPostCaptchaEditText;
 
     private String fid, forumApiString,forumName, uploadHash, formHash;
     private ProgressDialog uploadDialog;
@@ -161,11 +136,14 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
     LiveData<List<UploadAttachment>> uploadAttachmentLiveData;
 
-
+    ActivityBbsPostThreadBinding binding;
+    ContentBbsPostThreadEditorBarBinding editorBarBinding;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bbs_post_thread);
+        binding = ActivityBbsPostThreadBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         ButterKnife.bind(this);
         postThreadViewModel = new ViewModelProvider(this).get(PostThreadViewModel.class);
         configureIntentData();
@@ -173,7 +151,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         configureClient();
         bindViewModel();
 
-        //editBar = (HorizontalScrollView) bbsPostThreadEditorBarInclude;
+        //binding.bbsPostThreadEditBarLinearLayout = (HorizontalScrollView) binding.bbsPostThreadEditorBar;
 
 
 
@@ -181,7 +159,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         // parse api result
         Map<String,String> threadTypeMapper = bbsParseUtils.parseThreadType(forumApiString);
         if (threadTypeMapper == null){
-            mCategorySpinner.setVisibility(View.GONE);
+            binding.bbsPostThreadCateSpinner.setVisibility(View.GONE);
         }
         else {
             configureSpinner(threadTypeMapper);
@@ -220,22 +198,22 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         }
 
         if(threadDraft!=null){
-            bbsThreadSubjectEditText.setText(threadDraft.subject);
-            bbsThreadMessageEditText.setText(threadDraft.content);
-            if(mCategorySpinner.getSelectedItem()!=null){
-                mCategorySpinner.setSelection(Integer.parseInt(threadDraft.typeid));
+            binding.bbsPostThreadSubjectEditText.setText(threadDraft.subject);
+            binding.bbsPostThreadMessage.setText(threadDraft.content);
+            if(binding.bbsPostThreadCateSpinner.getSelectedItem()!=null){
+                binding.bbsPostThreadCateSpinner.setSelection(Integer.parseInt(threadDraft.typeid));
             }
             forumApiString = threadDraft.apiString;
 
         }
         else if(replyMessage !=null){
-            bbsThreadMessageEditText.setText(replyMessage);
+            binding.bbsPostThreadMessage.setText(replyMessage);
         }
 
         if(isAPostReply()){
-            mCategorySpinner.setVisibility(View.GONE);
-            bbsThreadSubjectEditText.setVisibility(View.GONE);
-            actionPassword.setVisibility(View.GONE);
+            binding.bbsPostThreadCateSpinner.setVisibility(View.GONE);
+            binding.bbsPostThreadSubjectEditText.setVisibility(View.GONE);
+            editorBarBinding.actionSetPassword.setVisibility(View.GONE);
         }
 
         fid = intent.getStringExtra("fid");
@@ -261,12 +239,12 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                     bbsPersonInfo = postParameterResult.permissionVariables.getUserBriefInfo();
                     formHash = postParameterResult.permissionVariables.formHash;
                     uploadHash = postParameterResult.permissionVariables.allowPerm.uploadHash;
-                    actionInsertPhoto.setVisibility(View.VISIBLE);
-                    actionUploadAttachment.setVisibility(View.VISIBLE);
+                    editorBarBinding.actionInsertPhoto.setVisibility(View.VISIBLE);
+                    editorBarBinding.actionUploadAttachment.setVisibility(View.VISIBLE);
                 }
                 else {
-                    actionInsertPhoto.setVisibility(View.GONE);
-                    actionUploadAttachment.setVisibility(View.GONE);
+                    editorBarBinding.actionInsertPhoto.setVisibility(View.GONE);
+                    editorBarBinding.actionUploadAttachment.setVisibility(View.GONE);
                 }
 
             }
@@ -278,12 +256,12 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 Log.d(TAG,"get allow perm "+allowPermission);
                 if(allowPermission !=null){
                     uploadHash = allowPermission.uploadHash;
-                    actionInsertPhoto.setVisibility(View.VISIBLE);
+                    editorBarBinding.actionInsertPhoto.setVisibility(View.VISIBLE);
                     Log.d(TAG,"recv upload hash "+uploadHash);
                 }
                 else {
 
-                    actionInsertPhoto.setVisibility(View.GONE);
+                    editorBarBinding.actionInsertPhoto.setVisibility(View.GONE);
                     // Toasty.error(getApplication(),getString(R.string.bbs_post_thread_cannot_upload_picture),Toast.LENGTH_SHORT).show();
                 }
             }
@@ -296,10 +274,10 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                     // password rendering
                     String password = bbsThreadDraft.password;
                     if(password.length()!=0){
-                        actionPassword.setImageResource(R.drawable.ic_thread_password_24px);
+                        editorBarBinding.actionSetPassword.setImageResource(R.drawable.ic_thread_password_24px);
                     }
                     else {
-                        actionPassword.setImageResource(R.drawable.ic_thread_lock_open_24px);
+                        editorBarBinding.actionSetPassword.setImageResource(R.drawable.ic_thread_lock_open_24px);
                     }
                 }
             }
@@ -322,13 +300,13 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 if(secureInfoResult !=null){
                     if(secureInfoResult.secureVariables == null){
                         // don't need a code
-                        mPostCaptchaEditText.setVisibility(View.GONE);
-                        mPostCaptchaImageview.setVisibility(View.GONE);
+                        binding.bbsPostCaptchaEditText.setVisibility(View.GONE);
+                        binding.bbsPostCaptchaImageview.setVisibility(View.GONE);
                     }
                     else {
-                        mPostCaptchaEditText.setVisibility(View.VISIBLE);
-                        mPostCaptchaImageview.setVisibility(View.VISIBLE);
-                        mPostCaptchaImageview.setImageDrawable(getDrawable(R.drawable.ic_captcha_placeholder_24px));
+                        binding.bbsPostCaptchaEditText.setVisibility(View.VISIBLE);
+                        binding.bbsPostCaptchaImageview.setVisibility(View.VISIBLE);
+                        binding.bbsPostCaptchaImageview.setImageDrawable(getDrawable(R.drawable.ic_captcha_placeholder_24px));
                         // need a captcha
                         String captchaURL = secureInfoResult.secureVariables.secCodeURL;
                         String captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash);
@@ -352,7 +330,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                                     // get the session
 
 
-                                    mPostCaptchaImageview.post(new Runnable() {
+                                    binding.bbsPostCaptchaImageview.post(new Runnable() {
                                         @Override
                                         public void run() {
 
@@ -374,7 +352,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                                             Glide.with(getApplication())
                                                     .load(pictureGlideURL)
                                                     .apply(options)
-                                                    .into(mPostCaptchaImageview);
+                                                    .into(binding.bbsPostCaptchaImageview);
                                         }
                                     });
 
@@ -387,14 +365,14 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 }
                 else {
                     // don't know the situation
-                    mPostCaptchaEditText.setVisibility(View.GONE);
-                    mPostCaptchaImageview.setVisibility(View.GONE);
+                    binding.bbsPostCaptchaEditText.setVisibility(View.GONE);
+                    binding.bbsPostCaptchaImageview.setVisibility(View.GONE);
                 }
             }
         });
 
         // captcha
-        mPostCaptchaImageview.setOnClickListener(new View.OnClickListener() {
+        binding.bbsPostCaptchaImageview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // update it
@@ -422,14 +400,14 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
     }
 
     private void configureInputHandler(){
-        handler = new EmotionInputHandler(bbsThreadMessageEditText, (enable, s) -> {
+        handler = new EmotionInputHandler(binding.bbsPostThreadMessage, (enable, s) -> {
 
         });
     }
 
     private void configureEditBar(){
-        for (int i = 0; i < editBar.getChildCount(); i++) {
-            View c = editBar.getChildAt(i);
+        for (int i = 0; i < editorBarBinding.bbsPostThreadEditBarLinearLayout.getChildCount(); i++) {
+            View c = editorBarBinding.bbsPostThreadEditBarLinearLayout.getChildAt(i);
             if (c instanceof ImageView) {
                 c.setOnClickListener(this);
             }
@@ -437,7 +415,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         myColorPicker = new bbsColorPicker(this);
         myColorPicker.setListener((pos, v, color) -> handleInsert("[color=" + color + "][/color]"));
 
-        actionPassword.setOnClickListener(view -> {
+        editorBarBinding.actionSetPassword.setOnClickListener(view -> {
             // trigger dialog
             if(isAPostReply()){
                 Toasty.warning(getApplicationContext(),getString(R.string.reply_password_not_set),Toast.LENGTH_SHORT).show();
@@ -451,7 +429,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
         });
 
-        actionUploadAttachment.setOnClickListener(view ->{
+        editorBarBinding.actionUploadAttachment.setOnClickListener(view ->{
 
             UploadAttachmentDialogFragment uploadAttachmentDialogFragment = UploadAttachmentDialogFragment.newInstance(postThreadViewModel);
             uploadAttachmentDialogFragment.show(getSupportFragmentManager(),UploadAttachmentDialogFragment.class.getSimpleName());
@@ -472,16 +450,16 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         }
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,threadTypeNames);
-        mCategorySpinner.setAdapter(arrayAdapter);
-        //mCategorySpinner.setOnItemClickListener(this);
+        binding.bbsPostThreadCateSpinner.setAdapter(arrayAdapter);
+        //binding.bbsPostThreadCateSpinner.setOnItemClickListener(this);
     }
 
     private void handleInsert(String s) {
-        int start = bbsThreadMessageEditText.getSelectionStart();
-        int end = bbsThreadMessageEditText.getSelectionEnd();
+        int start = binding.bbsPostThreadMessage.getSelectionStart();
+        int end = binding.bbsPostThreadMessage.getSelectionEnd();
         int p = s.indexOf("[/");//相对于要插入的文本光标所在位置
 
-        Editable edit = bbsThreadMessageEditText.getEditableText();//获取EditText的文字
+        Editable edit = binding.bbsPostThreadMessage.getEditableText();//获取EditText的文字
 
         if (start < 0 || start >= edit.length()) {
             edit.append(s);
@@ -495,7 +473,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         }
 
         if (p > 0) {
-            bbsThreadMessageEditText.setSelection(start + p);
+            binding.bbsPostThreadMessage.setSelection(start + p);
         }
     }
 
@@ -567,16 +545,16 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
         // create an initial backup
         if(threadDraft == null && !isAPostReply()){
-            if(mCategorySpinner.getSelectedItem()!=null){
+            if(binding.bbsPostThreadCateSpinner.getSelectedItem()!=null){
 
-                threadDraft = new bbsThreadDraft(bbsThreadSubjectEditText.getText().toString(),
-                        bbsThreadMessageEditText.getText().toString(),
+                threadDraft = new bbsThreadDraft(binding.bbsPostThreadSubjectEditText.getText().toString(),
+                        binding.bbsPostThreadMessage.getText().toString(),
                         new Date(),
                         bbsInfo.getId(),
                         fid,
                         forumName,
-                        String.valueOf(mCategorySpinner.getSelectedItemPosition()),
-                        mCategorySpinner.getSelectedItem().toString(),
+                        String.valueOf(binding.bbsPostThreadCateSpinner.getSelectedItemPosition()),
+                        binding.bbsPostThreadCateSpinner.getSelectedItem().toString(),
                         forumApiString
                 );
                 postThreadViewModel.bbsThreadDraftMutableLiveData.setValue(threadDraft);
@@ -585,8 +563,8 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
             }
             else {
-                threadDraft = new bbsThreadDraft(bbsThreadSubjectEditText.getText().toString(),
-                        bbsThreadMessageEditText.getText().toString(),
+                threadDraft = new bbsThreadDraft(binding.bbsPostThreadSubjectEditText.getText().toString(),
+                        binding.bbsPostThreadMessage.getText().toString(),
                         new Date(),
                         bbsInfo.getId(),
                         fid,
@@ -604,7 +582,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
 
         if(autoPostBackup){
-            bbsPostThreadBackupInfo.setText(R.string.bbs_thread_auto_backup_start);
+            binding.bbsPostThreadBackupInfoTextview.setText(R.string.bbs_thread_auto_backup_start);
             TextWatcher textWatcher = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -619,18 +597,18 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 @Override
                 public void afterTextChanged(Editable s) {
                     bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
-                    threadDraft.subject = bbsThreadSubjectEditText.getText().toString();
-                    threadDraft.content = bbsThreadMessageEditText.getText().toString();
+                    threadDraft.subject = binding.bbsPostThreadSubjectEditText.getText().toString();
+                    threadDraft.content = binding.bbsPostThreadMessage.getText().toString();
                     threadDraft.lastUpdateAt = new Date();
 
-                    if(mCategorySpinner.getSelectedItem()!=null){
-                        threadDraft.typeid = String.valueOf(mCategorySpinner.getSelectedItemPosition());
-                        threadDraft.typeName = mCategorySpinner.getSelectedItem().toString();
+                    if(binding.bbsPostThreadCateSpinner.getSelectedItem()!=null){
+                        threadDraft.typeid = String.valueOf(binding.bbsPostThreadCateSpinner.getSelectedItemPosition());
+                        threadDraft.typeName = binding.bbsPostThreadCateSpinner.getSelectedItem().toString();
                     }
 
                     // update or add one
-                    if(TextUtils.isEmpty(bbsThreadSubjectEditText.getText().toString().trim())
-                            && TextUtils.isEmpty(bbsThreadMessageEditText.getText().toString().trim())){
+                    if(TextUtils.isEmpty(binding.bbsPostThreadSubjectEditText.getText().toString().trim())
+                            && TextUtils.isEmpty(binding.bbsPostThreadMessage.getText().toString().trim())){
 
                     }
                     else {
@@ -642,12 +620,12 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 }
             };
 
-            bbsThreadMessageEditText.addTextChangedListener(textWatcher);
-            bbsThreadSubjectEditText.addTextChangedListener(textWatcher);
+            binding.bbsPostThreadMessage.addTextChangedListener(textWatcher);
+            binding.bbsPostThreadSubjectEditText.addTextChangedListener(textWatcher);
         }
         else {
-            bbsPostThreadBackupInfo.setVisibility(View.GONE);
-            bbsPostThreadBackupIcon.setVisibility(View.GONE);
+            binding.bbsPostThreadBackupInfoTextview.setVisibility(View.GONE);
+            binding.bbsPostThreadBackupIcon.setVisibility(View.GONE);
         }
     }
 
@@ -706,7 +684,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
             postThreadViewModel.bbsThreadDraftMutableLiveData.postValue(insertThreadDraft);
             bbsThreadDraft threadDraft = insertThreadDraft;
             DateFormat df = getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
-            bbsPostThreadBackupInfo.setText(getString(R.string.bbs_thread_auto_backup_updated_time_template,
+            binding.bbsPostThreadBackupInfoTextview.setText(getString(R.string.bbs_thread_auto_backup_updated_time_template,
                     df.format(threadDraft.lastUpdateAt)
             ));
             if(saveThenFinish){
@@ -730,7 +708,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 //[size=7][/size]
-                if (bbsThreadMessageEditText == null || (bbsThreadMessageEditText.getText().length() <= 0 && i == 0)) {
+                if (binding.bbsPostThreadMessage == null || (binding.bbsPostThreadMessage.getText().length() <= 0 && i == 0)) {
                     return;
                 }
                 handleInsert("[size=" + (i + 1) + "][/size]");
@@ -744,7 +722,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
         myColorPicker.setListener((pos, v, color) -> handleInsert("[color=" + color + "][/color]"));
 
-        handler = new EmotionInputHandler(bbsThreadMessageEditText, (enable, s) -> {
+        handler = new EmotionInputHandler(binding.bbsPostThreadMessage, (enable, s) -> {
 
         });
     }
@@ -1105,7 +1083,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
                     String aid = spiltInfo[2];
                     handler.insertImage(aid, new BitmapDrawable(getResources(), returnBitmap),
-                            bbsThreadMessageEditText.getWidth() - dip2px( 16));
+                            binding.bbsPostThreadMessage.getWidth() - dip2px( 16));
                     Toasty.success(context,context.getString(R.string.bbs_thread_upload_files_successful),Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -1169,7 +1147,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         if(uploadHash == null){
             return false;
         }
-        else if(!isAPostReply() && TextUtils.isEmpty(bbsThreadSubjectEditText.getText().toString().trim())){
+        else if(!isAPostReply() && TextUtils.isEmpty(binding.bbsPostThreadSubjectEditText.getText().toString().trim())){
             return false;
         }
         else {
@@ -1199,12 +1177,12 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         protected void onPreExecute() {
             super.onPreExecute();
             // need typeid
-            int selectPos = mCategorySpinner.getSelectedItemPosition();
+            int selectPos = binding.bbsPostThreadCateSpinner.getSelectedItemPosition();
             List<String> numKeys = bbsParseUtils.getThreadTypeList(forumApiString);
 
 
-            String subject = bbsThreadSubjectEditText.getText().toString();
-            String message = bbsThreadMessageEditText.getText().toString();
+            String subject = binding.bbsPostThreadSubjectEditText.getText().toString();
+            String message = binding.bbsPostThreadMessage.getText().toString();
 
             FormBody.Builder formBody = new FormBody.Builder();
             List<String> aids = handler.getImagesAids();
@@ -1339,8 +1317,8 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 if(secureInfoResult !=null){
                     formBody.add("seccodehash",secureInfoResult.secureVariables.secHash);
 
-                            //.add("seccodeverify", mPostCaptchaEditText.getText().toString());
-                    String captcha=  mPostCaptchaEditText.getText().toString();
+                            //.add("seccodeverify", binding.bbsPostCaptchaEditText.getText().toString());
+                    String captcha=  binding.bbsPostCaptchaEditText.getText().toString();
                     switch (getCharsetType()){
                         case CHARSET_GBK:{
                             try {
@@ -1459,7 +1437,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 return false;
             }
             case R.id.bbs_toolbar_send_item:{
-                if(needCaptcha() && TextUtils.isEmpty(mPostCaptchaEditText.getText())){
+                if(needCaptcha() && TextUtils.isEmpty(binding.bbsPostCaptchaEditText.getText())){
                     Toasty.warning(getApplicationContext(),getString(R.string.captcha_required),Toast.LENGTH_SHORT).show();
                     return true;
                 }
