@@ -12,9 +12,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.forumInformationAdapter;
 import com.kidozh.discuzhub.adapter.forumUsersAdapter;
-import com.kidozh.discuzhub.entities.bbsInformation;
 
 public class forumSwipeToDeleteUserCallback extends ItemTouchHelper.SimpleCallback {
     private String TAG = forumSwipeToDeleteUserCallback.class.getSimpleName();
