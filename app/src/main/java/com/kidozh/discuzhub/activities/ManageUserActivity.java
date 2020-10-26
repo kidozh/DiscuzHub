@@ -64,7 +64,7 @@ public class ManageUserActivity extends BaseStatusActivity
         super.onCreate(savedInstanceState);
         binding = ActivityManageUserBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ButterKnife.bind(this);
+
         viewModel = new ViewModelProvider(this).get(bbsShowInformationViewModel.class);
         configureIntent();
         configureActionBar();

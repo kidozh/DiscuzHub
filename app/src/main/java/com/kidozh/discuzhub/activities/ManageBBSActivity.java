@@ -53,7 +53,7 @@ public class ManageBBSActivity extends BaseStatusActivity
         super.onCreate(savedInstanceState);
         binding = ActivityManageBbsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ButterKnife.bind(this);
+
         viewModel = new ViewModelProvider(this).get(ManageBBSViewModel.class);
         configureActionBar();
         configureRecyclerView();

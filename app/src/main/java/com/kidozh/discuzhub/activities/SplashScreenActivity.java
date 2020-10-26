@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
+import com.kidozh.discuzhub.databinding.ActivitySplashScreenBinding;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.works.AutoClearHistoriesWork;
@@ -37,24 +38,15 @@ import butterknife.ButterKnife;
 
 public class SplashScreenActivity extends BaseStatusActivity {
     private static final String TAG = SplashScreenActivity.class.getSimpleName();
-    @BindView(R.id.splash_screen_agreement_content)
-    TextView splashScreenNotification;
-    @BindView(R.id.splash_screen_agree_to_continue_btn)
-    Button agreeToContinueBtn;
-    @BindView(R.id.splash_screen_terms_of_use_card)
-    CardView privacyPolicyCardView;
-    @BindView(R.id.splash_screen_privacy_policy_card)
-    CardView termsOfUseCardView;
-    @BindView(R.id.splash_screen_version)
-    TextView versionTextView;
 
     String AGREEMENT_VERSION_PREFERENCE = "AGREEMENT_VERSION_PREFERENCE";
+    ActivitySplashScreenBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash_screen);
-        ButterKnife.bind(this);
+        binding = ActivitySplashScreenBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         registerNotification();
         configureDarkMode();
 
@@ -191,8 +183,8 @@ public class SplashScreenActivity extends BaseStatusActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String agreedVersion = prefs.getString(AGREEMENT_VERSION_PREFERENCE,"");
         String currentVersion = getVersionName();
-        versionTextView.setText(getString(R.string.app_version_template,currentVersion));
-        agreeToContinueBtn.setOnClickListener(new View.OnClickListener() {
+        binding.splashScreenVersion.setText(getString(R.string.app_version_template,currentVersion));
+        binding.splashScreenAgreeToContinueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = prefs.edit();
@@ -201,14 +193,14 @@ public class SplashScreenActivity extends BaseStatusActivity {
                 enterMainActivity();
             }
         });
-        privacyPolicyCardView.setOnClickListener(new View.OnClickListener() {
+        binding.splashScreenTermsOfUseCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discuzhub.kidozh.com/privacy_policy/"));
                 startActivity(intent);
             }
         });
-        termsOfUseCardView.setOnClickListener(new View.OnClickListener() {
+        binding.splashScreenPrivacyPolicyCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discuzhub.kidozh.com/term_of_use/"));

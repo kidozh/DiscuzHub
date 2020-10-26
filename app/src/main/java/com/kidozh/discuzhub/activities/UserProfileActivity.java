@@ -39,6 +39,7 @@ import com.kidozh.discuzhub.activities.ui.UserProfileList.UserProfileInfoListFra
 import com.kidozh.discuzhub.activities.ui.UserFriend.UserFriendFragment;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
+import com.kidozh.discuzhub.databinding.ActivityShowPersonalInfoBinding;
 import com.kidozh.discuzhub.entities.UserProfileItem;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -66,60 +67,21 @@ import butterknife.ButterKnife;
 
 public class UserProfileActivity extends BaseStatusActivity implements
         UserFriendFragment.OnFragmentInteractionListener,
-        bbsLinkMovementMethod.OnLinkClickedListener
-{
-
+        bbsLinkMovementMethod.OnLinkClickedListener {
     private static final String TAG = UserProfileActivity.class.getSimpleName();
-
-    @BindView(R.id.show_personal_info_avatar)
-    ShapeableImageView personalInfoAvatar;
-    @BindView(R.id.user_signature_textview)
-    TextView personalInfoSignatureTextView;
-
-    @BindView(R.id.show_personal_info_interest_textView)
-    TextView personalInfoInterestTextView;
-    @BindView(R.id.show_personal_info_birthplace_textView)
-    TextView personInfoBirthPlace;
-
-    @BindView(R.id.show_personal_info_regdate_textView)
-    TextView personalInfoRegdateTextview;
-
-    @BindView(R.id.show_personal_info_recent_note_textView)
-    TextView personalInfoRecentNoteTextview;
-    @BindView(R.id.show_personal_info_progressbar)
-    ProgressBar showPersonalInfoProgressbar;
-    @BindView(R.id.show_personal_info_layout)
-    ConstraintLayout showPersonalInfoLayout;
-    @BindView(R.id.show_personal_info_tabLayout)
-    TabLayout personInfoTabLayout;
-    @BindView(R.id.show_personal_info_viewpager)
-    ViewPager personInfoViewPager;
-    @BindView(R.id.show_personal_info_message_btn)
-    Button personalInfoPMBtn;
-    @BindView(R.id.show_personal_info_focus_btn)
-    Button personalInfoFollowBtn;
-
-    @BindView(R.id.show_personal_info_group_info)
-    TextView personalInfoGroupInfo;
-    @BindView(R.id.show_personal_info_last_activity_time)
-    TextView personalInfoLastActivityTime;
-    @BindView(R.id.user_bio_textview)
-    TextView userBioTextview;
-    @BindView(R.id.user_verified_icon)
-    ImageView verifiedIcon;
     
     private int userId;
-    String friendNum, threadNum, postsNum;
     String username;
     private UserProfileViewModel viewModel;
     personalInfoViewPagerAdapter adapter;
+    ActivityShowPersonalInfoBinding binding;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_personal_info);
-        ButterKnife.bind(this);
+        binding = ActivityShowPersonalInfoBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         viewModel = new ViewModelProvider(this).get(UserProfileViewModel.class);
         getIntentInfo();
         configureActionBar();
@@ -151,21 +113,21 @@ public class UserProfileActivity extends BaseStatusActivity implements
                 .error(avatarResource)
                 .placeholder(avatarResource)
                 .centerInside()
-                .into(personalInfoAvatar);
+                .into(binding.showPersonalInfoAvatar);
     }
 
     void renderFollowAndPMBtn(){
         if(userBriefInfo ==null){
-            personalInfoPMBtn.setVisibility(View.GONE);
-            personalInfoFollowBtn.setVisibility(View.GONE);
+            binding.showPersonalInfoMessageBtn.setVisibility(View.GONE);
+            binding.showPersonalInfoFocusBtn.setVisibility(View.GONE);
         }
     }
 
     void configurePMBtn(){
         if(BuildConfig.BUILD_TYPE.contentEquals("chinaEdition")){
-            personalInfoPMBtn.setVisibility(View.GONE);
+            binding.showPersonalInfoMessageBtn.setVisibility(View.GONE);
         }
-        personalInfoPMBtn.setOnClickListener(new View.OnClickListener() {
+        binding.showPersonalInfoMessageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bbsParseUtils.privateMessage privateM = new bbsParseUtils.privateMessage(userId,
@@ -207,8 +169,8 @@ public class UserProfileActivity extends BaseStatusActivity implements
         }
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
         if(userBriefInfo!=null && userId == Integer.parseInt(userBriefInfo.uid)){
-            personalInfoFollowBtn.setVisibility(View.GONE);
-            personalInfoPMBtn.setVisibility(View.GONE);
+            binding.showPersonalInfoFocusBtn.setVisibility(View.GONE);
+            binding.showPersonalInfoMessageBtn.setVisibility(View.GONE);
         }
 
     }
@@ -248,41 +210,41 @@ public class UserProfileActivity extends BaseStatusActivity implements
                             .error(avatarResource)
                             .placeholder(avatarResource)
                             .centerInside()
-                            .into(personalInfoAvatar);
+                            .into(binding.showPersonalInfoAvatar);
                     //check with verified status
                     if(spaceVariables.emailStatus){
-                        verifiedIcon.setVisibility(View.VISIBLE);
+                        binding.userVerifiedIcon.setVisibility(View.VISIBLE);
                     }
                     else {
-                        verifiedIcon.setVisibility(View.GONE);
+                        binding.userVerifiedIcon.setVisibility(View.GONE);
                     }
 
                     // signature
                     String sigHtml = userProfileResult.userProfileVariableResult.space.sigatureHtml;
                     Log.d(TAG,"Signature html "+sigHtml);
-                    MyTagHandler myTagHandler = new MyTagHandler(getApplication(),personalInfoSignatureTextView,personalInfoSignatureTextView);
-                    MyImageGetter myImageGetter = new MyImageGetter(getApplication(),personalInfoSignatureTextView,personalInfoSignatureTextView,true);
+                    MyTagHandler myTagHandler = new MyTagHandler(getApplication(),binding.userSignatureTextview,binding.userSignatureTextview);
+                    MyImageGetter myImageGetter = new MyImageGetter(getApplication(),binding.userSignatureTextview,binding.userSignatureTextview,true);
                     Spanned sp = Html.fromHtml(sigHtml,myImageGetter,myTagHandler);
                     SpannableString spannableString = new SpannableString(sp);
 
-                    personalInfoSignatureTextView.setText(spannableString, TextView.BufferType.SPANNABLE);
-                    personalInfoSignatureTextView.setMovementMethod(new bbsLinkMovementMethod(UserProfileActivity.this));
+                    binding.userSignatureTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
+                    binding.userSignatureTextview.setMovementMethod(new bbsLinkMovementMethod(UserProfileActivity.this));
                     if(userProfileResult.userProfileVariableResult.space.bio.length()!=0){
-                        userBioTextview.setText(userProfileResult.userProfileVariableResult.space.bio);
+                        binding.userBioTextview.setText(userProfileResult.userProfileVariableResult.space.bio);
                     }
                     else {
-                        userBioTextview.setVisibility(View.GONE);
+                        binding.userBioTextview.setVisibility(View.GONE);
                     }
 
                     if(userProfileResult.userProfileVariableResult.space.interest.length()!=0){
 
-                        personalInfoInterestTextView.setVisibility(View.VISIBLE);
-                        personalInfoInterestTextView.setText(userProfileResult.userProfileVariableResult.space.interest);
+                        binding.showPersonalInfoInterestTextView.setVisibility(View.VISIBLE);
+                        binding.showPersonalInfoInterestTextView.setText(userProfileResult.userProfileVariableResult.space.interest);
                     }
                     else {
 
-                        personalInfoInterestTextView.setVisibility(View.GONE);
-                        personalInfoInterestTextView.setText(userProfileResult.userProfileVariableResult.space.interest);
+                        binding.showPersonalInfoInterestTextView.setVisibility(View.GONE);
+                        binding.showPersonalInfoInterestTextView.setText(userProfileResult.userProfileVariableResult.space.interest);
                     }
 
                     String birthPlace = userProfileResult.userProfileVariableResult.space.birthprovince +
@@ -291,24 +253,24 @@ public class UserProfileActivity extends BaseStatusActivity implements
                             userProfileResult.userProfileVariableResult.space.birthcommunity;
                     if(birthPlace.length()!=0){
 
-                        personInfoBirthPlace.setVisibility(View.VISIBLE);
-                        personInfoBirthPlace.setText(birthPlace);
+                        binding.showPersonalInfoBirthplaceTextView.setVisibility(View.VISIBLE);
+                        binding.showPersonalInfoBirthplaceTextView.setText(birthPlace);
                     }
                     else {
 
-                        personInfoBirthPlace.setVisibility(View.GONE);
+                        binding.showPersonalInfoBirthplaceTextView.setVisibility(View.GONE);
                     }
-                    personalInfoRegdateTextview.setText(userProfileResult.userProfileVariableResult.space.regdate);
-                    personalInfoLastActivityTime.setText(userProfileResult.userProfileVariableResult.space.lastactivity);
+                    binding.showPersonalInfoRegdateTextView.setText(userProfileResult.userProfileVariableResult.space.regdate);
+                    binding.showPersonalInfoLastActivityTime.setText(userProfileResult.userProfileVariableResult.space.lastactivity);
 
-                    personalInfoRecentNoteTextview.setText(userProfileResult.userProfileVariableResult.space.recentNote);
+                    binding.showPersonalInfoRecentNoteTextView.setText(userProfileResult.userProfileVariableResult.space.recentNote);
                     if(userProfileResult.userProfileVariableResult.space.group!=null){
-                        personalInfoGroupInfo.setText(
+                        binding.showPersonalInfoGroupInfo.setText(
                                 Html.fromHtml(userProfileResult.userProfileVariableResult.space.group.groupTitle),
                                 TextView.BufferType.SPANNABLE);
                     }
                     else {
-                        personalInfoGroupInfo.setVisibility(View.GONE);
+                        binding.showPersonalInfoGroupInfo.setVisibility(View.GONE);
                     }
                     // for detailed information
 
@@ -328,7 +290,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
                     }
 
                 }
-                personInfoViewPager.invalidate();
+                binding.showPersonalInfoViewpager.invalidate();
                 adapter.notifyDataSetChanged();
             }
         });
@@ -337,10 +299,10 @@ public class UserProfileActivity extends BaseStatusActivity implements
             @Override
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
-                    showPersonalInfoProgressbar.setVisibility(View.VISIBLE);
+                    binding.showPersonalInfoProgressbar.setVisibility(View.VISIBLE);
                 }
                 else {
-                    showPersonalInfoProgressbar.setVisibility(View.GONE);
+                    binding.showPersonalInfoProgressbar.setVisibility(View.GONE);
                 }
             }
         });
@@ -636,9 +598,9 @@ public class UserProfileActivity extends BaseStatusActivity implements
         Log.d(TAG,"Configuring friend fragment");
         List<String> tabTitles = new ArrayList<>();
 
-        personInfoTabLayout.setupWithViewPager(personInfoViewPager);
+        binding.showPersonalInfoTabLayout.setupWithViewPager(binding.showPersonalInfoViewpager);
         adapter  = new personalInfoViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        personInfoViewPager.setAdapter(adapter);
+        binding.showPersonalInfoViewpager.setAdapter(adapter);
 
     }
 
@@ -650,8 +612,8 @@ public class UserProfileActivity extends BaseStatusActivity implements
     @Override
     public void onRenderSuccessfully() {
         Log.d(TAG,"Redraw view pager");
-        personInfoViewPager.invalidate();
-        personInfoViewPager.requestLayout();
+        binding.showPersonalInfoViewpager.invalidate();
+        binding.showPersonalInfoViewpager.requestLayout();
     }
 
     @Override

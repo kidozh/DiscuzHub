@@ -144,7 +144,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         binding = ActivityBbsPostThreadBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ButterKnife.bind(this);
+
         postThreadViewModel = new ViewModelProvider(this).get(PostThreadViewModel.class);
         configureIntentData();
         configureToolbar();

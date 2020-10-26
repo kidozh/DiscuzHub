@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.databinding.ActivityShowImageFullscreenBinding;
 import com.kidozh.discuzhub.widgets.PinchImageView;
 
 import java.io.File;
@@ -28,16 +29,15 @@ import es.dmoral.toasty.Toasty;
 
 public class showImageFullscreenActivity extends BaseStatusActivity {
     private static final String TAG = showImageFullscreenActivity.class.getSimpleName();
-    @BindView(R.id.show_image_fullscreen_shown_imageview)
-    PinchImageView pinchImageView;
-    @BindView(R.id.show_image_save_btn)
-    Button mSaveBtn;
+
     String url = "";
+    ActivityShowImageFullscreenBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_image_fullscreen);
+        binding = ActivityShowImageFullscreenBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         ButterKnife.bind(this);
 
         configureActionBar();
@@ -58,13 +58,13 @@ public class showImageFullscreenActivity extends BaseStatusActivity {
 
     private void configureSaveBtn(){
         Context mContext = this;
-        mSaveBtn.setOnClickListener(new View.OnClickListener() {
+        binding.showImageSaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String[] fileNameSpilt = url.split("/");
                 String fileName = fileNameSpilt[fileNameSpilt.length-1];
                 if(isExternalStorageWritable()){
-                    Bitmap bitmap = ( (BitmapDrawable) pinchImageView.getDrawable()).getBitmap();
+                    Bitmap bitmap = ( (BitmapDrawable) binding.showImageFullscreenShownImageview.getDrawable()).getBitmap();
                     String savedUri = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, fileName, fileName);
                     if(savedUri!=null){
                         Toasty.success(getApplicationContext(),String.format(getString(R.string.save_file_successfully_template),fileName), Toast.LENGTH_SHORT).show();
@@ -95,7 +95,7 @@ public class showImageFullscreenActivity extends BaseStatusActivity {
                 .error(R.drawable.vector_drawable_image_failed)
                 .centerInside()
                 .placeholder(R.drawable.vector_drawable_loading_image)
-                .into(pinchImageView);
+                .into(binding.showImageFullscreenShownImageview);
     }
 
     private void configureActionBar(){

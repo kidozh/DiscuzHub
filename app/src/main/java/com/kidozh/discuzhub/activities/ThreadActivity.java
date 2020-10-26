@@ -67,6 +67,8 @@ import com.kidozh.discuzhub.daos.FavoriteThreadDao;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
+import com.kidozh.discuzhub.databinding.ActivityViewThreadBinding;
+import com.kidozh.discuzhub.databinding.ActivityViewThreadDraftBinding;
 import com.kidozh.discuzhub.dialogs.ReportPostDialogFragment;
 import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.PostInfo;
@@ -128,59 +130,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         ReportPostDialogFragment.ReportDialogListener,
         ThreadCountAdapter.OnRecommendBtnPressed{
     private final static String TAG = ThreadActivity.class.getSimpleName();
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.posts_recyclerview)
-    RecyclerView mRecyclerview;
 
-    @BindView(R.id.bbs_thread_detail_swipeRefreshLayout)
-    SwipeRefreshLayout swipeRefreshLayout;
-
-    @BindView(R.id.bbs_thread_detail_comment_editText)
-    EditText mCommentEditText;
-    @BindView(R.id.bbs_thread_detail_comment_button)
-    Button mCommentBtn;
-    @BindView(R.id.bbs_comment_constraintLayout)
-    ConstraintLayout mCommentConstraintLayout;
-    @BindView(R.id.bbs_thread_detail_reply_chip)
-    Chip mThreadReplyBadge;
-    @BindView(R.id.bbs_thread_detail_reply_content)
-    TextView mThreadReplyContent;
-    
-    @BindView(R.id.smiley_root_layout)
-    View SmileyRootLayout;
-    @BindView(R.id.bbs_comment_smiley_tabLayout)
-    TabLayout mCommentSmileyTabLayout;
-    @BindView(R.id.bbs_comment_smiley_viewPager)
-    ViewPager mCommentSmileyViewPager;
-    @BindView(R.id.bbs_thread_detail_emoij_button)
-    ImageView mCommentEmoijBtn;
-    @BindView(R.id.bbs_thread_interactive_recyclerview)
-    RecyclerView mDetailThreadTypeRecyclerview;
-    @BindView(R.id.bbs_thread_comment_number)
-    TextView mDetailedThreadCommentNumber;
-    @BindView(R.id.bbs_thread_view_number)
-    TextView mDetailedThreadViewNumber;
-    @BindView(R.id.bbs_thread_subject)
-    TextView mDetailThreadSubjectTextview;
-    @BindView(R.id.bbs_thread_property_recyclerview)
-    RecyclerView mDetailThreadPropertyRecyclerview;
-    @BindView(R.id.bbs_post_captcha_imageview)
-    ImageView mPostCaptchaImageview;
-    @BindView(R.id.bbs_post_captcha_editText)
-    EditText mPostCaptchaEditText;
-    @BindView(R.id.error_content)
-    TextView errorContent;
-    @BindView(R.id.error_view)
-    View errorView;
-    @BindView(R.id.error_value)
-    TextView errorValue;
-    @BindView(R.id.error_icon)
-    ImageView errorIcon;
-    @BindView(R.id.advance_post_icon)
-    ImageView mAdvancePostIcon;
-
-
+    ActivityViewThreadBinding binding;
     public String subject;
     public int tid, fid;
     //private OkHttpClient client = new OkHttpClient();
@@ -212,9 +163,9 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_thread);
-
-        ButterKnife.bind(this);
+        binding = ActivityViewThreadBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        
         threadDetailViewModel = new ViewModelProvider(this).get(ThreadViewModel.class);
         configureIntentData();
 
@@ -248,7 +199,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         if(threadInfo!=null && threadInfo.subject !=null){
             Spanned sp = Html.fromHtml(threadInfo.subject);
             SpannableString spannableString = new SpannableString(sp);
-            mDetailThreadSubjectTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
+            binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE);
         }
 
     }
@@ -264,7 +215,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     }
 
     private void configureSmileyLayout(){
-        handler = new EmotionInputHandler(mCommentEditText, (enable, s) -> {
+        handler = new EmotionInputHandler(binding.bbsThreadDetailCommentEditText, (enable, s) -> {
 
         });
 
@@ -281,10 +232,10 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             public void onChanged(forumUserBriefInfo userBriefInfo) {
                 Log.d(TAG,"User info "+userBriefInfo);
                 if(userBriefInfo == null || userBriefInfo.auth == null){
-                    mCommentConstraintLayout.setVisibility(View.GONE);
+                    binding.bbsCommentConstraintLayout.setVisibility(View.GONE);
                 }
                 else{
-                    mCommentConstraintLayout.setVisibility(View.VISIBLE);
+                    binding.bbsCommentConstraintLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -301,16 +252,16 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 }
                 adapter.setThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue(),authorid);
                 if(adapter.getItemCount() == 0){
-                    errorView.setVisibility(View.VISIBLE);
+                    binding.errorView.setVisibility(View.VISIBLE);
                     if(threadDetailViewModel.errorMessageMutableLiveData.getValue() == null){
-                        errorView.setVisibility(View.VISIBLE);
-                        errorIcon.setImageResource(R.drawable.ic_blank_forum_thread_64px);
-                        errorValue.setText("");
-                        errorContent.setText(getString(R.string.discuz_network_result_null));
+                        binding.errorView.setVisibility(View.VISIBLE);
+                        binding.errorIcon.setImageResource(R.drawable.ic_blank_forum_thread_64px);
+                        binding.errorValue.setText("");
+                        binding.errorContent.setText(getString(R.string.discuz_network_result_null));
                     }
                 }
                 else {
-                    errorView.setVisibility(View.GONE);
+                    binding.errorView.setVisibility(View.GONE);
                 }
             }
         });
@@ -318,7 +269,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         threadDetailViewModel.isLoading.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                swipeRefreshLayout.setRefreshing(aBoolean);
+                binding.bbsThreadDetailSwipeRefreshLayout.setRefreshing(aBoolean);
             }
         });
         
@@ -327,10 +278,10 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 Toasty.error(getApplication(), 
                         getString(R.string.discuz_api_message_template,errorMessage.key,errorMessage.content),
                         Toast.LENGTH_LONG).show();
-                errorView.setVisibility(View.VISIBLE);
-                errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
-                errorValue.setText(errorMessage.key);
-                errorContent.setText(errorMessage.content);
+                binding.errorView.setVisibility(View.VISIBLE);
+                binding.errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
+                binding.errorValue.setText(errorMessage.key);
+                binding.errorContent.setText(errorMessage.content);
                 VibrateUtils.vibrateForError(getApplication());
             }
         });
@@ -391,14 +342,14 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 if(detailedThreadInfo.subject!=null){
                     Spanned sp = Html.fromHtml(detailedThreadInfo.subject);
                     SpannableString spannableString = new SpannableString(sp);
-                    mDetailThreadSubjectTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
+                    binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE);
                 }
                 if(detailedThreadInfo.closed != 0){
-                    mCommentEditText.setEnabled(false);
-                    mCommentBtn.setEnabled(false);
-                    mCommentEditText.setHint(R.string.thread_is_closed);
-                    mCommentEmoijBtn.setClickable(false);
-                    mAdvancePostIcon.setVisibility(View.GONE);
+                    binding.bbsThreadDetailCommentEditText.setEnabled(false);
+                    binding.bbsThreadDetailCommentButton.setEnabled(false);
+                    binding.bbsThreadDetailCommentEditText.setHint(R.string.thread_is_closed);
+                    binding.bbsThreadDetailEmoijButton.setClickable(false);
+                    binding.advancePostIcon.setVisibility(View.GONE);
                     if(!UserPreferenceUtils.conciseRecyclerView(getApplicationContext())
                             &&detailedThreadInfo.closed == 1){
                         threadPropertyList.add(
@@ -409,11 +360,11 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
                 }
                 else {
-                    mAdvancePostIcon.setVisibility(View.VISIBLE);
-                    mCommentEditText.setEnabled(true);
-                    mCommentBtn.setEnabled(true);
-                    mCommentEditText.setHint(R.string.bbs_thread_say_something);
-                    mCommentEmoijBtn.setClickable(true);
+                    binding.advancePostIcon.setVisibility(View.VISIBLE);
+                    binding.bbsThreadDetailCommentEditText.setEnabled(true);
+                    binding.bbsThreadDetailCommentButton.setEnabled(true);
+                    binding.bbsThreadDetailCommentEditText.setHint(R.string.bbs_thread_say_something);
+                    binding.bbsThreadDetailEmoijButton.setClickable(true);
                 }
 
                 if(detailedThreadInfo.price!=0){
@@ -579,8 +530,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 countAdapter.setThreadCountList(threadNotificationList);
                 propertiesAdapter.setThreadNotificationList(threadPropertyList);
                 // for normal rendering
-                mDetailedThreadCommentNumber.setText(getString(R.string.bbs_thread_reply_number,detailedThreadInfo.replies));
-                mDetailedThreadViewNumber.setText(String.valueOf(detailedThreadInfo.views));
+                binding.bbsThreadCommentNumber.setText(getString(R.string.bbs_thread_reply_number,detailedThreadInfo.replies));
+                binding.bbsThreadViewNumber.setText(String.valueOf(detailedThreadInfo.views));
 
 
             }
@@ -597,7 +548,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
                         Spanned sp = Html.fromHtml(threadResult.threadPostVariables.detailedThreadInfo.subject);
                         SpannableString spannableString = new SpannableString(sp);
-                        mDetailThreadSubjectTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
+                        binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE);
                         if(getSupportActionBar()!=null){
                             getSupportActionBar().setTitle(threadResult.threadPostVariables.detailedThreadInfo.subject);
                         }
@@ -643,13 +594,13 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 if(secureInfoResult !=null){
                     if(secureInfoResult.secureVariables == null){
                         // don't need a code
-                        mPostCaptchaEditText.setVisibility(View.GONE);
-                        mPostCaptchaImageview.setVisibility(View.GONE);
+                        binding.bbsPostCaptchaEditText.setVisibility(View.GONE);
+                        binding.bbsPostCaptchaImageview.setVisibility(View.GONE);
                     }
                     else {
-                        mPostCaptchaEditText.setVisibility(View.VISIBLE);
-                        mPostCaptchaImageview.setVisibility(View.VISIBLE);
-                        mPostCaptchaImageview.setImageDrawable(getDrawable(R.drawable.ic_captcha_placeholder_24px));
+                        binding.bbsPostCaptchaEditText.setVisibility(View.VISIBLE);
+                        binding.bbsPostCaptchaImageview.setVisibility(View.VISIBLE);
+                        binding.bbsPostCaptchaImageview.setImageDrawable(getDrawable(R.drawable.ic_captcha_placeholder_24px));
                         // need a captcha
                         String captchaURL = secureInfoResult.secureVariables.secCodeURL;
                         String captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash);
@@ -673,7 +624,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                                     // get the session
 
 
-                                    mPostCaptchaImageview.post(new Runnable() {
+                                    binding.bbsPostCaptchaImageview.post(new Runnable() {
                                         @Override
                                         public void run() {
 
@@ -695,7 +646,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                                             Glide.with(getApplication())
                                                     .load(pictureGlideURL)
                                                     .apply(options)
-                                                    .into(mPostCaptchaImageview);
+                                                    .into(binding.bbsPostCaptchaImageview);
                                         }
                                     });
 
@@ -708,8 +659,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 }
                 else {
                     // don't know the situation
-                    mPostCaptchaEditText.setVisibility(View.GONE);
-                    mPostCaptchaImageview.setVisibility(View.GONE);
+                    binding.bbsPostCaptchaEditText.setVisibility(View.GONE);
+                    binding.bbsPostCaptchaImageview.setVisibility(View.GONE);
                 }
             }
         });
@@ -812,7 +763,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
 
     private void configureSwipeRefreshLayout(){
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        binding.bbsThreadDetailSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Boolean isLoading = threadDetailViewModel.isLoading.getValue();
@@ -832,10 +783,10 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     private void configureCommentBtn(){
         // advance post
         Context context  =this;
-        mAdvancePostIcon.setOnClickListener(new View.OnClickListener() {
+        binding.advancePostIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String message = mCommentEditText.getText().toString();
+                String message = binding.bbsThreadDetailCommentEditText.getText().toString();
                 Intent intent = new Intent(context, PublishActivity.class);
                 intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forum);
                 intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
@@ -854,7 +805,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         });
 
         // captcha
-        mPostCaptchaImageview.setOnClickListener(new View.OnClickListener() {
+        binding.bbsPostCaptchaImageview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // update it
@@ -862,12 +813,12 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             }
         });
 
-        mCommentBtn.setOnClickListener(new View.OnClickListener(){
+        binding.bbsThreadDetailCommentButton.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                String commentMessage = mCommentEditText.getText().toString();
-                String captchaString = mPostCaptchaEditText.getText().toString();
+                String commentMessage = binding.bbsThreadDetailCommentEditText.getText().toString();
+                String captchaString = binding.bbsPostCaptchaEditText.getText().toString();
                 if(needCaptcha() && captchaString.length() == 0){
                     Toasty.warning(getApplicationContext(),getString(R.string.captcha_required),Toast.LENGTH_SHORT).show();
                     return;
@@ -892,39 +843,39 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             }
         });
 
-        mCommentEmoijBtn.setOnClickListener(new View.OnClickListener() {
+        binding.bbsThreadDetailEmoijButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(SmileyRootLayout.getVisibility() == View.GONE){
+                if(binding.smileyRootLayout.getVisibility() == View.GONE){
                     // smiley picker not visible
-                    mCommentEmoijBtn.setImageDrawable(getDrawable(R.drawable.vector_drawable_keyboard_24px));
+                    binding.bbsThreadDetailEmoijButton.setImageDrawable(getDrawable(R.drawable.vector_drawable_keyboard_24px));
 
-                    mCommentEditText.clearFocus();
+                    binding.bbsThreadDetailCommentEditText.clearFocus();
                     // close keyboard
                     InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                     if(imm !=null){
-                        imm.hideSoftInputFromWindow(mCommentEditText.getWindowToken(),0);
+                        imm.hideSoftInputFromWindow(binding.bbsThreadDetailCommentEditText.getWindowToken(),0);
                     }
-                    SmileyRootLayout.setVisibility(View.VISIBLE);
+                    binding.smileyRootLayout.setVisibility(View.VISIBLE);
 
                     // tab layout binding...
                     getSmileyInfo();
                 }
                 else {
-                    SmileyRootLayout.setVisibility(View.GONE);
-                    mCommentEmoijBtn.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp));
+                    binding.smileyRootLayout.setVisibility(View.GONE);
+                    binding.bbsThreadDetailEmoijButton.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp));
                 }
 
 
             }
         });
 
-        mCommentEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        binding.bbsThreadDetailCommentEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus && SmileyRootLayout.getVisibility() == View.VISIBLE){
-                    SmileyRootLayout.setVisibility(View.GONE);
-                    mCommentEmoijBtn.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp));
+                if(hasFocus && binding.smileyRootLayout.getVisibility() == View.VISIBLE){
+                    binding.smileyRootLayout.setVisibility(View.GONE);
+                    binding.bbsThreadDetailEmoijButton.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp));
                 }
             }
         });
@@ -963,18 +914,18 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                             // viewpager
                             // interface with tab
                             for(int i=0;i<cateNum;i++){
-                                mCommentSmileyTabLayout.removeAllTabs();
-                                mCommentSmileyTabLayout.addTab(
-                                        mCommentSmileyTabLayout.newTab().setText(String.valueOf(i+1))
+                                binding.bbsCommentSmileyTabLayout.removeAllTabs();
+                                binding.bbsCommentSmileyTabLayout.addTab(
+                                        binding.bbsCommentSmileyTabLayout.newTab().setText(String.valueOf(i+1))
                                 );
 
                             }
                             // bind tablayout and viewpager
-                            mCommentSmileyTabLayout.setupWithViewPager(mCommentSmileyViewPager);
+                            binding.bbsCommentSmileyTabLayout.setupWithViewPager(binding.bbsCommentSmileyViewPager);
                             smileyViewPagerAdapter adapter = new smileyViewPagerAdapter(getSupportFragmentManager(),
                                     FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
                             adapter.setCateNum(cateNum);
-                            mCommentSmileyViewPager.setAdapter(adapter);
+                            binding.bbsCommentSmileyViewPager.setAdapter(adapter);
 
                         }
                     });
@@ -1000,9 +951,9 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         PostInfo threadCommentInfo = adapter.getThreadInfoList().get(position);
 
         selectedThreadComment = threadCommentInfo;
-        mThreadReplyBadge.setText(threadCommentInfo.author);
-        mThreadReplyBadge.setVisibility(View.VISIBLE);
-        mCommentEditText.setHint(String.format("@%s",threadCommentInfo.author));
+        binding.bbsThreadDetailReplyChip.setText(threadCommentInfo.author);
+        binding.bbsThreadDetailReplyChip.setVisibility(View.VISIBLE);
+        binding.bbsThreadDetailCommentEditText.setHint(String.format("@%s",threadCommentInfo.author));
         String decodeString = threadCommentInfo.message;
         // filter quote
         String quoteRegexInVer4 = "^<div class=\"reply_wrap\">(.+?)</div><br .>";
@@ -1014,16 +965,16 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
         Spanned sp = Html.fromHtml(decodeString);
 
-        mThreadReplyContent.setText(sp, TextView.BufferType.SPANNABLE);
-        mThreadReplyContent.setVisibility(View.VISIBLE);
+        binding.bbsThreadDetailReplyContent.setText(sp, TextView.BufferType.SPANNABLE);
+        binding.bbsThreadDetailReplyContent.setVisibility(View.VISIBLE);
 
-        mThreadReplyBadge.setOnCloseIconClickListener(new View.OnClickListener(){
+        binding.bbsThreadDetailReplyChip.setOnCloseIconClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                mThreadReplyBadge.setVisibility(View.GONE);
-                mThreadReplyContent.setVisibility(View.GONE);
-                mCommentEditText.setHint(R.string.bbs_thread_say_something);
+                binding.bbsThreadDetailReplyChip.setVisibility(View.GONE);
+                binding.bbsThreadDetailReplyContent.setVisibility(View.GONE);
+                binding.bbsThreadDetailCommentEditText.setHint(R.string.bbs_thread_say_something);
                 selectedThreadComment = null;
             }
         });
@@ -1102,7 +1053,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                         for(int i=0; i<postInfos.size(); i++){
                             PostInfo curPost = postInfos.get(i);
                             if(curPost.pid == redirectPid){
-                                mRecyclerview.scrollToPosition(i);
+                                binding.postsRecyclerview.scrollToPosition(i);
                                 VibrateUtils.vibrateForClick(this);
                                 long postPostion = postInfos.get(i).position;
                                 Toasty.success(this,getString(R.string.scroll_to_pid_successfully,postPostion),Toast.LENGTH_SHORT).show();
@@ -1529,16 +1480,16 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
 
     private void configureRecyclerview(){
-        //mRecyclerview.setHasFixedSize(true);
+        //binding.postsRecyclerview.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        mRecyclerview.setLayoutManager(linearLayoutManager);
+        binding.postsRecyclerview.setLayoutManager(linearLayoutManager);
         adapter = new PostAdapter(this,
                 bbsInfo,
                 userBriefInfo,
                 threadDetailViewModel.threadStatusMutableLiveData.getValue());
         adapter.subject =subject;
-        mRecyclerview.setAdapter(adapter);
-        mRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.postsRecyclerview.setAdapter(adapter);
+        binding.postsRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -1578,14 +1529,14 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
         if(!UserPreferenceUtils.conciseRecyclerView(getApplicationContext())){
             // not to bind this
-            mDetailThreadTypeRecyclerview.setHasFixedSize(true);
-            mDetailThreadTypeRecyclerview.setLayoutManager(new GridLayoutManager(this, 5));
-            mDetailThreadTypeRecyclerview.setAdapter(countAdapter);
+            binding.bbsThreadInteractiveRecyclerview.setHasFixedSize(true);
+            binding.bbsThreadInteractiveRecyclerview.setLayoutManager(new GridLayoutManager(this, 5));
+            binding.bbsThreadInteractiveRecyclerview.setAdapter(countAdapter);
         }
 
         propertiesAdapter = new ThreadPropertiesAdapter();
-        mDetailThreadPropertyRecyclerview.setLayoutManager(new LinearLayoutManager(this));
-        mDetailThreadPropertyRecyclerview.setAdapter(propertiesAdapter);
+        binding.bbsThreadPropertyRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        binding.bbsThreadPropertyRecyclerview.setAdapter(propertiesAdapter);
 
 
     }
@@ -1641,7 +1592,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
             formBodyBuilder.add("seccodehash",secureInfoResult.secureVariables.secHash)
                     .add("seccodemodid", "forum::viewthread");
-            String captcha=  mPostCaptchaEditText.getText().toString();
+            String captcha=  binding.bbsPostCaptchaEditText.getText().toString();
             switch (getCharsetType()){
                 case CHARSET_GBK:{
                     try {
@@ -1679,16 +1630,16 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 .build();
         Handler mHandler = new Handler(Looper.getMainLooper());
         // UI Change
-        mCommentBtn.setText(R.string.bbs_commentting);
-        mCommentBtn.setEnabled(false);
+        binding.bbsThreadDetailCommentButton.setText(R.string.bbs_commentting);
+        binding.bbsThreadDetailCommentButton.setEnabled(false);
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCommentBtn.setText(R.string.bbs_thread_comment);
-                        mCommentBtn.setEnabled(true);
+                        binding.bbsThreadDetailCommentButton.setText(R.string.bbs_thread_comment);
+                        binding.bbsThreadDetailCommentButton.setEnabled(true);
                         Toasty.error(getApplicationContext(),getString(R.string.bbs_comment_failed),Toast.LENGTH_LONG).show();
                     }
                 });
@@ -1706,12 +1657,12 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                if(SmileyRootLayout.getVisibility() == View.VISIBLE){
-                                    mCommentEmoijBtn.callOnClick();
+                                if(binding.smileyRootLayout.getVisibility() == View.VISIBLE){
+                                    binding.bbsThreadDetailEmoijButton.callOnClick();
                                 }
-                                mCommentBtn.setText(R.string.bbs_thread_comment);
-                                mCommentBtn.setEnabled(true);
-                                mCommentEditText.setText("");
+                                binding.bbsThreadDetailCommentButton.setText(R.string.bbs_thread_comment);
+                                binding.bbsThreadDetailCommentButton.setEnabled(true);
+                                binding.bbsThreadDetailCommentEditText.setText("");
                                 reloadThePage();
                                 threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
                                 //getThreadComment();
@@ -1724,8 +1675,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                mCommentBtn.setText(R.string.bbs_thread_comment);
-                                mCommentBtn.setEnabled(true);
+                                binding.bbsThreadDetailCommentButton.setText(R.string.bbs_thread_comment);
+                                binding.bbsThreadDetailCommentButton.setEnabled(true);
                                 if(returnedMessage == null){
                                     Toasty.error(getApplicationContext(), getString(R.string.network_failed), Toast.LENGTH_LONG).show();
                                 }
@@ -1838,7 +1789,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
         if(needCaptcha()){
             SecureInfoResult secureInfoResult = threadDetailViewModel.getSecureInfoResultMutableLiveData().getValue();
-            String captcha = mPostCaptchaEditText.getText().toString();
+            String captcha = binding.bbsPostCaptchaEditText.getText().toString();
             formBodyBuilder.add("seccodehash",secureInfoResult.secureVariables.secHash)
                     .add("seccodemodid", "forum::viewthread");
             switch (getCharsetType()){
@@ -1872,8 +1823,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 .post(formBody)
                 .build();
 
-        mCommentBtn.setText(R.string.bbs_commentting);
-        mCommentBtn.setEnabled(false);
+        binding.bbsThreadDetailCommentButton.setText(R.string.bbs_commentting);
+        binding.bbsThreadDetailCommentButton.setEnabled(false);
         Handler mHandler = new Handler(Looper.getMainLooper());
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -1881,8 +1832,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCommentBtn.setText(R.string.bbs_thread_comment);
-                        mCommentBtn.setEnabled(true);
+                        binding.bbsThreadDetailCommentButton.setText(R.string.bbs_thread_comment);
+                        binding.bbsThreadDetailCommentButton.setEnabled(true);
                         Toasty.error(getApplicationContext(),getString(R.string.network_failed),Toast.LENGTH_LONG).show();
                     }
                 });
@@ -1902,12 +1853,12 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                if(SmileyRootLayout.getVisibility() == View.VISIBLE){
-                                    mCommentEmoijBtn.callOnClick();
+                                if(binding.smileyRootLayout.getVisibility() == View.VISIBLE){
+                                    binding.bbsThreadDetailEmoijButton.callOnClick();
                                 }
-                                mCommentBtn.setText(R.string.bbs_thread_comment);
-                                mCommentBtn.setEnabled(true);
-                                mCommentEditText.setText("");
+                                binding.bbsThreadDetailCommentButton.setText(R.string.bbs_thread_comment);
+                                binding.bbsThreadDetailCommentButton.setEnabled(true);
+                                binding.bbsThreadDetailCommentEditText.setText("");
                                 reloadThePage();
                                 threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
                                 //getThreadComment();
@@ -1918,8 +1869,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                mCommentBtn.setText(R.string.bbs_thread_comment);
-                                mCommentBtn.setEnabled(true);
+                                binding.bbsThreadDetailCommentButton.setText(R.string.bbs_thread_comment);
+                                binding.bbsThreadDetailCommentButton.setEnabled(true);
                                 if(returnedMessage == null){
                                     Toasty.error(getApplicationContext(), getString(R.string.network_failed), Toast.LENGTH_LONG).show();
                                 }
@@ -1938,7 +1889,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
     private void configureToolbar(){
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         //getSupportActionBar().setTitle(subject);

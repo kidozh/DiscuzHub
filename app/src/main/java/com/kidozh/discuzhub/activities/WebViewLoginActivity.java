@@ -26,6 +26,7 @@ import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersisto
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.BBSInformationDatabase;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
+import com.kidozh.discuzhub.databinding.ActivityLoginByWebViewBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.LoginResult;
@@ -48,18 +49,16 @@ import retrofit2.Retrofit;
 
 public class WebViewLoginActivity extends BaseStatusActivity {
     private static String TAG = WebViewLoginActivity.class.getSimpleName();
-
-    @BindView(R.id.login_by_web_webview)
-    WebView webView;
-    @BindView(R.id.login_by_web_progressBar)
-    ProgressBar webViewProgressBar;
+    
     cookieWebViewClient cookieWebViewClientInstance;
+    ActivityLoginByWebViewBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_by_web_view);
-        ButterKnife.bind(this);
+        binding = ActivityLoginByWebViewBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         configureIntentData();
         configureActionBar();
         configureAlertDialog();
@@ -113,9 +112,9 @@ public class WebViewLoginActivity extends BaseStatusActivity {
     void configureWebView(){
         cookieWebViewClientInstance = new cookieWebViewClient();
         Log.d(TAG,"login web url "+ URLUtils.getLoginWebURL(bbsInfo));
-        webView.loadUrl(URLUtils.getLoginWebURL(bbsInfo));
-        webView.clearCache(true);
-        WebSettings webSettings = webView.getSettings();
+        binding.loginByWebWebview.loadUrl(URLUtils.getLoginWebURL(bbsInfo));
+        binding.loginByWebWebview.clearCache(true);
+        WebSettings webSettings = binding.loginByWebWebview.getSettings();
         if(webSettings!=null){
 
             // to allow authentication to use JS
@@ -133,7 +132,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
             webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK); //关闭webview中缓存
             webSettings.setJavaScriptCanOpenWindowsAutomatically(true); //支持通过JS打开新窗口
             webSettings.setLoadsImagesAutomatically(true); //支持自动加载图片
-            webView.setWebViewClient(cookieWebViewClientInstance);
+            binding.loginByWebWebview.setWebViewClient(cookieWebViewClientInstance);
 
         }
     }
@@ -141,11 +140,11 @@ public class WebViewLoginActivity extends BaseStatusActivity {
     void configureQQLoginWebview(String url){
         cookieWebViewClientInstance = new cookieWebViewClient();
         Log.d(TAG,"login qq url "+ url);
-        webView.loadUrl(url);
+        binding.loginByWebWebview.loadUrl(url);
 
 
-        // webView.clearCache(true);
-        WebSettings webSettings = webView.getSettings();
+        // binding.loginByWebWebview.clearCache(true);
+        WebSettings webSettings = binding.loginByWebWebview.getSettings();
         if(webSettings!=null){
 
             // to allow authentication to use JS
@@ -163,7 +162,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
             webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK); //关闭webview中缓存
             webSettings.setJavaScriptCanOpenWindowsAutomatically(true); //支持通过JS打开新窗口
             webSettings.setLoadsImagesAutomatically(true); //支持自动加载图片
-            webView.setWebViewClient(cookieWebViewClientInstance);
+            binding.loginByWebWebview.setWebViewClient(cookieWebViewClientInstance);
 
         }
 
@@ -178,7 +177,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
         if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null) {
             String url = intent.getData().toString();
             Log.d(TAG,"Get QQ Login URL "+url);
-            webView.loadUrl(url);
+            binding.loginByWebWebview.loadUrl(url);
         }
     }
 
@@ -223,7 +222,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
-            webViewProgressBar.setVisibility(View.VISIBLE);
+            binding.loginByWebProgressBar.setVisibility(View.VISIBLE);
         }
 
         public void onPageFinished(WebView view, String url) {
@@ -232,7 +231,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
 
             Log.i(TAG, "URL "+url+" Cookies = " + CookieStr);
             super.onPageFinished(view, url);
-            webViewProgressBar.setVisibility(View.GONE);
+            binding.loginByWebProgressBar.setVisibility(View.GONE);
         }
 
     }
@@ -244,7 +243,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
         NetworkUtils.clearUserCookieInfo(getApplicationContext(),userBriefInfo);
         OkHttpClient client = NetworkUtils.getPreferredClientWithCookieJar(getApplicationContext());
         // networkUtils.clearUserCookieInfo(getApplicationContext(),userBriefInfo);
-        String currentUrl = webView.getUrl();
+        String currentUrl = binding.loginByWebWebview.getUrl();
         String cookieString = cookieWebViewClientInstance.cookieManager.getCookie(currentUrl);
         String[] cookieStringArray = cookieString.split(";");
         List<Cookie> cookieList = new ArrayList<>();
@@ -264,7 +263,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
             retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         }
         else {
-            String currentURL = webView.getUrl();
+            String currentURL = binding.loginByWebWebview.getUrl();
             // parse base url
             String[] urlSegements = currentURL.split("/");
             StringBuilder baseURLBuilder = new StringBuilder();

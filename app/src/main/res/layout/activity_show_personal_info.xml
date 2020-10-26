@@ -1,260 +1,262 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".activities.UserProfileActivity">
-
-
-    <com.google.android.material.appbar.AppBarLayout
+<layout>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorBackgroundDefault">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context=".activities.UserProfileActivity">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
+
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+            android:background="@color/colorBackgroundDefault">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ProgressBar
+                        android:id="@+id/show_personal_info_progressbar"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/show_personal_info_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/show_personal_info_avatar"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:transitionName="user_info_avatar"
+                            app:layout_anchorGravity="bottom|start"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:shapeAppearanceOverlay="@style/circleImageView"
+                            app:srcCompat="@drawable/avatar_1" />
+
+                        <ImageView
+                            android:id="@+id/user_verified_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="@+id/show_personal_info_avatar"
+                            app:layout_constraintEnd_toEndOf="@+id/show_personal_info_avatar"
+                            app:srcCompat="@drawable/ic_verified_24px"
+                            tools:visibility="visible" />
+
+                        <Button
+                            android:id="@+id/show_personal_info_message_btn"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="16dp"
+                            android:clickable="true"
+                            android:text="@string/bbs_send_pm_in_profile"
+                            app:cornerRadius="16dp"
+                            app:icon="@drawable/vector_drawable_message_24px"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/show_personal_info_avatar" />
+
+                        <Button
+                            android:id="@+id/show_personal_info_focus_btn"
+                            style="@style/Widget.MaterialComponents.Button.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:text="@string/bbs_follow_user"
+                            app:cornerRadius="16dp"
+                            app:icon="@drawable/vector_drawable_add_24px"
+                            app:layout_constraintBottom_toBottomOf="@+id/show_personal_info_message_btn"
+                            app:layout_constraintEnd_toStartOf="@+id/show_personal_info_message_btn"
+                            app:layout_constraintTop_toTopOf="@+id/show_personal_info_message_btn" />
+
+                        <TextView
+                            android:id="@+id/user_bio_textview"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:textStyle="bold|italic"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/show_personal_info_avatar"
+                            tools:text="@tools:sample/cities" />
+
+                        <TextView
+                            android:id="@+id/user_signature_textview"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:textAlignment="viewStart"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/user_bio_textview"
+                            tools:text="@tools:sample/lorem" />
+
+                        <TextView
+                            android:id="@+id/show_personal_info_interest_textView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:drawableStart="@drawable/ic_attachment_24px"
+                            android:drawablePadding="8dp"
+                            android:drawableTint="@color/MaterialColorBlue"
+                            android:gravity="center_vertical"
+                            android:singleLine="true"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/colorPrimaryDark"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/user_signature_textview"
+                            tools:text="@tools:sample/lorem" />
+
+                        <TextView
+                            android:id="@+id/show_personal_info_birthplace_textView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:drawableStart="@drawable/ic_location_city_24px"
+                            android:drawablePadding="8dp"
+                            android:drawableTint="@color/colorTextSecondaryDefault"
+                            android:gravity="center_vertical"
+                            android:textAlignment="viewStart"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/show_personal_info_interest_textView"
+                            tools:text="@tools:sample/cities" />
+
+                        <TextView
+                            android:id="@+id/show_personal_info_regdate_textView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:drawableStart="@drawable/ic_add_24px"
+                            android:drawableTint="?attr/colorControlNormal"
+                            android:gravity="center_vertical"
+                            android:singleLine="true"
+                            android:textAlignment="viewStart"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/show_personal_info_birthplace_textView"
+                            tools:text="@tools:sample/date/ddmmyy" />
+
+                        <TextView
+                            android:id="@+id/show_personal_info_last_activity_time"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:drawableStart="@drawable/ic_clock_24px"
+                            android:drawablePadding="8dp"
+                            android:drawableTint="?attr/colorControlNormal"
+                            android:gravity="center_vertical"
+                            android:textAlignment="viewStart"
+                            app:layout_constraintStart_toEndOf="@+id/show_personal_info_regdate_textView"
+                            app:layout_constraintTop_toBottomOf="@+id/show_personal_info_birthplace_textView"
+                            tools:text="@tools:sample/date/ddmmyy" />
+
+                        <TextView
+                            android:id="@+id/show_personal_info_recent_note_textView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:drawableStart="@drawable/ic_bbs_add_24px"
+                            android:drawablePadding="8dp"
+                            android:drawableTint="?attr/colorControlNormal"
+                            android:gravity="center_vertical"
+                            android:textAlignment="viewStart"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/show_personal_info_last_activity_time"
+                            tools:text="@tools:sample/full_names" />
+
+                        <TextView
+                            android:id="@+id/show_personal_info_group_info"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="8dp"
+                            android:drawableStart="@drawable/ic_account_box_24px"
+                            android:drawablePadding="8dp"
+                            android:drawableTint="@color/colorPrimary"
+                            android:gravity="center_vertical"
+                            android:textAlignment="viewStart"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/show_personal_info_recent_note_textView"
+                            tools:text="@tools:sample/full_names" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:context=".activities.UserProfileActivity"
+            tools:showIn="@layout/activity_show_personal_info">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ProgressBar
-                    android:id="@+id/show_personal_info_progressbar"
-                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="true" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/show_personal_info_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/show_personal_info_avatar"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:transitionName="user_info_avatar"
-                        app:layout_anchorGravity="bottom|start"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:shapeAppearanceOverlay="@style/circleImageView"
-                        app:srcCompat="@drawable/avatar_1" />
-
-                    <ImageView
-                        android:id="@+id/user_verified_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="@+id/show_personal_info_avatar"
-                        app:layout_constraintEnd_toEndOf="@+id/show_personal_info_avatar"
-                        app:srcCompat="@drawable/ic_verified_24px"
-                        tools:visibility="visible" />
-
-                    <Button
-                        android:id="@+id/show_personal_info_message_btn"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:clickable="true"
-                        android:text="@string/bbs_send_pm_in_profile"
-                        app:cornerRadius="16dp"
-                        app:icon="@drawable/vector_drawable_message_24px"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/show_personal_info_avatar" />
-
-                    <Button
-                        android:id="@+id/show_personal_info_focus_btn"
-                        style="@style/Widget.MaterialComponents.Button.Icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:text="@string/bbs_follow_user"
-                        app:cornerRadius="16dp"
-                        app:icon="@drawable/vector_drawable_add_24px"
-                        app:layout_constraintBottom_toBottomOf="@+id/show_personal_info_message_btn"
-                        app:layout_constraintEnd_toStartOf="@+id/show_personal_info_message_btn"
-                        app:layout_constraintTop_toTopOf="@+id/show_personal_info_message_btn" />
-
-                    <TextView
-                        android:id="@+id/user_bio_textview"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:textStyle="bold|italic"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_avatar"
-                        tools:text="@tools:sample/cities" />
-
-                    <TextView
-                        android:id="@+id/user_signature_textview"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:textAlignment="viewStart"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/user_bio_textview"
-                        tools:text="@tools:sample/lorem" />
-
-                    <TextView
-                        android:id="@+id/show_personal_info_interest_textView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:drawableStart="@drawable/ic_attachment_24px"
-                        android:drawablePadding="8dp"
-                        android:drawableTint="@color/MaterialColorBlue"
-                        android:gravity="center_vertical"
-                        android:singleLine="true"
-                        android:textAlignment="viewStart"
-                        android:textColor="@color/colorPrimaryDark"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/user_signature_textview"
-                        tools:text="@tools:sample/lorem" />
-
-                    <TextView
-                        android:id="@+id/show_personal_info_birthplace_textView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:drawableStart="@drawable/ic_location_city_24px"
-                        android:drawablePadding="8dp"
-                        android:drawableTint="@color/colorTextSecondaryDefault"
-                        android:gravity="center_vertical"
-                        android:textAlignment="viewStart"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_interest_textView"
-                        tools:text="@tools:sample/cities" />
-
-                    <TextView
-                        android:id="@+id/show_personal_info_regdate_textView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:drawableStart="@drawable/ic_add_24px"
-                        android:drawableTint="?attr/colorControlNormal"
-                        android:gravity="center_vertical"
-                        android:singleLine="true"
-                        android:textAlignment="viewStart"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_birthplace_textView"
-                        tools:text="@tools:sample/date/ddmmyy" />
-
-                    <TextView
-                        android:id="@+id/show_personal_info_last_activity_time"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:drawableStart="@drawable/ic_clock_24px"
-                        android:drawablePadding="8dp"
-                        android:drawableTint="?attr/colorControlNormal"
-                        android:gravity="center_vertical"
-                        android:textAlignment="viewStart"
-                        app:layout_constraintStart_toEndOf="@+id/show_personal_info_regdate_textView"
-                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_birthplace_textView"
-                        tools:text="@tools:sample/date/ddmmyy" />
-
-                    <TextView
-                        android:id="@+id/show_personal_info_recent_note_textView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:drawableStart="@drawable/ic_bbs_add_24px"
-                        android:drawablePadding="8dp"
-                        android:drawableTint="?attr/colorControlNormal"
-                        android:gravity="center_vertical"
-                        android:textAlignment="viewStart"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_last_activity_time"
-                        tools:text="@tools:sample/full_names" />
-
-                    <TextView
-                        android:id="@+id/show_personal_info_group_info"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:drawableStart="@drawable/ic_account_box_24px"
-                        android:drawablePadding="8dp"
-                        android:drawableTint="@color/colorPrimary"
-                        android:gravity="center_vertical"
-                        android:textAlignment="viewStart"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/show_personal_info_recent_note_textView"
-                        tools:text="@tools:sample/full_names" />
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </LinearLayout>
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context=".activities.UserProfileActivity"
-        tools:showIn="@layout/activity_show_personal_info">
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/show_personal_info_viewpager"
-                android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/show_personal_info_tabLayout"
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/show_personal_info_viewpager"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:tabMode="auto" />
+                    android:layout_height="match_parent">
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/show_personal_info_tabLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tabMode="auto" />
 
 
-            </androidx.viewpager.widget.ViewPager>
+                </androidx.viewpager.widget.ViewPager>
 
-        </LinearLayout>
-
-
-    </androidx.core.widget.NestedScrollView>
+            </LinearLayout>
 
 
+        </androidx.core.widget.NestedScrollView>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

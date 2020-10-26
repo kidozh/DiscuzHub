@@ -7,9 +7,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
@@ -37,12 +35,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.ViewHistoryAdapter;
 import com.kidozh.discuzhub.callback.RecyclerViewItemTouchCallback;
 import com.kidozh.discuzhub.database.BBSInformationDatabase;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
+import com.kidozh.discuzhub.databinding.ActivityViewHistoryBinding;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -52,42 +50,24 @@ import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
 import com.kidozh.discuzhub.viewModels.ViewHistoryViewModel;
 
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
 public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerViewItemTouchCallback.onInteraction{
     private static final String TAG = ViewHistoryActivity.class.getSimpleName();
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.info_view)
-    View infoView;
-    @BindView(R.id.view_history_search_view)
-    SearchView searchView;
-    @BindView(R.id.view_history_recyclerview)
-    RecyclerView viewHistoryRecyclerview;
-//    @BindView(R.id.toolbar_layout)
-//    CollapsingToolbarLayout toolBarLayout;
-    @BindView(R.id.info_icon)
-    ImageView infoIcon;
-    @BindView(R.id.info_content)
-    TextView infoContent;
-    @BindView(R.id.view_history_switch)
-    SwitchMaterial viewHistorySwitch;
-    @BindView(R.id.view_history_coordinatorLayout)
-    CoordinatorLayout coordinatorLayout;
 
     ViewHistoryViewModel viewModel;
     ViewHistoryAdapter adapter;
+
+    ActivityViewHistoryBinding binding;
+    
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_history);
-        ButterKnife.bind(this);
+        binding = ActivityViewHistoryBinding.inflate(getLayoutInflater());
+        
+        setContentView(binding.getRoot());
         viewModel = new ViewModelProvider(this).get(ViewHistoryViewModel.class);
         configureIntentData();
         configureActionBar();
@@ -112,41 +92,33 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
     }
 
     private void configureActionBar(){
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         if(getSupportActionBar() !=null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
     private void configureRecyclerview(){
-        viewHistoryRecyclerview.setLayoutManager(new LinearLayoutManager(this));
-        viewHistoryRecyclerview.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.HORIZONTAL));
+        binding.viewHistoryRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        binding.viewHistoryRecyclerview.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.HORIZONTAL));
         adapter = new ViewHistoryAdapter();
         adapter.setInfo(bbsInfo,userBriefInfo);
         viewModel.getPagedListLiveData().observe(this,adapter::submitList);
 
-        viewHistoryRecyclerview.setAdapter(adapter);
+        binding.viewHistoryRecyclerview.setAdapter(adapter);
         // swipe and sort
         RecyclerViewItemTouchCallback callback = new RecyclerViewItemTouchCallback(this);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(viewHistoryRecyclerview);
+        itemTouchHelper.attachToRecyclerView(binding.viewHistoryRecyclerview);
 
 
     }
     Context context = this;
     private void configureSearchView(){
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        binding.viewHistorySearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-//                if(!TextUtils.isEmpty(query)){
-//                    viewModel.setSearchText(bbsInfo,query);
-//                    viewModel.getPagedListLiveData().observe((LifecycleOwner) context,adapter::submitList);
-//                }
-//                else {
-//                    viewModel.setBBSInfo(bbsInfo);
-//                    viewModel.getPagedListLiveData().observe((LifecycleOwner) context,adapter::submitList);
-//                }
                 return false;
             }
 
@@ -171,19 +143,19 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
             @Override
             public void onChanged(PagedList<ViewHistory> viewHistories) {
                 if(viewHistories.size() == 0){
-                    infoView.setVisibility(View.VISIBLE);
+                    binding.infoView.setVisibility(View.VISIBLE);
                     // judge the setting
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
                     boolean recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history),false);
                     if(recordHistory){
-                        infoContent.setText(R.string.view_history_not_found);
+                        binding.infoContent.setText(R.string.view_history_not_found);
                     }
                     else {
-                        infoContent.setText(R.string.view_history_record_not_open);
+                        binding.infoContent.setText(R.string.view_history_record_not_open);
                     }
                 }
                 else {
-                    infoView.setVisibility(View.GONE);
+                    binding.infoView.setVisibility(View.GONE);
                 }
             }
         });
@@ -225,7 +197,7 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
             Toasty.info(this,getString(R.string.view_history_not_found), Toast.LENGTH_SHORT).show();
         }
         else {
-            AlertDialog alertDialogs = new MaterialAlertDialogBuilder(this)
+            AlertDialog alertDialogs = new AlertDialog.Builder(this)
                     .setTitle(getString(R.string.delete_all_view_history))
                     .setIcon(ContextCompat.getDrawable(this,R.drawable.vector_drawable_warning_24px))
                     .setMessage(getString(R.string.delete_all_view_history_description))
@@ -300,7 +272,7 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Snackbar snackbar = Snackbar.make(coordinatorLayout,
+            Snackbar snackbar = Snackbar.make(binding.viewHistoryCoordinatorLayout,
                     getString(R.string.delete_view_history_item,viewHistory.name),
                     Snackbar.LENGTH_LONG);
             snackbar.setAction(R.string.bbs_undo_delete, new View.OnClickListener(){

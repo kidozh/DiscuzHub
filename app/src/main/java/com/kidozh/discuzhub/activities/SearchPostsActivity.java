@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.databinding.ActivitySearchPostsBinding;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -44,20 +45,20 @@ import okhttp3.HttpUrl;
 public class SearchPostsActivity extends BaseStatusActivity {
     private static final String TAG = SearchPostsActivity.class.getSimpleName();
     Activity activity = this;
-    @BindView(R.id.search_post_webview)
-    WebView webView;
-    @BindView(R.id.search_post_progressbar)
-    ProgressBar progressbar;
+
 
     CookieWebViewClient cookieClient;
 
     String searchPostURL;
+    
+    ActivitySearchPostsBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_posts);
-        ButterKnife.bind(this);
+        binding = ActivitySearchPostsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        
         getIntentInfo();
         configureActionBar();
         configurePostStartURL();
@@ -86,7 +87,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
     }
 
     void configureWebview(){
-        WebSettings webSettings = webView.getSettings();
+        WebSettings webSettings = binding.searchPostWebview.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
@@ -96,7 +97,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setLoadsImagesAutomatically(true);
         cookieClient = new CookieWebViewClient();
-        cookieClient.cookieManager.setAcceptThirdPartyCookies(webView,true);
+        cookieClient.cookieManager.setAcceptThirdPartyCookies(binding.searchPostWebview,true);
         // set cookie
         HttpUrl currentHttpUrl = HttpUrl.parse(searchPostURL);
         if(currentHttpUrl!=null){
@@ -111,9 +112,9 @@ public class SearchPostsActivity extends BaseStatusActivity {
         }
 
 
-        webView.setWebViewClient(cookieClient);
+        binding.searchPostWebview.setWebViewClient(cookieClient);
 
-        webView.loadUrl(searchPostURL);
+        binding.searchPostWebview.loadUrl(searchPostURL);
 
 
 
@@ -137,14 +138,14 @@ public class SearchPostsActivity extends BaseStatusActivity {
                 getSupportActionBar().setIcon(new BitmapDrawable(getApplicationContext().getResources(),favicon));
                 getSupportActionBar().setTitle(url);
             }
-            progressbar.setVisibility(View.VISIBLE);
+            binding.searchPostProgressbar.setVisibility(View.VISIBLE);
             super.onPageStarted(view, url, favicon);
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            progressbar.setVisibility(View.GONE);
+            binding.searchPostProgressbar.setVisibility(View.GONE);
         }
 
         @Override
@@ -169,8 +170,8 @@ public class SearchPostsActivity extends BaseStatusActivity {
                 return false;
             }
             case android.R.id.home:
-                if(webView.canGoBack()){
-                    webView.goBack();
+                if(binding.searchPostWebview.canGoBack()){
+                    binding.searchPostWebview.goBack();
                 }
                 else {
                     finishAfterTransition();
