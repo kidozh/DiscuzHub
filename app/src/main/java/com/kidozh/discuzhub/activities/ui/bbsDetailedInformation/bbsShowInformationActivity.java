@@ -52,21 +52,7 @@ import butterknife.ButterKnife;
 
 public class bbsShowInformationActivity extends BaseStatusActivity implements forumSwipeToDeleteUserCallback.onSwipedInteraction{
     private final static String TAG = bbsShowInformationActivity.class.getSimpleName();
-    
-    
 
-    @BindView(R.id.show_bbs_information_recyclerview)
-    RecyclerView bbsInfoRecyclerview;
-    @BindView(R.id.show_bbs_information_use_safe_client_switch)
-    Switch bbsInfoUseSafeClientCheckBox;
-    @BindView(R.id.show_bbs_information_sync_switch)
-    Switch bbsInfoSyncSwitch;
-    @BindView(R.id.show_bbs_information_user_list_recyclerview)
-    RecyclerView bbsInfoUserListRecyclerview;
-    @BindView(R.id.show_bbs_information_empty_view)
-    View bbsInfoEmptyUserInfoView;
-    @BindView(R.id.show_bbs_information_add_a_user_btn)
-    Button bbsInfoAddUserBtn;
     forumUsersAdapter userAdapter;
 
 
@@ -82,7 +68,6 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
         setContentView(R.layout.activity_bbs_show_information);
         binding = ActivityBbsShowInformationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        ButterKnife.bind(this);
         configureIntent();
         configureViewModel();
         setInformation();
@@ -107,7 +92,7 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
         binding.showBbsInformationPostNumber.setText(bbsInfo.total_posts);
         binding.showBbsInformationMemberNumber.setText(bbsInfo.total_members);
         binding.showBbsInformationSiteid.setText(bbsInfo.mysite_id);
-        bbsInfoUseSafeClientCheckBox.setChecked(bbsInfo.useSafeClient);
+        binding.showBbsInformationUseSafeClientSwitch.setChecked(bbsInfo.useSafeClient);
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(this));
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
@@ -156,14 +141,14 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
                 getString(R.string.bbs_update_time),
                 timeDisplayUtils.getLocalePastTimeString(this,bbsInfo.addedTime)));
         bbsDetailInformationAdapter adapter = new bbsDetailInformationAdapter(bbsKVList);
-        bbsInfoRecyclerview.setHasFixedSize(true);
+        binding.showBbsInformationRecyclerview.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        bbsInfoRecyclerview.setLayoutManager(linearLayoutManager);
-        bbsInfoRecyclerview.setAdapter(adapter);
+        binding.showBbsInformationRecyclerview.setLayoutManager(linearLayoutManager);
+        binding.showBbsInformationRecyclerview.setAdapter(adapter);
 
-        bbsInfoUserListRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        binding.showBbsInformationUserListRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         userAdapter = new forumUsersAdapter(this, bbsInfo);
-        bbsInfoUserListRecyclerview.setAdapter(userAdapter);
+        binding.showBbsInformationUserListRecyclerview.setAdapter(userAdapter);
 
         // render forum user info
 
@@ -178,9 +163,9 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
                 Log.d(TAG, "Updating bbs registered user " + forumUserBriefInfos + " id " + bbsInfo.getId());
                 if (forumUserBriefInfos != null && forumUserBriefInfos.size() != 0) {
 
-                    bbsInfoEmptyUserInfoView.setVisibility(View.GONE);
+                    binding.showBbsInformationEmptyView.setVisibility(View.GONE);
                 } else {
-                    bbsInfoEmptyUserInfoView.setVisibility(View.VISIBLE);
+                    binding.showBbsInformationEmptyView.setVisibility(View.VISIBLE);
                 }
                 userAdapter.setUserList(forumUserBriefInfos);
             }
@@ -192,9 +177,9 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
                 Log.d(TAG, "ViewModel  Updating bbs registered user " + forumUserBriefInfos + " id " + bbsInfo.getId());
                 if (forumUserBriefInfos != null && forumUserBriefInfos.size() != 0) {
 
-                    bbsInfoEmptyUserInfoView.setVisibility(View.GONE);
+                    binding.showBbsInformationEmptyView.setVisibility(View.GONE);
                 } else {
-                    bbsInfoEmptyUserInfoView.setVisibility(View.VISIBLE);
+                    binding.showBbsInformationEmptyView.setVisibility(View.VISIBLE);
                 }
                 userAdapter.setUserList(forumUserBriefInfos);
             }
@@ -205,9 +190,9 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
                 Log.d(TAG, "LiveData Updating bbs registered user " + forumUserBriefInfos + " id " + bbsInfo.getId());
                 if (forumUserBriefInfos != null && forumUserBriefInfos.size() != 0) {
 
-                    bbsInfoEmptyUserInfoView.setVisibility(View.GONE);
+                    binding.showBbsInformationEmptyView.setVisibility(View.GONE);
                 } else {
-                    bbsInfoEmptyUserInfoView.setVisibility(View.VISIBLE);
+                    binding.showBbsInformationEmptyView.setVisibility(View.VISIBLE);
                 }
                 userAdapter.setUserList(forumUserBriefInfos);
             }
@@ -218,10 +203,10 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
         forumSwipeToDeleteUserCallback swipeToDeleteUserCallback = new forumSwipeToDeleteUserCallback(userAdapter);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeToDeleteUserCallback);
-        itemTouchHelper.attachToRecyclerView(bbsInfoUserListRecyclerview);
+        itemTouchHelper.attachToRecyclerView(binding.showBbsInformationUserListRecyclerview);
         Activity activity = this;
 
-        bbsInfoAddUserBtn.setOnClickListener(new View.OnClickListener() {
+        binding.showBbsInformationAddAUserBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity, LoginActivity.class);
@@ -243,15 +228,15 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
 
 
     void configureUseSafeClientCheckbox(){
-        bbsInfoUseSafeClientCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        binding.showBbsInformationUseSafeClientSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 bbsInfo.useSafeClient = isChecked;
                 new updateForumInformationTask(bbsInfo,getApplicationContext()).execute();
             }
         });
-        bbsInfoSyncSwitch.setChecked(bbsInfo.isSync);
-        bbsInfoSyncSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        binding.showBbsInformationSyncSwitch.setChecked(bbsInfo.isSync);
+        binding.showBbsInformationSyncSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 bbsInfo.isSync = isChecked;
