@@ -30,6 +30,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
 import com.kidozh.discuzhub.adapter.bbsPrivateDetailMessageAdapter;
+import com.kidozh.discuzhub.databinding.ActivityBbsPrivateMessageDetailBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
@@ -45,8 +46,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -57,24 +56,6 @@ import okhttp3.Response;
 public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implements SmileyFragment.OnSmileyPressedInteraction {
 
     private static final String TAG = bbsPrivateMessageDetailActivity.class.getSimpleName();
-
-    @BindView(R.id.bbs_private_message_detail_swipeRefreshLayout)
-    SwipeRefreshLayout privateMessageDetailSwipeRefreshLayout;
-    @BindView(R.id.bbs_private_message_detail_recyclerview)
-    RecyclerView privateMessageDetailRecyclerview;
-    @BindView(R.id.bbs_private_message_comment_editText)
-    EditText privateMessageCommentEditText;
-    @BindView(R.id.bbs_private_message_comment_button)
-    Button privateMessageCommentButton;
-    @BindView(R.id.bbs_private_message_comment_emoij)
-    ImageView mCommentEmoijBtn;
-
-    @BindView(R.id.bbs_private_message_comment_smiley_constraintLayout)
-    ConstraintLayout mCommentSmileyConstraintLayout;
-    @BindView(R.id.bbs_private_message_comment_smiley_tabLayout)
-    TabLayout mCommentSmileyTabLayout;
-    @BindView(R.id.bbs_private_message_comment_smiley_viewPager)
-    ViewPager mCommentSmileyViewPager;
 
     bbsInformation bbsInfo;
 
@@ -92,14 +73,15 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
 
     private bbsSmileyPicker smileyPicker;
     private EmotionInputHandler handler;
+    ActivityBbsPrivateMessageDetailBinding binding;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bbs_private_message_detail);
-        ButterKnife.bind(this);
+        binding = ActivityBbsPrivateMessageDetailBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         getIntentInfo();
         configureActionBar();
         configureSmileyLayout();
@@ -110,7 +92,7 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
     }
 
     private void configureSmileyLayout(){
-        handler = new EmotionInputHandler(privateMessageCommentEditText, (enable, s) -> {
+        handler = new EmotionInputHandler(binding.bbsPrivateMessageCommentEditText, (enable, s) -> {
 
         });
 
@@ -122,7 +104,7 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
 
     private void configureSwipeLayout(){
         Handler mHandler = new Handler(Looper.getMainLooper());
-        privateMessageDetailSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        binding.bbsPrivateMessageDetailSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 if(globalPage!=0){
@@ -135,7 +117,7 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
 
                 }
                 else {
-                    privateMessageDetailSwipeRefreshLayout.setRefreshing(false);
+                    binding.bbsPrivateMessageDetailSwipeRefreshLayout.setRefreshing(false);
                 }
 
             }
@@ -144,16 +126,16 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
 
     private void configureRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
-        privateMessageDetailRecyclerview.setLayoutManager(linearLayoutManager);
+        binding.bbsPrivateMessageDetailRecyclerview.setLayoutManager(linearLayoutManager);
         adapter = new bbsPrivateDetailMessageAdapter(bbsInfo,userBriefInfo);
-        privateMessageDetailRecyclerview.setAdapter(adapter);
+        binding.bbsPrivateMessageDetailRecyclerview.setAdapter(adapter);
     }
 
     private void configureSendBtn(){
-        privateMessageCommentButton.setOnClickListener(new View.OnClickListener() {
+        binding.bbsPrivateMessageCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String sendMessage = privateMessageCommentEditText.getText().toString();
+                String sendMessage = binding.bbsPrivateMessageCommentEditText.getText().toString();
                 if(sendMessage.length()!=0){
                     sendPrivateMessage();
                 }
@@ -163,39 +145,40 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
             }
         });
 
-        mCommentEmoijBtn.setOnClickListener(new View.OnClickListener() {
+        binding.bbsPrivateMessageCommentEmoij.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mCommentSmileyConstraintLayout.getVisibility() == View.GONE){
+                if(binding.bbsPrivateMessageCommentSmileyConstraintLayout.getVisibility() == View.GONE){
                     // smiley picker not visible
-                    mCommentEmoijBtn.setImageDrawable(getDrawable(R.drawable.vector_drawable_keyboard_24px));
+                    binding.bbsPrivateMessageCommentEmoij.setImageDrawable(getDrawable(R.drawable.vector_drawable_keyboard_24px));
 
-                    privateMessageCommentEditText.clearFocus();
+                    binding.bbsPrivateMessageCommentEditText.clearFocus();
                     // close keyboard
                     InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                     if(imm !=null){
-                        imm.hideSoftInputFromWindow(privateMessageCommentEditText.getWindowToken(),0);
+                        imm.hideSoftInputFromWindow(binding.bbsPrivateMessageCommentEditText.getWindowToken(),0);
                     }
-                    mCommentSmileyConstraintLayout.setVisibility(View.VISIBLE);
+
+                    binding.bbsPrivateMessageCommentSmileyConstraintLayout.setVisibility(View.VISIBLE);
 
                     // tab layout binding...
                     getSmileyInfo();
                 }
                 else {
-                    mCommentSmileyConstraintLayout.setVisibility(View.GONE);
-                    mCommentEmoijBtn.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp));
+                    binding.bbsPrivateMessageCommentSmileyConstraintLayout.setVisibility(View.GONE);
+                    binding.bbsPrivateMessageCommentEmoij.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp));
                 }
 
 
             }
         });
 
-        privateMessageCommentEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        binding.bbsPrivateMessageCommentEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus && mCommentSmileyConstraintLayout.getVisibility() == View.VISIBLE){
-                    mCommentSmileyConstraintLayout.setVisibility(View.GONE);
-                    mCommentEmoijBtn.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp));
+                if(hasFocus && binding.bbsPrivateMessageCommentSmileyConstraintLayout.getVisibility() == View.VISIBLE){
+                    binding.bbsPrivateMessageCommentSmileyConstraintLayout.setVisibility(View.GONE);
+                    binding.bbsPrivateMessageCommentEmoij.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp));
                 }
             }
         });
@@ -233,18 +216,18 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
                             //adapter.setSmileyInfos(smileyInfoList);
                             // interface with tab
                             for(int i=0;i<cateNum;i++){
-                                mCommentSmileyTabLayout.removeAllTabs();
-                                mCommentSmileyTabLayout.addTab(
-                                        mCommentSmileyTabLayout.newTab().setText(String.valueOf(i+1))
+                                binding.bbsPrivateMessageCommentSmileyTabLayout.removeAllTabs();
+                                binding.bbsPrivateMessageCommentSmileyTabLayout.addTab(
+                                        binding.bbsPrivateMessageCommentSmileyTabLayout.newTab().setText(String.valueOf(i+1))
                                 );
 
                             }
                             // bind tablayout and viewpager
-                            mCommentSmileyTabLayout.setupWithViewPager(mCommentSmileyViewPager);
+                            binding.bbsPrivateMessageCommentSmileyTabLayout.setupWithViewPager(binding.bbsPrivateMessageCommentSmileyViewPager);
                             smileyViewPagerAdapter adapter = new smileyViewPagerAdapter(getSupportFragmentManager(),
                                     FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
                             adapter.setCateNum(cateNum);
-                            mCommentSmileyViewPager.setAdapter(adapter);
+                            binding.bbsPrivateMessageCommentSmileyViewPager.setAdapter(adapter);
 
                         }
                     });
@@ -308,7 +291,7 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
 
 
     private void getPageInfo(int page){
-        privateMessageDetailSwipeRefreshLayout.setRefreshing(true);
+        binding.bbsPrivateMessageDetailSwipeRefreshLayout.setRefreshing(true);
         String apiStr = URLUtils.getPrivatePMDetailApiUrlByTouid(privateMessageInfo.toUid,page);
         Request request = new Request.Builder()
                 .url(apiStr)
@@ -322,7 +305,7 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        privateMessageDetailSwipeRefreshLayout.setRefreshing(false);
+                        binding.bbsPrivateMessageDetailSwipeRefreshLayout.setRefreshing(false);
                     }
                 });
             }
@@ -332,7 +315,7 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        privateMessageDetailSwipeRefreshLayout.setRefreshing(false);
+                        binding.bbsPrivateMessageDetailSwipeRefreshLayout.setRefreshing(false);
                     }
                 });
 
@@ -353,11 +336,11 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
                             public void run() {
                                 if(page == -1){
                                     adapter.setPrivateDetailMessageList(privateDetailMessages);
-                                    //privateMessageDetailRecyclerview.scrollToPosition(privateDetailMessages.size()-1);
+                                    //binding.bbsPrivateMessageDetailRecyclerview.scrollToPosition(privateDetailMessages.size()-1);
                                 }
                                 else {
                                     adapter.addPrivateDetailMessageList(privateDetailMessages);
-                                    //privateMessageDetailRecyclerview.scrollToPosition(privateDetailMessages.size()-1);
+                                    //binding.bbsPrivateMessageDetailRecyclerview.scrollToPosition(privateDetailMessages.size()-1);
                                 }
                             }
                         });
@@ -411,7 +394,7 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
         switch (getCharsetType()){
             case (CHARSET_GBK):{
                 try {
-                    builder.addEncoded("message", URLEncoder.encode(privateMessageCommentEditText.getText().toString(),"GBK"));
+                    builder.addEncoded("message", URLEncoder.encode(binding.bbsPrivateMessageCommentEditText.getText().toString(),"GBK"));
                     break;
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
@@ -419,14 +402,14 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
             }
             case (CHARSET_BIG5):{
                 try {
-                    builder.addEncoded("message", URLEncoder.encode(privateMessageCommentEditText.getText().toString(),"BIG5"));
+                    builder.addEncoded("message", URLEncoder.encode(binding.bbsPrivateMessageCommentEditText.getText().toString(),"BIG5"));
                     break;
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
             default:{
-                builder.add("message",privateMessageCommentEditText.getText().toString());
+                builder.add("message",binding.bbsPrivateMessageCommentEditText.getText().toString());
             }
         }
         FormBody formBody = builder.build();
@@ -437,7 +420,7 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
                 .url(apiStr)
                 .post(formBody)
                 .build();
-        privateMessageCommentButton.setEnabled(false);
+        binding.bbsPrivateMessageCommentButton.setEnabled(false);
 
 
         Handler mHandler = new Handler(Looper.getMainLooper());
@@ -447,12 +430,12 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        privateMessageCommentEditText.setText("");
+                        binding.bbsPrivateMessageCommentEditText.setText("");
                         Toasty.error(getApplicationContext(),
                                 getString(R.string.network_failed),
                                 Toast.LENGTH_SHORT
                         ).show();
-                        privateMessageCommentButton.setEnabled(true);
+                        binding.bbsPrivateMessageCommentButton.setEnabled(true);
                     }
                 });
             }
@@ -462,8 +445,8 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        privateMessageCommentEditText.setText("");
-                        privateMessageCommentButton.setEnabled(true);
+                        binding.bbsPrivateMessageCommentEditText.setText("");
+                        binding.bbsPrivateMessageCommentButton.setEnabled(true);
                     }
                 });
                 if(response.isSuccessful()&& response.body()!=null){

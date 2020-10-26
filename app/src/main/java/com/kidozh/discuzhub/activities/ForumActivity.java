@@ -45,6 +45,7 @@ import com.kidozh.discuzhub.daos.FavoriteForumDao;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.FavoriteForumDatabase;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
+import com.kidozh.discuzhub.databinding.ActivityBbsShowForumBinding;
 import com.kidozh.discuzhub.entities.DisplayForumQueryStatus;
 import com.kidozh.discuzhub.entities.FavoriteForum;
 import com.kidozh.discuzhub.entities.ThreadInfo;
@@ -81,39 +82,6 @@ public class ForumActivity
         extends BaseStatusActivity implements bbsLinkMovementMethod.OnLinkClickedListener{
     private static final String TAG = ForumActivity.class.getSimpleName();
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.bbs_forum_fab)
-    FloatingActionButton fab;
-    @BindView(R.id.bbs_forum_alert_textview)
-    TextView mForumAlert;
-
-    @BindView(R.id.bbs_forum_rule_textview)
-    TextView mForumRule;
-    @BindView(R.id.bbs_forum_thread_number_textview)
-    TextView mForumThreadNum;
-    @BindView(R.id.bbs_forum_post_number_textview)
-    TextView mForumPostNum;
-    @BindView(R.id.bbs_forum_info_swipe_refreshLayout)
-    SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.bbs_forum_thread_recyclerview)
-    RecyclerView mRecyclerview;
-    @BindView(R.id.more_thread_btn)
-    Button moreThreadBtn;
-    @BindView(R.id.bbs_forum_constraintLayout)
-    ConstraintLayout mForumInfoCardView;
-    @BindView(R.id.bbs_forum_thread_type_chipgroup)
-    ChipGroup mForumThreadTypeChipGroup;
-    @BindView(R.id.error_content)
-    TextView errorContent;
-    @BindView(R.id.error_view)
-    View errorView;
-    @BindView(R.id.error_value)
-    TextView errorValue;
-    @BindView(R.id.error_icon)
-    ImageView errorIcon;
-    @BindView(R.id.bbs_forum_sublist)
-    RecyclerView subForumRecyclerview;
     private ForumInfo forum;
 
 
@@ -126,14 +94,17 @@ public class ForumActivity
 
     ForumViewModel forumViewModel;
     private boolean hasLoadOnce = false;
+    
+    ActivityBbsShowForumBinding binding;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bbs_show_forum);
-        ButterKnife.bind(this);
+        binding = ActivityBbsShowForumBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        
         forumViewModel = new ViewModelProvider(this).get(ForumViewModel.class);
         configureIntentData();
         bindViewModel();
@@ -180,16 +151,16 @@ public class ForumActivity
                 Log.d(TAG,"recv thread type list "+threadTypeMap);
                 adapter.setThreadInfoList(threadInfos,threadTypeMap);
                 if(adapter.getItemCount() == 0){
-                    errorView.setVisibility(View.VISIBLE);
+                    binding.errorView.setVisibility(View.VISIBLE);
                     if(forumViewModel.errorMessageMutableLiveData.getValue() == null){
-                        errorView.setVisibility(View.VISIBLE);
-                        errorIcon.setImageResource(R.drawable.ic_blank_forum_thread_64px);
-                        errorValue.setText("");
-                        errorContent.setText(getString(R.string.discuz_network_result_null));
+                        binding.errorView.setVisibility(View.VISIBLE);
+                        binding.errorIcon.setImageResource(R.drawable.ic_blank_forum_thread_64px);
+                        binding.errorValue.setText("");
+                        binding.errorContent.setText(getString(R.string.discuz_network_result_null));
                     }
                 }
                 else {
-                    errorView.setVisibility(View.GONE);
+                    binding.errorView.setVisibility(View.GONE);
                 }
 
 
@@ -215,7 +186,7 @@ public class ForumActivity
         forumViewModel.isLoading.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                swipeRefreshLayout.setRefreshing(aBoolean);
+                binding.bbsForumInfoSwipeRefreshLayout.setRefreshing(aBoolean);
             }
         });
         
@@ -225,10 +196,10 @@ public class ForumActivity
                 Toasty.error(getApplicationContext(),
                         getString(R.string.discuz_api_message_template,errorMessage.key,errorMessage.content),
                         Toast.LENGTH_LONG).show();
-                errorView.setVisibility(View.VISIBLE);
-                errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
-                errorValue.setText(errorMessage.key);
-                errorContent.setText(errorMessage.content);
+                binding.errorView.setVisibility(View.VISIBLE);
+                binding.errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
+                binding.errorValue.setText(errorMessage.key);
+                binding.errorContent.setText(errorMessage.content);
                 VibrateUtils.vibrateForError(getApplication());
             }
         });
@@ -265,40 +236,40 @@ public class ForumActivity
                     hasLoadOnce = true;
                 }
 
-                if(! mForumRule.getText().equals(forumInfo.rules)){
+                if(! binding.bbsForumRuleTextview.getText().equals(forumInfo.rules)){
                     String s = forumInfo.rules;
                     if(s!=null && s.length() !=0){
-                        GlideImageGetter glideImageGetter  = new GlideImageGetter(mForumRule,userBriefInfo);
-                        GlideImageGetter.HtmlTagHandler htmlTagHandler = new GlideImageGetter.HtmlTagHandler(getApplicationContext(),mForumRule);
+                        GlideImageGetter glideImageGetter  = new GlideImageGetter(binding.bbsForumRuleTextview,userBriefInfo);
+                        GlideImageGetter.HtmlTagHandler htmlTagHandler = new GlideImageGetter.HtmlTagHandler(getApplicationContext(),binding.bbsForumRuleTextview);
                         Spanned sp = Html.fromHtml(s,glideImageGetter,htmlTagHandler);
                         SpannableString spannableString = new SpannableString(sp);
-                        // mForumAlert.setAutoLinkMask(Linkify.ALL);
-                        mForumRule.setMovementMethod(new bbsLinkMovementMethod(ForumActivity.this));
-                        mForumRule.setText(spannableString, TextView.BufferType.SPANNABLE);
-                        //collapseTextView(mForumRule,3);
+                        // binding.bbsForumAlertTextview.setAutoLinkMask(Linkify.ALL);
+                        binding.bbsForumRuleTextview.setMovementMethod(new bbsLinkMovementMethod(ForumActivity.this));
+                        binding.bbsForumRuleTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
+                        //collapseTextView(binding.bbsForumRuleTextview,3);
                     }
                     else {
-                        mForumRule.setText(R.string.bbs_rule_not_set);
-                        mForumRule.setVisibility(View.GONE);
+                        binding.bbsForumRuleTextview.setText(R.string.bbs_rule_not_set);
+                        binding.bbsForumRuleTextview.setVisibility(View.GONE);
                     }
                 }
 
 
                 // for description
-                if(!mForumAlert.getText().equals(forumInfo.description)){
+                if(!binding.bbsForumAlertTextview.getText().equals(forumInfo.description)){
                     String s = forumInfo.description;
                     if(s!=null && s.length() !=0){
-                        GlideImageGetter glideImageGetter  = new GlideImageGetter(mForumAlert,userBriefInfo);
-                        GlideImageGetter.HtmlTagHandler htmlTagHandler = new GlideImageGetter.HtmlTagHandler(getApplicationContext(),mForumRule);
+                        GlideImageGetter glideImageGetter  = new GlideImageGetter(binding.bbsForumAlertTextview,userBriefInfo);
+                        GlideImageGetter.HtmlTagHandler htmlTagHandler = new GlideImageGetter.HtmlTagHandler(getApplicationContext(),binding.bbsForumRuleTextview);
                         Spanned sp = Html.fromHtml(s,glideImageGetter,htmlTagHandler);
                         SpannableString spannableString = new SpannableString(sp);
-                        // mForumAlert.setAutoLinkMask(Linkify.ALL);
-                        mForumAlert.setMovementMethod(new bbsLinkMovementMethod(ForumActivity.this));
-                        mForumAlert.setText(spannableString, TextView.BufferType.SPANNABLE);
+                        // binding.bbsForumAlertTextview.setAutoLinkMask(Linkify.ALL);
+                        binding.bbsForumAlertTextview.setMovementMethod(new bbsLinkMovementMethod(ForumActivity.this));
+                        binding.bbsForumAlertTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
                     }
                     else {
-                        mForumAlert.setText(R.string.bbs_forum_description_not_set);
-                        mForumAlert.setVisibility(View.GONE);
+                        binding.bbsForumAlertTextview.setText(R.string.bbs_forum_description_not_set);
+                        binding.bbsForumAlertTextview.setVisibility(View.GONE);
                     }
                 }
 
@@ -318,18 +289,18 @@ public class ForumActivity
 
             if(aBoolean){
                 Log.d(TAG,"Collapse rule text "+aBoolean);
-                mForumRule.setMaxLines(5);
+                binding.bbsForumRuleTextview.setMaxLines(5);
             }
             else {
 
-                mForumRule.setMaxLines(Integer.MAX_VALUE);
+                binding.bbsForumRuleTextview.setMaxLines(Integer.MAX_VALUE);
             }
         });
 
     }
 
     private void setForumRuleCollapseListener(){
-        mForumRule.setOnClickListener(new View.OnClickListener() {
+        binding.bbsForumRuleTextview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 forumViewModel.toggleRuleCollapseStatus();
@@ -371,7 +342,7 @@ public class ForumActivity
     }
 
     private void configureSwipeRefreshLayout(){
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        binding.bbsForumInfoSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 DisplayForumQueryStatus status = forumViewModel.forumStatusMutableLiveData.getValue();
@@ -384,10 +355,10 @@ public class ForumActivity
     private void configurePostThreadBtn(){
         Context context = this;
         if(userBriefInfo == null){
-            fab.setVisibility(View.GONE);
+            binding.bbsForumFab.setVisibility(View.GONE);
         }
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        binding.bbsForumFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(forumViewModel.displayForumResultMutableLiveData.getValue() != null
@@ -415,7 +386,7 @@ public class ForumActivity
                     }
                 }
                 else {
-                    fab.setVisibility(View.GONE);
+                    binding.bbsForumFab.setVisibility(View.GONE);
                 }
 
 
@@ -427,7 +398,7 @@ public class ForumActivity
 
 
     private void configureActionBar(){
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(bbsInfo.site_name);
@@ -440,7 +411,7 @@ public class ForumActivity
     }
 
     private void configureChipGroupFilter(){
-        mForumThreadTypeChipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+        binding.bbsForumThreadTypeChipgroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(ChipGroup group, int checkedId) {
                 DisplayForumQueryStatus status = forumViewModel.forumStatusMutableLiveData.getValue();
@@ -504,25 +475,25 @@ public class ForumActivity
 
     private void configureForumInfo(){
 
-        mForumThreadNum.setText(numberFormatUtils.getShortNumberText(forum.threads));
-        mForumPostNum.setText(numberFormatUtils.getShortNumberText(forum.posts));
+        binding.bbsForumThreadNumberTextview.setText(numberFormatUtils.getShortNumberText(forum.threads));
+        binding.bbsForumPostNumberTextview.setText(numberFormatUtils.getShortNumberText(forum.posts));
     }
 
     private void configureRecyclerview(){
-        subForumRecyclerview.setHasFixedSize(true);
-        subForumRecyclerview.setLayoutManager(new GridLayoutManager(this,4));
+        binding.bbsForumSublist.setHasFixedSize(true);
+        binding.bbsForumSublist.setLayoutManager(new GridLayoutManager(this,4));
         subForumAdapter = new SubForumAdapter(bbsInfo,userBriefInfo);
-        subForumRecyclerview.setAdapter(subForumAdapter);
+        binding.bbsForumSublist.setAdapter(subForumAdapter);
 
-        mRecyclerview.setHasFixedSize(true);
+        binding.bbsForumThreadRecyclerview.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
-        mRecyclerview.setLayoutManager(linearLayoutManager);
-        mRecyclerview.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        binding.bbsForumThreadRecyclerview.setLayoutManager(linearLayoutManager);
+        binding.bbsForumThreadRecyclerview.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
 
         adapter = new ThreadAdapter(null,fid,bbsInfo,userBriefInfo);
-        mRecyclerview.setAdapter(adapter);
-        mRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.bbsForumThreadRecyclerview.setAdapter(adapter);
+        binding.bbsForumThreadRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -558,8 +529,8 @@ public class ForumActivity
 
             public boolean isScrollAtEnd(){
 
-                if (mRecyclerview.computeVerticalScrollExtent() + mRecyclerview.computeVerticalScrollOffset()
-                        >= mRecyclerview.computeVerticalScrollRange()){
+                if (binding.bbsForumThreadRecyclerview.computeVerticalScrollExtent() + binding.bbsForumThreadRecyclerview.computeVerticalScrollOffset()
+                        >= binding.bbsForumThreadRecyclerview.computeVerticalScrollRange()){
                     return true;
                 }
                 else {
@@ -568,7 +539,7 @@ public class ForumActivity
 
             }
         });
-        moreThreadBtn.setOnClickListener(new View.OnClickListener(){
+        binding.moreThreadBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 DisplayForumQueryStatus forumStatus = forumViewModel.forumStatusMutableLiveData.getValue();
@@ -594,26 +565,26 @@ public class ForumActivity
 
     public void addTypeChipToChipGroup(String typeId, String name){
         choiceChipInfoList.add(new ChoiceChipInfo(URLUtils.FILTER_TYPE_ID,name,typeId));
-        Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_choice,mForumThreadTypeChipGroup,false);
+        Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_choice,binding.bbsForumThreadTypeChipgroup,false);
         Spanned threadSpanned = Html.fromHtml(name);
         SpannableString threadSpannableString = new SpannableString(threadSpanned);
         chip.setText(threadSpannableString);
         chip.setClickable(true);
-        mForumThreadTypeChipGroup.addView(chip);
+        binding.bbsForumThreadTypeChipgroup.addView(chip);
         ChoiceResList.add(chip.getId());
     }
 
     public void addFilterChipToChipGroup(String filterType,String name){
         choiceChipInfoList.add(new ChoiceChipInfo(filterType,name,name));
 
-        Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_choice,mForumThreadTypeChipGroup,false);
+        Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_choice,binding.bbsForumThreadTypeChipgroup,false);
 
         chip.setChipBackgroundColor(getColorStateList(R.color.chip_background_select_state));
         //chip.setTextColor(createColorStateList(R.color.colorPureWhite,R.color.colorPr));
         chip.setTextColor(getColor(R.color.colorTextDefault));
         chip.setText(name);
         chip.setClickable(true);
-        mForumThreadTypeChipGroup.addView(chip);
+        binding.bbsForumThreadTypeChipgroup.addView(chip);
         ChoiceResList.add(chip.getId());
     }
 
@@ -646,7 +617,7 @@ public class ForumActivity
 
         choiceChipInfoList.clear();
         ChoiceResList.clear();
-        mForumThreadTypeChipGroup.removeAllViews();
+        binding.bbsForumThreadTypeChipgroup.removeAllViews();
         // add oridnary filter first
         addFilterChipToChipGroup(URLUtils.FILTER_TYPE_POLL,getString(R.string.bbs_thread_filter_poll));
         addFilterChipToChipGroup(URLUtils.FILTER_TYPE_NEWEST,getString(R.string.bbs_thread_filter_newest));

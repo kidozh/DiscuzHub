@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.kidozh.discuzhub.activities.ui.notifications.NotificationsFragment;
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment;
 import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment;
 import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
+import com.kidozh.discuzhub.databinding.ActivityBbsShowPortalBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsConstUtils;
@@ -38,8 +40,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import java.io.IOException;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
@@ -52,25 +53,17 @@ public class bbsShowPortalActivity extends BaseStatusActivity
         NotificationsFragment.onPrivateMessageChangeListener{
     private static final String TAG = bbsShowPortalActivity.class.getSimpleName();
 
-    @BindView(R.id.bbs_portal_nav_view)
-    BottomNavigationView navView;
-    @BindView(R.id.bbs_portal_nav_viewpager)
-    ViewPager portalViewPager;
     HomeFragment homeFragment;
     HotThreadsFragment hotThreadsFragment;
     NotificationsFragment notificationsFragment;
     bbsParseUtils.noticeNumInfo noticeNumInfo;
-
-    
-
-    // private OkHttpClient client;
-    NavController navController;
+    ActivityBbsShowPortalBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bbs_show_portal);
-        ButterKnife.bind(this);
+        binding = ActivityBbsShowPortalBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         recoverInstanceState(savedInstanceState);
         getIntentInfo();
         configureBtmNavigation();
@@ -171,38 +164,38 @@ public class bbsShowPortalActivity extends BaseStatusActivity
 
         if(userBriefInfo == null){
             Log.d(TAG, "Current incognitive user "+userBriefInfo);
-            portalViewPager.setAdapter(new anonymousViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
-            navView.getMenu().clear();
-            navView.inflateMenu(R.menu.bottom_incognitive_nav_menu);
+            binding.bbsPortalNavViewpager.setAdapter(new anonymousViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
+            binding.bbsPortalNavView.getMenu().clear();
+            binding.bbsPortalNavView.inflateMenu(R.menu.bottom_incognitive_nav_menu);
         }
         else {
             // use fragment transaction instead
             Log.d(TAG, "Current incognitive user "+userBriefInfo.username);
-            portalViewPager.setAdapter(new userViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
-            navView.getMenu().clear();
-            navView.inflateMenu(R.menu.bottom_nav_menu);
+            binding.bbsPortalNavViewpager.setAdapter(new userViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
+            binding.bbsPortalNavView.getMenu().clear();
+            binding.bbsPortalNavView.inflateMenu(R.menu.bottom_nav_menu);
         }
-        navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        binding.bbsPortalNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.navigation_home:{
-                        portalViewPager.setCurrentItem(0);
+                        binding.bbsPortalNavViewpager.setCurrentItem(0);
                         break;
                     }
                     case R.id.navigation_dashboard:{
-                        portalViewPager.setCurrentItem(1);
+                        binding.bbsPortalNavViewpager.setCurrentItem(1);
                         break;
                     }
                     case R.id.navigation_notifications:{
-                        portalViewPager.setCurrentItem(2);
+                        binding.bbsPortalNavViewpager.setCurrentItem(2);
                         break;
                     }
                 }
                 return false;
             }
         });
-        portalViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        binding.bbsPortalNavViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -212,13 +205,13 @@ public class bbsShowPortalActivity extends BaseStatusActivity
             public void onPageSelected(int position) {
                 switch (position){
                     case 0:
-                        navView.getMenu().findItem(R.id.navigation_home).setChecked(true);
+                        binding.bbsPortalNavView.getMenu().findItem(R.id.navigation_home).setChecked(true);
                         break;
                     case 1:
-                        navView.getMenu().findItem(R.id.navigation_dashboard).setChecked(true);
+                        binding.bbsPortalNavView.getMenu().findItem(R.id.navigation_dashboard).setChecked(true);
                         break;
                     case 2:
-                        navView.getMenu().findItem(R.id.navigation_notifications).setChecked(true);
+                        binding.bbsPortalNavView.getMenu().findItem(R.id.navigation_notifications).setChecked(true);
                         break;
                 }
             }
@@ -410,15 +403,15 @@ public class bbsShowPortalActivity extends BaseStatusActivity
     public void setNewMessageNum(int i) {
 
         if(i == 0){
-            if(navView.getBadge(R.id.navigation_notifications)!=null){
-                navView.removeBadge(R.id.navigation_notifications);
+            if(binding.bbsPortalNavView.getBadge(R.id.navigation_notifications)!=null){
+                binding.bbsPortalNavView.removeBadge(R.id.navigation_notifications);
             }
 
 
         }
         else {
             Log.d(TAG,"set notification num "+i);
-            BadgeDrawable badgeDrawable = navView.getOrCreateBadge(R.id.navigation_notifications);
+            BadgeDrawable badgeDrawable = binding.bbsPortalNavView.getOrCreateBadge(R.id.navigation_notifications);
             badgeDrawable.setNumber(i);
 
         }

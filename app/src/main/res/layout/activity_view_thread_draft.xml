@@ -1,59 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bbs_show_thread_draft_coordinatorlayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activities.bbsShowThreadDraftActivity">
-
-    <androidx.core.widget.NestedScrollView
+<layout>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/bbs_show_thread_draft_coordinatorlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        tools:context=".activities.bbsShowThreadDraftActivity">
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/bbs_show_thread_draft_recyclerview"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            </androidx.recyclerview.widget.RecyclerView>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/bbs_show_thread_draft_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/bbs_show_thread_draft_no_item_found"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                tools:visibility="visible">
+                </androidx.recyclerview.widget.RecyclerView>
 
-                <ImageView
-                    android:id="@+id/bbs_show_thread_draft_no_item_found_imageView"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_bbs_empty_24px" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/bbs_show_thread_draft_no_item_found"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
-                <TextView
-                    android:id="@+id/bbs_show_thread_draft_no_item_found_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/bbs_thread_draft_empty"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/bbs_show_thread_draft_no_item_found_imageView" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+                    <ImageView
+                        android:id="@+id/bbs_show_thread_draft_no_item_found_imageView"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_bbs_empty_24px" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+                    <TextView
+                        android:id="@+id/bbs_show_thread_draft_no_item_found_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/bbs_thread_draft_empty"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/bbs_show_thread_draft_no_item_found_imageView" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

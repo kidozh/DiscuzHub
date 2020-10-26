@@ -34,6 +34,7 @@ import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragm
 import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
+import com.kidozh.discuzhub.databinding.ActivityNewMainDrawerBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -87,16 +88,8 @@ public class DrawerActivity extends BaseStatusActivity implements
     private final static String TAG = DrawerActivity.class.getSimpleName();
     PrimaryDrawerItem bbsDrawerItem;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.toolbar_title)
-    TextView toolbarTitleTextview;
-    @BindView(R.id.toolbar_subtitle)
-    TextView toolbarSubtitleTextview;
-    @BindView(R.id.bbs_portal_nav_viewpager)
-    ViewPager portalViewPager;
-    @BindView(R.id.bbs_portal_nav_view)
-    BottomNavigationView navView;
+
+    
 
     MainDrawerViewModel viewModel;
 
@@ -115,20 +108,19 @@ public class DrawerActivity extends BaseStatusActivity implements
 
     Bundle savedInstanceState;
 
-    @BindView(R.id.drawer_root)
-    DrawerLayout drawerLayout;
-    @BindView(R.id.material_drawer_slider_view)
-    MaterialDrawerSliderView slider;
+    
+
 
     AccountHeaderView headerView;
+    ActivityNewMainDrawerBinding binding;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.savedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_main_drawer);
-        ButterKnife.bind(this);
+        binding = ActivityNewMainDrawerBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         recoverInstanceState(savedInstanceState);
         viewModel = new ViewModelProvider(this).get(MainDrawerViewModel.class);
         configureToolbar();
@@ -144,21 +136,21 @@ public class DrawerActivity extends BaseStatusActivity implements
     }
 
     private void configureToolbar(){
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
 
         if(getSupportActionBar()!=null){
             //getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
-        toolbar.setNavigationIcon(getDrawable(R.drawable.ic_menu_24px));
+        binding.toolbar.setNavigationIcon(getDrawable(R.drawable.ic_menu_24px));
 
 
     }
 
     private void bindViewModel(){
         viewModel.allBBSInformationMutableLiveData.observe(this, bbsInformations -> {
-            //slider.getItemAdapter().clear();
+            //binding.materialDrawerSliderView.getItemAdapter().clear();
 
             headerView.clear();
             //drawerAccountHeader.clear();
@@ -238,7 +230,7 @@ public class DrawerActivity extends BaseStatusActivity implements
             public void onChanged(List<forumUserBriefInfo> forumUserBriefInfos) {
                 // clear it first
                 // drawerResult.removeAllItems();
-                slider.getItemAdapter().clear();
+                binding.materialDrawerSliderView.getItemAdapter().clear();
                 Log.d(TAG,"get forumUsers "+forumUserBriefInfos);
                 if(forumUserBriefInfos != null){
 
@@ -266,12 +258,12 @@ public class DrawerActivity extends BaseStatusActivity implements
                         userProfile.setNameShown(true);
                         userProfile.setIdentifier(userBriefInfo.getId());
                         userProfile.setDescription(new StringHolder(getString(R.string.user_id_description,userBriefInfo.uid)));
-                        slider.getItemAdapter().add(userProfile);
+                        binding.materialDrawerSliderView.getItemAdapter().add(userProfile);
                     }
                     if(forumUserBriefInfos.size() > 0){
                         forumUserBriefInfo userBriefInfo = forumUserBriefInfos.get(0);
                         // get first
-                        slider.setSelection(userBriefInfo.getId(),true);
+                        binding.materialDrawerSliderView.setSelection(userBriefInfo.getId(),true);
                     }
 
                 }
@@ -286,7 +278,7 @@ public class DrawerActivity extends BaseStatusActivity implements
 
                     //addBBSProfile.setNameShown(true);
                     addBBSProfile.setIcon(new ImageHolder(R.drawable.ic_add_24px));
-                    slider.getItemAdapter().add(addBBSProfile);
+                    binding.materialDrawerSliderView.getItemAdapter().add(addBBSProfile);
                 }
                 else {
                     PrimaryDrawerItem incognito = new PrimaryDrawerItem();
@@ -295,7 +287,7 @@ public class DrawerActivity extends BaseStatusActivity implements
                     incognito.setSelectable(true);
                     incognito.setIdentifier(MODE_USER_IGCONGTIVE);
                     incognito.setDescription(new StringHolder(R.string.user_anonymous_description));
-                    slider.getItemAdapter().add(incognito);
+                    binding.materialDrawerSliderView.getItemAdapter().add(incognito);
                     // other profiles
                     PrimaryDrawerItem addAccount = new PrimaryDrawerItem();
                     addAccount.setName(new StringHolder(R.string.add_a_account));
@@ -324,7 +316,7 @@ public class DrawerActivity extends BaseStatusActivity implements
                     viewHistory.setIdentifier(FUNC_VIEW_HISTORY);
                     viewHistory.setDescription(new StringHolder(R.string.preference_summary_on_record_history));
 
-                    slider.getItemAdapter().add(
+                    binding.materialDrawerSliderView.getItemAdapter().add(
                             new DividerDrawerItem(),
                             addAccount,
                             registerAccount,
@@ -337,7 +329,7 @@ public class DrawerActivity extends BaseStatusActivity implements
 
                     if(forumUserBriefInfos == null || forumUserBriefInfos.size() == 0){
                         Log.d(TAG,"Trigger igcontive mode");
-                        slider.setSelection(MODE_USER_IGCONGTIVE,true);
+                        binding.materialDrawerSliderView.setSelection(MODE_USER_IGCONGTIVE,true);
                     }
                 }
 
@@ -349,7 +341,7 @@ public class DrawerActivity extends BaseStatusActivity implements
         viewModel.currentBBSInformationMutableLiveData.observe(this, bbsInformation -> {
             bbsInfo = bbsInformation;
             if(bbsInformation != null){
-                toolbarTitleTextview.setText(bbsInformation.site_name);
+                binding.toolbarTitle.setText(bbsInformation.site_name);
                 if(getSupportActionBar() !=null){
                     getSupportActionBar().setTitle(bbsInformation.site_name);
                 }
@@ -366,15 +358,15 @@ public class DrawerActivity extends BaseStatusActivity implements
                 new QueryCurrentViewHistoryCountAsyncTask().execute();
 
             } else {
-                toolbarTitleTextview.setText(R.string.no_bbs_found_in_db);
+                binding.toolbarTitle.setText(R.string.no_bbs_found_in_db);
             }
 
         });
         viewModel.currentForumUserBriefInfoMutableLiveData.observe(this, forumUserBriefInfo -> {
             if(forumUserBriefInfo == null){
-                toolbarSubtitleTextview.setText(R.string.bbs_anonymous);
+                binding.toolbarSubtitle.setText(R.string.bbs_anonymous);
             } else {
-                toolbarSubtitleTextview.setText(forumUserBriefInfo.username);
+                binding.toolbarSubtitle.setText(forumUserBriefInfo.username);
             }
             userBriefInfo = forumUserBriefInfo;
             renderViewPageAndBtmView();
@@ -425,9 +417,9 @@ public class DrawerActivity extends BaseStatusActivity implements
                 return false;
             }
         });
-        headerView.attachToSliderView(slider);
+        headerView.attachToSliderView(binding.materialDrawerSliderView);
 
-        slider.setOnDrawerItemClickListener(new Function3<View, IDrawerItem<?>, Integer, Boolean>() {
+        binding.materialDrawerSliderView.setOnDrawerItemClickListener(new Function3<View, IDrawerItem<?>, Integer, Boolean>() {
             @Override
             public Boolean invoke(View view, IDrawerItem<?> iDrawerItem, Integer integer) {
                 int id = (int) iDrawerItem.getIdentifier();
@@ -545,11 +537,11 @@ public class DrawerActivity extends BaseStatusActivity implements
             }
         });
 
-        slider.setSavedInstance(savedInstanceState);
+        binding.materialDrawerSliderView.setSavedInstance(savedInstanceState);
 
         ActionBarDrawerToggle actionBarDrawerToggle =
-                new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open,R.string.drawer_closed);
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+                new ActionBarDrawerToggle(this,binding.drawerRoot,binding.toolbar,R.string.drawer_open,R.string.drawer_closed);
+        binding.drawerRoot.addDrawerListener(actionBarDrawerToggle);
 
 
 
@@ -673,9 +665,9 @@ public class DrawerActivity extends BaseStatusActivity implements
         bbsInfo = viewModel.currentBBSInformationMutableLiveData.getValue();
         if(bbsInfo == null){
             // judge the
-            portalViewPager.setAdapter(new EmptyViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
-            navView.getMenu().clear();
-            navView.inflateMenu(R.menu.bottom_incognitive_nav_menu);
+            binding.bbsPortalNavViewpager.setAdapter(new EmptyViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
+            binding.bbsPortalNavView.getMenu().clear();
+            binding.bbsPortalNavView.inflateMenu(R.menu.bottom_incognitive_nav_menu);
             return;
         }
 
@@ -683,37 +675,37 @@ public class DrawerActivity extends BaseStatusActivity implements
 
         if(userBriefInfo == null){
             Log.d(TAG, "Current incognitive user "+userBriefInfo);
-            portalViewPager.setAdapter(new anonymousViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
-            navView.getMenu().clear();
-            navView.inflateMenu(R.menu.bottom_incognitive_nav_menu);
+            binding.bbsPortalNavViewpager.setAdapter(new anonymousViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
+            binding.bbsPortalNavView.getMenu().clear();
+            binding.bbsPortalNavView.inflateMenu(R.menu.bottom_incognitive_nav_menu);
         } else {
             // use fragment transaction instead
             Log.d(TAG, "Current incognitive user "+userBriefInfo.username);
-            portalViewPager.setAdapter(new userViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
-            navView.getMenu().clear();
-            navView.inflateMenu(R.menu.bottom_nav_menu);
+            binding.bbsPortalNavViewpager.setAdapter(new userViewPagerAdapter(getSupportFragmentManager(),FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
+            binding.bbsPortalNavView.getMenu().clear();
+            binding.bbsPortalNavView.inflateMenu(R.menu.bottom_nav_menu);
         }
-        navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        binding.bbsPortalNavView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.navigation_home:{
-                        portalViewPager.setCurrentItem(0);
+                        binding.bbsPortalNavViewpager.setCurrentItem(0);
                         break;
                     }
                     case R.id.navigation_dashboard:{
-                        portalViewPager.setCurrentItem(1);
+                        binding.bbsPortalNavViewpager.setCurrentItem(1);
                         break;
                     }
                     case R.id.navigation_notifications:{
-                        portalViewPager.setCurrentItem(2);
+                        binding.bbsPortalNavViewpager.setCurrentItem(2);
                         break;
                     }
                 }
                 return false;
             }
         });
-        portalViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        binding.bbsPortalNavViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -723,13 +715,13 @@ public class DrawerActivity extends BaseStatusActivity implements
             public void onPageSelected(int position) {
                 switch (position){
                     case 0:
-                        navView.getMenu().findItem(R.id.navigation_home).setChecked(true);
+                        binding.bbsPortalNavView.getMenu().findItem(R.id.navigation_home).setChecked(true);
                         break;
                     case 1:
-                        navView.getMenu().findItem(R.id.navigation_dashboard).setChecked(true);
+                        binding.bbsPortalNavView.getMenu().findItem(R.id.navigation_dashboard).setChecked(true);
                         break;
                     case 2:
-                        navView.getMenu().findItem(R.id.navigation_notifications).setChecked(true);
+                        binding.bbsPortalNavView.getMenu().findItem(R.id.navigation_notifications).setChecked(true);
                         break;
                 }
             }
@@ -785,15 +777,15 @@ public class DrawerActivity extends BaseStatusActivity implements
     public void setNewMessageNum(int i) {
 
         if(i == 0){
-            if(navView.getBadge(R.id.navigation_notifications)!=null){
-                navView.removeBadge(R.id.navigation_notifications);
+            if(binding.bbsPortalNavView.getBadge(R.id.navigation_notifications)!=null){
+                binding.bbsPortalNavView.removeBadge(R.id.navigation_notifications);
             }
 
 
         }
         else {
             Log.d(TAG,"set notification num "+i);
-            BadgeDrawable badgeDrawable = navView.getOrCreateBadge(R.id.navigation_notifications);
+            BadgeDrawable badgeDrawable = binding.bbsPortalNavView.getOrCreateBadge(R.id.navigation_notifications);
             badgeDrawable.setNumber(i);
 
         }
@@ -837,8 +829,8 @@ public class DrawerActivity extends BaseStatusActivity implements
 
     @Override
     public void onBackPressed() {
-        if(drawerLayout.isDrawerOpen(slider)){
-            drawerLayout.closeDrawer(slider);
+        if(binding.drawerRoot.isDrawerOpen(binding.materialDrawerSliderView)){
+            binding.drawerRoot.closeDrawer(binding.materialDrawerSliderView);
         }
         else {
             super.onBackPressed();
@@ -889,7 +881,7 @@ public class DrawerActivity extends BaseStatusActivity implements
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
 
-        slider.saveInstanceState(outState);
+        binding.materialDrawerSliderView.saveInstanceState(outState);
         headerView.saveInstanceState(outState);
         super.onSaveInstanceState(outState);
     }
@@ -915,13 +907,13 @@ public class DrawerActivity extends BaseStatusActivity implements
             Log.d(TAG,"view histories number @@@ "+integer+" identifier "+FUNC_VIEW_HISTORY);
             if(integer !=CURRENT_BBS_NULL){
 
-                MaterialDrawerSliderViewExtensionsKt.updateBadge(slider,FUNC_VIEW_HISTORY, new StringHolder(String.valueOf(integer)));
-                //MaterialDrawerSliderViewExtensionsKt.updateItem(slider,viewHistory);
-                if(slider.getItemAdapter().getFastAdapter() !=null){
-                    slider.getItemAdapter().getFastAdapter().notifyAdapterDataSetChanged();
+                MaterialDrawerSliderViewExtensionsKt.updateBadge(binding.materialDrawerSliderView,FUNC_VIEW_HISTORY, new StringHolder(String.valueOf(integer)));
+                //MaterialDrawerSliderViewExtensionsKt.updateItem(binding.materialDrawerSliderView,viewHistory);
+                if(binding.materialDrawerSliderView.getItemAdapter().getFastAdapter() !=null){
+                    binding.materialDrawerSliderView.getItemAdapter().getFastAdapter().notifyAdapterDataSetChanged();
                 }
 
-                //MaterialDrawerSliderViewExtensionsKt.updateBadge(slider,FUNC_VIEW_HISTORY,new StringHolder(String.valueOf(integer)));
+                //MaterialDrawerSliderViewExtensionsKt.updateBadge(binding.materialDrawerSliderView,FUNC_VIEW_HISTORY,new StringHolder(String.valueOf(integer)));
             }
 
 

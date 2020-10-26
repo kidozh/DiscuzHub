@@ -25,6 +25,8 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.ThreadDraftAdapter;
 import com.kidozh.discuzhub.callback.recyclerViewSwipeToDeleteCallback;
 import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
+import com.kidozh.discuzhub.databinding.ActivityBbsShowPortalBinding;
+import com.kidozh.discuzhub.databinding.ActivityViewThreadDraftBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -32,26 +34,22 @@ import com.kidozh.discuzhub.utilities.bbsConstUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
 
 public class bbsShowThreadDraftActivity extends BaseStatusActivity implements recyclerViewSwipeToDeleteCallback.onRecyclerviewSwiped{
     private final String TAG = bbsShowThreadDraftActivity.class.getSimpleName();
 
-    @BindView(R.id.bbs_show_thread_draft_recyclerview)
-    RecyclerView threadDraftRecyclerview;
-    @BindView(R.id.bbs_show_thread_draft_no_item_found)
-    ConstraintLayout threadDraftNoItemFoundView;
 
     ThreadDraftAdapter threadDraftAdapter;
     LiveData<List<bbsThreadDraft>> listLiveData;
+    ActivityViewThreadDraftBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_thread_draft);
-        ButterKnife.bind(this);
+        binding = ActivityViewThreadDraftBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        
         configureIntentData();
         configureActionBar();
         configureRecyclerview();
@@ -73,9 +71,9 @@ public class bbsShowThreadDraftActivity extends BaseStatusActivity implements re
     }
 
     private void configureRecyclerview(){
-        threadDraftRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        binding.bbsShowThreadDraftRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         threadDraftAdapter = new ThreadDraftAdapter(bbsInfo,userBriefInfo);
-        threadDraftRecyclerview.setAdapter(threadDraftAdapter);
+        binding.bbsShowThreadDraftRecyclerview.setAdapter(threadDraftAdapter);
         listLiveData = bbsThreadDraftDatabase.getInstance(this)
                 .getbbsThreadDraftDao()
                 .getAllThreadDraftByBBSId(bbsInfo.getId());
@@ -84,10 +82,10 @@ public class bbsShowThreadDraftActivity extends BaseStatusActivity implements re
             public void onChanged(List<bbsThreadDraft> bbsThreadDrafts) {
                 if(bbsThreadDrafts!=null && bbsThreadDrafts.size()!=0){
                     threadDraftAdapter.setBbsThreadDraftList(bbsThreadDrafts);
-                    threadDraftNoItemFoundView.setVisibility(View.GONE);
+                    binding.bbsShowThreadDraftNoItemFound.setVisibility(View.GONE);
                 }
                 else {
-                    threadDraftNoItemFoundView.setVisibility(View.VISIBLE);
+                    binding.bbsShowThreadDraftNoItemFound.setVisibility(View.VISIBLE);
                     threadDraftAdapter.setBbsThreadDraftList(bbsThreadDrafts);
                     threadDraftAdapter.notifyDataSetChanged();
                 }
@@ -98,7 +96,7 @@ public class bbsShowThreadDraftActivity extends BaseStatusActivity implements re
         recyclerViewSwipeToDeleteCallback swipeToDeleteUserCallback = new recyclerViewSwipeToDeleteCallback(this,threadDraftAdapter);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeToDeleteUserCallback);
-        itemTouchHelper.attachToRecyclerView(threadDraftRecyclerview);
+        itemTouchHelper.attachToRecyclerView(binding.bbsShowThreadDraftRecyclerview);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
