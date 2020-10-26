@@ -83,26 +83,23 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
 //                        .error(R.drawable.ic_forum_24px))
 //                .into(holder.mBBSForumImage);
         Log.d(TAG,"fid image "+URLUtils.getForumImageUrl(forum.fid));
+        holder.mCardview.setOnClickListener(v -> {
+            ForumInfo putForum = new ForumInfo();
+            putForum.fid = forum.fid;
+            putForum.name = forum.name;
+            putForum.description = forum.name;
+            putForum.posts = forum.posts;
+            putForum.todayPosts = forum.todayPosts;
+            putForum.threadCount = forum.threads;
+            Intent intent = new Intent(context, ForumActivity.class);
+            intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,putForum);
+            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
 
-        holder.mCardview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ForumInfo putForum = new ForumInfo();
-                putForum.fid = forum.fid;
-                putForum.name = forum.name;
-                putForum.description = forum.name;
-                putForum.posts = forum.posts;
-                putForum.todayPosts = forum.todayPosts;
-                putForum.threadCount = forum.threads;
-                Intent intent = new Intent(context, ForumActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,putForum);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-
-                VibrateUtils.vibrateForClick(context);
-                context.startActivity(intent);
-            }
+            VibrateUtils.vibrateForClick(context);
+            context.startActivity(intent);
         });
+        
         if(forum.todayPosts != 0){
             holder.mTodayPosts.setVisibility(View.VISIBLE);
             if(forum.todayPosts >= 100){
@@ -132,17 +129,17 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
     }
 
     public static class SubForumViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.bbs_forum_imageview)
+        
         ImageView mBBSForumImage;
-        @BindView(R.id.bbs_forum_name)
         TextView mForumName;
-        @BindView(R.id.bbs_forum_cardview)
         CardView mCardview;
-        @BindView(R.id.bbs_forum_today_posts)
         TextView mTodayPosts;
         public SubForumViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            mBBSForumImage = itemView.findViewById(R.id.bbs_forum_imageview);
+            mForumName = itemView.findViewById(R.id.bbs_forum_name);
+            mCardview = itemView.findViewById(R.id.bbs_forum_cardview);
+            mTodayPosts = itemView.findViewById(R.id.bbs_forum_today_posts);
         }
     }
 }

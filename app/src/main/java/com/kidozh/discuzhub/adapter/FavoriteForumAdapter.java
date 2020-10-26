@@ -108,23 +108,22 @@ public class FavoriteForumAdapter extends PagedListAdapter<FavoriteForum, Favori
     public static class FavoriteForumViewHolder extends RecyclerView.ViewHolder{
 
 
-        @BindView(R.id.favorite_forum_date)
+        
         TextView publishAt;
-
-        @BindView(R.id.favorite_forum_title)
         TextView title;
-        @BindView(R.id.favorite_forum_description)
         TextView description;
-        @BindView(R.id.bbs_favorite_forum_cardview)
         CardView cardView;
-        @BindView(R.id.favorite_forum_sync_status)
         TextView syncStatus;
-        @BindView(R.id.favorite_forum_today_posts)
         TextView todayPosts;
 
         public FavoriteForumViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            publishAt = itemView.findViewById(R.id.favorite_forum_date);
+            title = itemView.findViewById(R.id.favorite_forum_title);
+            description = itemView.findViewById(R.id.favorite_forum_description);
+            cardView = itemView.findViewById(R.id.bbs_favorite_forum_cardview);
+            syncStatus = itemView.findViewById(R.id.favorite_forum_sync_status);
+            todayPosts = itemView.findViewById(R.id.favorite_forum_today_posts);
         }
     }
 }

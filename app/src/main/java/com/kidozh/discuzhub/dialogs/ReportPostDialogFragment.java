@@ -21,6 +21,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.databinding.DialogReportBinding;
 import com.kidozh.discuzhub.entities.PostInfo;
 
 import butterknife.BindView;
@@ -32,22 +33,12 @@ public class ReportPostDialogFragment extends DialogFragment {
     @NonNull
     PostInfo postInfo;
 
-    @BindView(R.id.report_title)
-    TextView reportTitle;
-    @BindView(R.id.report_reason_group)
-    RadioGroup reportRadioGroup;
-    @BindView(R.id.report_option_others)
-    RadioButton reportOptionOthers;
-    @BindView(R.id.report_input_reason)
-    EditText reportReasonEditText;
-    @BindView(R.id.report_submit_btn)
-    Button reportSubmitBtn;
-
     public interface ReportDialogListener {
         public void onReportSubmit(int pid,String reportReason,boolean reportForOtherReason);
     }
 
     ReportDialogListener listener;
+    DialogReportBinding binding;
 
 
     public ReportPostDialogFragment(@NonNull PostInfo postInfo){
@@ -65,8 +56,8 @@ public class ReportPostDialogFragment extends DialogFragment {
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        View view = inflater.inflate(R.layout.dialog_report, null);
-        ButterKnife.bind(this,view);
+        binding = DialogReportBinding.inflate(inflater);
+        View view = binding.getRoot();
 
         builder.setView(view)
                 // Add action buttons
@@ -79,36 +70,33 @@ public class ReportPostDialogFragment extends DialogFragment {
     }
 
     private void bindRadioGroupListener(){
-        reportRadioGroup.setOnCheckedChangeListener(((group, checkedId) -> {
+        binding.reportReasonGroup.setOnCheckedChangeListener(((group, checkedId) -> {
             Log.d(TAG,"Checked option "+checkedId);
-            switch (checkedId){
-                case R.id.report_option_others:{
-                    reportReasonEditText.setVisibility(View.VISIBLE);
-                    reportSubmitBtn.setVisibility(View.VISIBLE);
-                    break;
-                }
-                case -1:{
-                    reportReasonEditText.setVisibility(View.GONE);
-                    reportSubmitBtn.setVisibility(View.GONE);
-                    break;
-                }
-                default:{
-                    reportReasonEditText.setVisibility(View.GONE);
-                    reportSubmitBtn.setVisibility(View.VISIBLE);
-                }
+            if(checkedId == R.id.report_option_others){
+                binding.reportInputReason.setVisibility(View.VISIBLE);
+                binding.reportSubmitBtn.setVisibility(View.VISIBLE);
             }
+            else if(checkedId == -1){
+                binding.reportInputReason.setVisibility(View.GONE);
+                binding.reportSubmitBtn.setVisibility(View.GONE);
+            }
+            else {
+                binding.reportInputReason.setVisibility(View.GONE);
+                binding.reportSubmitBtn.setVisibility(View.VISIBLE);
+            }
+
         }));
     }
 
     private void bindSubmitBtn(){
-        reportSubmitBtn.setOnClickListener(v -> {
-            int checkedReasonId = reportRadioGroup.getCheckedRadioButtonId();
+        binding.reportSubmitBtn.setOnClickListener(v -> {
+            int checkedReasonId = binding.reportReasonGroup.getCheckedRadioButtonId();
             if(checkedReasonId == -1){
                 // should not submit
                 Toasty.warning(getContext(),getString(R.string.report_reason_required),Toast.LENGTH_SHORT).show();
             }
             else {
-                if(checkedReasonId == R.id.report_option_others && TextUtils.isEmpty(reportReasonEditText.getText())){
+                if(checkedReasonId == R.id.report_option_others && TextUtils.isEmpty(binding.reportInputReason.getText())){
                     Toasty.warning(getContext(),getString(R.string.report_input_reason_required),Toast.LENGTH_SHORT).show();
                 }
                 else {
@@ -132,7 +120,7 @@ public class ReportPostDialogFragment extends DialogFragment {
                             break;
                         }
                         case R.id.report_option_others:{
-                            reason = reportReasonEditText.getText().toString();
+                            reason = binding.reportInputReason.getText().toString();
                             break;
                         }
 

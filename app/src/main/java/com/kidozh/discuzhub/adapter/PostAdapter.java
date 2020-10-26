@@ -368,7 +368,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
 
         if(postInfo.getAllAttachments() != null){
-            bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter(mContext);
+            bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter();
             attachmentAdapter.attachmentInfoList = postInfo.getAllAttachments();
             holder.mRecyclerview.setNestedScrollingEnabled(false);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
@@ -376,7 +376,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             holder.mRecyclerview.setAdapter(attachmentAdapter);
         }
         else {
-            bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter(mContext);
+            bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter();
             attachmentAdapter.attachmentInfoList = postInfo.getAllAttachments();
             holder.mRecyclerview.setNestedScrollingEnabled(false);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
@@ -459,40 +459,38 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
     }
 
     public class bbsForumThreadCommentViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.bbs_post_publisher)
         TextView mThreadPublisher;
-
-        @BindView(R.id.bbs_post_publish_date)
         TextView mPublishDate;
-        @BindView(R.id.bbs_thread_content)
         TextView mContent;
-        @BindView(R.id.bbs_thread_type)
         TextView mThreadType;
-        @BindView(R.id.bbs_post_avatar_imageView)
         ImageView mAvatarImageview;
-        @BindView(R.id.bbs_thread_attachment_recyclerview)
         RecyclerView mRecyclerview;
-        @BindView(R.id.bbs_thread_reply_button)
         Button mReplyBtn;
-        @BindView(R.id.bbs_thread_only_see_him_button)
         Button mFilterByAuthorIdBtn;
-        @BindView(R.id.bbs_post_status_mobile)
         ImageView mPostStatusMobileIcon;
-        @BindView(R.id.bbs_post_status_blocked_layout)
         View mPostStatusBlockedView;
-        @BindView(R.id.bbs_post_status_warned_layout)
         View mPostStatusWarnedView;
-        @BindView(R.id.bbs_post_status_edited_layout)
         View mPostStatusEditedView;
-        @BindView(R.id.bbs_post_is_author)
         TextView isAuthorLabel;
-        @BindView(R.id.bbs_thread_quote_content)
         TextView mPostQuoteContent;
-        @BindView(R.id.bbs_post_advance_option)
         ImageView mPostAdvanceOptionImageView;
         public bbsForumThreadCommentViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            mThreadPublisher = itemView.findViewById(R.id.bbs_post_publisher);
+            mPublishDate = itemView.findViewById(R.id.bbs_post_publish_date);
+            mContent = itemView.findViewById(R.id.bbs_thread_content);
+            mThreadType = itemView.findViewById(R.id.bbs_thread_type);
+            mAvatarImageview = itemView.findViewById(R.id.bbs_post_avatar_imageView);
+            mRecyclerview = itemView.findViewById(R.id.bbs_thread_attachment_recyclerview);
+            mReplyBtn = itemView.findViewById(R.id.bbs_thread_reply_button);
+            mFilterByAuthorIdBtn = itemView.findViewById(R.id.bbs_thread_only_see_him_button);
+            mPostStatusMobileIcon = itemView.findViewById(R.id.bbs_post_status_mobile);
+            mPostStatusBlockedView = itemView.findViewById(R.id.bbs_post_status_blocked_layout);
+            mPostStatusWarnedView = itemView.findViewById(R.id.bbs_post_status_warned_layout);
+            mPostStatusEditedView = itemView.findViewById(R.id.bbs_post_status_edited_layout);
+            isAuthorLabel = itemView.findViewById(R.id.bbs_post_is_author);
+            mPostQuoteContent = itemView.findViewById(R.id.bbs_thread_quote_content);
+            mPostAdvanceOptionImageView = itemView.findViewById(R.id.bbs_post_advance_option);
         }
     }
 

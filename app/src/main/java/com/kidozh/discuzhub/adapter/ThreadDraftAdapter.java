@@ -116,24 +116,24 @@ public class ThreadDraftAdapter extends RecyclerView.Adapter<ThreadDraftAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.bbs_thread_draft_type)
+        
         TextView bbsThreadDraftType;
-        @BindView(R.id.bbs_thread_draft_subject)
         TextView bbsThreadDraftSubject;
-        @BindView(R.id.bbs_thread_draft_message)
         TextView bbsThreadDraftMessage;
-        @BindView(R.id.bbs_thread_draft_update_time)
         TextView bbsThreadDraftUpdateTime;
-        @BindView(R.id.bbs_thread_draft_forum)
         TextView bbsThreadDraftForum;
-        @BindView(R.id.bbs_thread_draft_cardview)
         CardView bbsThreadCardView;
-        @BindView(R.id.bbs_thread_draft_password_icon)
         ImageView bbsThreadDraftPasswordIcon;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            bbsThreadDraftType = itemView.findViewById(R.id.bbs_thread_draft_type);
+            bbsThreadDraftSubject = itemView.findViewById(R.id.bbs_thread_draft_subject);
+            bbsThreadDraftMessage = itemView.findViewById(R.id.bbs_thread_draft_message);
+            bbsThreadDraftUpdateTime = itemView.findViewById(R.id.bbs_thread_draft_update_time);
+            bbsThreadDraftForum = itemView.findViewById(R.id.bbs_thread_draft_forum);
+            bbsThreadCardView = itemView.findViewById(R.id.bbs_thread_draft_cardview);
+            bbsThreadDraftPasswordIcon = itemView.findViewById(R.id.bbs_thread_draft_password_icon);
         }
     }
 }

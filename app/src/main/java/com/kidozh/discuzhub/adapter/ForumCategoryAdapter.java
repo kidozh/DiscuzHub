@@ -38,8 +38,7 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
         this.mContext = context;
     }
 
-    public ForumCategoryAdapter(Context context, String jsonString, bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
-        this.mContext = context;
+    public ForumCategoryAdapter(String jsonString, bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
         this.jsonString = jsonString;
         this.bbsInfo = bbsInformation;
         this.curUser = userBriefInfo;
@@ -56,6 +55,7 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
     @Override
     public bbsShowPortalViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
+        mContext = context;
         int layoutIdForListItem = R.layout.item_forum_category;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
@@ -76,7 +76,7 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
             //holder.mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext,DividerItemDecoration.VERTICAL));
         }
 
-        ForumAdapter adapter = new ForumAdapter(mContext,jsonString,bbsInfo,curUser);
+        ForumAdapter adapter = new ForumAdapter(jsonString,bbsInfo,curUser);
         holder.mRecyclerView.setAdapter(adapter);
         List<ForumInfo> forumInfoListInTheCategory = category.getForumListInTheCategory(allForumInfo);
         adapter.setForumInfoList(forumInfoListInTheCategory);
@@ -97,16 +97,15 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
     }
 
     public class bbsShowPortalViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.portal_catagory_name)
         TextView mPortalCatagoryName;
-        @BindView(R.id.portal_catagory_recyclerview)
         RecyclerView mRecyclerView;
-        @BindView(R.id.portal_category_icon)
         ImageView mPortalCategoryIcon;
 
         public bbsShowPortalViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            mPortalCatagoryName = itemView.findViewById(R.id.portal_catagory_name);
+            mRecyclerView = itemView.findViewById(R.id.portal_catagory_recyclerview);
+            mPortalCategoryIcon = itemView.findViewById(R.id.portal_category_icon);
         }
     }
 }

@@ -103,22 +103,19 @@ public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotFor
     }
 
     public static class HotForumViewHolder extends RecyclerView.ViewHolder{
-
-        @BindView(R.id.hot_forum_cardview)
         CardView hotForumCardview;
-        @BindView(R.id.item_hot_forum_name)
         TextView hotForumName;
-        @BindView(R.id.item_hot_forum_today_posts)
         TextView hotForumTodayPosts;
-
-        @BindView(R.id.hot_forum_last_post_time)
         TextView lastPostTime;
-        @BindView(R.id.hot_forum_last_post_subject)
         TextView lastPostSubject;
 
         public HotForumViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            hotForumCardview = itemView.findViewById(R.id.hot_forum_cardview);
+            hotForumName = itemView.findViewById(R.id.item_hot_forum_name);
+            hotForumTodayPosts = itemView.findViewById(R.id.item_hot_forum_today_posts);
+            lastPostTime = itemView.findViewById(R.id.hot_forum_last_post_time);
+            lastPostSubject = itemView.findViewById(R.id.hot_forum_last_post_subject);
         }
     }
 }

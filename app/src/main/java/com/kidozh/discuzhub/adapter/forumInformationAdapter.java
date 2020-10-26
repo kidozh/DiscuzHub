@@ -2,6 +2,7 @@ package com.kidozh.discuzhub.adapter;
 
 
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -207,7 +208,7 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
                 public void onClick(View v) {
                     // dialog to ensure
                     Log.d(TAG,"You pressed register btn");
-                    new MaterialAlertDialogBuilder(context)
+                    new AlertDialog.Builder(context)
                             .setTitle(context.getString(R.string.bbs_register_an_account)+" "+forumInfo.site_name)
                             //setMessage是用来显示字符串的
                             .setMessage(R.string.bbs_register_account_notification)
@@ -227,28 +228,6 @@ public class forumInformationAdapter extends RecyclerView.Adapter<forumInformati
                                 }
                             })
                             .show();
-
-//                    AlertDialog dialog = new AlertDialog.Builder(context)
-//                            .setTitle(context.getString(R.string.bbs_register_an_account)+" "+forumInfo.site_name)
-//                            //setMessage是用来显示字符串的
-//                            .setMessage(R.string.bbs_register_account_notification)
-//                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    bbsURLUtils.setBBS(forumInfo);
-//                                    Uri uri = Uri.parse(bbsURLUtils.getBBSRegisterUrl(forumInfo.register_name));
-//                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//                                    context.startActivity(intent);
-//                                }
-//                            })
-//                            .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//
-//                                }
-//                            })
-//                            .create();
-//                    dialog.show();
                 }
             });
         }

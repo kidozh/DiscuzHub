@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.databinding.DialogInsertLinkBinding;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,14 +23,13 @@ import butterknife.ButterKnife;
 public class PostThreadInsertLinkDialogFragment extends DialogFragment {
     private static String TAG = PostThreadInsertLinkDialogFragment.class.getSimpleName();
 
-    @BindView(R.id.insert_link_url_editText)
-    EditText linkEditText;
-
     public interface NoticeDialogListener {
         public void onLinkSubmit(String link);
     }
 
     NoticeDialogListener listener;
+    
+    DialogInsertLinkBinding binding;
 
 
     @NonNull
@@ -42,8 +42,9 @@ public class PostThreadInsertLinkDialogFragment extends DialogFragment {
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        View view = inflater.inflate(R.layout.dialog_insert_link, null);
-        ButterKnife.bind(this,view);
+        binding = DialogInsertLinkBinding.inflate(inflater);
+        View view = binding.getRoot();
+        
 
         builder.setView(view)
                 // Add action buttons
@@ -51,7 +52,7 @@ public class PostThreadInsertLinkDialogFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        String link = linkEditText.getText().toString();
+                        String link = binding.insertLinkUrlEditText.getText().toString();
                         Log.d(TAG,"set link "+link);
                         listener.onLinkSubmit(link);
                     }

@@ -27,10 +27,7 @@ public class PublicMessageAdapter extends RecyclerView.Adapter<PublicMessageAdap
 
     List<bbsParseUtils.publicMessage> publicMessageList;
     private Context context;
-
-
-
-
+    
     public void setPublicMessageList(List<bbsParseUtils.publicMessage> publicMessageList) {
         this.publicMessageList = publicMessageList;
         notifyDataSetChanged();
@@ -78,20 +75,20 @@ public class PublicMessageAdapter extends RecyclerView.Adapter<PublicMessageAdap
 
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.item_public_message_cardview)
+    public static class ViewHolder extends RecyclerView.ViewHolder{
+        
         CardView publicMessageCardview;
-        @BindView(R.id.item_public_message_avatar)
         ImageView publicMessageAvatar;
-        @BindView(R.id.item_public_message_content)
         TextView publicMessageContent;
-        @BindView(R.id.item_public_message_recv_time)
         TextView publicMessageRecvTime;
-        @BindView(R.id.item_public_message_username)
         TextView publicMessageUsername;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            publicMessageCardview = itemView.findViewById(R.id.item_public_message_cardview);
+            publicMessageAvatar = itemView.findViewById(R.id.item_public_message_avatar);
+            publicMessageContent = itemView.findViewById(R.id.item_public_message_content);
+            publicMessageRecvTime = itemView.findViewById(R.id.item_public_message_recv_time);
+            publicMessageUsername = itemView.findViewById(R.id.item_public_message_username);
         }
     }
 }

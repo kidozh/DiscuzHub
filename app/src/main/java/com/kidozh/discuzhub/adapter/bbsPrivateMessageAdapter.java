@@ -151,20 +151,20 @@ public class bbsPrivateMessageAdapter extends RecyclerView.Adapter<bbsPrivateMes
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        @BindView(R.id.item_private_message_cardview)
+
         CardView privateMessageCardview;
-        @BindView(R.id.item_private_message_avatar)
         ImageView privateMessageAvatar;
-        @BindView(R.id.item_private_message_content)
         TextView privateMessageContent;
-        @BindView(R.id.item_private_message_recv_time)
         TextView privateMessageRecvTime;
-        @BindView(R.id.item_private_message_username)
         TextView privateMessageUsername;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            privateMessageCardview = itemView.findViewById(R.id.item_private_message_cardview);
+            privateMessageAvatar = itemView.findViewById(R.id.item_private_message_avatar);
+            privateMessageContent = itemView.findViewById(R.id.item_private_message_content);
+            privateMessageRecvTime = itemView.findViewById(R.id.item_private_message_recv_time);
+            privateMessageUsername = itemView.findViewById(R.id.item_private_message_username);
         }
     }
 }

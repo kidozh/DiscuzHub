@@ -65,16 +65,16 @@ public class bbsDetailInformationAdapter extends RecyclerView.Adapter<bbsDetailI
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        @BindView(R.id.item_bbs_information_avatar)
+
         ImageView bbsInformationAvatar;
-        @BindView(R.id.item_bbs_information_title)
         TextView bbsInformationTitle;
-        @BindView(R.id.item_bbs_information_value)
         TextView bbsInformationValue;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            bbsInformationAvatar = itemView.findViewById(R.id.item_bbs_information_avatar);
+            bbsInformationTitle = itemView.findViewById(R.id.item_bbs_information_title);
+            bbsInformationValue = itemView.findViewById(R.id.item_bbs_information_value);
         }
     }
 

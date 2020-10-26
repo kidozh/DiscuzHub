@@ -84,21 +84,6 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
                 context.startActivity(intent);
             }
         });
-//        holder.mUserCardview.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                Intent intent = new Intent(context, LoginActivity.class);
-//                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-//                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userInfo);
-//                context.startActivity(intent);
-//                VibrateUtils.vibrateForNotice(context);
-//                return true;
-//            }
-//        });
-
-        //List<Integer> colorStateResourceList = colorUtils.colorStateList;
-        //int resourceListLength = colorStateResourceList.size();
-        //holder.mUserCardview.setBackgroundColor(context.getColor(colorStateResourceList.get(position % resourceListLength)));
 
     }
 
@@ -114,19 +99,18 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-
-        @BindView(R.id.forum_user_avatar)
         ImageView mUserAvatar;
-        @BindView(R.id.forum_user_name)
         TextView mUserName;
-        @BindView(R.id.forum_user_cardview)
         CardView mUserCardview;
-        @BindView(R.id.forum_user_index)
         TextView mUserIdx;
 
         ViewHolder(View view){
             super(view);
             ButterKnife.bind(this,view);
+            mUserAvatar = view.findViewById(R.id.forum_user_avatar);
+            mUserName = view.findViewById(R.id.forum_user_name);
+            mUserCardview = view.findViewById(R.id.forum_user_cardview);
+            mUserIdx = view.findViewById(R.id.forum_user_index);
         }
     }
 }

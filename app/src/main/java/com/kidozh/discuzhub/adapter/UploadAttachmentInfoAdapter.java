@@ -11,12 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.UploadAttachment;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class UploadAttachmentInfoAdapter extends RecyclerView.Adapter<UploadAttachmentInfoAdapter.UploadAttachmentViewHolder> {
 
@@ -47,25 +44,24 @@ public class UploadAttachmentInfoAdapter extends RecyclerView.Adapter<UploadAtta
 
     @Override
     public int getItemCount() {
-        if(attachmentList == null){
+        if (attachmentList == null) {
             return 0;
-        }
-        else {
+        } else {
             return attachmentList.size();
         }
     }
 
-    public class UploadAttachmentViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.item_upload_attachment_number)
+    public static class UploadAttachmentViewHolder extends RecyclerView.ViewHolder {
+
         TextView uploadAttachmentNumber;
-        @BindView(R.id.item_upload_attachment_type)
         TextView uploadAttachmentType;
-        @BindView(R.id.item_upload_attachment_filename)
         TextView uploadAttachmentFilename;
 
         public UploadAttachmentViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            uploadAttachmentNumber = itemView.findViewById(R.id.item_upload_attachment_number);
+            uploadAttachmentType = itemView.findViewById(R.id.item_upload_attachment_type);
+            uploadAttachmentFilename = itemView.findViewById(R.id.item_upload_attachment_filename);
         }
     }
 }

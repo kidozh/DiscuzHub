@@ -126,26 +126,26 @@ public class FavoriteThreadAdapter extends PagedListAdapter<FavoriteThread, Favo
     }
 
     public static class FavoriteThreadViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.favorite_thread_user_avatar)
+        
         ShapeableImageView userAvatar;
-        @BindView(R.id.favorite_thread_author)
         TextView author;
-        @BindView(R.id.favorite_thread_date)
         TextView publishAt;
-        @BindView(R.id.favorite_thread_reply)
         TextView replyNumber;
-        @BindView(R.id.favorite_thread_title)
         TextView title;
-        @BindView(R.id.favorite_thread_description)
         TextView description;
-        @BindView(R.id.bbs_favorite_thread_cardview)
         CardView cardView;
-        @BindView(R.id.favorite_thread_sync_status)
         TextView syncStatus;
 
         public FavoriteThreadViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            userAvatar = itemView.findViewById(R.id.favorite_thread_user_avatar);
+            author = itemView.findViewById(R.id.favorite_thread_author);
+            publishAt = itemView.findViewById(R.id.favorite_thread_date);
+            replyNumber = itemView.findViewById(R.id.favorite_thread_reply);
+            title = itemView.findViewById(R.id.favorite_thread_title);
+            description = itemView.findViewById(R.id.favorite_thread_description);
+            cardView = itemView.findViewById(R.id.bbs_favorite_thread_cardview);
+            syncStatus = itemView.findViewById(R.id.favorite_thread_sync_status);
         }
     }
 }

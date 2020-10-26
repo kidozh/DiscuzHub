@@ -185,20 +185,20 @@ public class bbsPrivateDetailMessageAdapter extends RecyclerView.Adapter<bbsPriv
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.item_private_message_detail_time)
+
         TextView privateMessageDetailTime;
-        @BindView(R.id.item_private_message_detail_message)
         TextView privateMessageDetailMessage;
-        @BindView(R.id.item_private_message_detail_recv_avatar)
         ImageView privateMessageDetailRecvAvatar;
-        @BindView(R.id.item_private_message_detail_sender_avatar)
         ImageView privateMessageDetailSenderAvatar;
-        @BindView(R.id.item_private_message_detail_constraint_layout)
         ConstraintLayout constraintLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            privateMessageDetailTime = itemView.findViewById(R.id.item_private_message_detail_time);
+            privateMessageDetailMessage = itemView.findViewById(R.id.item_private_message_detail_message);
+            privateMessageDetailRecvAvatar = itemView.findViewById(R.id.item_private_message_detail_recv_avatar);
+            privateMessageDetailSenderAvatar = itemView.findViewById(R.id.item_private_message_detail_sender_avatar);
+            constraintLayout = itemView.findViewById(R.id.item_private_message_detail_constraint_layout);
         }
     }
 }

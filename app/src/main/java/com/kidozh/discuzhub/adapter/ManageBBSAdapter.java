@@ -74,25 +74,27 @@ public class ManageBBSAdapter extends RecyclerView.Adapter<ManageBBSAdapter.Mana
     }
 
     public static class ManageBBSViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.item_forum_information_avatar)
+        
         ImageView forumAvatar;
-        @BindView(R.id.item_forum_information_name)
         TextView forumName;
-        @BindView(R.id.item_forum_information_host)
         TextView forumHost;
-        @BindView(R.id.item_forum_information_siteid)
         TextView forumSiteId;
-        @BindView(R.id.item_forum_information_post_number)
         TextView forumPostNumber;
-        @BindView(R.id.item_forum_information_posts_icon)
         ImageView forumPostIcon;
-        @BindView(R.id.item_forum_information_member_number)
         TextView forumMemberNumber;
-        @BindView(R.id.item_forum_information_member_icon)
         ImageView forumMemberIcon;
+
         public ManageBBSViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            forumAvatar = itemView.findViewById(R.id.item_forum_information_avatar);
+            forumName = itemView.findViewById(R.id.item_forum_information_name);
+            forumHost = itemView.findViewById(R.id.item_forum_information_host);
+            forumSiteId = itemView.findViewById(R.id.item_forum_information_siteid);
+            forumPostNumber = itemView.findViewById(R.id.item_forum_information_post_number);
+            forumPostIcon = itemView.findViewById(R.id.item_forum_information_posts_icon);
+            forumMemberNumber = itemView.findViewById(R.id.item_forum_information_member_number);
+            forumMemberIcon = itemView.findViewById(R.id.item_forum_information_member_icon);
         }
     }
 }

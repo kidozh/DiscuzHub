@@ -190,21 +190,21 @@ public class IntroSuggestionAdapter extends RecyclerView.Adapter<IntroSuggestion
         });
     }
 
-    public class IntroSuggestionViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.item_intro_url_suggestion_cardview)
+    public static class IntroSuggestionViewHolder extends RecyclerView.ViewHolder{
+        
         CardView urlSuggestionCardview;
-        @BindView(R.id.item_intro_url_suggestion_url_textview)
         TextView urlTextview;
-        @BindView(R.id.item_intro_url_suggestion_description)
         TextView descriptionTextview;
-        @BindView(R.id.item_intro_url_suggestion_progressBar)
         ProgressBar checkProgressbar;
-        @BindView(R.id.item_intro_url_suggestion_ok_icon)
         ImageView suggestionOKIcon;
 
         public IntroSuggestionViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            urlSuggestionCardview = itemView.findViewById(R.id.item_intro_url_suggestion_cardview);
+            urlTextview = itemView.findViewById(R.id.item_intro_url_suggestion_url_textview);
+            descriptionTextview = itemView.findViewById(R.id.item_intro_url_suggestion_description);
+            checkProgressbar = itemView.findViewById(R.id.item_intro_url_suggestion_progressBar);
+            suggestionOKIcon = itemView.findViewById(R.id.item_intro_url_suggestion_ok_icon);
         }
     }
 }

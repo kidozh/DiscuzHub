@@ -101,72 +101,66 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
                         .into(holder.icon);
             }
             // click things
-            holder.cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            holder.cardView.setOnClickListener(v -> {
+                switch (history.type){
+                    case ViewHistory.VIEW_TYPE_FORUM:{
+                        ForumInfo forumInfo = new ForumInfo();
+                        forumInfo.fid = history.fid;
+                        forumInfo.description = history.description;
+                        Intent intent = new Intent(context, ForumActivity.class);
+                        intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forumInfo);
+                        intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                        intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                        intent.putExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,true);
+                        // Log.d(TAG,"put base url "+bbsInfo.base_url);
 
-                    switch (history.type){
-                        case ViewHistory.VIEW_TYPE_FORUM:{
-                            ForumInfo forumInfo = new ForumInfo();
-                            forumInfo.fid = history.fid;
-                            forumInfo.description = history.description;
-                            Intent intent = new Intent(context, ForumActivity.class);
-                            intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forumInfo);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                            intent.putExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,true);
-                            // Log.d(TAG,"put base url "+bbsInfo.base_url);
+                        context.startActivity(intent);
+                        VibrateUtils.vibrateForClick(context);
+                        break;
+                    }
+                    case ViewHistory.VIEW_TYPE_THREAD:{
+                        ThreadInfo threadInfo = new ThreadInfo();
+                        threadInfo.fid = history.fid;
+                        threadInfo.tid = history.tid;
+                        threadInfo.subject = history.description;
+                        Intent intent = new Intent(context, ThreadActivity.class);
+                        intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                        intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                        intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);
+                        intent.putExtra("FID",threadInfo.fid);
+                        intent.putExtra("TID",threadInfo.tid);
+                        intent.putExtra("SUBJECT",threadInfo.subject);
+                        intent.putExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,true);
 
-                            context.startActivity(intent);
-                            VibrateUtils.vibrateForClick(context);
-                            break;
-                        }
-                        case ViewHistory.VIEW_TYPE_THREAD:{
-                            ThreadInfo threadInfo = new ThreadInfo();
-                            threadInfo.fid = history.fid;
-                            threadInfo.tid = history.tid;
-                            threadInfo.subject = history.description;
-                            Intent intent = new Intent(context, ThreadActivity.class);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                            intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);
-                            intent.putExtra("FID",threadInfo.fid);
-                            intent.putExtra("TID",threadInfo.tid);
-                            intent.putExtra("SUBJECT",threadInfo.subject);
-                            intent.putExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,true);
+                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                                (Activity) context,
+                                Pair.create(holder.name, "bbs_thread_subject")
+                        );
+                        VibrateUtils.vibrateForClick(context);
 
-                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
-                                    (Activity) context,
-                                    Pair.create(holder.name, "bbs_thread_subject")
-                            );
-                            VibrateUtils.vibrateForClick(context);
+                        Bundle bundle = options.toBundle();
+                        context.startActivity(intent,bundle);
+                        break;
+                    }
+                    case ViewHistory.VIEW_TYPE_USER_PROFILE:{
+                        Intent intent = new Intent(context, UserProfileActivity.class);
+                        intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                        intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                        intent.putExtra("UID",history.fid);
+                        intent.putExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,true);
 
-                            Bundle bundle = options.toBundle();
-                            context.startActivity(intent,bundle);
-                            break;
-                        }
-                        case ViewHistory.VIEW_TYPE_USER_PROFILE:{
-                            Intent intent = new Intent(context, UserProfileActivity.class);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                            intent.putExtra("UID",history.fid);
-                            intent.putExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,true);
+                        ActivityOptions options = ActivityOptions
+                                .makeSceneTransitionAnimation((Activity) context, holder.icon, "user_info_avatar");
 
-                            ActivityOptions options = ActivityOptions
-                                    .makeSceneTransitionAnimation((Activity) context, holder.icon, "user_info_avatar");
+                        Bundle bundle = options.toBundle();
 
-                            Bundle bundle = options.toBundle();
-
-                            context.startActivity(intent,bundle);
-                            VibrateUtils.vibrateForClick(context);
-                            break;
-                        }
+                        context.startActivity(intent,bundle);
+                        VibrateUtils.vibrateForClick(context);
+                        break;
                     }
                 }
             });
 
-        }
-        else {
 
         }
 
@@ -174,19 +168,20 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
     }
 
     public static class ViewHistoryViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.view_history_icon)
+        
         ImageView icon;
-        @BindView(R.id.view_history_name)
         TextView name;
-        @BindView(R.id.view_history_time)
         TextView time;
-        @BindView(R.id.view_history_description)
         TextView description;
-        @BindView(R.id.view_history_cardview)
         CardView cardView;
+
         public ViewHistoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            icon = itemView.findViewById(R.id.view_history_icon);
+            name = itemView.findViewById(R.id.view_history_name);
+            time = itemView.findViewById(R.id.view_history_time);
+            description = itemView.findViewById(R.id.view_history_description);
+            cardView = itemView.findViewById(R.id.view_history_cardview);
         }
 
 

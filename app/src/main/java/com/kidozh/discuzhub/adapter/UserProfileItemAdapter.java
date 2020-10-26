@@ -58,17 +58,17 @@ public class UserProfileItemAdapter extends RecyclerView.Adapter<UserProfileItem
 
     }
 
-    public class UserProfileItemViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.user_profile_icon)
+    public static class UserProfileItemViewHolder extends RecyclerView.ViewHolder{
+        
         ImageView userProfileIcon;
-        @BindView(R.id.user_profile_title)
         TextView userProfileTitle;
-        @BindView(R.id.user_profile_content)
         TextView userProfileContent;
 
         public UserProfileItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            userProfileIcon = itemView.findViewById(R.id.user_profile_icon);
+            userProfileTitle = itemView.findViewById(R.id.user_profile_title);
+            userProfileContent = itemView.findViewById(R.id.user_profile_content);
         }
     }
 }

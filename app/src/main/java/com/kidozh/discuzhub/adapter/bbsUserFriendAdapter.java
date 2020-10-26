@@ -121,17 +121,18 @@ public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.user_friend_avatar)
+        
         ImageView avatar;
-        @BindView(R.id.user_friend_username)
         TextView name;
-        @BindView(R.id.user_friend_idx)
         TextView idx;
-        @BindView(R.id.user_friend_cardview)
         CardView cardView;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            avatar = itemView.findViewById(R.id.user_friend_avatar);
+            name = itemView.findViewById(R.id.user_friend_username);
+            idx = itemView.findViewById(R.id.user_friend_idx);
+            cardView = itemView.findViewById(R.id.user_friend_cardview);
         }
     }
 }

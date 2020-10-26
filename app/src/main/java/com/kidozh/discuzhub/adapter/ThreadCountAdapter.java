@@ -97,16 +97,15 @@ public class ThreadCountAdapter extends RecyclerView.Adapter<ThreadCountAdapter.
     }
 
     public class ThreadCountHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.item_bbs_thread_type_cardview)
         CardView itemThreadTypeCardview;
-        @BindView(R.id.item_bbs_thread_type_avatar)
         ImageView itemThreadTypeAvatar;
-        @BindView(R.id.item_bbs_thread_type_value)
         TextView itemThreadTypeTextview;
 
         public ThreadCountHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            itemThreadTypeCardview = itemView.findViewById(R.id.item_bbs_thread_type_cardview);
+            itemThreadTypeAvatar = itemView.findViewById(R.id.item_bbs_thread_type_avatar);
+            itemThreadTypeTextview = itemView.findViewById(R.id.item_bbs_thread_type_value);
         }
     }
 

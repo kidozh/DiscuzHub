@@ -246,13 +246,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                             int position = itemId - Menu.FIRST;
                             String urlLink = urlLinkString.get(position);
                             bbsLinkMovementMethod.parseURLAndOpen(context,bbsInfo,curUser,urlLink);
-
-//                            Intent intent = new Intent(context, showWebPageActivity.class);
-//                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-//                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
-//                            intent.putExtra(bbsConstUtils.PASS_URL_KEY,urlLink);
-//                            //Log.d(TAG,"Inputted URL "+currentUrl);
-//                            context.startActivity(intent);
                             return true;
                         }
                     });
@@ -275,23 +268,23 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        @BindView(R.id.bbs_notification_imageView)
         ImageView bbsNotificationImageview;
-        @BindView(R.id.bbs_notification_author)
         TextView bbsNotificationAuthor;
-        @BindView(R.id.bbs_notification_note)
         TextView bbsNotificationNote;
-        @BindView(R.id.bbs_notification_publish_time)
         TextView bbsNotificationPublishTime;
-        @BindView(R.id.bbs_notification_cardview)
         CardView bbsNotificationCardview;
-        @BindView(R.id.bbs_notification_new_label)
         TextView newLabel;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            bbsNotificationImageview = itemView.findViewById(R.id.bbs_notification_imageView);
+            bbsNotificationAuthor = itemView.findViewById(R.id.bbs_notification_author);
+            bbsNotificationNote = itemView.findViewById(R.id.bbs_notification_note);
+            bbsNotificationPublishTime = itemView.findViewById(R.id.bbs_notification_publish_time);
+            bbsNotificationCardview = itemView.findViewById(R.id.bbs_notification_cardview);
+            newLabel = itemView.findViewById(R.id.bbs_notification_new_label);
         }
     }
 }

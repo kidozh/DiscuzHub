@@ -45,8 +45,7 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private bbsInformation bbsInfo;
     private forumUserBriefInfo curUser;
 
-    ForumAdapter(Context context, String jsonObject, bbsInformation bbsInformation, forumUserBriefInfo curUser){
-        this.mContext = context;
+    ForumAdapter(String jsonObject, bbsInformation bbsInformation, forumUserBriefInfo curUser){
         this.jsonString = jsonObject;
         this.bbsInfo = bbsInformation;
         this.curUser = curUser;
@@ -61,6 +60,7 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
+        mContext = context;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
@@ -186,37 +186,38 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     }
     
-    public class ForumViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.bbs_forum_imageview)
+    public static class ForumViewHolder extends RecyclerView.ViewHolder{
+        
         ImageView mBBSForumImage;
-        @BindView(R.id.bbs_forum_name)
         TextView mForumName;
-        @BindView(R.id.bbs_forum_cardview)
         CardView mCardview;
-        @BindView(R.id.bbs_forum_today_posts)
         TextView mTodayPosts;
-        @BindView(R.id.bbs_forum_description)
         TextView mDescription;
         public ForumViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            mBBSForumImage = itemView.findViewById(R.id.bbs_forum_imageview);
+            mForumName = itemView.findViewById(R.id.bbs_forum_name);
+            mCardview = itemView.findViewById(R.id.bbs_forum_cardview);
+            mTodayPosts = itemView.findViewById(R.id.bbs_forum_today_posts);
+            mDescription = itemView.findViewById(R.id.bbs_forum_description);
         }
     }
 
 
 
-    public class ConciseForumViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.bbs_forum_imageview)
+    public static class ConciseForumViewHolder extends RecyclerView.ViewHolder{
         ImageView mBBSForumImage;
-        @BindView(R.id.bbs_forum_name)
         TextView mForumName;
-        @BindView(R.id.bbs_forum_cardview)
         CardView mCardview;
-        @BindView(R.id.bbs_forum_today_posts)
         TextView mTodayPosts;
         public ConciseForumViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            mBBSForumImage = itemView.findViewById(R.id.bbs_forum_imageview);
+            mForumName = itemView.findViewById(R.id.bbs_forum_name);
+            mCardview = itemView.findViewById(R.id.bbs_forum_cardview);
+            mTodayPosts = itemView.findViewById(R.id.bbs_forum_today_posts);
+
         }
     }
 }

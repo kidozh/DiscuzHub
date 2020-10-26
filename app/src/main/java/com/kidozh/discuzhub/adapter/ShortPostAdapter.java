@@ -23,17 +23,11 @@ import com.kidozh.discuzhub.utilities.NetworkUtils;
 import java.io.InputStream;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class ShortPostAdapter extends RecyclerView.Adapter<ShortPostAdapter.ViewHolder> {
 
     List<ForumResult.ShortReply> shortReplyInfoList;
     Context context;
-
-    public ShortPostAdapter(Context context){
-        this.context = context;
-    }
+    
 
     public void setShortReplyInfoList(List<ForumResult.ShortReply> shortReplyInfoList) {
         this.shortReplyInfoList = shortReplyInfoList;
@@ -43,7 +37,7 @@ public class ShortPostAdapter extends RecyclerView.Adapter<ShortPostAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+        context = parent.getContext();
         int layoutIdForListItem = R.layout.item_short_post;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
@@ -98,18 +92,17 @@ public class ShortPostAdapter extends RecyclerView.Adapter<ShortPostAdapter.View
 
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        @BindView(R.id.bbs_forum_thread_short_reply_user_avatar)
         ImageView mReplyerAvatar;
-        @BindView(R.id.bbs_forum_thread_short_reply_user_name)
         TextView mReplyerName;
-        @BindView(R.id.bbs_forum_thread_short_reply_user_reply_message)
         TextView mReplyMessage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            mReplyerAvatar = itemView.findViewById(R.id.bbs_forum_thread_short_reply_user_avatar);
+            mReplyerName = itemView.findViewById(R.id.bbs_forum_thread_short_reply_user_name);
+            mReplyMessage = itemView.findViewById(R.id.bbs_forum_thread_short_reply_user_reply_message);
         }
     }
 }

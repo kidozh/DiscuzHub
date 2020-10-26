@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.UploadAttachmentInfoAdapter;
+import com.kidozh.discuzhub.databinding.DialogPostThreadConfirmedBinding;
 import com.kidozh.discuzhub.entities.UploadAttachment;
 import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.viewModels.PostThreadViewModel;
@@ -31,23 +32,14 @@ import butterknife.ButterKnife;
 public class PostThreadConfirmDialogFragment extends DialogFragment {
     private static String TAG = PostThreadConfirmDialogFragment.class.getSimpleName();
 
-    @BindView(R.id.dialog_post_thread_subject_textview)
-    TextView subjectTextview;
-    @BindView(R.id.dialog_post_thread_password_layout)
-    View passwordLayout;
-    @BindView(R.id.dialog_post_thread_password_textview)
-    TextView passwordTextview;
-    @BindView(R.id.dialog_post_thread_attachment_recyclerview)
-    RecyclerView recyclerView;
-    @BindView(R.id.dialog_post_thread_attachment_number_textview)
-    TextView attachmentNumberTextview;
+    
+    DialogPostThreadConfirmedBinding binding;
 
     public interface ConfirmDialogListener {
         public void onPositveBtnClicked();
     }
 
     ConfirmDialogListener listener;
-    String password;
 
     PostThreadViewModel postThreadViewModel;
 
@@ -69,8 +61,8 @@ public class PostThreadConfirmDialogFragment extends DialogFragment {
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        View view = inflater.inflate(R.layout.dialog_post_thread_confirmed, null);
-        ButterKnife.bind(this,view);
+        binding = DialogPostThreadConfirmedBinding.inflate(inflater);
+        View view = binding.getRoot();
 
 
         builder.setView(view)
@@ -100,31 +92,31 @@ public class PostThreadConfirmDialogFragment extends DialogFragment {
     private void renderPage(){
         bbsThreadDraft draft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
         if(draft!=null){
-            subjectTextview.setText(draft.subject);
+            binding.dialogPostThreadSubjectTextview.setText(draft.subject);
             if(draft.password.length()!=0){
-                passwordLayout.setVisibility(View.VISIBLE);
-                passwordTextview.setText(draft.password);
+                binding.dialogPostThreadPasswordLayout.setVisibility(View.VISIBLE);
+                binding.dialogPostThreadPasswordTextview.setText(draft.password);
             }
             else {
-                passwordLayout.setVisibility(View.GONE);
+                binding.dialogPostThreadPasswordLayout.setVisibility(View.GONE);
             }
         }
         configureRecyclerview();
     }
 
     private void configureRecyclerview(){
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.dialogPostThreadAttachmentRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         UploadAttachmentInfoAdapter adapter = new UploadAttachmentInfoAdapter();
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
+        binding.dialogPostThreadAttachmentRecyclerview.setHasFixedSize(true);
+        binding.dialogPostThreadAttachmentRecyclerview.setAdapter(adapter);
         List<UploadAttachment> uploadAttachments = postThreadViewModel.uploadAttachmentListLiveData.getValue();
         adapter.setAttachmentList(uploadAttachments);
         if(uploadAttachments == null || uploadAttachments.size() == 0){
-            attachmentNumberTextview.setVisibility(View.GONE);
+            binding.dialogPostThreadAttachmentNumberTextview.setVisibility(View.GONE);
         }
         else {
-            attachmentNumberTextview.setVisibility(View.VISIBLE);
-            attachmentNumberTextview.setText(getString(R.string.upload_attachment_number,uploadAttachments.size()));
+            binding.dialogPostThreadAttachmentNumberTextview.setVisibility(View.VISIBLE);
+            binding.dialogPostThreadAttachmentNumberTextview.setText(getString(R.string.upload_attachment_number,uploadAttachments.size()));
         }
     }
 

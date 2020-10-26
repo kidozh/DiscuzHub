@@ -30,6 +30,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
+import com.kidozh.discuzhub.databinding.ItemBbsAttachmentInfoBinding;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
@@ -48,16 +49,14 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
     Context mContext;
     List<PostInfo.Attachment> attachmentInfoList;
 
-    bbsAttachmentAdapter(Context context){
-        this.mContext = context;
-    }
+
 
     @NonNull
     @Override
     public bbsAttachmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+        mContext = parent.getContext();
         int layoutIdForListItem = R.layout.item_bbs_attachment_info;
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
@@ -252,21 +251,24 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
 
     public class bbsAttachmentViewHolder extends RecyclerView.ViewHolder{
 
-        @BindView(R.id.bbs_attachment_filename)
         TextView mAttachmentTitle;
-        @BindView(R.id.bbs_attachment_imageview)
         ImageView mAttachmentImageview;
-        @BindView(R.id.bbs_attachment_badge)
         TextView mAttachmentBadge;
-        @BindView(R.id.bbs_attachment_filesize)
         TextView mAttachmentSize;
-        @BindView(R.id.bbs_attachment_download_times)
         TextView mAttachmentDownloadTimes;
         Boolean isPictureLoaded = false;
 
+        public ItemBbsAttachmentInfoBinding binding;
+
+
         public bbsAttachmentViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            mAttachmentTitle = itemView.findViewById(R.id.bbs_attachment_filename);
+            mAttachmentImageview = itemView.findViewById(R.id.bbs_attachment_imageview);
+            mAttachmentBadge = itemView.findViewById(R.id.bbs_attachment_badge);
+            mAttachmentSize = itemView.findViewById(R.id.bbs_attachment_filesize);
+            mAttachmentDownloadTimes = itemView.findViewById(R.id.bbs_attachment_download_times);
+
         }
     }
 }

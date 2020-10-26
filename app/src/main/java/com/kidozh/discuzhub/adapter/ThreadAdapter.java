@@ -378,7 +378,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.mReplyRecyclerview.setNestedScrollingEnabled(false);
                 holder.mReplyRecyclerview.setLayoutManager(linearLayoutManager);
                 holder.mReplyRecyclerview.setClickable(false);
-                ShortPostAdapter adapter = new ShortPostAdapter(mContext);
+                ShortPostAdapter adapter = new ShortPostAdapter();
                 adapter.setShortReplyInfoList(threadInfo.shortReplyList);
                 holder.mReplyRecyclerview.setAdapter(adapter);
                 holder.mReplyRecyclerview.setNestedScrollingEnabled(false);
@@ -545,71 +545,61 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
     
     public class PinnedViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.bbs_thread_title)
+        
         TextView mTitle;
-        @BindView(R.id.bbs_thread_type)
         TextView mThreadType;
-        @BindView(R.id.bbs_thread_cardview)
         CardView mCardview;
         public PinnedViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            mTitle = itemView.findViewById(R.id.bbs_thread_title);
+            mThreadType = itemView.findViewById(R.id.bbs_thread_type);
+            mCardview = itemView.findViewById(R.id.bbs_thread_cardview);
+           
         }
     }
 
     public class ThreadViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.bbs_post_publisher)
+        
         TextView mThreadPublisher;
-        @BindView(R.id.bbs_post_publish_date)
         TextView mPublishDate;
-        @BindView(R.id.bbs_thread_title)
         TextView mTitle;
-        @BindView(R.id.bbs_thread_content)
         TextView mContent;
-        @BindView(R.id.bbs_thread_view_textview)
         TextView mThreadViewNum;
-        @BindView(R.id.bbs_thread_reply_number)
         TextView mThreadReplyNum;
-        @BindView(R.id.bbs_thread_type)
         TextView mThreadType;
-        @BindView(R.id.bbs_post_avatar_imageView)
         ShapedImageView mAvatarImageview;
-        @BindView(R.id.bbs_thread_cardview)
         CardView mCardview;
-        @BindView(R.id.bbs_thread_short_reply_recyclerview)
         RecyclerView mReplyRecyclerview;
-
-        @BindView(R.id.bbs_thread_recommend_number)
         TextView mRecommendationNumber;
-
-        @BindView(R.id.bbs_thread_read_perm_number)
         TextView mReadPerm;
-        @BindView(R.id.bbs_thread_attachment_image)
         ImageView mAttachmentIcon;
-
-
-        @BindView(R.id.bbs_thread_price_number)
         TextView mPriceNumber;
         public ThreadViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            mThreadPublisher = itemView.findViewById(R.id.bbs_post_publisher);
+            mPublishDate = itemView.findViewById(R.id.bbs_post_publish_date);
+            mTitle = itemView.findViewById(R.id.bbs_thread_title);
+            mContent = itemView.findViewById(R.id.bbs_thread_content);
+            mThreadViewNum = itemView.findViewById(R.id.bbs_thread_view_textview);
+            mThreadReplyNum = itemView.findViewById(R.id.bbs_thread_reply_number);
+            mThreadType = itemView.findViewById(R.id.bbs_thread_type);
+            mAvatarImageview = itemView.findViewById(R.id.bbs_post_avatar_imageView);
+            mCardview = itemView.findViewById(R.id.bbs_thread_cardview);
+            mReplyRecyclerview = itemView.findViewById(R.id.bbs_thread_short_reply_recyclerview);
+            mRecommendationNumber = itemView.findViewById(R.id.bbs_thread_recommend_number);
+            mReadPerm = itemView.findViewById(R.id.bbs_thread_read_perm_number);
+            mAttachmentIcon = itemView.findViewById(R.id.bbs_thread_attachment_image);
+            mPriceNumber = itemView.findViewById(R.id.bbs_thread_price_number);
         }
     }
 
     public class ConciseThreadViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.bbs_post_publisher)
         TextView mThreadPublisher;
-        @BindView(R.id.bbs_post_publish_date)
         TextView mPublishDate;
-        @BindView(R.id.bbs_thread_title)
         TextView mTitle;
-        @BindView(R.id.bbs_thread_reply_number)
         TextView mThreadReplyNum;
-        @BindView(R.id.bbs_thread_type)
         TextView mThreadType;
-        @BindView(R.id.bbs_thread_cardview)
         CardView mCardview;
-        @BindView(R.id.bbs_post_avatar_imageView)
         ShapedImageView mAvatarImageview;
 
 
@@ -617,6 +607,13 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public ConciseThreadViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            mThreadPublisher = itemView.findViewById(R.id.bbs_post_publisher);
+            mPublishDate = itemView.findViewById(R.id.bbs_post_publish_date);
+            mTitle = itemView.findViewById(R.id.bbs_thread_title);
+            mThreadReplyNum = itemView.findViewById(R.id.bbs_thread_reply_number);
+            mThreadType = itemView.findViewById(R.id.bbs_thread_type);
+            mAvatarImageview = itemView.findViewById(R.id.bbs_post_avatar_imageView);
+            mCardview = itemView.findViewById(R.id.bbs_thread_cardview);
         }
     }
 }

@@ -1,93 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<layout>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/report_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:drawableStart="@drawable/ic_report_outlined_24px"
-        android:drawablePadding="8dp"
-        android:text="@string/report_reason_title"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <RadioGroup
-        android:id="@+id/report_reason_group"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/report_title">
-
-        <RadioButton
-            android:id="@+id/report_option_spam"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/report_title"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/report_option_spam" />
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:drawableStart="@drawable/ic_report_outlined_24px"
+            android:drawablePadding="8dp"
+            android:text="@string/report_reason_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <RadioButton
-            android:id="@+id/report_option_violating_content"
-            android:layout_width="match_parent"
+        <RadioGroup
+            android:id="@+id/report_reason_group"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/report_option_violating_content" />
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/report_title">
 
-        <RadioButton
-            android:id="@+id/report_option_bump"
-            android:layout_width="match_parent"
+            <RadioButton
+                android:id="@+id/report_option_spam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/report_option_spam" />
+
+            <RadioButton
+                android:id="@+id/report_option_violating_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/report_option_violating_content" />
+
+            <RadioButton
+                android:id="@+id/report_option_bump"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/report_option_bump" />
+
+            <RadioButton
+                android:id="@+id/report_option_repeat_post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/report_option_repeat_post" />
+
+            <RadioButton
+                android:id="@+id/report_option_others"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/report_option_others" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/report_input_reason"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/report_option_bump" />
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:hint="@string/report_extra_content_hint"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/report_reason_group"
+            tools:visibility="visible" />
 
-        <RadioButton
-            android:id="@+id/report_option_repeat_post"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/report_submit_btn"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/report_option_repeat_post" />
-
-        <RadioButton
-            android:id="@+id/report_option_others"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/report_option_others" />
-    </RadioGroup>
-
-    <EditText
-        android:id="@+id/report_input_reason"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="@string/report_extra_content_hint"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/report_reason_group"
-        tools:visibility="visible" />
-
-    <Button
-        android:id="@+id/report_submit_btn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@android:string/ok"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/report_input_reason"
-        tools:visibility="visible" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@android:string/ok"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/report_input_reason"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

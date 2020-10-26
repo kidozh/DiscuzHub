@@ -15,10 +15,9 @@ import com.kidozh.discuzhub.utilities.ListItemClickListener;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import java.util.List;
 
 
 /**
@@ -27,8 +26,8 @@ import butterknife.ButterKnife;
  */
 public class SmileyAdapter extends RecyclerView.Adapter<SmileyAdapter.SmileyViewHolder> {
 
-    private ListItemClickListener itemListener;
-    private Context context;
+    private final ListItemClickListener itemListener;
+    private final Context context;
 
     private List<bbsParseUtils.smileyInfo> smileyInfos;
 
@@ -46,6 +45,7 @@ public class SmileyAdapter extends RecyclerView.Adapter<SmileyAdapter.SmileyView
         return smileyInfos;
     }
 
+    @NotNull
     @Override
     public SmileyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new SmileyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_bbs_smiley, parent, false));
@@ -68,12 +68,11 @@ public class SmileyAdapter extends RecyclerView.Adapter<SmileyAdapter.SmileyView
     }
 
     class SmileyViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.item_bbs_smiley_imageview)
         ImageView image;
 
         SmileyViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            image = itemView.findViewById(R.id.item_bbs_smiley_imageview);
             image.setOnClickListener(view -> itemListener.onListItemClick(image, getAdapterPosition()));
         }
 

@@ -16,9 +16,6 @@ import com.kidozh.discuzhub.entities.ThreadCount;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class ThreadPropertiesAdapter extends RecyclerView.Adapter<ThreadPropertiesAdapter.bbsThreadPropertiesViewHolder> {
     private Context context;
 
@@ -66,11 +63,8 @@ public class ThreadPropertiesAdapter extends RecyclerView.Adapter<ThreadProperti
         // bind information
         if(mListener != null){
             if(notification.property == ThreadCount.PROPERTY_BUY){
-                holder.itemThreadTypeCardview.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mListener.buyThreadPropertyClicked();
-                    }
+                holder.itemThreadTypeCardview.setOnClickListener(v -> {
+                    mListener.buyThreadPropertyClicked();
                 });
             }
         }
@@ -87,17 +81,17 @@ public class ThreadPropertiesAdapter extends RecyclerView.Adapter<ThreadProperti
         }
     }
 
-    public class bbsThreadPropertiesViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.item_bbs_thread_type_cardview)
+    public static class bbsThreadPropertiesViewHolder extends RecyclerView.ViewHolder{
+        
         CardView itemThreadTypeCardview;
-        @BindView(R.id.item_bbs_thread_type_avatar)
         ImageView itemThreadTypeAvatar;
-        @BindView(R.id.item_bbs_thread_type_value)
         TextView itemThreadTypeTextview;
 
         public bbsThreadPropertiesViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            itemThreadTypeAvatar = itemView.findViewById(R.id.item_bbs_thread_type_cardview);
+            itemThreadTypeAvatar = itemView.findViewById(R.id.item_bbs_thread_type_avatar);
+            itemThreadTypeTextview = itemView.findViewById(R.id.item_bbs_thread_type_value);
         }
     }
 

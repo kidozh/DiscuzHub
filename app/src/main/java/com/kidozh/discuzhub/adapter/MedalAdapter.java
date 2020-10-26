@@ -63,19 +63,19 @@ public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.ViewHolder> 
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.medal_avatar)
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        
         ImageView medalAvatar;
-        @BindView(R.id.medal_description)
         TextView medalDescription;
-        @BindView(R.id.medal_name)
         TextView medalName;
-        @BindView(R.id.medal_index)
         TextView medalIndex;
 
         public ViewHolder(View view) {
             super(view);
-            ButterKnife.bind(this,view);
+            medalAvatar = view.findViewById(R.id.medal_avatar);
+            medalDescription = view.findViewById(R.id.medal_description);
+            medalName = view.findViewById(R.id.medal_name);
+            medalIndex = view.findViewById(R.id.medal_index);
         }
 
     }

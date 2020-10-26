@@ -113,26 +113,26 @@ public class PollOptionAdapter extends RecyclerView.Adapter<PollOptionAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        @BindView(R.id.item_poll_option_cardview)
+        
         CardView pollOptionCardview;
-        @BindView(R.id.item_poll_option_vote_number)
         TextView pollOptionVoteNumber;
-        @BindView(R.id.item_poll_option_watch_picture)
         Button pollOptionWatchPicture;
-        @BindView(R.id.item_poll_option_name)
         TextView pollOptionName;
-        @BindView(R.id.item_poll_option_vote_progressBar)
         ProgressBar pollOptionProgressBar;
-        @BindView(R.id.item_poll_option_vote_percent)
         TextView pollOptionVotePercent;
-        @BindView(R.id.item_poll_option_check_icon)
         ImageView pollOptionCheckIcon;
-        @BindView(R.id.item_poll_option_position)
         TextView pollOptionPosition;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            pollOptionCardview = itemView.findViewById(R.id.item_poll_option_cardview);
+            pollOptionVoteNumber = itemView.findViewById(R.id.item_poll_option_vote_number);
+            pollOptionWatchPicture = itemView.findViewById(R.id.item_poll_option_watch_picture);
+            pollOptionName = itemView.findViewById(R.id.item_poll_option_name);
+            pollOptionProgressBar = itemView.findViewById(R.id.item_poll_option_vote_progressBar);
+            pollOptionVotePercent = itemView.findViewById(R.id.item_poll_option_vote_percent);
+            pollOptionCheckIcon = itemView.findViewById(R.id.item_poll_option_check_icon);
+            pollOptionPosition = itemView.findViewById(R.id.item_poll_option_position);
         }
     }
 }
