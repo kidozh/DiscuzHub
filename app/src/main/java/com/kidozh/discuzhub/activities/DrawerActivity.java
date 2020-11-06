@@ -2,6 +2,7 @@ package com.kidozh.discuzhub.activities;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,7 +24,6 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.BlankBBSFragment.BlankBBSFragment;
 import com.kidozh.discuzhub.activities.ui.DashBoard.DashBoardFragment;
@@ -86,15 +86,8 @@ public class DrawerActivity extends BaseStatusActivity implements
         UserNotificationFragment.OnNewMessageChangeListener,
         NotificationsFragment.onPrivateMessageChangeListener{
     private final static String TAG = DrawerActivity.class.getSimpleName();
-    PrimaryDrawerItem bbsDrawerItem;
-
-
-    
 
     MainDrawerViewModel viewModel;
-
-//    Drawer drawerResult;
-//    AccountHeader drawerAccountHeader;
 
     final int MODE_USER_IGCONGTIVE = -18510478;
     final int FUNC_ADD_A_BBS = -2;
@@ -429,7 +422,6 @@ public class DrawerActivity extends BaseStatusActivity implements
             }
         });
         headerView.attachToSliderView(binding.materialDrawerSliderView);
-        Context context = this;
         binding.materialDrawerSliderView.setOnDrawerItemClickListener(new Function3<View, IDrawerItem<?>, Integer, Boolean>() {
             @Override
             public Boolean invoke(View view, IDrawerItem<?> iDrawerItem, Integer integer) {
@@ -481,7 +473,7 @@ public class DrawerActivity extends BaseStatusActivity implements
                         case (FUNC_REGISTER_ACCOUNT):{
                             bbsInformation forumInfo = viewModel.currentBBSInformationMutableLiveData.getValue();
                             if(forumInfo!=null){
-                                new MaterialAlertDialogBuilder(activity)
+                                new AlertDialog.Builder(activity)
                                         .setTitle(getString(R.string.bbs_register_an_account)+" "+forumInfo.site_name)
                                         .setMessage(R.string.bbs_register_account_notification)
                                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -784,21 +776,15 @@ public class DrawerActivity extends BaseStatusActivity implements
             if(binding.bbsPortalNavView.getBadge(R.id.navigation_notifications)!=null){
                 binding.bbsPortalNavView.removeBadge(R.id.navigation_notifications);
             }
-
-
         }
         else {
             Log.d(TAG,"set notification num "+i);
             BadgeDrawable badgeDrawable = binding.bbsPortalNavView.getOrCreateBadge(R.id.navigation_notifications);
             badgeDrawable.setNumber(i);
-
         }
         if(notificationsFragment!=null){
             notificationsFragment.setNewMessageNum(i);
         }
-
-
-
 
     }
 
@@ -886,13 +872,13 @@ public class DrawerActivity extends BaseStatusActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        int activeIdentifier = UserPreferenceUtils.getLastSelectedDrawerItemIdentifier(this);
-        if(activeIdentifier >= 0){
-            headerView.setActiveProfile(activeIdentifier,true);
-        }
-        else {
-            headerView.setActiveProfile(0,true);
-        }
+//        int activeIdentifier = UserPreferenceUtils.getLastSelectedDrawerItemIdentifier(this);
+//        if(activeIdentifier >= 0){
+//            headerView.setActiveProfile(activeIdentifier,true);
+//        }
+//        else {
+//            headerView.setActiveProfile(0,true);
+//        }
     }
 
     @Override

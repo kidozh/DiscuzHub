@@ -596,5 +596,8 @@
     <string name="api_error_result">接口錯誤</string>
     <string name="network_state_unavaliable_error_key">互聯網不可用</string>
     <string name="network_state_unavaliable_error_content">目前沒有一個可用的網絡接口。嘗試著關閉飛行模式，打開Wi-Fi，數據以及藍牙連接後試試？</string>
+    <string name="attachment_no_ext">文件</string>
+    <string name="filename">文件名</string>
+    <string name="file_size">文件大小</string>
 
 </resources>

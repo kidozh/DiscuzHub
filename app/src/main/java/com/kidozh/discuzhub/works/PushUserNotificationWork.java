@@ -215,6 +215,9 @@ public class PushUserNotificationWork extends Worker {
     }
 
     private void pushGroupNotification(int newNum,int totalNum){
+        if(newNum == 0){
+            return;
+        }
         int notificationId = userBriefInfo.getId();
         notificationUtils.createUsersUpdateChannel(context);
 

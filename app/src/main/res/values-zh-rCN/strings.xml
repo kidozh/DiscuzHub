@@ -593,5 +593,14 @@
     <string name="api_error_result">接口错误</string>
     <string name="network_state_unavaliable_error_key">互联网不可用</string>
     <string name="network_state_unavaliable_error_content">目前没有一个可用的网络接口。尝试着关闭飞行模式，打开WLAN，数据以及蓝牙连接后试试？</string>
+    <string name="attachment_no_ext">文件</string>
+    <string name="filename">文件名</string>
+    <string name="file_size">文件大小</string>
+    <string name="file_upload_time">上传于</string>
+    <string name="file_download_times">下载次数</string>
+    <string name="file_pay_price">付费情况</string>
+    <string name="file_payed">你已经完成了付费。</string>
+    <string name="file_remote_warn">这个附件由远程服务器提供，请注意下载过程安全。</string>
+    <string name="download_file">下载附件</string>
 
 </resources>

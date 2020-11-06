@@ -11,7 +11,6 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,6 +37,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.graphics.drawable.DrawableWrapper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
@@ -53,7 +53,6 @@ import com.bumptech.glide.request.transition.Transition;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
-import com.kidozh.discuzhub.dialogs.PostThreadInsertLinkDialogFragment;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.ViewThreadQueryStatus;
 import com.kidozh.discuzhub.entities.bbsInformation;
@@ -367,19 +366,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
 
         if(postInfo.getAllAttachments() != null){
-            bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter();
+            AttachmentAdapter attachmentAdapter = new AttachmentAdapter();
             attachmentAdapter.attachmentInfoList = postInfo.getAllAttachments();
             holder.mRecyclerview.setNestedScrollingEnabled(false);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-            holder.mRecyclerview.setLayoutManager(linearLayoutManager);
+
+            holder.mRecyclerview.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
             holder.mRecyclerview.setAdapter(attachmentAdapter);
         }
         else {
-            bbsAttachmentAdapter attachmentAdapter = new bbsAttachmentAdapter();
+            AttachmentAdapter attachmentAdapter = new AttachmentAdapter();
             attachmentAdapter.attachmentInfoList = postInfo.getAllAttachments();
             holder.mRecyclerview.setNestedScrollingEnabled(false);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-            holder.mRecyclerview.setLayoutManager(linearLayoutManager);
+            holder.mRecyclerview.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
             holder.mRecyclerview.setAdapter(attachmentAdapter);
         }
         registerListener();

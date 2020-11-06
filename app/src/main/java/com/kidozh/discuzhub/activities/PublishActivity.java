@@ -142,6 +142,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityBbsPostThreadBinding.inflate(getLayoutInflater());
+        editorBarBinding = binding.bbsPostThreadEditorBar;
         setContentView(binding.getRoot());
 
         postThreadViewModel = new ViewModelProvider(this).get(PostThreadViewModel.class);

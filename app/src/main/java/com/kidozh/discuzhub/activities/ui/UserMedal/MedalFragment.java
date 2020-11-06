@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ import java.util.List;
  * interface.
  */
 public class MedalFragment extends Fragment {
+
+    private static final String TAG = MedalFragment.class.getSimpleName();
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -84,6 +87,8 @@ public class MedalFragment extends Fragment {
         // detect if no medal found
         if(medalList == null || medalList.size() == 0){
             binding.medalEmptyView.setVisibility(View.VISIBLE);
+            binding.medalEmptyTextview.setText(getString(R.string.profile_no_medal));
+            Log.d(TAG,"Get No medal "+medalList);
         }
         else {
             binding.medalEmptyView.setVisibility(View.GONE);

@@ -1,8 +1,10 @@
 package com.kidozh.discuzhub.adapter;
 
 import android.app.DownloadManager;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -29,8 +32,10 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.BaseStatusActivity;
 import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
 import com.kidozh.discuzhub.databinding.ItemBbsAttachmentInfoBinding;
+import com.kidozh.discuzhub.dialogs.DownloadAttachmentDialogFragment;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
@@ -42,8 +47,8 @@ import java.util.List;
 import es.dmoral.toasty.Toasty;
 
 
-public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdapter.bbsAttachmentViewHolder> {
-    private static final String TAG = bbsAttachmentAdapter.class.getSimpleName();
+public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.bbsAttachmentViewHolder> {
+    private static final String TAG = AttachmentAdapter.class.getSimpleName();
     Context mContext;
     List<PostInfo.Attachment> attachmentInfoList;
 
@@ -53,12 +58,11 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
     @Override
     public bbsAttachmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         mContext = parent.getContext();
-        int layoutIdForListItem = R.layout.item_bbs_attachment_info;
         LayoutInflater inflater = LayoutInflater.from(mContext);
         boolean shouldAttachToParentImmediately = false;
-
-        View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
-        return new bbsAttachmentViewHolder(view);
+        ItemBbsAttachmentInfoBinding binding = ItemBbsAttachmentInfoBinding.inflate(inflater,parent,shouldAttachToParentImmediately);
+        
+        return new bbsAttachmentViewHolder(binding);
     }
 
     void loadImageWithGlideInNetwork(bbsAttachmentViewHolder holder, PostInfo.Attachment attachmentInfo){
@@ -86,7 +90,7 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        holder.mAttachmentImageview.setOnClickListener(new View.OnClickListener() {
+                        holder.binding.attachmentCardview.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
@@ -99,7 +103,7 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
                         return false;
                     }
                 })
-                .into(holder.mAttachmentImageview);
+                .into(holder.binding.bbsAttachmentImageview);
 
 
 
@@ -136,7 +140,7 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
                             // if pressed it can be downloaded
-                            holder.mAttachmentImageview.setOnClickListener(new View.OnClickListener() {
+                            holder.binding.attachmentCardview.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Log.d(TAG,"holder "+holder);
@@ -151,7 +155,7 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
 
                         @Override
                         public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
-                            holder.mAttachmentImageview.setOnClickListener(new View.OnClickListener() {
+                            holder.binding.attachmentCardview.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
@@ -165,7 +169,7 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
                             return false;
                         }
                     })
-                    .into(holder.mAttachmentImageview);
+                    .into(holder.binding.bbsAttachmentImageview);
 
 
         }
@@ -178,60 +182,62 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
         PostInfo.Attachment attachmentInfo = attachmentInfoList.get(position);
 
         Log.d(TAG,"Cur attachment position : "+position+" filename "+attachmentInfo.filename);
-        if(attachmentInfo.ext !=null){
-            holder.mAttachmentBadge.setText(mContext.getString(R.string.bbs_thread_attachment_template,position+1,attachmentInfo.ext.toUpperCase()));
+        if(attachmentInfo.price != 0){
+            holder.binding.attachmentPriceIcon.setVisibility(View.VISIBLE);
+            if(attachmentInfo.payed){
+                holder.binding.attachmentPriceIcon.setImageDrawable(mContext.getDrawable(R.drawable.ic_attachment_payed_24px));
+            }
+            else {
+                holder.binding.attachmentPriceIcon.setImageDrawable(mContext.getDrawable(R.drawable.ic_attachment_price_24px));
+            }
         }
         else {
-            // parse it manually
-
-            holder.mAttachmentBadge.setText(mContext.getString(R.string.bbs_thread_attachment_template,position+1,""));
+            holder.binding.attachmentPriceIcon.setVisibility(View.GONE);
+        }
+        if(attachmentInfo.ext !=null){
+            holder.binding.bbsAttachmentExt.setText(attachmentInfo.ext);
+        }
+        else {
+            holder.binding.bbsAttachmentExt.setText(R.string.attachment_no_ext);
         }
 
-        holder.mAttachmentTitle.setText(attachmentInfo.filename);
+        holder.binding.bbsAttachmentFilename.setText(attachmentInfo.filename);
         if(attachmentInfo.isImage()){
             renderPicture(holder,position);
         }
         else {
-            String source = URLUtils.getAttachmentURL(attachmentInfo);
 
-            holder.mAttachmentImageview.setImageDrawable(mContext.getDrawable(R.drawable.vector_drawable_attach_file_placeholder_24px));
-            holder.mAttachmentImageview.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DownloadManager.Request request = new DownloadManager.Request(Uri.parse(source));
-                    Log.d(TAG, "Download by URL "+source);
-                    request.setDestinationInExternalFilesDir(mContext,Environment.DIRECTORY_DOWNLOADS,attachmentInfo.filename);
-
-                    DownloadManager downloadManager= (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
-                    request.setTitle(mContext.getString(R.string.bbs_downloading_file_template,attachmentInfo.filename));
-                    request.setDescription(attachmentInfo.filename);
-                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                    if(downloadManager!=null){
-                        downloadManager.enqueue(request);
-                        Toasty.success(mContext,mContext.getString(R.string.bbs_downloading_attachment), Toast.LENGTH_LONG).show();
-                    }
-                    else {
-                        Toasty.error(mContext,mContext.getString(R.string.bbs_downloading_attachment_failed), Toast.LENGTH_LONG).show();
-                    }
-
+            String ext = attachmentInfo.ext;
+            // decide picture
+            if(ext !=null){
+                ext = ext.toLowerCase();
+                String extTemplate = "ic_ext_icon_%s_32px";
+                Resources resources = mContext.getResources();
+                int attachmentResourceId = resources.getIdentifier(String.format(extTemplate,ext)
+                        ,"drawable",
+                        mContext.getPackageName());
+                // find a valid resources
+                if(attachmentResourceId != 0){
+                    holder.binding.bbsAttachmentImageview.setImageDrawable(mContext.getDrawable(attachmentResourceId));
                 }
+                else {
+                    holder.binding.bbsAttachmentImageview.setImageDrawable(mContext.getDrawable(R.drawable.ic_ext_icon_file_not_found_32px));
+                }
+
+
+            }
+            else {
+                holder.binding.bbsAttachmentImageview.setImageDrawable(mContext.getDrawable(R.drawable.ic_ext_icon_file_not_found_32px));
+            }
+            // for download information
+            holder.binding.attachmentCardview.setOnClickListener(v -> {
+                // show the information in dialog
+                FragmentManager fragmentManager = ((BaseStatusActivity) mContext).getSupportFragmentManager();
+                DownloadAttachmentDialogFragment fragment = new DownloadAttachmentDialogFragment(attachmentInfo);
+                fragment.show(fragmentManager,DownloadAttachmentDialogFragment.class.getSimpleName());
+
             });
         }
-        if(attachmentInfo.attachSize!=null && attachmentInfo.attachSize.length()!=0){
-            holder.mAttachmentSize.setText(attachmentInfo.attachSize);
-            holder.mAttachmentSize.setVisibility(View.VISIBLE);
-        }
-        else {
-            holder.mAttachmentSize.setVisibility(View.GONE);
-        }
-        if(attachmentInfo.downloads == 0){
-            holder.mAttachmentDownloadTimes.setVisibility(View.GONE);
-        }
-        else {
-            holder.mAttachmentDownloadTimes.setVisibility(View.VISIBLE);
-            holder.mAttachmentDownloadTimes.setText(mContext.getString(R.string.attachment_download_time,attachmentInfo.downloads));
-        }
-
 
     }
 
@@ -247,26 +253,18 @@ public class bbsAttachmentAdapter extends RecyclerView.Adapter<bbsAttachmentAdap
     }
 
 
-    public class bbsAttachmentViewHolder extends RecyclerView.ViewHolder{
+    public static class bbsAttachmentViewHolder extends RecyclerView.ViewHolder{
 
-        TextView mAttachmentTitle;
-        ImageView mAttachmentImageview;
-        TextView mAttachmentBadge;
-        TextView mAttachmentSize;
-        TextView mAttachmentDownloadTimes;
         Boolean isPictureLoaded = false;
 
         public ItemBbsAttachmentInfoBinding binding;
 
 
-        public bbsAttachmentViewHolder(@NonNull View itemView) {
-            super(itemView);
-            mAttachmentTitle = itemView.findViewById(R.id.bbs_attachment_filename);
-            mAttachmentImageview = itemView.findViewById(R.id.bbs_attachment_imageview);
-            mAttachmentBadge = itemView.findViewById(R.id.bbs_attachment_badge);
-            mAttachmentSize = itemView.findViewById(R.id.bbs_attachment_filesize);
-            mAttachmentDownloadTimes = itemView.findViewById(R.id.bbs_attachment_download_times);
-
+        public bbsAttachmentViewHolder(ItemBbsAttachmentInfoBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+            
+            
         }
     }
 }

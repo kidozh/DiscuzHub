@@ -778,6 +778,15 @@
     <string name="network_state_unavaliable_error_key">Network Unavaliable</string>
     <string name="network_state_unavaliable_error_content">We could not find an active network interface. Turn off flight mode or turn on wifi, celluar and bluetooth network.</string>
     <string name="preference_key_last_selected_bbs_identifier" translatable="false">preference_key_last_selected_bbs_identifier</string>
+    <string name="attachment_no_ext">File</string>
+    <string name="filename">name</string>
+    <string name="file_size">Size</string>
+    <string name="file_upload_time">Upload At</string>
+    <string name="file_download_times">DL times</string>
+    <string name="file_pay_price">Price</string>
+    <string name="file_payed">You have payed for the file.</string>
+    <string name="file_remote_warn">You will download the file from a remote server, please take care!</string>
+    <string name="download_file">Download a file</string>
 
 
 </resources>
