@@ -5,7 +5,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -17,11 +16,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.Switch;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
@@ -38,7 +33,7 @@ import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.databinding.ActivityBbsShowInformationBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
@@ -76,7 +71,7 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
 
     private void configureIntent(){
         Intent intent = getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
 
         URLUtils.setBBS(bbsInfo);
     }
@@ -208,8 +203,8 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity, LoginActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity,
                         Pair.create(binding.showBbsInformationName, "bbs_info_name"),
                         Pair.create(binding.showBbsInformationAvatar, "bbs_info_avatar")

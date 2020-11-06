@@ -34,7 +34,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
@@ -174,8 +174,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, UserProfileActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,curUser);
                     intent.putExtra("UID",notificationDetailInfo.authorId);
                     ActivityOptions options = ActivityOptions
                             .makeSceneTransitionAnimation((Activity) context, holder.bbsNotificationImageview, "user_info_avatar");
@@ -196,8 +196,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ThreadActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,curUser);
                     intent.putExtra("TID",notificationDetailInfo.notificationExtraInfo.tid);
                     intent.putExtra("FID",notificationDetailInfo.authorId);
                     intent.putExtra("SUBJECT",notificationDetailInfo.notificationExtraInfo.subject);

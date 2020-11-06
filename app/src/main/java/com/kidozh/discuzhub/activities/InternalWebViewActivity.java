@@ -2,12 +2,9 @@ package com.kidozh.discuzhub.activities;
 
 import androidx.annotation.NonNull;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,16 +15,12 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.databinding.ActivityShowWebPageBinding;
-import com.kidozh.discuzhub.entities.ForumInfo;
-import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.List;
@@ -60,9 +53,9 @@ public class InternalWebViewActivity extends BaseStatusActivity {
 
     private void getIntentInfo(){
         Intent intent = getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        startURL =  intent.getStringExtra(bbsConstUtils.PASS_URL_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        startURL =  intent.getStringExtra(ConstUtils.PASS_URL_KEY);
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
     }
 

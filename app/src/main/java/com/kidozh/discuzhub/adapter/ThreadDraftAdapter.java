@@ -18,7 +18,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
 import java.util.List;
@@ -83,12 +83,12 @@ public class ThreadDraftAdapter extends RecyclerView.Adapter<ThreadDraftAdapter.
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, PublishActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                intent.putExtra(bbsConstUtils.PASS_THREAD_DRAFT_KEY,threadDraft);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(ConstUtils.PASS_THREAD_DRAFT_KEY,threadDraft);
                 intent.putExtra("fid",threadDraft.fid);
                 intent.putExtra("fid_name",threadDraft.forumName);
-                intent.putExtra(bbsConstUtils.PASS_POST_TYPE,bbsConstUtils.TYPE_POST_DRAFT);
+                intent.putExtra(ConstUtils.PASS_POST_TYPE, ConstUtils.TYPE_POST_DRAFT);
                 VibrateUtils.vibrateForClick(context);
                 context.startActivity(intent);
             }

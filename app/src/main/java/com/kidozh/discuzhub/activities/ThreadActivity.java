@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import android.text.Html;
@@ -26,27 +25,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
@@ -54,12 +50,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
+import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter;
 import com.kidozh.discuzhub.adapter.PostAdapter;
 import com.kidozh.discuzhub.adapter.ThreadCountAdapter;
 import com.kidozh.discuzhub.adapter.ThreadPropertiesAdapter;
@@ -68,8 +63,8 @@ import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.databinding.ActivityViewThreadBinding;
-import com.kidozh.discuzhub.databinding.ActivityViewThreadDraftBinding;
 import com.kidozh.discuzhub.dialogs.ReportPostDialogFragment;
+import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.PostInfo;
 import com.kidozh.discuzhub.entities.ThreadCount;
@@ -89,7 +84,7 @@ import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -133,7 +128,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     public String subject;
     public int tid, fid;
     //private OkHttpClient client = new OkHttpClient();
-    private PostAdapter adapter;
+    private PostAdapter postAdapter;
     private ThreadCountAdapter countAdapter;
     private ThreadPropertiesAdapter propertiesAdapter;
     String formHash = null;
@@ -153,6 +148,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
     private EmotionInputHandler handler;
 
     private ThreadViewModel threadDetailViewModel;
+    private ConcatAdapter concatAdapter;
+    private NetworkIndicatorAdapter networkIndicatorAdapter;
 
 
 
@@ -184,10 +181,10 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
     private void configureIntentData(){
         Intent intent = getIntent();
-        forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        threadInfo = (ThreadInfo) intent.getSerializableExtra(bbsConstUtils.PASS_THREAD_KEY);
+        forum = intent.getParcelableExtra(ConstUtils.PASS_FORUM_THREAD_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        threadInfo = (ThreadInfo) intent.getSerializableExtra(ConstUtils.PASS_THREAD_KEY);
         tid = intent.getIntExtra("TID",0);
         fid = intent.getIntExtra("FID",0);
         subject = intent.getStringExtra("SUBJECT");
@@ -248,38 +245,54 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                         && threadResult.threadPostVariables.detailedThreadInfo!=null){
                     authorid = threadResult.threadPostVariables.detailedThreadInfo.authorId;
                 }
-                adapter.setThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue(),authorid);
-                if(adapter.getItemCount() == 0){
-                    binding.errorView.setVisibility(View.VISIBLE);
-                    if(threadDetailViewModel.errorMessageMutableLiveData.getValue() == null){
-                        binding.errorView.setVisibility(View.VISIBLE);
-                        binding.errorIcon.setImageResource(R.drawable.ic_blank_forum_thread_64px);
-                        binding.errorValue.setText("");
-                        binding.errorContent.setText(getString(R.string.discuz_network_result_null));
-                    }
+                postAdapter.setThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue(),authorid);
+                if(postAdapter.getItemCount() == 0){
+                    networkIndicatorAdapter.setErrorStatus(new ErrorMessage(
+                            "",
+                            getString(R.string.discuz_network_result_null),
+                            R.drawable.ic_blank_forum_thread_64px)
+                    );
+
                 }
                 else {
-                    binding.errorView.setVisibility(View.GONE);
+
                 }
             }
         });
 
-        threadDetailViewModel.isLoading.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                binding.bbsThreadDetailSwipeRefreshLayout.setRefreshing(aBoolean);
+        threadDetailViewModel.networkStatus.observe(this, integer -> {
+            switch (integer){
+                case ConstUtils.NETWORK_STATUS_LOADING:{
+                    binding.bbsThreadDetailSwipeRefreshLayout.setRefreshing(true);
+                    networkIndicatorAdapter.setLoadingStatus(ConstUtils.NETWORK_STATUS_LOADING);
+                    break;
+                }
+                case ConstUtils.NETWORK_STATUS_LOADED_ALL:{
+                    binding.bbsThreadDetailSwipeRefreshLayout.setRefreshing(false);
+                    networkIndicatorAdapter.setLoadingStatus(ConstUtils.NETWORK_STATUS_LOADED_ALL);
+                    break;
+                }
+                case ConstUtils.NETWORK_STATUS_SUCCESSFULLY:{
+                    binding.bbsThreadDetailSwipeRefreshLayout.setRefreshing(false);
+                    networkIndicatorAdapter.setLoadingStatus(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
+                    break;
+                }
+                default:{
+                    binding.bbsThreadDetailSwipeRefreshLayout.setRefreshing(false);
+                }
             }
+
         });
+
         
         threadDetailViewModel.errorMessageMutableLiveData.observe(this, errorMessage ->{
             if(errorMessage!=null){
                 Toasty.error(getApplication(), 
                         getString(R.string.discuz_api_message_template,errorMessage.key,errorMessage.content),
                         Toast.LENGTH_LONG).show();
-                binding.errorView.setVisibility(View.VISIBLE);
-                binding.errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
-                binding.errorValue.setText(errorMessage.key);
-                binding.errorContent.setText(errorMessage.content);
+                networkIndicatorAdapter.setErrorStatus(new ErrorMessage(
+                        errorMessage.key,errorMessage.content,R.drawable.ic_error_outline_24px
+                ));
                 VibrateUtils.vibrateForError(getApplication());
             }
         });
@@ -683,6 +696,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
         threadDetailViewModel.interactErrorMutableLiveData.observe(this,errorMessage -> {
             if(errorMessage!=null){
+                networkIndicatorAdapter.setErrorStatus(errorMessage);
                 Toasty.error(getApplicationContext(),getString(R.string.discuz_api_message_template,errorMessage.key,errorMessage.content),Toast.LENGTH_LONG).show();
             }
         });
@@ -764,7 +778,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         binding.bbsThreadDetailSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Boolean isLoading = threadDetailViewModel.isLoading.getValue();
+                Boolean isLoading = threadDetailViewModel.networkStatus.getValue() == ConstUtils.NETWORK_STATUS_LOADING;
                 if(!isLoading){
                     reloadThePage();
                     threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
@@ -786,12 +800,12 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             public void onClick(View v) {
                 String message = binding.bbsThreadDetailCommentEditText.getText().toString();
                 Intent intent = new Intent(context, PublishActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forum);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                intent.putExtra(bbsConstUtils.PASS_POST_TYPE,bbsConstUtils.TYPE_POST_REPLY);
-                intent.putExtra(bbsConstUtils.PASS_POST_MESSAGE, message);
-                intent.putExtra(bbsConstUtils.PASS_REPLY_POST,selectedThreadComment);
+                intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,forum);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
+                intent.putExtra(ConstUtils.PASS_POST_TYPE, ConstUtils.TYPE_POST_REPLY);
+                intent.putExtra(ConstUtils.PASS_POST_MESSAGE, message);
+                intent.putExtra(ConstUtils.PASS_REPLY_POST,selectedThreadComment);
                 intent.putExtra("tid",tid);
                 intent.putExtra("fid",String.valueOf(fid));
                 if(forum !=null){
@@ -946,7 +960,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
     @Override
     public void replyToSomeOne(int position) {
-        PostInfo threadCommentInfo = adapter.getThreadInfoList().get(position);
+        PostInfo threadCommentInfo = postAdapter.getThreadInfoList().get(position);
 
         selectedThreadComment = threadCommentInfo;
         binding.bbsThreadDetailReplyChip.setText(threadCommentInfo.author);
@@ -1033,9 +1047,9 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
                     Intent intent = new Intent(this, ThreadActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo);
                     intent.putExtra("FID",fid);
                     intent.putExtra("TID",redirectTid);
                     intent.putExtra("SUBJECT",url);
@@ -1046,7 +1060,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 }
                 else {
                     // scroll it
-                    List<PostInfo> postInfos = adapter.getThreadInfoList();
+                    List<PostInfo> postInfos = postAdapter.getThreadInfoList();
                     if(postInfos !=null){
                         for(int i=0; i<postInfos.size(); i++){
                             PostInfo curPost = postInfos.get(i);
@@ -1078,9 +1092,9 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 ThreadInfo putThreadInfo = new ThreadInfo();
                 putThreadInfo.tid = redirectTid;
                 Intent intent = new Intent(this, ThreadActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo);
                 intent.putExtra("FID",fid);
                 intent.putExtra("TID",redirectTid);
                 intent.putExtra("SUBJECT",url);
@@ -1105,9 +1119,9 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 ForumInfo clickedForum = new ForumInfo();
                 clickedForum.fid = fid;
 
-                intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,clickedForum);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,clickedForum);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 Log.d(TAG,"put base url "+bbsInfo.base_url);
                 VibrateUtils.vibrateForClick(this);
                 startActivity(intent);
@@ -1127,8 +1141,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 }
 
                 Intent intent = new Intent(this, UserProfileActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra("UID",uid);
 
 
@@ -1137,18 +1151,18 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
             }
             Intent intent = new Intent(this, InternalWebViewActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-            intent.putExtra(bbsConstUtils.PASS_URL_KEY,url);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_URL_KEY,url);
             Log.d(TAG,"Inputted URL "+url);
             startActivity(intent);
 
         }
         else {
             Intent intent = new Intent(this, InternalWebViewActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-            intent.putExtra(bbsConstUtils.PASS_URL_KEY,url);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_URL_KEY,url);
             Log.d(TAG,"Inputted URL "+url);
             startActivity(intent);
         }
@@ -1225,9 +1239,9 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                                     ForumInfo clickedForum = new ForumInfo();
                                     clickedForum.fid = fid;
 
-                                    intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,clickedForum);
-                                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                                    intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,clickedForum);
+                                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                                     Log.d(TAG,"put base url "+bbsInfo.base_url);
                                     VibrateUtils.vibrateForClick(context);
                                     context.startActivity(intent);
@@ -1270,9 +1284,9 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
                                     putThreadInfo.tid = tid;
                                     Intent intent = new Intent(context, ThreadActivity.class);
-                                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo);
                                     intent.putExtra("FID",fid);
                                     intent.putExtra("TID",tid);
                                     intent.putExtra("SUBJECT",url);
@@ -1317,8 +1331,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
 
                                     Intent intent = new Intent(context, UserProfileActivity.class);
-                                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                                     intent.putExtra("UID",uid);
 
                                     VibrateUtils.vibrateForClick(context);
@@ -1364,9 +1378,9 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(context, InternalWebViewActivity.class);
-                                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                                intent.putExtra(bbsConstUtils.PASS_URL_KEY,unescapedURL);
+                                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                                intent.putExtra(ConstUtils.PASS_URL_KEY,unescapedURL);
                                 Log.d(TAG,"Inputted URL "+unescapedURL);
                                 startActivity(intent);
                             }
@@ -1388,9 +1402,9 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             }
             else {
                 Intent intent = new Intent(this, InternalWebViewActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                intent.putExtra(bbsConstUtils.PASS_URL_KEY,unescapedURL);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(ConstUtils.PASS_URL_KEY,unescapedURL);
                 Log.d(TAG,"Inputted URL "+unescapedURL);
                 startActivity(intent);
                 return;
@@ -1478,15 +1492,19 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
 
     private void configureRecyclerview(){
+        networkIndicatorAdapter = new NetworkIndicatorAdapter();
+
         //binding.postsRecyclerview.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         binding.postsRecyclerview.setLayoutManager(linearLayoutManager);
-        adapter = new PostAdapter(this,
+        postAdapter = new PostAdapter(this,
                 bbsInfo,
                 userBriefInfo,
                 threadDetailViewModel.threadStatusMutableLiveData.getValue());
-        adapter.subject =subject;
-        binding.postsRecyclerview.setAdapter(adapter);
+        postAdapter.subject =subject;
+
+        concatAdapter = new ConcatAdapter(postAdapter,networkIndicatorAdapter);
+        binding.postsRecyclerview.setAdapter(concatAdapter);
         binding.postsRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -1494,10 +1512,11 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
                 if(!recyclerView.canScrollVertically(1)
                         && newState==RecyclerView.SCROLL_STATE_IDLE){
-                    //Log.d(TAG,"Recyclerview can scroll vert ");
+
                     ViewThreadQueryStatus viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
-                    boolean isLoading = threadDetailViewModel.isLoading.getValue();
-                    boolean hasLoadAll = threadDetailViewModel.hasLoadAll.getValue();
+                    boolean isLoading = threadDetailViewModel.networkStatus.getValue() == ConstUtils.NETWORK_STATUS_LOADING;
+                    boolean hasLoadAll = threadDetailViewModel.networkStatus.getValue() == ConstUtils.NETWORK_STATUS_LOADED_ALL;
+                    Log.d(TAG,"Recyclerview can scroll vert hasLoadAll "+hasLoadAll + " isloading "+isLoading);
                     if(!isLoading && viewThreadQueryStatus !=null){
                         if(hasLoadAll){
                             // load all posts
@@ -1509,7 +1528,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                                 notifyLoadAll = true;
                                 threadDetailViewModel.notifyLoadAll.postValue(true);
                                 Toasty.success(getApplication(),
-                                        getString(R.string.all_posts_loaded_template,adapter.getItemCount()),
+                                        getString(R.string.all_posts_loaded_template,postAdapter.getItemCount()),
                                         Toast.LENGTH_LONG).show();
                             }
 
@@ -1940,8 +1959,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         }
         else if(id == R.id.bbs_forum_nav_personal_center){
             Intent intent = new Intent(this, UserProfileActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             intent.putExtra("UID",String.valueOf(userBriefInfo.uid));
             startActivity(intent);
             return true;
@@ -1953,16 +1972,16 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         }
         else if(id == R.id.bbs_forum_nav_draft_box){
             Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             startActivity(intent,null);
             return true;
         }
         else if(id == R.id.bbs_forum_nav_show_in_webview){
             Intent intent = new Intent(this, InternalWebViewActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-            intent.putExtra(bbsConstUtils.PASS_URL_KEY,currentUrl);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_URL_KEY,currentUrl);
             Log.d(TAG,"Inputted URL "+currentUrl);
             startActivity(intent);
             return true;
@@ -2051,8 +2070,8 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         }
         else if(id == R.id.bbs_search){
             Intent intent = new Intent(this, SearchPostsActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             startActivity(intent);
             return true;
         }

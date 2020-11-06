@@ -602,5 +602,7 @@
     <string name="file_payed">你已经完成了付费。</string>
     <string name="file_remote_warn">这个附件由远程服务器提供，请注意下载过程安全。</string>
     <string name="download_file">下载附件</string>
+    <string name="network_loading_status">正在与服务器取得连接。。。</string>
+    <string name="all_items_have_been_loaded">已经加载了所有项目。</string>
 
 </resources>

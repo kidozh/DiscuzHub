@@ -5,8 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kidozh.discuzhub.R;
@@ -26,12 +23,9 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.HotForumsResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
-import com.kidozh.discuzhub.utilities.NetworkUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 
 import java.util.ArrayList;
-
-import okhttp3.OkHttpClient;
 
 public class HotForumsFragment extends Fragment {
     private static final String TAG = HotForumsFragment.class.getSimpleName();
@@ -41,8 +35,8 @@ public class HotForumsFragment extends Fragment {
     public static HotForumsFragment newInstance(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
         HotForumsFragment fragment = new HotForumsFragment();
         Bundle args = new Bundle();
-        args.putSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
-        args.putSerializable(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+        args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
+        args.putSerializable(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,9 +45,9 @@ public class HotForumsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bbsInfo = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+            bbsInfo = (bbsInformation) getArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY);
             URLUtils.setBBS(bbsInfo);
-            userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
+            userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
         }
     }
 

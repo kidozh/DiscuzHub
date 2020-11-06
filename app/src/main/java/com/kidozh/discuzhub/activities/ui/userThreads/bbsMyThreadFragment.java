@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
@@ -17,21 +16,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;
 import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
 import com.kidozh.discuzhub.databinding.FragmentBbsMyThreadBinding;
-import com.kidozh.discuzhub.databinding.UserProfileInfoListFragmentBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
@@ -66,8 +61,8 @@ public class bbsMyThreadFragment extends Fragment {
     public static bbsMyThreadFragment newInstance(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
         bbsMyThreadFragment fragment = new bbsMyThreadFragment();
         Bundle args = new Bundle();
-        args.putSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
-        args.putSerializable(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+        args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
+        args.putSerializable(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
         fragment.setArguments(args);
         return fragment;
     }
@@ -76,9 +71,9 @@ public class bbsMyThreadFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bbsInfo = (bbsInformation) getArguments().getSerializable(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+            bbsInfo = (bbsInformation) getArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY);
             URLUtils.setBBS(bbsInfo);
-            userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
+            userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
             client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
         }
     }

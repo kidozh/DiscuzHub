@@ -15,14 +15,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.databinding.DialogAttachmentInformationBinding;
 import com.kidozh.discuzhub.databinding.DialogSetThreadPasswordBinding;
 
 
 
 public class PostThreadPasswordDialogFragment extends DialogFragment {
     private static String TAG = PostThreadPasswordDialogFragment.class.getSimpleName();
-
-    EditText threadPasswordEditText;
 
     public interface NoticeDialogListener {
         public void onPasswordSubmit(String password);
@@ -51,14 +50,14 @@ public class PostThreadPasswordDialogFragment extends DialogFragment {
         // Pass null as the parent view because its going in the dialog layout
         View view = binding.getRoot();
 
-        threadPasswordEditText.setText(password);
+        binding.postThreadPasswordTextInputEditText.setText(password);
         builder.setView(view)
                 // Add action buttons
                 .setTitle(getString(R.string.bbs_thread_encrypt))
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        String password = threadPasswordEditText.getText().toString();
+                        String password = binding.postThreadPasswordTextInputEditText.getText().toString();
                         Log.d(TAG,"set password "+password);
                         listener.onPasswordSubmit(password);
                     }

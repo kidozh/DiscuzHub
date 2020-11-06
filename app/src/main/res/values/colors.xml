@@ -73,6 +73,9 @@
 
     <color name="colorAPI5BadgeBackgroundColor">@color/colorAccent</color>
 
+    <color name="colorLoadAllLayoutBackground">@color/colorCloud</color>
+    <color name="colorLoadAllTextColor">@color/colorMidnightblue</color>
+
 
 
 </resources>

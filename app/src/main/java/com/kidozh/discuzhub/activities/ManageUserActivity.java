@@ -1,15 +1,11 @@
 package com.kidozh.discuzhub.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -21,15 +17,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ui.bbsDetailedInformation.bbsShowInformationActivity;
 import com.kidozh.discuzhub.activities.ui.bbsDetailedInformation.bbsShowInformationViewModel;
 import com.kidozh.discuzhub.adapter.forumUsersAdapter;
 import com.kidozh.discuzhub.callback.RecyclerViewItemTouchCallback;
-import com.kidozh.discuzhub.callback.forumSwipeToDeleteUserCallback;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.databinding.ActivityManageUserBinding;
 import com.kidozh.discuzhub.dialogs.ManageAdapterHelpDialogFragment;
@@ -38,7 +31,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -74,7 +67,7 @@ public class ManageUserActivity extends BaseStatusActivity
 
     private void configureIntent(){
         Intent intent = getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         if(bbsInfo == null){
             finishAfterTransition();
         }
@@ -134,8 +127,8 @@ public class ManageUserActivity extends BaseStatusActivity
 
                 Log.d(TAG,"ADD A account "+bbsInfo);
                 if(bbsInfo !=null){
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
                     ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity);
 
                     Bundle bundle = options.toBundle();
@@ -166,8 +159,8 @@ public class ManageUserActivity extends BaseStatusActivity
             Intent intent = new Intent(this, LoginActivity.class);
 
             if(bbsInfo !=null){
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
 
                 Bundle bundle = options.toBundle();
@@ -195,8 +188,8 @@ public class ManageUserActivity extends BaseStatusActivity
             Log.d(TAG,"Get direction "+direction);
             if(direction == ItemTouchHelper.START){
                 Intent intent = new Intent(this, LoginActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 startActivity(intent);
                 VibrateUtils.vibrateForNotice(this);
                 userAdapter.notifyDataSetChanged();

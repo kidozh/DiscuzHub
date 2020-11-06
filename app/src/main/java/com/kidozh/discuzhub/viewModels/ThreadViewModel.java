@@ -25,6 +25,7 @@ import com.kidozh.discuzhub.results.BuyThreadResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
@@ -48,9 +49,8 @@ public class ThreadViewModel extends AndroidViewModel {
     private ForumInfo forum;
     private int tid;
     private forumUserBriefInfo userBriefInfo;
+    public MutableLiveData<Integer> networkStatus = new MutableLiveData<>(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
 
-    public MutableLiveData<Boolean> isLoading= new MutableLiveData<>(false),
-            hasLoadAll= new MutableLiveData<>(false);
     public MutableLiveData<Boolean> notifyLoadAll = new MutableLiveData<>(false);
     public MutableLiveData<String> formHash, errorText;
     public MutableLiveData<bbsPollInfo> pollInfoLiveData;
@@ -73,12 +73,10 @@ public class ThreadViewModel extends AndroidViewModel {
 
     public ThreadViewModel(@NonNull Application application) {
         super(application);
-        isLoading = new MutableLiveData<>(false);
 
         formHash = new MutableLiveData<>("");
         bbsPersonInfoMutableLiveData = new MutableLiveData<>();
         threadCommentInfoListLiveData = new MutableLiveData<>();
-        hasLoadAll = new MutableLiveData<>(false);
         pollInfoLiveData = new MutableLiveData<>(null);
         threadStatusMutableLiveData = new MutableLiveData<>();
         errorText = new MutableLiveData<>("");
@@ -148,12 +146,12 @@ public class ThreadViewModel extends AndroidViewModel {
 
     public void getThreadDetail(ViewThreadQueryStatus viewThreadQueryStatus){
         if(!NetworkUtils.isOnline(getApplication())){
-            isLoading.postValue(false);
+
+            networkStatus.postValue(ConstUtils.NETWORK_STATUS_FAILED);
             errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()));
             return;
         }
-        isLoading.postValue(true);
-        hasLoadAll.postValue(false);
+        networkStatus.postValue(ConstUtils.NETWORK_STATUS_LOADING);
         // bbsThreadStatus threadStatus = threadStatusMutableLiveData.getValue();
 
         threadStatusMutableLiveData.postValue(viewThreadQueryStatus);
@@ -220,7 +218,7 @@ public class ThreadViewModel extends AndroidViewModel {
                                 if(viewThreadQueryStatus.page == 1 && threadResult.message !=null){
                                     errorText.postValue(getApplication().getString(R.string.parse_failed));
                                 }
-                                hasLoadAll.postValue(true);
+                                networkStatus.postValue(ConstUtils.NETWORK_STATUS_LOADED_ALL);
                                 // rollback
                                 if(viewThreadQueryStatus.page != 1){
                                     viewThreadQueryStatus.page -=1;
@@ -246,18 +244,21 @@ public class ThreadViewModel extends AndroidViewModel {
 
                             Log.d(TAG,"PAGE "+ viewThreadQueryStatus.page+" MAX POSITION "+maxThreadNumber +" CUR "+totalThreadCommentsNumber+ " "+totalThreadSize);
                             if(totalThreadSize >= maxThreadNumber +1){
-                                hasLoadAll.postValue(true);
+                                networkStatus.postValue(ConstUtils.NETWORK_STATUS_LOADED_ALL);
                             }
                             else {
-                                hasLoadAll.postValue(false);
+                                networkStatus.postValue(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
                             }
                         }
+
+                        // networkStatus.postValue(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
                     }
                     else {
                         errorMessageMutableLiveData.postValue(new ErrorMessage(
                                 getApplication().getString(R.string.empty_result),
                                 getApplication().getString(R.string.discuz_network_result_null)
                         ));
+                        networkStatus.postValue(ConstUtils.NETWORK_STATUS_FAILED);
                     }
                 }
                 else {
@@ -268,8 +269,9 @@ public class ThreadViewModel extends AndroidViewModel {
                         Log.d(TAG,"Roll back page when page to "+ viewThreadQueryStatus.page);
                         threadStatusMutableLiveData.postValue(viewThreadQueryStatus);
                     }
+                    networkStatus.postValue(ConstUtils.NETWORK_STATUS_FAILED);
                 }
-                isLoading.postValue(false);
+
             }
 
             @Override
@@ -278,7 +280,7 @@ public class ThreadViewModel extends AndroidViewModel {
                         getApplication().getString(R.string.discuz_network_failure_template),
                         t.getLocalizedMessage() == null?t.toString():t.getLocalizedMessage()
                 ));
-                isLoading.postValue(false);
+                networkStatus.postValue(ConstUtils.NETWORK_STATUS_FAILED);
             }
         });
         Log.d(TAG,"Send request to "+threadResultCall.request().url().toString());

@@ -26,7 +26,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 
 import java.io.InputStream;
 import java.util.List;
@@ -91,9 +91,9 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
             putForum.todayPosts = forum.todayPosts;
             putForum.threadCount = forum.threads;
             Intent intent = new Intent(context, ForumActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,putForum);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,putForum);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
 
             VibrateUtils.vibrateForClick(context);
             context.startActivity(intent);

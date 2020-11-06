@@ -29,7 +29,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
 
@@ -100,9 +100,9 @@ public class FavoriteThreadAdapter extends PagedListAdapter<FavoriteThread, Favo
                     public void onClick(View v) {
 
                         Intent intent = new Intent(context, ThreadActivity.class);
-                        intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                        intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
-                        intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, favoriteThread.toThread());
+                        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,curUser);
+                        intent.putExtra(ConstUtils.PASS_THREAD_KEY, favoriteThread.toThread());
                         intent.putExtra("FID", favoriteThread.favid);
                         intent.putExtra("TID", favoriteThread.idKey);
                         intent.putExtra("SUBJECT", favoriteThread.title);

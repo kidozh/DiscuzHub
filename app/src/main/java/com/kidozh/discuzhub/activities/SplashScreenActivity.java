@@ -1,7 +1,6 @@
 package com.kidozh.discuzhub.activities;
 
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.cardview.widget.CardView;
 import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
@@ -17,8 +16,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
@@ -27,7 +24,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.works.AutoClearHistoriesWork;
 import com.kidozh.discuzhub.works.PushUserNotificationWork;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.notificationUtils;
 
 import java.util.List;
@@ -120,7 +117,7 @@ public class SplashScreenActivity extends BaseStatusActivity {
             forumUserBriefInfo userBriefInfo = allUsers.get(i);
 
             Data userData = new Data.Builder()
-                    .putInt(bbsConstUtils.WORK_MANAGER_PASS_USER_ID_KEY, userBriefInfo.getId())
+                    .putInt(ConstUtils.WORK_MANAGER_PASS_USER_ID_KEY, userBriefInfo.getId())
                     .build();
             // start periodic work
             Log.d(TAG,"Register notification "+userBriefInfo.username);
@@ -129,7 +126,7 @@ public class SplashScreenActivity extends BaseStatusActivity {
                     new PeriodicWorkRequest.Builder(PushUserNotificationWork.class, periodicFreq, TimeUnit.MINUTES)
                             .setInputData(userData)
                             .setConstraints(constraints)
-                            .addTag(bbsConstUtils.WORK_MANAGER_UPDATE_USERS_TAG)
+                            .addTag(ConstUtils.WORK_MANAGER_UPDATE_USERS_TAG)
                             .build();
 
             WorkManager.getInstance(this)

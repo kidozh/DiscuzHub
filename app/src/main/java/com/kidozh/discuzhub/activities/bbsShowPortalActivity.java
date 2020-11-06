@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,7 +23,7 @@ import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
 import com.kidozh.discuzhub.databinding.ActivityBbsShowPortalBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
@@ -35,7 +34,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.navigation.NavController;
 import androidx.viewpager.widget.ViewPager;
 
 import java.io.IOException;
@@ -258,9 +256,9 @@ public class bbsShowPortalActivity extends BaseStatusActivity
 
     private void getIntentInfo(){
         Intent intent = getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
         URLUtils.setBBS(bbsInfo);
         if(bbsInfo == null){
@@ -325,8 +323,8 @@ public class bbsShowPortalActivity extends BaseStatusActivity
         }
         else if(id == R.id.bbs_forum_nav_personal_center){
             Intent intent = new Intent(this, UserProfileActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             intent.putExtra("UID",userBriefInfo.uid);
             startActivity(intent);
             return true;
@@ -338,16 +336,16 @@ public class bbsShowPortalActivity extends BaseStatusActivity
         }
         else if(id == R.id.bbs_forum_nav_draft_box){
             Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             startActivity(intent);
             return true;
         }
         else if(id == R.id.bbs_forum_nav_show_in_webview){
             Intent intent = new Intent(this, InternalWebViewActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-            intent.putExtra(bbsConstUtils.PASS_URL_KEY,currentUrl);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_URL_KEY,currentUrl);
             Log.d(TAG,"Inputted URL "+currentUrl);
             startActivity(intent);
             return true;

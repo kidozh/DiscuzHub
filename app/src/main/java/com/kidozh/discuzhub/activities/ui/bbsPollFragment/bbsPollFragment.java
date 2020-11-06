@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -17,19 +16,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.PollOptionAdapter;
 import com.kidozh.discuzhub.databinding.FragmentBbsPollBinding;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.RecyclerItemClickListener;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
@@ -84,10 +80,10 @@ public class bbsPollFragment extends Fragment {
     public static bbsPollFragment newInstance(bbsPollInfo pollInfo,forumUserBriefInfo userBriefInfo, int tid, String formhash) {
         bbsPollFragment fragment = new bbsPollFragment();
         Bundle args = new Bundle();
-        args.putSerializable(bbsConstUtils.PASS_POLL_KEY,pollInfo);
-        args.putInt(bbsConstUtils.PASS_TID_KEY,tid);
-        args.putSerializable(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-        args.putSerializable(bbsConstUtils.PASS_FORMHASH_KEY,formhash);
+        args.putSerializable(ConstUtils.PASS_POLL_KEY,pollInfo);
+        args.putInt(ConstUtils.PASS_TID_KEY,tid);
+        args.putSerializable(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+        args.putSerializable(ConstUtils.PASS_FORMHASH_KEY,formhash);
         fragment.setArguments(args);
         return fragment;
     }
@@ -96,11 +92,11 @@ public class bbsPollFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            pollInfo = (bbsPollInfo) getArguments().getSerializable(bbsConstUtils.PASS_POLL_KEY);
-            userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(bbsConstUtils.PASS_BBS_USER_KEY);
-            tid = getArguments().getInt(bbsConstUtils.PASS_TID_KEY);
+            pollInfo = (bbsPollInfo) getArguments().getSerializable(ConstUtils.PASS_POLL_KEY);
+            userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
+            tid = getArguments().getInt(ConstUtils.PASS_TID_KEY);
             client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
-            formhash = getArguments().getString(bbsConstUtils.PASS_FORMHASH_KEY);
+            formhash = getArguments().getString(ConstUtils.PASS_FORMHASH_KEY);
         }
     }
 

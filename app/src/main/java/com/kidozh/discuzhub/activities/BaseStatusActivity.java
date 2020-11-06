@@ -22,7 +22,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.BaseResult;
 import com.kidozh.discuzhub.results.VariableResults;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 
 import okhttp3.OkHttpClient;
 
@@ -54,8 +54,8 @@ public class BaseStatusActivity extends AppCompatActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                             startActivity(intent);
                         }
                     })
@@ -136,8 +136,8 @@ public class BaseStatusActivity extends AppCompatActivity
             }
             case R.id.bbs_forum_nav_personal_center:{
                 Intent intent = new Intent(this, UserProfileActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra("UID",userBriefInfo.uid);
                 startActivity(intent);
                 return true;
@@ -149,8 +149,8 @@ public class BaseStatusActivity extends AppCompatActivity
             }
             case R.id.bbs_forum_nav_draft_box:{
                 Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 startActivity(intent);
                 return true;
             }

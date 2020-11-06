@@ -16,16 +16,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
@@ -37,7 +33,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.SubForumAdapter;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;
@@ -60,7 +55,7 @@ import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.GlideImageGetter;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
@@ -127,9 +122,9 @@ public class ForumActivity
 
     private void configureIntentData(){
         Intent intent = getIntent();
-        forum = (ForumInfo) intent.getSerializableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        forum = (ForumInfo) intent.getSerializableExtra(ConstUtils.PASS_FORUM_THREAD_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         URLUtils.setBBS(bbsInfo);
         fid = String.valueOf(forum.fid);
         forumViewModel.setBBSInfo(bbsInfo,userBriefInfo,forum);
@@ -368,9 +363,9 @@ public class ForumActivity
                         Intent intent = new Intent(context, PublishActivity.class);
                         intent.putExtra("fid",fid);
                         intent.putExtra("fid_name",forum.name);
-                        intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                        intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                        intent.putExtra(bbsConstUtils.PASS_POST_TYPE,bbsConstUtils.TYPE_POST_THREAD);
+                        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                        intent.putExtra(ConstUtils.PASS_POST_TYPE, ConstUtils.TYPE_POST_THREAD);
 
                         Log.d(TAG,"You pass fid name"+forum.name);
 
@@ -379,8 +374,8 @@ public class ForumActivity
                     else {
                         Toasty.info(context,context.getString(R.string.bbs_require_login_to_comment), Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(context, LoginActivity.class);
-                        intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                        intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                         startActivity(intent);
                     }
                 }
@@ -657,32 +652,32 @@ public class ForumActivity
         }
         else if(id == R.id.bbs_forum_nav_personal_center){
             Intent intent = new Intent(this, UserProfileActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             intent.putExtra("UID",String.valueOf(userBriefInfo.uid));
             startActivity(intent);
             return true;
         }
         else if(id == R.id.bbs_forum_nav_draft_box){
             Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             startActivity(intent,null);
             return true;
         }
         else if(id == R.id.bbs_forum_nav_show_in_webview){
             Intent intent = new Intent(this, InternalWebViewActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-            intent.putExtra(bbsConstUtils.PASS_URL_KEY,currentUrl);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_URL_KEY,currentUrl);
             Log.d(TAG,"Inputted URL "+currentUrl);
             startActivity(intent);
             return true;
         }
         else if(id == R.id.bbs_search){
             Intent intent = new Intent(this, SearchPostsActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             startActivity(intent);
             return true;
         }

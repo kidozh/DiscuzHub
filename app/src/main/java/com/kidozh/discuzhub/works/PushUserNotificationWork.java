@@ -26,7 +26,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.notificationUtils;
@@ -75,7 +75,7 @@ public class PushUserNotificationWork extends Worker {
             return Result.success();
         }
 
-        int fetchInfoUserId = getInputData().getInt(bbsConstUtils.WORK_MANAGER_PASS_USER_ID_KEY,-1);
+        int fetchInfoUserId = getInputData().getInt(ConstUtils.WORK_MANAGER_PASS_USER_ID_KEY,-1);
         Log.d(TAG,"GET FETCH USER ID "+fetchInfoUserId);
         // fetch the user
         if(fetchInfoUserId == -1){
@@ -169,8 +169,8 @@ public class PushUserNotificationWork extends Worker {
     private PendingIntent getIntent(){
         Intent intent = new Intent(context, DrawerLayout.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
-        intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
+        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
+        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         return pendingIntent;
@@ -190,8 +190,8 @@ public class PushUserNotificationWork extends Worker {
         if(notification.notificationExtraInfo != null){
 
             Intent intent = new Intent(context, ThreadActivity.class);
-            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
-            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             intent.putExtra("TID",notification.notificationExtraInfo.tid);
             intent.putExtra("FID",notification.authorId);
             intent.putExtra("SUBJECT",notification.notificationExtraInfo.subject);

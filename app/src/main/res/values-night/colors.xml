@@ -18,5 +18,8 @@
     <color name="ThreadTypeBackgroundColor">#212121</color>
     <color name="PostQuotePartBackgroundColor">@color/colorWetasphalt</color>
 
+    <color name="colorLoadAllLayoutBackground">@color/colorWetasphalt</color>
+    <color name="colorLoadAllTextColor">@color/colorCloud</color>
+
 
 </resources>

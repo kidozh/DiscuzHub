@@ -1,12 +1,10 @@
 package com.kidozh.discuzhub.activities;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,12 +23,11 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.ThreadDraftAdapter;
 import com.kidozh.discuzhub.callback.recyclerViewSwipeToDeleteCallback;
 import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
-import com.kidozh.discuzhub.databinding.ActivityBbsShowPortalBinding;
 import com.kidozh.discuzhub.databinding.ActivityViewThreadDraftBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 
 import java.util.List;
 
@@ -59,8 +56,8 @@ public class bbsShowThreadDraftActivity extends BaseStatusActivity implements re
 
     private void configureIntentData(){
         Intent intent = getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
     }
 
     private void configureActionBar(){

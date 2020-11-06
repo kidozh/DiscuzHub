@@ -787,6 +787,8 @@
     <string name="file_payed">You have payed for the file.</string>
     <string name="file_remote_warn">You will download the file from a remote server, please take care!</string>
     <string name="download_file">Download a file</string>
+    <string name="network_loading_status">Loading contents from server...</string>
+    <string name="all_items_have_been_loaded">All items have been loaded.</string>
 
 
 </resources>

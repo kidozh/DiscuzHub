@@ -27,7 +27,7 @@ import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 
 import java.io.InputStream;
 import java.util.List;
@@ -96,9 +96,9 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, ForumActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forum);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                    intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,forum);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,curUser);
                     Log.d(TAG,"put base url "+bbsInfo.base_url);
                     VibrateUtils.vibrateForClick(mContext);
                     mContext.startActivity(intent);
@@ -138,9 +138,9 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, ForumActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forum);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                    intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,forum);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,curUser);
                     Log.d(TAG,"put base url "+bbsInfo.base_url);
                     VibrateUtils.vibrateForClick(mContext);
                     mContext.startActivity(intent);

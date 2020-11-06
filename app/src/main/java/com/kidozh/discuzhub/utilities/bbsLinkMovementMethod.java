@@ -169,9 +169,9 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                             ForumInfo clickedForum = new ForumInfo();
                             clickedForum.fid = fid;
 
-                            intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,clickedForum);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                            intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,clickedForum);
+                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                             Log.d(TAG,"put base url "+bbsInfo.base_url);
                             VibrateUtils.vibrateForClick(context);
                             context.startActivity(intent);
@@ -211,9 +211,9 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
 
                             putThreadInfo.tid = tid;
                             Intent intent = new Intent(context, ThreadActivity.class);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                            intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                            intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo);
                             intent.putExtra("FID","0");
                             intent.putExtra("TID",tid);
                             intent.putExtra("SUBJECT",url);
@@ -257,8 +257,8 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
 
 
                             Intent intent = new Intent(context, UserProfileActivity.class);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                             intent.putExtra("UID",uid);
 
                             VibrateUtils.vibrateForClick(context);
@@ -298,9 +298,9 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
                     Intent intent = new Intent(context, ThreadActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo);
                     intent.putExtra("FID", 0);
                     intent.putExtra("TID", redirectTid);
                     intent.putExtra("SUBJECT", url);
@@ -323,9 +323,9 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
                     Intent intent = new Intent(context, ThreadActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo);
                     intent.putExtra("FID", 0);
                     intent.putExtra("TID", redirectTid);
                     intent.putExtra("SUBJECT", url);
@@ -350,9 +350,9 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                     ForumInfo clickedForum = new ForumInfo();
                     clickedForum.fid = fid;
 
-                    intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY, clickedForum);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
+                    intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     Log.d(TAG, "put base url " + bbsInfo.base_url);
                     VibrateUtils.vibrateForClick(context);
                     context.startActivity(intent);
@@ -372,8 +372,8 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                     }
 
                     Intent intent = new Intent(context, UserProfileActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra("UID", uid);
 
 
@@ -382,9 +382,9 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                 }
 
                 Intent intent = new Intent(context, InternalWebViewActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                intent.putExtra(bbsConstUtils.PASS_URL_KEY, url);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
+                intent.putExtra(ConstUtils.PASS_URL_KEY, url);
                 Log.d(TAG, "Inputted URL " + url);
                 context.startActivity(intent);
                 return true;
@@ -392,9 +392,9 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
             }
             else {
                 Intent intent = new Intent(context, InternalWebViewActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                intent.putExtra(bbsConstUtils.PASS_URL_KEY, url);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
+                intent.putExtra(ConstUtils.PASS_URL_KEY, url);
                 Log.d(TAG, "Inputted URL " + url);
                 context.startActivity(intent);
                 return true;
@@ -413,9 +413,9 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(context, InternalWebViewActivity.class);
-                                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                                intent.putExtra(bbsConstUtils.PASS_URL_KEY,finalURL);
+                                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                                intent.putExtra(ConstUtils.PASS_URL_KEY,finalURL);
                                 Log.d(TAG,"Inputted URL "+finalURL);
                                 context.startActivity(intent);
                             }
@@ -439,9 +439,9 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
             else {
 
                 Intent intent = new Intent(context, InternalWebViewActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                intent.putExtra(bbsConstUtils.PASS_URL_KEY,url);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(ConstUtils.PASS_URL_KEY,url);
                 Log.d(TAG,"Inputted URL "+url);
                 context.startActivity(intent);
                 return true;

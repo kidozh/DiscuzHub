@@ -35,7 +35,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.graphics.drawable.DrawableWrapper;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -58,7 +57,7 @@ import com.kidozh.discuzhub.entities.ViewThreadQueryStatus;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
@@ -151,7 +150,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
     @Override
     public void onBindViewHolder(@NonNull PostAdapter.bbsForumThreadCommentViewHolder holder, int position) {
         PostInfo postInfo = postInfoList.get(position);
-        Log.d(TAG,"+ Pos "+position+" Thread info "+postInfo+ postInfo.author);
         if(postInfo.author == null){
             return;
         }
@@ -201,9 +199,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             holder.mPostStatusMobileIcon.setVisibility(View.GONE);
         }
 
-
-        //Log.d(TAG,"Thread info "+position+" Total size "+postInfoList.size());
-
         String decodeString = postInfo.message;
         // extract quote message
         //String quoteRegexInVer4 = "^<div class=.reply_wrap.>.*?</div><br />";
@@ -212,14 +207,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         // remove it if possible
         Pattern quotePatternInVer4 = Pattern.compile(quoteRegexInVer4,Pattern.DOTALL);
         Matcher quoteMatcherInVer4 = quotePatternInVer4.matcher(decodeString);
-        Log.d(TAG,"Get message "+decodeString);
         // delete it first
 
         if(quoteMatcherInVer4.find()){
 
             //decodeString = quoteMatcherInVer4.replaceAll("");
             String quoteString = quoteMatcherInVer4.group(1);
-            Log.d(TAG,"Get quote String : "+quoteString);
             holder.mPostQuoteContent.setVisibility(View.VISIBLE);
             // set html
             HtmlTagHandler HtmlTagHandler = new HtmlTagHandler(mContext,holder.mPostQuoteContent);
@@ -331,8 +324,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, UserProfileActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,curUser);
 
                 intent.putExtra("UID",postInfo.authorId);
                 ActivityOptions options = ActivityOptions
@@ -356,7 +349,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             holder.mPostAdvanceOptionImageView.setVisibility(View.VISIBLE);
             // bind option
             holder.mPostAdvanceOptionImageView.setOnClickListener(v -> {
-                Log.d(TAG,"Press advance option btn");
                 showPopupMenu(holder.mPostAdvanceOptionImageView,postInfo);
             });
         }
@@ -537,7 +529,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             Glide.get(mContext)
                     .getRegistry()
                     .replace(GlideUrl.class,InputStream.class,factory);
-            Log.d(TAG,"Load image from "+source);
             drawableTarget currentDrawable = new drawableTarget(myDrawable,textView);
             if(urlDrawableMapper.containsKey(source)){
                 List<drawableTarget> targetList = urlDrawableMapper.get(source);
@@ -550,7 +541,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                 urlDrawableMapper.put(source, targetList);
             }
             if(NetworkUtils.canDownloadImageOrFile(mContext)){
-                Log.d(TAG,"load the picture from network "+source);
                 GlideUrl glideUrl = new GlideUrl(source,
                         new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
                 );
@@ -561,7 +551,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                         .into(currentDrawable);
             }
             else {
-                Log.d(TAG,"load the picture from cache "+source);
                 GlideUrl glideUrl = new GlideUrl(source,
                         new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
                 );
@@ -596,7 +585,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             //errorDrawable = mContext.getDrawable(R.drawable.vector_drawable_image_crash);
             int width=errorDrawable.getIntrinsicWidth() ;
             int height=errorDrawable.getIntrinsicHeight();
-            Log.d(TAG,"Failed to load the image in the textview..."+" width "+width+" height "+height);
             myDrawable.setBounds(0,0,width,height);
             errorDrawable.setBounds(0,0,width,height);
             myDrawable.setDrawable(errorDrawable);
@@ -640,13 +628,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                     final int DRAWABLE_SIMLEY_THRESHOLD = 10000;
                     // Rescale to image
                     int screenWidth = textView.getMeasuredWidth();
-                    Log.d(TAG,"Screen width "+screenWidth+" image width "+width);
 
 
                     if (screenWidth !=0 && width * height > DRAWABLE_SIMLEY_THRESHOLD){
                         double rescaleFactor = ((double) screenWidth) / width;
                         int newHeight = (int) (height * rescaleFactor);
-                        Log.d(TAG,"rescaleFactor "+rescaleFactor+" image new height "+newHeight);
                         if(width * height > DRAWABLE_COMPRESS_THRESHOLD){
                             // compress it for swift display
                             Bitmap bitmap = DrawableToBitmap(drawable);
@@ -665,7 +651,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
                     }
                     else if(screenWidth == 0){
-                        Log.d(TAG, "Get textview width : 0");
                         myDrawable.setBounds(0,0,width,height);
                         drawable.setBounds(0,0,width,height);
                         resource.setBounds(0,0,width,height);
@@ -751,7 +736,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                     return;
                 }
                 isLoading = true;
-                Log.d(TAG,"You pressed image URL "+url);
                 client = NetworkUtils.getPreferredClient(mContext);
                 OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
                 Drawable drawable = mContext.getDrawable(R.drawable.vector_drawable_loading_image);
@@ -762,7 +746,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                         .replace(GlideUrl.class,InputStream.class,factory);
                 // need to judge whether the image is cached or not
                 // find from imageGetter!
-                Log.d(TAG,"You press the image ");
                 if(urlDrawableMapper.containsKey(url) && urlDrawableMapper.get(url)!=null){
                     List<drawableTarget> drawableTargetList = urlDrawableMapper.get(url);
                     // update all target
@@ -777,7 +760,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                             .listener(new RequestListener<Drawable>() {
                                 @Override
                                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                    Log.d(TAG,"Can't find the image! ");
                                     isLoading = false;
                                     Handler handler = new Handler(Looper.getMainLooper());
                                     // update all drawable target
@@ -805,7 +787,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
                                 @Override
                                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                    Log.d(TAG,"Find the image! Goes to other activity");
                                     isLoading = false;
                                     Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
                                     intent.putExtra("URL",url);
@@ -859,7 +840,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
                                 @Override
                                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                    Log.d(TAG,"The resource is loaded and ready to open in external activity...");
                                     isLoading = false;
                                     Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
                                     intent.putExtra("URL",url);

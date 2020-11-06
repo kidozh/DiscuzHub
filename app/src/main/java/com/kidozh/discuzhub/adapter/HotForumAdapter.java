@@ -19,7 +19,7 @@ import com.kidozh.discuzhub.entities.HotForum;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 
 import java.util.List;
 
@@ -77,9 +77,9 @@ public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotFor
                 forumInfo.todayPosts = hotForum.todayPosts;
                 forumInfo.name = hotForum.name;
                 Intent intent = new Intent(context, ForumActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forumInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,forumInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 Log.d(TAG,"put base url "+bbsInfo.base_url);
                 VibrateUtils.vibrateForClick(context);
                 context.startActivity(intent);

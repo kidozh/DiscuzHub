@@ -27,11 +27,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
@@ -45,7 +42,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.common.io.ByteStreams;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.uploadAttachment.UploadAttachmentDialogFragment;
@@ -68,7 +64,7 @@ import com.kidozh.discuzhub.results.PostParameterResult;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsColorPicker;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -176,22 +172,22 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
     }
 
     private boolean isAPostReply(){
-        return postType == bbsConstUtils.TYPE_POST_REPLY;
+        return postType == ConstUtils.TYPE_POST_REPLY;
     }
 
     private void configureIntentData(){
         Intent intent = getIntent();
-        forum = intent.getParcelableExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY);
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        forum = intent.getParcelableExtra(ConstUtils.PASS_FORUM_THREAD_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         // check if it comes from draft box
-        bbsThreadDraft threadDraft = (bbsThreadDraft) intent.getSerializableExtra(bbsConstUtils.PASS_THREAD_DRAFT_KEY);
+        bbsThreadDraft threadDraft = (bbsThreadDraft) intent.getSerializableExtra(ConstUtils.PASS_THREAD_DRAFT_KEY);
         postThreadViewModel.bbsThreadDraftMutableLiveData.setValue(threadDraft);
         URLUtils.setBBS(bbsInfo);
         // check the type
-        postType = intent.getIntExtra(bbsConstUtils.PASS_POST_TYPE,0);
-        replyMessage = intent.getStringExtra(bbsConstUtils.PASS_POST_MESSAGE);
-        replyPost = (PostInfo) intent.getSerializableExtra(bbsConstUtils.PASS_REPLY_POST);
+        postType = intent.getIntExtra(ConstUtils.PASS_POST_TYPE,0);
+        replyMessage = intent.getStringExtra(ConstUtils.PASS_POST_MESSAGE);
+        replyPost = (PostInfo) intent.getSerializableExtra(ConstUtils.PASS_REPLY_POST);
         tid = intent.getIntExtra("tid",-1);
         if(isAPostReply() && tid == -1){
             finishAfterTransition();
@@ -505,7 +501,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 if (TextUtils.isEmpty(uploadHash)) {
                     Toasty.error(PublishActivity.this, getString(R.string.bbs_post_thread_cannot_upload_picture), Toast.LENGTH_SHORT).show();
                 } else {
-                    startActivityForResult(getPickImageChooserIntent(), bbsConstUtils.REQUEST_CODE_PICK_A_PICTURE);
+                    startActivityForResult(getPickImageChooserIntent(), ConstUtils.REQUEST_CODE_PICK_A_PICTURE);
                 }
                 break;
             case R.id.action_insert_link:{
@@ -807,7 +803,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         super.onActivityResult(requestCode, resultCode, data);
 
         Log.v(TAG, "REQUEST_CODE:" + requestCode + "result:" + resultCode);
-        if (resultCode == Activity.RESULT_OK && requestCode == bbsConstUtils.REQUEST_CODE_PICK_A_PICTURE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == ConstUtils.REQUEST_CODE_PICK_A_PICTURE) {
             Bitmap bitmap = null;
             if (getPickImageResultUri(data) != null) {
                 Uri picUri = getPickImageResultUri(data);
@@ -847,7 +843,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 uploadImage(bitmap);
             }
         }
-        else if(resultCode == Activity.RESULT_OK && requestCode == bbsConstUtils.REQUEST_CODE_UPLOAD_ATTACHMENT){
+        else if(resultCode == Activity.RESULT_OK && requestCode == ConstUtils.REQUEST_CODE_UPLOAD_ATTACHMENT){
             // upload an attachments
             Uri uri = data.getData();
             if(uri !=null){

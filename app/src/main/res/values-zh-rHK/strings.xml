@@ -599,5 +599,13 @@
     <string name="attachment_no_ext">文件</string>
     <string name="filename">文件名</string>
     <string name="file_size">文件大小</string>
+    <string name="file_upload_time">上傳於</string>
+    <string name="file_download_times">下載次數</string>
+    <string name="file_pay_price">付費情況</string>
+    <string name="file_payed">你已經完成了付費。</string>
+    <string name="file_remote_warn">這個附件由遠程服務器提供，請注意下載過程安全。</string>
+    <string name="download_file">下載附件</string>
+    <string name="network_loading_status">正在與服務器取得連接。 。 。</string>
+    <string name="all_items_have_been_loaded">已經加載了所有項目。</string>
 
 </resources>

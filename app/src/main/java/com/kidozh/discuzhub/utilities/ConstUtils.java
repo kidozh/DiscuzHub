@@ -1,6 +1,6 @@
 package com.kidozh.discuzhub.utilities;
 
-public class bbsConstUtils {
+public class ConstUtils {
     public static final String PASS_FORUM_THREAD_KEY = "PASS_FORUM_THREAD_KEY";
     public static final String PASS_THREAD_KEY = "PASS_THREAD_KEY";
     public static final String PASS_BBS_ENTITY_KEY = "PASS_BBS_ENTITY_KEY";
@@ -32,4 +32,5 @@ public class bbsConstUtils {
     public final static int NETWORK_STATUS_LOADING = 0;
     public final static int NETWORK_STATUS_SUCCESSFULLY = 1;
     public final static int NETWORK_STATUS_FAILED = 2;
+    public final static int NETWORK_STATUS_LOADED_ALL = 3;
 }

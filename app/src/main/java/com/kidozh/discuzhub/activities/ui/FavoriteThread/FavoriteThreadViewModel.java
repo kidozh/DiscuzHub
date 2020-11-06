@@ -18,7 +18,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.FavoriteThreadResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import retrofit2.Retrofit;
 public class FavoriteThreadViewModel extends AndroidViewModel {
 
     private static final String TAG = FavoriteThreadViewModel.class.getSimpleName();
-    public MutableLiveData<Integer> networkState = new MutableLiveData<>(bbsConstUtils.NETWORK_STATUS_SUCCESSFULLY);
+    public MutableLiveData<Integer> networkState = new MutableLiveData<>(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
     public MutableLiveData<String> errorMsgKey = new MutableLiveData<>(""),
             errorMsgContent = new MutableLiveData<>("");
     private LiveData<PagedList<FavoriteThread>> favoriteThreadListData;
@@ -81,7 +81,7 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
 
     private void getFavoriteItem(int page){
 
-        networkState.postValue(bbsConstUtils.NETWORK_STATUS_LOADING);
+        networkState.postValue(ConstUtils.NETWORK_STATUS_LOADING);
         Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService apiService = retrofit.create(DiscuzApiService.class);
         Call<FavoriteThreadResult> favoriteCall;
@@ -97,7 +97,7 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
                     resultMutableLiveData.postValue(result);
                     Log.d(TAG,"Get response result "+result.isError()+response.raw().toString());
                     if(result.isError()){
-                        networkState.postValue(bbsConstUtils.NETWORK_STATUS_FAILED);
+                        networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED);
                         errorMsgKey.postValue(result.getErrorMessage().key);
                         errorMsgContent.postValue(result.getErrorMessage().content);
                     }
@@ -119,14 +119,14 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
                 }
                 else {
                     Log.d(TAG,"Get favorite response failed"+response.body());
-                    networkState.postValue(bbsConstUtils.NETWORK_STATUS_FAILED);
+                    networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED);
                     errorMsgContent.postValue(getApplication().getString(R.string.network_failed));
                 }
             }
 
             @Override
             public void onFailure(Call<FavoriteThreadResult> call, Throwable t) {
-                networkState.postValue(bbsConstUtils.NETWORK_STATUS_FAILED);
+                networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED);
                 errorMsgContent.postValue(getApplication().getString(R.string.network_failed));
                 t.printStackTrace();
             }

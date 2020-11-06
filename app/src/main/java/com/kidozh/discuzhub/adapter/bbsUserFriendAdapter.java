@@ -23,7 +23,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.UserFriendResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 
 import java.io.InputStream;
@@ -98,8 +98,8 @@ public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdap
             public void onClick(View v) {
                 Log.d(TAG,"click friend cardview");
                 Intent intent = new Intent(context, UserProfileActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,curUser);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,curUser);
                 intent.putExtra("UID",friend.uid);
                 VibrateUtils.vibrateForClick(context);
                 context.startActivity(intent);

@@ -18,7 +18,6 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 
@@ -31,7 +30,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -69,8 +68,8 @@ public class SearchPostsActivity extends BaseStatusActivity {
 
     private void getIntentInfo(){
         Intent intent = getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(bbsConstUtils.PASS_BBS_USER_KEY);
+        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
     }
 
@@ -244,9 +243,9 @@ public class SearchPostsActivity extends BaseStatusActivity {
                             ForumInfo clickedForum = new ForumInfo();
                             clickedForum.fid = fid;
 
-                            intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,clickedForum);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                            intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,clickedForum);
+                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                             Log.d(TAG,"put base url "+bbsInfo.base_url);
                             VibrateUtils.vibrateForClick(context);
                             context.startActivity(intent);
@@ -286,9 +285,9 @@ public class SearchPostsActivity extends BaseStatusActivity {
 
                             putThreadInfo.tid = tid;
                             Intent intent = new Intent(context, ThreadActivity.class);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                            intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                            intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo);
                             intent.putExtra("FID","0");
                             intent.putExtra("TID",tid);
                             intent.putExtra("SUBJECT",url);
@@ -332,8 +331,8 @@ public class SearchPostsActivity extends BaseStatusActivity {
 
 
                             Intent intent = new Intent(context, UserProfileActivity.class);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                            intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                             intent.putExtra("UID",uid);
 
                             VibrateUtils.vibrateForClick(context);
@@ -373,9 +372,9 @@ public class SearchPostsActivity extends BaseStatusActivity {
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
                     Intent intent = new Intent(context, ThreadActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo);
                     intent.putExtra("FID", 0);
                     intent.putExtra("TID", redirectTid);
                     intent.putExtra("SUBJECT", url);
@@ -398,9 +397,9 @@ public class SearchPostsActivity extends BaseStatusActivity {
                     ThreadInfo putThreadInfo = new ThreadInfo();
                     putThreadInfo.tid = redirectTid;
                     Intent intent = new Intent(context, ThreadActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo);
                     intent.putExtra("FID", 0);
                     intent.putExtra("TID", redirectTid);
                     intent.putExtra("SUBJECT", url);
@@ -425,9 +424,9 @@ public class SearchPostsActivity extends BaseStatusActivity {
                     ForumInfo clickedForum = new ForumInfo();
                     clickedForum.fid = fid;
 
-                    intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY, clickedForum);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
+                    intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     Log.d(TAG, "put base url " + bbsInfo.base_url);
                     VibrateUtils.vibrateForClick(context);
                     context.startActivity(intent);
@@ -447,8 +446,8 @@ public class SearchPostsActivity extends BaseStatusActivity {
                     }
 
                     Intent intent = new Intent(context, UserProfileActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra("UID", uid);
 
 

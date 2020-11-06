@@ -20,7 +20,7 @@ import com.kidozh.discuzhub.activities.bbsShowPortalActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.InputStream;
@@ -76,8 +76,8 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
             public void onClick(View v) {
 //                Intent intent = new Intent(context, bbsShowCategoryForumActivity.class);
                 Intent intent = new Intent(context, bbsShowPortalActivity.class);
-                intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY, userInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userInfo);
                 VibrateUtils.vibrateForClick(context);
                 context.startActivity(intent);
             }

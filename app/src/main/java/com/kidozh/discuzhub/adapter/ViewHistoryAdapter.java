@@ -33,7 +33,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.GlideImageGetter;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
 
@@ -106,10 +106,10 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
                         forumInfo.fid = history.fid;
                         forumInfo.description = history.description;
                         Intent intent = new Intent(context, ForumActivity.class);
-                        intent.putExtra(bbsConstUtils.PASS_FORUM_THREAD_KEY,forumInfo);
-                        intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                        intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                        intent.putExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,true);
+                        intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,forumInfo);
+                        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                        intent.putExtra(ConstUtils.PASS_IS_VIEW_HISTORY,true);
                         // Log.d(TAG,"put base url "+bbsInfo.base_url);
 
                         context.startActivity(intent);
@@ -122,13 +122,13 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
                         threadInfo.tid = history.tid;
                         threadInfo.subject = history.description;
                         Intent intent = new Intent(context, ThreadActivity.class);
-                        intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                        intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                        intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);
+                        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                        intent.putExtra(ConstUtils.PASS_THREAD_KEY, threadInfo);
                         intent.putExtra("FID",threadInfo.fid);
                         intent.putExtra("TID",threadInfo.tid);
                         intent.putExtra("SUBJECT",threadInfo.subject);
-                        intent.putExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,true);
+                        intent.putExtra(ConstUtils.PASS_IS_VIEW_HISTORY,true);
 
                         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
                                 (Activity) context,
@@ -142,10 +142,10 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
                     }
                     case ViewHistory.VIEW_TYPE_USER_PROFILE:{
                         Intent intent = new Intent(context, UserProfileActivity.class);
-                        intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                        intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                         intent.putExtra("UID",history.fid);
-                        intent.putExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,true);
+                        intent.putExtra(ConstUtils.PASS_IS_VIEW_HISTORY,true);
 
                         ActivityOptions options = ActivityOptions
                                 .makeSceneTransitionAnimation((Activity) context, holder.icon, "user_info_avatar");

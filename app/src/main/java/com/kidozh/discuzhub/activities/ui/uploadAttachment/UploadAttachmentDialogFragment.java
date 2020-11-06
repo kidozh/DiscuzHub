@@ -11,18 +11,13 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.chip.Chip;
@@ -32,7 +27,7 @@ import com.kidozh.discuzhub.adapter.UploadAttachmentInfoAdapter;
 import com.kidozh.discuzhub.databinding.DialogUploadAttachmentBinding;
 import com.kidozh.discuzhub.entities.UploadAttachment;
 import com.kidozh.discuzhub.results.PostParameterResult;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.viewModels.PostThreadViewModel;
 
 import java.util.ArrayList;
@@ -132,7 +127,7 @@ public class UploadAttachmentDialogFragment extends BottomSheetDialogFragment {
         binding.uploadAttachmentBtn.setOnClickListener(view->{
             Intent intent = getChooseFileIntent();
             if(getActivity()!=null){
-                getActivity().startActivityForResult(intent, bbsConstUtils.REQUEST_CODE_UPLOAD_ATTACHMENT);
+                getActivity().startActivityForResult(intent, ConstUtils.REQUEST_CODE_UPLOAD_ATTACHMENT);
             }
 
         });

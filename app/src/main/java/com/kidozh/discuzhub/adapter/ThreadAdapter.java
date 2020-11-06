@@ -37,7 +37,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsConstUtils;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
@@ -201,9 +201,9 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, ThreadActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, threadInfo);
                     intent.putExtra("FID",threadInfo.fid);
                     intent.putExtra("TID",threadInfo.tid);
                     intent.putExtra("SUBJECT",threadInfo.subject);
@@ -390,9 +390,9 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, ThreadActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, threadInfo);
                     intent.putExtra("FID",threadInfo.fid);
                     intent.putExtra("TID",threadInfo.tid);
                     intent.putExtra("SUBJECT",threadInfo.subject);
@@ -410,8 +410,8 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, UserProfileActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                     intent.putExtra("UID",threadInfo.authorId);
 
                     ActivityOptions options = ActivityOptions
@@ -509,9 +509,9 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, ThreadActivity.class);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                    intent.putExtra(bbsConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                    intent.putExtra(bbsConstUtils.PASS_THREAD_KEY, threadInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, threadInfo);
                     intent.putExtra("FID",threadInfo.fid);
                     intent.putExtra("TID",threadInfo.tid);
                     intent.putExtra("SUBJECT",threadInfo.subject);
