@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,7 @@ import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +55,7 @@ import cn.gavinliu.android.lib.shapedimageview.ShapedImageView;
 
 public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = ThreadAdapter.class.getSimpleName();
-    public List<ThreadInfo> threadInfoList;
+    public List<ThreadInfo> threadInfoList = new ArrayList<>();
     Context mContext;
     public String fid;
     bbsInformation bbsInfo;
@@ -70,14 +72,34 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.fid = fid;
     }
 
-    public void setThreadInfoList(List<ThreadInfo> threadInfoList, Map<String,String> threadType){
+    public void setThreadInfoList(@NonNull List<ThreadInfo> threadInfoList, Map<String,String> threadType){
+        int oldSize = this.threadInfoList.size();
+        int newSize = threadInfoList.size();
+        // given thread type
         this.threadType = threadType;
-        this.threadInfoList = threadInfoList;
-        notifyDataSetChanged();
+
+        if(oldSize >= newSize){
+            this.threadInfoList.clear();
+            notifyItemRangeRemoved(0,oldSize);
+            this.threadInfoList.addAll(threadInfoList);
+            notifyItemRangeInserted(0,threadInfoList.size());
+
+        }
+        else{
+            this.threadInfoList.clear();
+            this.threadInfoList.addAll(threadInfoList);
+            notifyItemRangeInserted(oldSize,newSize - oldSize);
+        }
+
+
+
+        Log.d(TAG,"Insert threads "+oldSize+" "+threadInfoList.size());
+
     }
 
-    public void addThreadInfoList(List<ThreadInfo> threadInfoList, Map<String,String> threadType){
+    public void addThreadInfoList(@NonNull List<ThreadInfo> threadInfoList, Map<String,String> threadType){
         this.threadType = threadType;
+        int oldSize = this.threadInfoList.size();
         if(this.threadInfoList == null){
             this.threadInfoList = threadInfoList;
         }
@@ -85,7 +107,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             this.threadInfoList.addAll(threadInfoList);
         }
 
-        notifyDataSetChanged();
+        notifyItemRangeInserted(oldSize,threadInfoList.size());
     }
 
     @Override

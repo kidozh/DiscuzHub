@@ -50,9 +50,16 @@ import es.dmoral.toasty.Toasty;
 public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.bbsAttachmentViewHolder> {
     private static final String TAG = AttachmentAdapter.class.getSimpleName();
     Context mContext;
-    List<PostInfo.Attachment> attachmentInfoList;
+    private List<PostInfo.Attachment> attachmentInfoList;
 
+    public void setAttachmentInfoList(@NonNull List<PostInfo.Attachment> attachmentInfoList) {
+        this.attachmentInfoList = attachmentInfoList;
+        notifyItemRangeChanged(0,attachmentInfoList.size());
+    }
 
+    public List<PostInfo.Attachment> getAttachmentInfoList() {
+        return attachmentInfoList;
+    }
 
     @NonNull
     @Override

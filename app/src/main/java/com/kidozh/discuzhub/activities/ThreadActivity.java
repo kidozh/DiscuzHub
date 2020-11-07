@@ -121,6 +121,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         ThreadPropertiesAdapter.OnThreadPropertyClicked,
         PostAdapter.OnAdvanceOptionClicked,
         ReportPostDialogFragment.ReportDialogListener,
+        NetworkIndicatorAdapter.OnRefreshBtnListener,
         ThreadCountAdapter.OnRecommendBtnPressed{
     private final static String TAG = ThreadActivity.class.getSimpleName();
 
@@ -261,6 +262,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         });
 
         threadDetailViewModel.networkStatus.observe(this, integer -> {
+            Log.d(TAG,"network changed "+integer);
             switch (integer){
                 case ConstUtils.NETWORK_STATUS_LOADING:{
                     binding.bbsThreadDetailSwipeRefreshLayout.setRefreshing(true);
@@ -269,12 +271,15 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 }
                 case ConstUtils.NETWORK_STATUS_LOADED_ALL:{
                     binding.bbsThreadDetailSwipeRefreshLayout.setRefreshing(false);
+                    //Log.d(TAG,"Network changed "+integer);
                     networkIndicatorAdapter.setLoadingStatus(ConstUtils.NETWORK_STATUS_LOADED_ALL);
+
                     break;
                 }
                 case ConstUtils.NETWORK_STATUS_SUCCESSFULLY:{
                     binding.bbsThreadDetailSwipeRefreshLayout.setRefreshing(false);
                     networkIndicatorAdapter.setLoadingStatus(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
+
                     break;
                 }
                 default:{
@@ -541,6 +546,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 countAdapter.setThreadCountList(threadNotificationList);
                 propertiesAdapter.setThreadNotificationList(threadPropertyList);
                 // for normal rendering
+
                 binding.bbsThreadCommentNumber.setText(getString(R.string.bbs_thread_reply_number,detailedThreadInfo.replies));
                 binding.bbsThreadViewNumber.setText(String.valueOf(detailedThreadInfo.views));
 
@@ -778,7 +784,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         binding.bbsThreadDetailSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Boolean isLoading = threadDetailViewModel.networkStatus.getValue() == ConstUtils.NETWORK_STATUS_LOADING;
+                boolean isLoading = threadDetailViewModel.networkStatus.getValue() == ConstUtils.NETWORK_STATUS_LOADING;
                 if(!isLoading){
                     reloadThePage();
                     threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
@@ -1001,7 +1007,6 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
 
         reloadThePage();
         threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
-        //threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
 
     }
 
@@ -1013,12 +1018,10 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             viewThreadQueryStatus.setInitAuthorId(authorId);
         }
 
-        //threadDetailViewModel.threadStatusMutableLiveData.setValue(threadStatus);
         reloadThePage(viewThreadQueryStatus);
 
         // refresh it
         threadDetailViewModel.getThreadDetail(threadDetailViewModel.threadStatusMutableLiveData.getValue());
-        // getThreadComment();
     }
 
     private void parseURLAndOpen(String url){
@@ -1452,6 +1455,14 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         threadDetailViewModel.reportPost(pid,reportReason,reportForOtherReason);
     }
 
+    @Override
+    public void onRefreshBtnClicked() {
+        ViewThreadQueryStatus status = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+        status.page += 1;
+        threadDetailViewModel.getThreadDetail(status);
+
+    }
+
     public class smileyViewPagerAdapter extends FragmentStatePagerAdapter{
         int cateNum = 0;
 
@@ -1520,6 +1531,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                     if(!isLoading && viewThreadQueryStatus !=null){
                         if(hasLoadAll){
                             // load all posts
+
                             if(!notifyLoadAll){
                                 // never vibrate before
                                 if(UserPreferenceUtils.vibrateWhenLoadingAll(getApplicationContext())){

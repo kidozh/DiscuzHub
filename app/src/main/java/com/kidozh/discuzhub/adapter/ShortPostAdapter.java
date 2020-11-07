@@ -29,9 +29,9 @@ public class ShortPostAdapter extends RecyclerView.Adapter<ShortPostAdapter.View
     Context context;
     
 
-    public void setShortReplyInfoList(List<ForumResult.ShortReply> shortReplyInfoList) {
+    public void setShortReplyInfoList(@NonNull List<ForumResult.ShortReply> shortReplyInfoList) {
         this.shortReplyInfoList = shortReplyInfoList;
-        notifyDataSetChanged();
+        notifyItemRangeInserted(0,shortReplyInfoList.size());
     }
 
     @NonNull

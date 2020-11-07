@@ -1,6 +1,7 @@
 package com.kidozh.discuzhub.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,16 +19,15 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.BBSIndexResult;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 
-import static com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClient;
-
 public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdapter.bbsShowPortalViewHolder> {
     private final static String TAG = ForumCategoryAdapter.class.getSimpleName();
     Context mContext;
-    List<BBSIndexResult.ForumCategory> forumCategoryList;
+    List<BBSIndexResult.ForumCategory> forumCategoryList = new ArrayList<>();
     bbsInformation bbsInfo;
     forumUserBriefInfo curUser;
     List<ForumInfo> allForumInfo;
@@ -42,10 +42,16 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
         this.curUser = userBriefInfo;
     }
 
-    public void setForumCategoryList(List<BBSIndexResult.ForumCategory> forumCategoryList, List<ForumInfo> allForumInfo) {
+    public void setForumCategoryList(@NonNull List<BBSIndexResult.ForumCategory> forumCategoryList, List<ForumInfo> allForumInfo) {
+        int oldSize = this.forumCategoryList.size();
+        this.forumCategoryList.clear();
+        notifyItemRangeRemoved(0,oldSize);
         this.forumCategoryList = forumCategoryList;
         this.allForumInfo = allForumInfo;
-        notifyDataSetChanged();
+
+        //notifyDataSetChanged();
+        notifyItemRangeInserted(0,forumCategoryList.size());
+        Log.d(TAG,"insert number "+getItemCount()+" "+this.forumCategoryList);
     }
 
 

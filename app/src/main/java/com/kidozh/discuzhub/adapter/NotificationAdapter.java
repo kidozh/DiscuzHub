@@ -68,19 +68,20 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         this.curUser = curUser;
     }
 
-    public void setNotificationDetailInfoList(List<UserNoteListResult.UserNotification> notificationDetailInfoList) {
+    public void setNotificationDetailInfoList(@NonNull List<UserNoteListResult.UserNotification> notificationDetailInfoList) {
         this.notificationDetailInfoList = notificationDetailInfoList;
-        notifyDataSetChanged();
+        notifyItemRangeChanged(0,notificationDetailInfoList.size());
     }
 
-    public void addNotificationDetailInfoList(List<UserNoteListResult.UserNotification> notificationDetailInfoList) {
+    public void addNotificationDetailInfoList(@NonNull List<UserNoteListResult.UserNotification> notificationDetailInfoList) {
+        int oldSize = this.notificationDetailInfoList.size();
         if(notificationDetailInfoList == null){
             this.notificationDetailInfoList = notificationDetailInfoList;
         }
         else {
             this.notificationDetailInfoList.addAll(notificationDetailInfoList);
         }
-        notifyDataSetChanged();
+        notifyItemRangeChanged(oldSize,notificationDetailInfoList.size());
 
     }
 

@@ -37,9 +37,9 @@ public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotFor
         this.userBriefInfo = userBriefInfo;
     }
 
-    public void setHotForumList(List<HotForum> hotForumList) {
+    public void setHotForumList(@NonNull List<HotForum> hotForumList) {
         this.hotForumList = hotForumList;
-        notifyDataSetChanged();
+        notifyItemRangeInserted(0,hotForumList.size());
     }
 
     @NonNull

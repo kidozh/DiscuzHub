@@ -100,8 +100,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
 
 
-
-
     public PostAdapter(Context context, bbsInformation bbsInfo, forumUserBriefInfo curUser, ViewThreadQueryStatus viewThreadQueryStatus){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
@@ -112,18 +110,31 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
     public void setThreadInfoList(List<PostInfo> postInfoList, ViewThreadQueryStatus viewThreadQueryStatus, int authorId){
 
-        List<PostInfo> currentThreadInfo = postInfoList;
+        List<PostInfo> oldPosts = this.postInfoList;
         Iterator<PostInfo> iterator = postInfoList.iterator();
         while (iterator.hasNext()){
             PostInfo postInfo = iterator.next();
-            if(postInfo.message == null || postInfo.message == null){
+            if(postInfo.message == null){
                 iterator.remove();
             }
         }
-        this.postInfoList = currentThreadInfo;
+        this.postInfoList = postInfoList;
         this.viewThreadQueryStatus = viewThreadQueryStatus;
         this.authorId = authorId;
-        notifyDataSetChanged();
+        int oldSize = oldPosts.size();
+        int currentSize = postInfoList.size();
+        Log.d(TAG,"Old size "+oldSize+" new "+currentSize);
+        if(currentSize == 0){
+            // its empty now
+            notifyItemRangeRemoved(0,oldSize);
+        }
+        else if(oldSize < currentSize){
+            // maybe insert
+            notifyItemRangeInserted(oldSize,currentSize);
+        }
+        else{
+            notifyItemRangeChanged(0,currentSize);
+        }
     }
 
     public List<PostInfo> getThreadInfoList() {
@@ -359,7 +370,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
         if(postInfo.getAllAttachments() != null){
             AttachmentAdapter attachmentAdapter = new AttachmentAdapter();
-            attachmentAdapter.attachmentInfoList = postInfo.getAllAttachments();
+            attachmentAdapter.setAttachmentInfoList(postInfo.getAllAttachments());
             holder.mRecyclerview.setNestedScrollingEnabled(false);
 
             holder.mRecyclerview.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
@@ -367,7 +378,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         }
         else {
             AttachmentAdapter attachmentAdapter = new AttachmentAdapter();
-            attachmentAdapter.attachmentInfoList = postInfo.getAllAttachments();
+            attachmentAdapter.setAttachmentInfoList(postInfo.getAllAttachments());
             holder.mRecyclerview.setNestedScrollingEnabled(false);
             holder.mRecyclerview.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
             holder.mRecyclerview.setAdapter(attachmentAdapter);

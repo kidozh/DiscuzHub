@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -36,9 +37,9 @@ public class SmileyAdapter extends RecyclerView.Adapter<SmileyAdapter.SmileyView
         this.context = context;
     }
 
-    public void setSmileyInfos(List<bbsParseUtils.smileyInfo> smileyInfos) {
+    public void setSmileyInfos(@NonNull List<bbsParseUtils.smileyInfo> smileyInfos) {
         this.smileyInfos = smileyInfos;
-        notifyDataSetChanged();
+        notifyItemMoved(0,smileyInfos.size());
     }
 
     public List<bbsParseUtils.smileyInfo> getSmileyInfos() {

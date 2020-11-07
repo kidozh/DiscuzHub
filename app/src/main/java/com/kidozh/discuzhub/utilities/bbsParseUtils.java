@@ -49,39 +49,6 @@ import java.util.Map;
 public class bbsParseUtils {
     private static String TAG = bbsParseUtils.class.getSimpleName();
 
-    public static bbsInformation parseInformationByJson(String base_url, String jsonString) {
-        try {
-            JSONObject jsonObject = new JSONObject(jsonString);
-            String discuzVersion = jsonObject.getString("discuzversion");
-            String charset = jsonObject.getString("charset");
-            String version = jsonObject.getString("version");
-            String pluginVersion = jsonObject.getString("pluginversion");
-            String registerName = jsonObject.getString("regname");
-            String wsqQQConnect = jsonObject.optString("wsqqqconnect", "0");
-            String wsqHideregsiter = jsonObject.optString("wsqhideregister", "1");
-            String siteName = jsonObject.getString("sitename");
-            String siteId = jsonObject.getString("mysiteid");
-            String uCenterUrl = jsonObject.getString("ucenterurl");
-            String defaultFid = jsonObject.optString("defaultfid", null);
-            String totalPost = jsonObject.optString("totalposts", "0");
-            String totalMember = jsonObject.optString("totalmembers", "0");
-            Boolean qqConnect = wsqQQConnect.equals("1");
-            Boolean hideRegister = wsqHideregsiter.equals("1");
-
-            bbsInformation newForumInfo = new bbsInformation(
-                    base_url, siteName, discuzVersion,
-                    charset, version, pluginVersion, totalPost,
-                    totalMember, siteId, defaultFid, uCenterUrl,
-                    registerName, "", hideRegister,
-                    qqConnect
-            );
-            return newForumInfo;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public static AddCheckResult parseCheckInfoResult(String s) {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -91,42 +58,6 @@ public class bbsParseUtils {
             e.printStackTrace();
             return null;
         }
-    }
-
-    public static ForumResult parseForumInfo(String s){
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(s, ForumResult.class);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static BBSIndexResult parseForumIndexResult(String s){
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(s, BBSIndexResult.class);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static String parseErrorInformation(String s) {
-        try {
-            JSONObject jsonObject = new JSONObject(s);
-            String errorText = jsonObject.getString("error");
-
-            return errorText;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
     }
 
     public static Map<String, String> parseThreadType(String s) {
@@ -145,36 +76,6 @@ public class bbsParseUtils {
             return threadTypeMap;
 
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static List<threadCommentInfo.attachmentInfo> getAttachmentInfo(JSONObject jsonObject) {
-        try {
-
-            List<threadCommentInfo.attachmentInfo> attachmentInfoList = new ArrayList<>();
-            Iterator<String> stringIterator = jsonObject.keys();
-            while (stringIterator.hasNext()) {
-                String key = stringIterator.next();
-                JSONObject attachmentObj = jsonObject.getJSONObject(key);
-                String aid = attachmentObj.getString("aid");
-                String tid = attachmentObj.getString("tid");
-                String pid = attachmentObj.getString("pid");
-                String uid = attachmentObj.getString("uid");
-                String filename = attachmentObj.getString("filename");
-//                if (!(filename.endsWith("png")||filename.endsWith("jpg")||filename.endsWith("gif"))){
-//                    continue;
-//                }
-                String relativeUrl = attachmentObj.getString("attachment");
-                String prefixUrl = attachmentObj.getString("url");
-                String publishAtStr = attachmentObj.getString("dbdateline");
-                Date publishAt = new Timestamp(Long.parseLong(publishAtStr) * 1000);
-
-                attachmentInfoList.add(new threadCommentInfo.attachmentInfo(aid, tid, pid, uid, relativeUrl, filename, publishAt, prefixUrl));
-            }
-            return attachmentInfoList;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -232,45 +133,6 @@ public class bbsParseUtils {
             return false;
         }
 
-    }
-
-    public static forumUserBriefInfo parseLoginBreifUserInfo(String s) {
-        try {
-            JSONObject jsonObject = new JSONObject(s);
-            //Log.d(TAG,"Get ->"+jsonObject.toString());
-            //List<bbsNotification> notifications = new ArrayList<>();
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-
-            if (isLoginSuccessful(jsonObject)) {
-                return new forumUserBriefInfo(
-                        variables.getString("auth"),
-                        variables.getString("saltkey"),
-                        variables.getString("member_uid"),
-                        variables.getString("member_username"),
-                        variables.getString("member_avatar"),
-                        Integer.parseInt(variables.getString("readaccess")),
-                        variables.getString("groupid")
-                );
-            } else {
-                return null;
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static ThreadResult parseThreadPostResult(String s){
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(s, ThreadResult.class);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public static UserProfileResult parseUserProfileResult(String s){
@@ -340,18 +202,6 @@ public class bbsParseUtils {
         try {
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(s, DisplayThreadsResult.class);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static HotForumsResult getHotForumsResult(String s) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(s, HotForumsResult.class);
 
 
         } catch (Exception e) {
@@ -571,27 +421,6 @@ public class bbsParseUtils {
         }
     }
 
-    public static List<userFriend> parseUserFriendInfo(String s) {
-        try {
-            List<userFriend> userFriendList = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONArray pmList = variables.getJSONArray("list");
-            for (int i = 0; i < pmList.length(); i++) {
-                JSONObject pm = (JSONObject) pmList.get(i);
-                userFriend userFriend = new userFriend(
-                        Integer.parseInt(pm.getString("uid")),
-                        pm.getString("username")
-                );
-                userFriendList.add(userFriend);
-            }
-            return userFriendList;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 
     public static UserFriendResult parseUserFriendsResult(String s) {
         try {
@@ -698,56 +527,6 @@ public class bbsParseUtils {
         }
     }
 
-    public static int parseNotificationCount(String s) {
-        try {
-            List<privateDetailMessage> privateDetailMessageList = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-
-            return Integer.parseInt(variables.getString("count"));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public static List<notificationDetailInfo> parseNotificationDetailInfo(String s) {
-        try {
-            List<notificationDetailInfo> notificationDetailInfoList = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONArray noticeList = variables.getJSONArray("list");
-            for (int i = 0; i < noticeList.length(); i++) {
-                JSONObject notice = noticeList.getJSONObject(i);
-                String publishAtStringTimestamp = notice.getString("dateline");
-                Date publishAt = new Timestamp(Long.parseLong(publishAtStringTimestamp) * 1000);
-                notificationDetailInfo notificationDetail = new notificationDetailInfo(
-                        Integer.parseInt(notice.getString("id")),
-                        Integer.parseInt(notice.getString("uid")),
-                        notice.getString("type"),
-                        !notice.getString("new").equals("0"),
-                        Integer.parseInt(notice.getString("authorid")),
-                        notice.optString("author", ""),
-                        notice.getString("note"),
-                        publishAt,
-                        Integer.parseInt(notice.getString("from_id")),
-                        notice.getString("from_idtype"),
-                        Integer.parseInt(notice.getString("from_num")),
-                        parseNotificationVariable(notice)
-
-                );
-                notificationDetailInfoList.add(notificationDetail);
-
-            }
-            return notificationDetailInfoList;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public static class smileyInfo implements Parcelable {
         public String code, imageRelativePath;
         public int category;
@@ -824,31 +603,6 @@ public class bbsParseUtils {
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
-        }
-    }
-
-
-    public static bbsPollInfo parsePollInfo(String s) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-
-            List<smileyInfo> smileyInfoList = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            if(variables.has("special_poll")){
-                JSONObject pollInfo = variables.getJSONObject("special_poll");
-                return mapper.readValue(pollInfo.toString(), bbsPollInfo.class);
-            }
-            else {
-                return null;
-            }
-
-
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            return null;
         }
     }
 
@@ -1005,20 +759,6 @@ public class bbsParseUtils {
         public int random;
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         public int remaining;
-    }
-
-    public static DetailedThreadInfo parseDetailedThreadInfo(String s) {
-        try {
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONObject threadInfo = variables.getJSONObject("thread");
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(threadInfo.toString(), DetailedThreadInfo.class);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public static PostParameterResult parseThreadPostParameter(String s) {

@@ -27,9 +27,9 @@ public class ManageBBSAdapter extends RecyclerView.Adapter<ManageBBSAdapter.Mana
     private List<bbsInformation> bbsInformationList;
     Context context;
 
-    public void setBbsInformationList(List<bbsInformation> bbsInformationList) {
+    public void setBbsInformationList(@NonNull List<bbsInformation> bbsInformationList) {
         this.bbsInformationList = bbsInformationList;
-        notifyDataSetChanged();
+        notifyItemRangeInserted(0,bbsInformationList.size());
     }
 
     @NonNull

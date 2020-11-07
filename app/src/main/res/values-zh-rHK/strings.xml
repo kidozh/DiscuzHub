@@ -607,5 +607,6 @@
     <string name="download_file">下載附件</string>
     <string name="network_loading_status">正在與服務器取得連接。 。 。</string>
     <string name="all_items_have_been_loaded">已經加載了所有項目。</string>
+    <string name="retry_content">重試</string>
 
 </resources>

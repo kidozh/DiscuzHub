@@ -38,9 +38,9 @@ public class ThreadPropertiesAdapter extends RecyclerView.Adapter<ThreadProperti
         return new ThreadPropertiesAdapter.bbsThreadPropertiesViewHolder(view);
     }
 
-    public void setThreadNotificationList(List<ThreadCount> threadNotificationList){
+    public void setThreadNotificationList(@NonNull List<ThreadCount> threadNotificationList){
         this.threadNotificationList = threadNotificationList;
-        notifyDataSetChanged();
+        notifyItemRangeInserted(0,threadNotificationList.size());
     }
 
     @Override

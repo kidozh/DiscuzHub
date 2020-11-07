@@ -49,9 +49,9 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
         this.userBriefInfo = userBriefInfo;
     }
 
-    public void setSubForumInfoList(List<ForumResult.SubForumInfo> subForumInfoList) {
+    public void setSubForumInfoList(@NonNull List<ForumResult.SubForumInfo> subForumInfoList) {
         this.subForumInfoList = subForumInfoList;
-        notifyDataSetChanged();
+        notifyItemRangeChanged(0,subForumInfoList.size());
     }
 
     @NonNull

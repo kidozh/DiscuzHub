@@ -604,5 +604,6 @@
     <string name="download_file">下载附件</string>
     <string name="network_loading_status">正在与服务器取得连接。。。</string>
     <string name="all_items_have_been_loaded">已经加载了所有项目。</string>
+    <string name="retry_content">重试</string>
 
 </resources>

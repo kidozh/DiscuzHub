@@ -20,9 +20,9 @@ public class UserProfileItemAdapter extends RecyclerView.Adapter<UserProfileItem
     private List<UserProfileItem> userProfileItemList;
     private Context context;
 
-    public void setUserProfileItemList(List<UserProfileItem> userProfileItemList) {
+    public void setUserProfileItemList(@NonNull List<UserProfileItem> userProfileItemList) {
         this.userProfileItemList = userProfileItemList;
-        notifyDataSetChanged();
+        notifyItemRangeInserted(0,userProfileItemList.size());
     }
 
     @NonNull

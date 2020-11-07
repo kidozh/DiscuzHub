@@ -172,17 +172,11 @@ public class ThreadViewModel extends AndroidViewModel {
                     ThreadResult threadResult = response.body();
                     bbsParseUtils.DetailedThreadInfo detailedThreadInfo = null;
                     threadPostResultMutableLiveData.postValue(threadResult);
-                    if(threadResult.message!=null){
-                        errorMessageMutableLiveData.postValue(threadResult.message.toErrorMessage());
-                    }
+
                     if(threadResult.threadPostVariables!=null){
                         // update formhash first
                         if(threadResult.threadPostVariables.formHash !=null){
                             formHash.postValue(threadResult.threadPostVariables.formHash);
-                        }
-                        // parse message
-                        if(threadResult.message!=null){
-                            errorText.postValue(threadResult.message.content);
                         }
                         // update user
                         if(threadResult.threadPostVariables!=null){
@@ -226,6 +220,11 @@ public class ThreadViewModel extends AndroidViewModel {
                                     threadStatusMutableLiveData.postValue(viewThreadQueryStatus);
                                 }
                             }
+                        }
+
+                        if(threadResult.message!=null){
+                            errorMessageMutableLiveData.postValue(threadResult.message.toErrorMessage());
+                            networkStatus.postValue(ConstUtils.NETWORK_STATUS_FAILED);
                         }
 
                         // load all?

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.databinding.ItemNetworkIndicatorFailedBinding;
 import com.kidozh.discuzhub.databinding.ItemNetworkIndicatorLoadAllBinding;
 import com.kidozh.discuzhub.databinding.ItemNetworkIndicatorLoadingBinding;
@@ -19,21 +20,45 @@ public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.V
     private Context context;
     private ErrorMessage errorMessage;
 
+    private OnRefreshBtnListener mListener;
+
+    @Override
+    public int getItemViewType(int position) {
+        switch (loadingStatus){
+            case ConstUtils.NETWORK_STATUS_LOADING:{
+
+                return R.layout.item_network_indicator_loading;
+            }
+            case ConstUtils.NETWORK_STATUS_LOADED_ALL:{
+                return R.layout.item_network_indicator_load_all;
+            }
+            case ConstUtils.NETWORK_STATUS_FAILED:{
+                return R.layout.item_network_indicator_failed;
+            }
+            default:{
+                return 0;
+            }
+        }
+    }
+
     public void setLoadingStatus(int loadingStatus) {
         this.loadingStatus = loadingStatus;
-        notifyDataSetChanged();
+        notifyItemChanged(0);
     }
 
     public void setErrorStatus(@NonNull ErrorMessage errorMessage) {
         this.loadingStatus = ConstUtils.NETWORK_STATUS_FAILED;
         this.errorMessage = errorMessage;
-        notifyDataSetChanged();
+        notifyItemChanged(0);
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
+        if(context instanceof OnRefreshBtnListener){
+            mListener = (OnRefreshBtnListener) context;
+        }
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         switch (loadingStatus){
             case ConstUtils.NETWORK_STATUS_LOADING:{
@@ -43,6 +68,9 @@ public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.V
             case ConstUtils.NETWORK_STATUS_LOADED_ALL:{
                 ItemNetworkIndicatorLoadAllBinding binding = ItemNetworkIndicatorLoadAllBinding.inflate(layoutInflater,parent,false);
                 return new NetworkIndicatorLoadAllViewHolder(binding);
+            }
+            case ConstUtils.NETWORK_STATUS_SUCCESSFULLY:{
+
             }
             case ConstUtils.NETWORK_STATUS_FAILED:{
                 ItemNetworkIndicatorFailedBinding binding = ItemNetworkIndicatorFailedBinding.inflate(layoutInflater,parent,false);
@@ -64,6 +92,11 @@ public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.V
             else {
                 ((NetworkIndicatorLoadFailedViewHolder) holder).binding.errorIcon.setImageResource(ErrorMessage.getDefaultErrorIconResource());
             }
+            ((NetworkIndicatorLoadFailedViewHolder) holder).binding.retryButton.setOnClickListener(v -> {
+                if(mListener!=null){
+                    mListener.onRefreshBtnClicked();
+                }
+            });
 
         }
     }
@@ -71,13 +104,9 @@ public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public int getItemCount() {
         switch (loadingStatus){
-            case ConstUtils.NETWORK_STATUS_LOADING:{
-                return 1;
-            }
-            case ConstUtils.NETWORK_STATUS_LOADED_ALL:{
-                return 1;
-            }
-            case ConstUtils.NETWORK_STATUS_FAILED:{
+            case ConstUtils.NETWORK_STATUS_LOADING:
+            case ConstUtils.NETWORK_STATUS_LOADED_ALL:
+            case ConstUtils.NETWORK_STATUS_FAILED: {
                 return 1;
             }
             case ConstUtils.NETWORK_STATUS_SUCCESSFULLY:{
@@ -112,5 +141,9 @@ public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.V
             super(binding.getRoot());
             this.binding = binding;
         }
+    }
+
+    public interface OnRefreshBtnListener{
+        public void onRefreshBtnClicked();
     }
 }

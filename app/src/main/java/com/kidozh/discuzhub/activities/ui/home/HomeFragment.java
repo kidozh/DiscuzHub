@@ -30,6 +30,7 @@ import com.kidozh.discuzhub.results.BBSIndexResult;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -135,6 +136,10 @@ public class HomeFragment extends Fragment {
                 activityBbsForumIndexBinding.errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
                 activityBbsForumIndexBinding.errorValue.setText(errorMessage.key);
                 activityBbsForumIndexBinding.errorContent.setText(errorMessage.content);
+            }
+            else{
+                activityBbsForumIndexBinding.errorView.setVisibility(View.GONE);
+                adapter.setForumCategoryList(new ArrayList<>(),new ArrayList<>());
             }
         });
 

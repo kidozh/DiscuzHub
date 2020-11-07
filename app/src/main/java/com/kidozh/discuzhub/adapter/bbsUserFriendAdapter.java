@@ -49,21 +49,12 @@ public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdap
         return userFriendList;
     }
 
-    public void setUserFriendList(List<UserFriendResult.UserFriend> userFriendList){
+    public void setUserFriendList(@NonNull List<UserFriendResult.UserFriend> userFriendList){
+        int oldSize = this.userFriendList.size();
         this.userFriendList = userFriendList;
-        notifyDataSetChanged();
+        notifyItemRangeInserted(oldSize,userFriendList.size()-oldSize);
     }
 
-    public void addUserFriendList(List<UserFriendResult.UserFriend> userFriendList){
-        if(this.userFriendList == null){
-            this.userFriendList = userFriendList;
-        }
-        else {
-            this.userFriendList.addAll(userFriendList);
-        }
-
-        notifyDataSetChanged();
-    }
 
     @NonNull
     @Override

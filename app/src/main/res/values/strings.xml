@@ -789,6 +789,7 @@
     <string name="download_file">Download a file</string>
     <string name="network_loading_status">Loading contents from server...</string>
     <string name="all_items_have_been_loaded">All items have been loaded.</string>
+    <string name="retry_content">Retry</string>
 
 
 </resources>
