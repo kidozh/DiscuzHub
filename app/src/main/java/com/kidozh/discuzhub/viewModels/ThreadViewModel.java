@@ -55,7 +55,7 @@ public class ThreadViewModel extends AndroidViewModel {
     public MutableLiveData<String> formHash, errorText;
     public MutableLiveData<bbsPollInfo> pollInfoLiveData;
     public MutableLiveData<forumUserBriefInfo> bbsPersonInfoMutableLiveData;
-    public MutableLiveData<List<PostInfo>> threadCommentInfoListLiveData, newPostList;
+    public MutableLiveData<List<PostInfo>> totalPostListLiveData, newPostList;
     public MutableLiveData<ViewThreadQueryStatus> threadStatusMutableLiveData;
     public MutableLiveData<bbsParseUtils.DetailedThreadInfo> detailedThreadInfoMutableLiveData;
     public MutableLiveData<ThreadResult> threadPostResultMutableLiveData;
@@ -76,8 +76,8 @@ public class ThreadViewModel extends AndroidViewModel {
 
         formHash = new MutableLiveData<>("");
         bbsPersonInfoMutableLiveData = new MutableLiveData<>();
-        threadCommentInfoListLiveData = new MutableLiveData<>();
-        newPostList = new MutableLiveData<>();
+        totalPostListLiveData = new MutableLiveData<>();
+        newPostList = new MutableLiveData<>(new ArrayList<>());
         pollInfoLiveData = new MutableLiveData<>(null);
         threadStatusMutableLiveData = new MutableLiveData<>();
         errorText = new MutableLiveData<>("");
@@ -158,7 +158,7 @@ public class ThreadViewModel extends AndroidViewModel {
         threadStatusMutableLiveData.postValue(viewThreadQueryStatus);
         if(viewThreadQueryStatus.page == 1){
             // clear it first
-            threadCommentInfoListLiveData.setValue(new ArrayList<>());
+            totalPostListLiveData.setValue(new ArrayList<>());
         }
 
         Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
@@ -196,16 +196,16 @@ public class ThreadViewModel extends AndroidViewModel {
                             if(postInfoList.size()!=0){
                                 newPostList.postValue(postInfoList);
                                 if(viewThreadQueryStatus.page == 1){
-                                    threadCommentInfoListLiveData.postValue(postInfoList);
+                                    totalPostListLiveData.postValue(postInfoList);
                                     totalThreadSize = postInfoList.size();
                                 }
                                 else {
-                                    List<PostInfo> currentThreadInfoList = threadCommentInfoListLiveData.getValue();
+                                    List<PostInfo> currentThreadInfoList = totalPostListLiveData.getValue();
                                     if(currentThreadInfoList == null){
                                         currentThreadInfoList = new ArrayList<>();
                                     }
                                     currentThreadInfoList.addAll(postInfoList);
-                                    threadCommentInfoListLiveData.postValue(currentThreadInfoList);
+                                    totalPostListLiveData.postValue(currentThreadInfoList);
                                     totalThreadSize = currentThreadInfoList.size();
 
                                 }
@@ -232,7 +232,7 @@ public class ThreadViewModel extends AndroidViewModel {
                         // load all?
                         if(detailedThreadInfo !=null){
                             int maxThreadNumber = detailedThreadInfo.replies;
-                            List<PostInfo> currentThreadInfoList = threadCommentInfoListLiveData.getValue();
+                            List<PostInfo> currentThreadInfoList = totalPostListLiveData.getValue();
                             int totalThreadCommentsNumber = 0;
 
                             if(currentThreadInfoList !=null){

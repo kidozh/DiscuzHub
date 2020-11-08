@@ -43,7 +43,7 @@ public class ThreadPropertiesAdapter extends RecyclerView.Adapter<ThreadProperti
         int oldSize = this.threadNotificationList.size();
         this.threadNotificationList.clear();
         notifyItemRangeRemoved(0,oldSize);
-        this.threadNotificationList = threadNotificationList;
+        this.threadNotificationList.addAll(threadNotificationList);
         notifyItemRangeInserted(0,threadNotificationList.size());
     }
 

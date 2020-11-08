@@ -45,7 +45,7 @@ public class ThreadCountAdapter extends RecyclerView.Adapter<ThreadCountAdapter.
     public void setThreadCountList(@NonNull List<ThreadCount> ThreadCountList){
         int oldSize = this.ThreadCountList.size();
         this.ThreadCountList.clear();
-        notifyItemMoved(0,oldSize);
+        notifyItemRangeRemoved(0,oldSize);
         this.ThreadCountList = ThreadCountList;
         notifyItemRangeInserted(0,ThreadCountList.size());
     }

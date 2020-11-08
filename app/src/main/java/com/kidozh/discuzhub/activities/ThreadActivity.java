@@ -247,37 +247,15 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                 authorid = threadResult.threadPostVariables.detailedThreadInfo.authorId;
             }
             if(viewThreadQueryStatus==null|| viewThreadQueryStatus.page == 1){
-                postAdapter.setThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue(),authorid);
+                postAdapter.clearList();
+                postAdapter.addThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue(),authorid);
+                binding.postsRecyclerview.scrollToPosition(0);
             }
             else {
                 postAdapter.addThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue(),authorid);
             }
 
-        });
 
-        threadDetailViewModel.threadCommentInfoListLiveData.observe(this, new Observer<List<PostInfo>>() {
-            @Override
-            public void onChanged(List<PostInfo> postInfos) {
-                int authorid = 0;
-                ThreadResult threadResult = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
-                if(threadResult!=null
-                        && threadResult.threadPostVariables!=null
-                        && threadResult.threadPostVariables.detailedThreadInfo!=null){
-                    authorid = threadResult.threadPostVariables.detailedThreadInfo.authorId;
-                }
-                postAdapter.setThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue(),authorid);
-                if(postAdapter.getItemCount() == 0){
-                    networkIndicatorAdapter.setErrorStatus(new ErrorMessage(
-                            "",
-                            getString(R.string.discuz_network_result_null),
-                            R.drawable.ic_blank_forum_thread_64px)
-                    );
-
-                }
-                else {
-
-                }
-            }
         });
 
         threadDetailViewModel.networkStatus.observe(this, integer -> {
@@ -1087,7 +1065,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                         for(int i=0; i<postInfos.size(); i++){
                             PostInfo curPost = postInfos.get(i);
                             if(curPost.pid == redirectPid){
-                                binding.postsRecyclerview.scrollToPosition(i);
+                                binding.postsRecyclerview.smoothScrollToPosition(i);
                                 VibrateUtils.vibrateForClick(this);
                                 long postPostion = postInfos.get(i).position;
                                 Toasty.success(this,getString(R.string.scroll_to_pid_successfully,postPostion),Toast.LENGTH_SHORT).show();

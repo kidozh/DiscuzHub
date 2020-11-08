@@ -12,17 +12,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.UploadAttachment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class UploadAttachmentInfoAdapter extends RecyclerView.Adapter<UploadAttachmentInfoAdapter.UploadAttachmentViewHolder> {
 
     Context context;
-    List<UploadAttachment> attachmentList;
+    List<UploadAttachment> attachmentList = new ArrayList<>();
 
     public void setAttachmentList(List<UploadAttachment> attachmentList) {
-        this.attachmentList = attachmentList;
-        notifyDataSetChanged();
+        if(attachmentList == null){
+            return;
+        }
+        int oldSize = this.attachmentList.size();
+        this.attachmentList.clear();
+        notifyItemRangeRemoved(0,oldSize);
+        this.attachmentList.addAll(attachmentList);
+        notifyItemRangeInserted(0,attachmentList.size());
     }
 
     @NonNull

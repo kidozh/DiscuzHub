@@ -13,15 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.UserProfileItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class UserProfileItemAdapter extends RecyclerView.Adapter<UserProfileItemAdapter.UserProfileItemViewHolder> {
-    private List<UserProfileItem> userProfileItemList;
+    private List<UserProfileItem> userProfileItemList = new ArrayList<>();
     private Context context;
 
     public void setUserProfileItemList(@NonNull List<UserProfileItem> userProfileItemList) {
-        this.userProfileItemList = userProfileItemList;
+        this.userProfileItemList.addAll(userProfileItemList);
         notifyItemRangeInserted(0,userProfileItemList.size());
     }
 

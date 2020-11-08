@@ -21,16 +21,20 @@ import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShortPostAdapter extends RecyclerView.Adapter<ShortPostAdapter.ViewHolder> {
 
-    List<ForumResult.ShortReply> shortReplyInfoList;
+    List<ForumResult.ShortReply> shortReplyInfoList = new ArrayList<>();
     Context context;
     
 
     public void setShortReplyInfoList(@NonNull List<ForumResult.ShortReply> shortReplyInfoList) {
-        this.shortReplyInfoList = shortReplyInfoList;
+        int oldSize = this.shortReplyInfoList.size();
+        this.shortReplyInfoList.clear();
+        notifyItemRangeRemoved(0,oldSize);
+        this.shortReplyInfoList.addAll(shortReplyInfoList);
         notifyItemRangeInserted(0,shortReplyInfoList.size());
     }
 

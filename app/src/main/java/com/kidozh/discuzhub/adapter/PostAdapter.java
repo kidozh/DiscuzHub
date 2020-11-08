@@ -111,24 +111,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         setHasStableIds(true);
     }
 
-
-
-    public void setThreadInfoList(List<PostInfo> postInfoList, ViewThreadQueryStatus viewThreadQueryStatus, int authorId){
-
+    public void clearList(){
         int oldSize = this.postInfoList.size();
         this.postInfoList.clear();
         notifyItemRangeRemoved(0,oldSize);
-        Iterator<PostInfo> iterator = postInfoList.iterator();
-        while (iterator.hasNext()){
-            PostInfo postInfo = iterator.next();
-            if(postInfo.message == null){
-                iterator.remove();
-            }
-        }
-        this.postInfoList = postInfoList;
-        this.viewThreadQueryStatus = viewThreadQueryStatus;
-        this.authorId = authorId;
-        notifyItemRangeInserted(0,postInfoList.size());
     }
 
     public void addThreadInfoList(List<PostInfo> postInfoList, ViewThreadQueryStatus viewThreadQueryStatus, int authorId){

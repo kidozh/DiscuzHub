@@ -38,7 +38,10 @@ public class ThreadDraftAdapter extends RecyclerView.Adapter<ThreadDraftAdapter.
     }
 
     public void setBbsThreadDraftList(@NonNull List<bbsThreadDraft> bbsThreadDraftList) {
-        this.bbsThreadDraftList = bbsThreadDraftList;
+        int oldSize = this.bbsThreadDraftList.size();
+        this.bbsThreadDraftList.clear();
+        notifyItemRangeRemoved(0,oldSize);
+        this.bbsThreadDraftList.addAll(bbsThreadDraftList);
         notifyItemRangeInserted(0,bbsThreadDraftList.size());
     }
 

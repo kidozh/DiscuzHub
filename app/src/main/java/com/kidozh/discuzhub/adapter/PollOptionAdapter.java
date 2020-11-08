@@ -23,6 +23,7 @@ import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.utilities.URLUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,12 +31,15 @@ import java.util.List;
 public class PollOptionAdapter extends RecyclerView.Adapter<PollOptionAdapter.ViewHolder> {
     private final String TAG = PollOptionAdapter.class.getSimpleName();
 
-    List<bbsPollInfo.option> pollOptions;
+    List<bbsPollInfo.option> pollOptions = new ArrayList<>();
     private Context context;
 
     public void setPollOptions(List<bbsPollInfo.option> pollOptions) {
-        this.pollOptions = pollOptions;
-        notifyDataSetChanged();
+        int oldSize = this.pollOptions.size();
+        this.pollOptions.clear();
+        notifyItemRangeRemoved(0,oldSize);
+        this.pollOptions.addAll(pollOptions);
+        notifyItemRangeInserted(0,pollOptions.size());
     }
 
     public List<bbsPollInfo.option> getPollOptions() {

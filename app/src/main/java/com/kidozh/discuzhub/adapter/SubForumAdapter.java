@@ -29,6 +29,7 @@ import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -42,7 +43,7 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
     forumUserBriefInfo userBriefInfo;
 
 
-    List<ForumResult.SubForumInfo> subForumInfoList;
+    List<ForumResult.SubForumInfo> subForumInfoList = new ArrayList<>();
 
     public SubForumAdapter(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo) {
         this.bbsInfo = bbsInfo;
@@ -50,7 +51,10 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
     }
 
     public void setSubForumInfoList(@NonNull List<ForumResult.SubForumInfo> subForumInfoList) {
-        this.subForumInfoList = subForumInfoList;
+        int oldSize = this.subForumInfoList.size();
+        this.subForumInfoList.clear();
+        notifyItemRangeRemoved(0,oldSize);
+        this.subForumInfoList.addAll(subForumInfoList);
         notifyItemRangeChanged(0,subForumInfoList.size());
     }
 
