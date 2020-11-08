@@ -147,17 +147,22 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/bbs_forum_thread_recyclerview"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:descendantFocusability="beforeDescendants"
-                    android:nestedScrollingEnabled="true"
-                    tools:itemCount="1"
-                    tools:listitem="@layout/item_thread">
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/bbs_forum_thread_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:descendantFocusability="beforeDescendants"
+                        tools:itemCount="1"
+                        tools:listitem="@layout/item_thread">
 
 
-                </androidx.recyclerview.widget.RecyclerView>
+                    </androidx.recyclerview.widget.RecyclerView>
+                </LinearLayout>
 
                 <!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class DisplayForumQueryStatus {
     private static final String TAG = DisplayForumQueryStatus.class.getSimpleName();
-    public int fid,page,perPage=10;
+    public int fid,page = 1,perPage=10;
     public boolean hasLoadAll = false;
     // orderby:[dateline,replies,views]
     public String orderBy="";

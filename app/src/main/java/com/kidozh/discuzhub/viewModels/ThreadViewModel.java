@@ -55,7 +55,7 @@ public class ThreadViewModel extends AndroidViewModel {
     public MutableLiveData<String> formHash, errorText;
     public MutableLiveData<bbsPollInfo> pollInfoLiveData;
     public MutableLiveData<forumUserBriefInfo> bbsPersonInfoMutableLiveData;
-    public MutableLiveData<List<PostInfo>> threadCommentInfoListLiveData;
+    public MutableLiveData<List<PostInfo>> threadCommentInfoListLiveData, newPostList;
     public MutableLiveData<ViewThreadQueryStatus> threadStatusMutableLiveData;
     public MutableLiveData<bbsParseUtils.DetailedThreadInfo> detailedThreadInfoMutableLiveData;
     public MutableLiveData<ThreadResult> threadPostResultMutableLiveData;
@@ -68,7 +68,7 @@ public class ThreadViewModel extends AndroidViewModel {
             interactErrorMutableLiveData = new MutableLiveData<>(null);
     public MutableLiveData<BuyThreadResult> threadPriceInfoMutableLiveData = new MutableLiveData<>(null),
             buyThreadResultMutableLiveData = new MutableLiveData<>(null);
-    
+
     FavoriteThreadDao dao;
 
     public ThreadViewModel(@NonNull Application application) {
@@ -77,6 +77,7 @@ public class ThreadViewModel extends AndroidViewModel {
         formHash = new MutableLiveData<>("");
         bbsPersonInfoMutableLiveData = new MutableLiveData<>();
         threadCommentInfoListLiveData = new MutableLiveData<>();
+        newPostList = new MutableLiveData<>();
         pollInfoLiveData = new MutableLiveData<>(null);
         threadStatusMutableLiveData = new MutableLiveData<>();
         errorText = new MutableLiveData<>("");
@@ -193,6 +194,7 @@ public class ThreadViewModel extends AndroidViewModel {
                             List<PostInfo> postInfoList = threadResult.threadPostVariables.postInfoList;
                             // remove null object
                             if(postInfoList.size()!=0){
+                                newPostList.postValue(postInfoList);
                                 if(viewThreadQueryStatus.page == 1){
                                     threadCommentInfoListLiveData.postValue(postInfoList);
                                     totalThreadSize = postInfoList.size();

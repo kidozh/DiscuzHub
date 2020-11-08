@@ -236,6 +236,25 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             }
         });
 
+        threadDetailViewModel.newPostList.observe(this, postInfos -> {
+            int authorid = 0;
+            ThreadResult threadResult = threadDetailViewModel.threadPostResultMutableLiveData.getValue();
+            ViewThreadQueryStatus viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+
+            if(threadResult!=null
+                    && threadResult.threadPostVariables!=null
+                    && threadResult.threadPostVariables.detailedThreadInfo!=null){
+                authorid = threadResult.threadPostVariables.detailedThreadInfo.authorId;
+            }
+            if(viewThreadQueryStatus==null|| viewThreadQueryStatus.page == 1){
+                postAdapter.setThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue(),authorid);
+            }
+            else {
+                postAdapter.addThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue(),authorid);
+            }
+
+        });
+
         threadDetailViewModel.threadCommentInfoListLiveData.observe(this, new Observer<List<PostInfo>>() {
             @Override
             public void onChanged(List<PostInfo> postInfos) {
@@ -266,19 +285,19 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             switch (integer){
                 case ConstUtils.NETWORK_STATUS_LOADING:{
                     binding.bbsThreadDetailSwipeRefreshLayout.setRefreshing(true);
-                    networkIndicatorAdapter.setLoadingStatus(ConstUtils.NETWORK_STATUS_LOADING);
+                    networkIndicatorAdapter.setLoadingStatus();
                     break;
                 }
                 case ConstUtils.NETWORK_STATUS_LOADED_ALL:{
                     binding.bbsThreadDetailSwipeRefreshLayout.setRefreshing(false);
                     //Log.d(TAG,"Network changed "+integer);
-                    networkIndicatorAdapter.setLoadingStatus(ConstUtils.NETWORK_STATUS_LOADED_ALL);
+                    networkIndicatorAdapter.setLoadedAllStatus();
 
                     break;
                 }
                 case ConstUtils.NETWORK_STATUS_SUCCESSFULLY:{
                     binding.bbsThreadDetailSwipeRefreshLayout.setRefreshing(false);
-                    networkIndicatorAdapter.setLoadingStatus(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
+                    networkIndicatorAdapter.setLoadSuccessfulStatus();
 
                     break;
                 }

@@ -169,11 +169,12 @@ public class bbsMyThreadFragment extends Fragment {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                if (page == 1) {
-                                    adapter.setThreadInfoList(threadInfoList, null);
-                                } else {
-                                    adapter.addThreadInfoList(threadInfoList, null);
+                                adapter.addThreadInfoList(threadInfoList, null);
+                                if (page == 1 && adapter.threadInfoList.size() != 0) {
+                                    adapter.clearList();
+
                                 }
+                                adapter.addThreadInfoList(threadInfoList, null);
                                 if(threadInfoList == null || threadInfoList.size() == 0){
                                     emptyBinding.emptyView.setVisibility(View.VISIBLE);
                                 }

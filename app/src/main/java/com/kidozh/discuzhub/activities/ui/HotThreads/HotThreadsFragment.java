@@ -1,6 +1,7 @@
 package com.kidozh.discuzhub.activities.ui.HotThreads;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,8 +19,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.DashBoard.DashBoardViewModel;
+import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;
 import com.kidozh.discuzhub.databinding.FragmentHotThreadBinding;
+import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
@@ -30,19 +34,19 @@ import java.util.List;
 
 public class HotThreadsFragment extends Fragment {
     private static final String TAG = HotThreadsFragment.class.getSimpleName();
+    @NonNull
     private HotThreadsViewModel hotThreadsViewModel;
+    @NonNull
     private DashBoardViewModel dashBoardViewModel;
     FragmentHotThreadBinding binding;
     
 
     ThreadAdapter forumThreadAdapter;
+    NetworkIndicatorAdapter networkIndicatorAdapter = new NetworkIndicatorAdapter();
+    ConcatAdapter concatAdapter;
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
 
-
-    public HotThreadsFragment(){
-
-    }
 
     public static HotThreadsFragment newInstance(@NonNull bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
         HotThreadsFragment fragment = new HotThreadsFragment();
@@ -65,10 +69,9 @@ public class HotThreadsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentHotThreadBinding.inflate(inflater,container,false);
         hotThreadsViewModel = new ViewModelProvider(this).get(HotThreadsViewModel.class);
         dashBoardViewModel = new ViewModelProvider(this).get(DashBoardViewModel.class);
-        binding = FragmentHotThreadBinding.inflate(inflater,container,false);
-
         getIntentInfo();
 
         configureClient();
@@ -90,7 +93,8 @@ public class HotThreadsFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         binding.fragmentHotThreadRecyclerview.setLayoutManager(linearLayoutManager);
         forumThreadAdapter = new ThreadAdapter(null,null,bbsInfo,userBriefInfo);
-        binding.fragmentHotThreadRecyclerview.setAdapter(forumThreadAdapter);
+        concatAdapter = new ConcatAdapter(forumThreadAdapter,networkIndicatorAdapter);
+        binding.fragmentHotThreadRecyclerview.setAdapter(concatAdapter);
         binding.fragmentHotThreadRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         binding.fragmentHotThreadRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -139,18 +143,22 @@ public class HotThreadsFragment extends Fragment {
         hotThreadsViewModel.getThreadListLiveData().observe(getViewLifecycleOwner(), new Observer<List<ThreadInfo>>() {
             @Override
             public void onChanged(List<ThreadInfo> threadInfos) {
+                int page = hotThreadsViewModel.pageNum.getValue();
+                Log.d(TAG,"Recv list page "+page +" size : "+forumThreadAdapter.threadInfoList.size());
+                if(page == 1 && forumThreadAdapter.threadInfoList.size() != 0){
+                    Log.d(TAG,"Clear adapter list "+forumThreadAdapter.threadInfoList.size());
+                    forumThreadAdapter.clearList();
 
-                forumThreadAdapter.setThreadInfoList(threadInfos,null);
+
+                }
+                forumThreadAdapter.addThreadInfoList(threadInfos,null);
                 dashBoardViewModel.hotThreadCountMutableLiveData.postValue(forumThreadAdapter.getItemCount());
                 if(forumThreadAdapter.threadInfoList == null || forumThreadAdapter.threadInfoList.size() == 0){
-                    
-                    binding.errorView.setVisibility(View.VISIBLE);
-                    binding.errorContent.setText(R.string.empty_result);
-                    binding.errorContent.setText(R.string.empty_hot_threads);
-                    binding.errorIcon.setImageResource(R.drawable.ic_empty_hot_thread_64px);
+                    networkIndicatorAdapter.setErrorStatus(new ErrorMessage(getString(R.string.empty_result),
+                            getString(R.string.empty_hot_threads),R.drawable.ic_empty_hot_thread_64px
+                    ));
                 }
                 else {
-                    binding.errorView.setVisibility(View.GONE);
                     
                 }
             }
@@ -158,16 +166,18 @@ public class HotThreadsFragment extends Fragment {
         hotThreadsViewModel.isLoading.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    networkIndicatorAdapter.setLoadingStatus();
+                }
+                else {
+                    networkIndicatorAdapter.setLoadSuccessfulStatus();
+                }
                 binding.swipeRefreshLayout.setRefreshing(aBoolean);
             }
         });
         hotThreadsViewModel.errorMessageMutableLiveData.observe(getViewLifecycleOwner(),errorMessage -> {
             if(errorMessage!=null){
-                binding.errorView.setVisibility(View.VISIBLE);
-                binding.errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
-                binding.errorValue.setText(errorMessage.key);
-                binding.errorContent.setText(errorMessage.content);
-                
+                networkIndicatorAdapter.setErrorStatus(errorMessage);
             }
         });
         

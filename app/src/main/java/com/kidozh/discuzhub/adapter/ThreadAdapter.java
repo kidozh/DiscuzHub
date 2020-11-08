@@ -61,7 +61,6 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
     Map<String,String> threadType;
-    public static int THREAD_TYPE_PINNED = 0, THREAD_TYPE_NORMAL = 1;
     ViewHistoryDao viewHistoryDao;
 
     public ThreadAdapter(Map<String,String> threadType, String fid, bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
@@ -70,42 +69,28 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         this.threadType = threadType;
         this.fid = fid;
+        setHasStableIds(true);
     }
 
-    public void setThreadInfoList(@NonNull List<ThreadInfo> threadInfoList, Map<String,String> threadType){
+    @Override
+    public long getItemId(int position) {
+        if(threadInfoList !=null){
+            return (long) threadInfoList.get(position).tid;
+        }
+        return position;
+    }
+
+    public void clearList(){
         int oldSize = this.threadInfoList.size();
-        int newSize = threadInfoList.size();
-        // given thread type
-        this.threadType = threadType;
-
-        if(oldSize >= newSize){
-            this.threadInfoList.clear();
-            notifyItemRangeRemoved(0,oldSize);
-            this.threadInfoList.addAll(threadInfoList);
-            notifyItemRangeInserted(0,threadInfoList.size());
-
-        }
-        else{
-            this.threadInfoList.clear();
-            this.threadInfoList.addAll(threadInfoList);
-            notifyItemRangeInserted(oldSize,newSize - oldSize);
-        }
-
-
-
-        Log.d(TAG,"Insert threads "+oldSize+" "+threadInfoList.size());
-
+        this.threadInfoList.clear();
+        notifyItemRangeRemoved(0,oldSize);
     }
 
     public void addThreadInfoList(@NonNull List<ThreadInfo> threadInfoList, Map<String,String> threadType){
         this.threadType = threadType;
         int oldSize = this.threadInfoList.size();
-        if(this.threadInfoList == null){
-            this.threadInfoList = threadInfoList;
-        }
-        else {
-            this.threadInfoList.addAll(threadInfoList);
-        }
+        this.threadInfoList.addAll(threadInfoList);
+        Log.d(TAG,"Insert to thread adapter starting at "+oldSize+" count "+threadInfoList.size());
 
         notifyItemRangeInserted(oldSize,threadInfoList.size());
     }
@@ -114,10 +99,10 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public int getItemViewType(int position) {
         ThreadInfo threadInfo = threadInfoList.get(position);
         if(threadInfo.displayOrder <= 0){
-            return THREAD_TYPE_NORMAL;
+            return R.layout.item_thread;
         }
         else {
-            return THREAD_TYPE_PINNED;
+            return R.layout.item_thread_pinned;
         }
 
     }
@@ -130,7 +115,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         viewHistoryDao = ViewHistoryDatabase.getInstance(mContext).getDao();
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
-        if(viewType == THREAD_TYPE_PINNED){
+        if(viewType == R.layout.item_thread_pinned){
             View view = inflater.inflate(R.layout.item_thread_pinned, parent, shouldAttachToParentImmediately);
             return new PinnedViewHolder(view);
         }

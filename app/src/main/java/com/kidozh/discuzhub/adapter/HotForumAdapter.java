@@ -21,12 +21,13 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotForumViewHolder> {
     private final static String TAG = HotForumAdapter.class.getSimpleName();
-    List<HotForum> hotForumList;
+    List<HotForum> hotForumList = new ArrayList<>();
     Context context;
 
     bbsInformation bbsInfo;
@@ -38,7 +39,10 @@ public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotFor
     }
 
     public void setHotForumList(@NonNull List<HotForum> hotForumList) {
-        this.hotForumList = hotForumList;
+        int oldSize = this.hotForumList.size();
+        this.hotForumList.clear();
+        notifyItemRangeRemoved(0,oldSize);
+        this.hotForumList.addAll(hotForumList);
         notifyItemRangeInserted(0,hotForumList.size());
     }
 

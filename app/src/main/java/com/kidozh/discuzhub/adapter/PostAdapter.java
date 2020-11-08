@@ -100,17 +100,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
 
 
+
+
     public PostAdapter(Context context, bbsInformation bbsInfo, forumUserBriefInfo curUser, ViewThreadQueryStatus viewThreadQueryStatus){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
         this.mContext = context;
         client = NetworkUtils.getPreferredClient(context);
         this.viewThreadQueryStatus = viewThreadQueryStatus;
+        setHasStableIds(true);
     }
+
+
 
     public void setThreadInfoList(List<PostInfo> postInfoList, ViewThreadQueryStatus viewThreadQueryStatus, int authorId){
 
-        List<PostInfo> oldPosts = this.postInfoList;
+        int oldSize = this.postInfoList.size();
+        this.postInfoList.clear();
+        notifyItemRangeRemoved(0,oldSize);
         Iterator<PostInfo> iterator = postInfoList.iterator();
         while (iterator.hasNext()){
             PostInfo postInfo = iterator.next();
@@ -121,24 +128,32 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         this.postInfoList = postInfoList;
         this.viewThreadQueryStatus = viewThreadQueryStatus;
         this.authorId = authorId;
-        int oldSize = oldPosts.size();
-        int currentSize = postInfoList.size();
-        Log.d(TAG,"Old size "+oldSize+" new "+currentSize);
-        if(currentSize == 0){
-            // its empty now
-            notifyItemRangeRemoved(0,oldSize);
+        notifyItemRangeInserted(0,postInfoList.size());
+    }
+
+    public void addThreadInfoList(List<PostInfo> postInfoList, ViewThreadQueryStatus viewThreadQueryStatus, int authorId){
+        int oldSize = this.postInfoList.size();
+        Iterator<PostInfo> iterator = postInfoList.iterator();
+        while (iterator.hasNext()){
+            PostInfo postInfo = iterator.next();
+            if(postInfo.message == null){
+                iterator.remove();
+            }
         }
-        else if(oldSize < currentSize){
-            // maybe insert
-            notifyItemRangeInserted(oldSize,currentSize);
-        }
-        else{
-            notifyItemRangeChanged(0,currentSize);
-        }
+        this.postInfoList.addAll(postInfoList);
+        this.viewThreadQueryStatus = viewThreadQueryStatus;
+        this.authorId = authorId;
+        notifyItemRangeInserted(oldSize,postInfoList.size());
     }
 
     public List<PostInfo> getThreadInfoList() {
         return postInfoList;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        PostInfo postInfo = postInfoList.get(position);
+        return postInfo.pid;
     }
 
     @NonNull

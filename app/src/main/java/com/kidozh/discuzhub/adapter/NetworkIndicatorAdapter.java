@@ -16,15 +16,20 @@ import com.kidozh.discuzhub.utilities.ConstUtils;
 
 public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private int loadingStatus = 0;
+    private int networkStatus = 0;
     private Context context;
     private ErrorMessage errorMessage;
 
     private OnRefreshBtnListener mListener;
 
     @Override
+    public long getItemId(int position) {
+        return networkStatus;
+    }
+
+    @Override
     public int getItemViewType(int position) {
-        switch (loadingStatus){
+        switch (networkStatus){
             case ConstUtils.NETWORK_STATUS_LOADING:{
 
                 return R.layout.item_network_indicator_loading;
@@ -40,27 +45,70 @@ public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
         }
     }
+    
+    
 
-    public void setLoadingStatus(int loadingStatus) {
-        this.loadingStatus = loadingStatus;
-        notifyItemChanged(0);
+    public void setNetStatus(int networkStatus) {
+        this.networkStatus = networkStatus;
+        notifyDataSetChanged();
+    }
+
+    public void setLoadingStatus(){
+        if(networkStatus == ConstUtils.NETWORK_STATUS_SUCCESSFULLY){
+            this.networkStatus = ConstUtils.NETWORK_STATUS_LOADING;
+            notifyItemInserted(0);
+        }
+        else {
+            this.networkStatus = ConstUtils.NETWORK_STATUS_LOADING;
+            notifyItemChanged(0);
+        }
+    }
+
+    public void setLoadSuccessfulStatus(){
+        this.networkStatus = ConstUtils.NETWORK_STATUS_SUCCESSFULLY;
+        notifyItemRemoved(0);
+    }
+
+    public void setLoadedAllStatus(){
+        if(networkStatus == ConstUtils.NETWORK_STATUS_SUCCESSFULLY){
+            this.networkStatus = ConstUtils.NETWORK_STATUS_LOADED_ALL;
+            notifyItemInserted(0);
+        }
+        else {
+            this.networkStatus = ConstUtils.NETWORK_STATUS_LOADED_ALL;
+            notifyItemChanged(0);
+        }
     }
 
     public void setErrorStatus(@NonNull ErrorMessage errorMessage) {
-        this.loadingStatus = ConstUtils.NETWORK_STATUS_FAILED;
-        this.errorMessage = errorMessage;
-        notifyItemChanged(0);
+
+        if(networkStatus == ConstUtils.NETWORK_STATUS_SUCCESSFULLY){
+            this.networkStatus = ConstUtils.NETWORK_STATUS_FAILED;
+            this.errorMessage = errorMessage;
+            notifyItemInserted(0);
+        }
+        else {
+            this.networkStatus = ConstUtils.NETWORK_STATUS_FAILED;
+            this.errorMessage = errorMessage;
+            notifyItemChanged(0);
+        }
+
+    }
+
+    public NetworkIndicatorAdapter(){
+        setHasStableIds(true);
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
+
         if(context instanceof OnRefreshBtnListener){
             mListener = (OnRefreshBtnListener) context;
         }
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        switch (loadingStatus){
+        switch (networkStatus){
             case ConstUtils.NETWORK_STATUS_LOADING:{
                 ItemNetworkIndicatorLoadingBinding binding = ItemNetworkIndicatorLoadingBinding.inflate(layoutInflater,parent,false);
                 return new NetworkIndicatorLoadingViewHolder(binding);
@@ -83,7 +131,7 @@ public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof NetworkIndicatorLoadFailedViewHolder && loadingStatus == ConstUtils.NETWORK_STATUS_FAILED){
+        if(holder instanceof NetworkIndicatorLoadFailedViewHolder && networkStatus == ConstUtils.NETWORK_STATUS_FAILED){
             ((NetworkIndicatorLoadFailedViewHolder) holder).binding.errorValue.setText(errorMessage.key);
             ((NetworkIndicatorLoadFailedViewHolder) holder).binding.errorContent.setText(errorMessage.content);
             if(errorMessage.errorIconResource != 0){
@@ -103,7 +151,7 @@ public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        switch (loadingStatus){
+        switch (networkStatus){
             case ConstUtils.NETWORK_STATUS_LOADING:
             case ConstUtils.NETWORK_STATUS_LOADED_ALL:
             case ConstUtils.NETWORK_STATUS_FAILED: {

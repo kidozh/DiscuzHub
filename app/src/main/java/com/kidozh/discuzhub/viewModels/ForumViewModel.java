@@ -20,10 +20,12 @@ import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
+import java.lang.invoke.ConstantCallSite;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +46,9 @@ public class ForumViewModel extends AndroidViewModel {
     ForumInfo forum;
     public OkHttpClient client;
 
-    public MutableLiveData<Boolean> isLoading, hasLoadAll;
-    public MutableLiveData<List<ThreadInfo>> threadInfoListMutableLiveData;
+    public MutableLiveData<Integer> networkState = new MutableLiveData<>(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
+    private MutableLiveData<List<ThreadInfo>> threadInfoListMutableLiveData = new MutableLiveData<>(new ArrayList<>()),
+            newThreadListMutableLiveData;
 
     public LiveData<Integer> draftNumberLiveData;
     public MutableLiveData<ForumInfo> forumDetailedInfoMutableLiveData;
@@ -61,11 +64,6 @@ public class ForumViewModel extends AndroidViewModel {
     public ForumViewModel(@NonNull Application application) {
         super(application);
         forumStatusMutableLiveData = new MutableLiveData<DisplayForumQueryStatus>();
-        isLoading = new MutableLiveData<Boolean>(false);
-
-        isLoading.setValue(false);
-
-        hasLoadAll = new MutableLiveData<>(false);
         draftNumberLiveData = bbsThreadDraftDatabase
                 .getInstance(getApplication())
                 .getbbsThreadDraftDao()
@@ -74,6 +72,15 @@ public class ForumViewModel extends AndroidViewModel {
         displayForumResultMutableLiveData = new MutableLiveData<>(null);
         ruleTextCollapse = new MutableLiveData<>(UserPreferenceUtils.collapseForumRule(application));
         ruleTextCollapse.postValue(UserPreferenceUtils.collapseForumRule(application));
+    }
+
+    public MutableLiveData<List<ThreadInfo>> getNewThreadListMutableLiveData() {
+        if(newThreadListMutableLiveData == null){
+            newThreadListMutableLiveData = new MutableLiveData<>(new ArrayList<>());
+            DisplayForumQueryStatus displayForumQueryStatus = new DisplayForumQueryStatus(forum.fid,1);
+            setForumStatusAndFetchThread(displayForumQueryStatus);
+        }
+        return newThreadListMutableLiveData;
     }
 
     public void setBBSInfo(@NonNull bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, ForumInfo forum){
@@ -93,14 +100,7 @@ public class ForumViewModel extends AndroidViewModel {
         ruleTextCollapse.postValue(!ruleTextCollapse.getValue());
     }
 
-    public LiveData<List<ThreadInfo>> getThreadInfoListLiveData(){
-        if(threadInfoListMutableLiveData == null){
-            threadInfoListMutableLiveData = new MutableLiveData<>();
-            DisplayForumQueryStatus displayForumQueryStatus = new DisplayForumQueryStatus(forum.fid,1);
-            setForumStatusAndFetchThread(displayForumQueryStatus);
-        }
-        return threadInfoListMutableLiveData;
-    }
+
 
     public void setForumStatusAndFetchThread(DisplayForumQueryStatus displayForumQueryStatus){
         forumStatusMutableLiveData.postValue(displayForumQueryStatus);
@@ -110,11 +110,12 @@ public class ForumViewModel extends AndroidViewModel {
     public void getThreadList(DisplayForumQueryStatus displayForumQueryStatus){
         if(!NetworkUtils.isOnline(getApplication())){
             errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()));
-            isLoading.postValue(false);
+            networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED);
+            newThreadListMutableLiveData.postValue(new ArrayList<>());
             return;
         }
-        boolean loading = isLoading.getValue();
-        boolean loadAll = hasLoadAll.getValue();
+        boolean loading = networkState.getValue() == ConstUtils.NETWORK_STATUS_LOADING;
+        boolean loadAll = networkState.getValue() == ConstUtils.NETWORK_STATUS_LOADED_ALL;
         if(displayForumQueryStatus.page == 1){
             loadAll = false;
             loadAllNoticeOnce.postValue(false);
@@ -124,10 +125,11 @@ public class ForumViewModel extends AndroidViewModel {
             return;
         }
 
-        isLoading.postValue(true);
+        networkState.postValue(ConstUtils.NETWORK_STATUS_LOADING);
         Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService service = retrofit.create(DiscuzApiService.class);
         Call<ForumResult> forumResultCall = service.forumDisplayResult(displayForumQueryStatus.generateQueryHashMap());
+        Log.d(TAG,"Browse page "+displayForumQueryStatus.page+" url "+forumResultCall.request().url().toString());
         forumResultCall.enqueue(new Callback<ForumResult>() {
             @Override
             public void onResponse(Call<ForumResult> call, Response<ForumResult> response) {
@@ -137,15 +139,13 @@ public class ForumViewModel extends AndroidViewModel {
                     ForumResult forumResult = response.body();
                     displayForumResultMutableLiveData.postValue(forumResult);
                     Log.d(TAG, "Get forum Result" + forumResult);
-                    if(forumResult.message!=null){
-                        errorMessageMutableLiveData.postValue(forumResult.message.toErrorMessage());
-                    }
+
 
                     // for list display
                     List<ThreadInfo> threadInfoList = forumResult.forumVariables.forumThreadList;
-                    List<ThreadInfo> currentThreadInfo = threadInfoListMutableLiveData.getValue();
-                    if(currentThreadInfo == null || displayForumQueryStatus.page == 1){
-                        currentThreadInfo = new ArrayList<>();
+                    List<ThreadInfo> totalThreadList = threadInfoListMutableLiveData.getValue();
+                    if(totalThreadList == null || displayForumQueryStatus.page == 1){
+                        totalThreadList = new ArrayList<>();
                     }
 
                     if(threadInfoList == null){
@@ -159,13 +159,19 @@ public class ForumViewModel extends AndroidViewModel {
                                 getApplication().getString(R.string.empty_result),
                                 getApplication().getString(R.string.discuz_network_result_null)
                         ));
+                        networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED);
                     }
                     else {
-                        currentThreadInfo.addAll(threadInfoList);
-                        threadInfoListMutableLiveData.postValue(currentThreadInfo);
+                        // not null
+                        // move to next page
+                        displayForumQueryStatus.page += 1;
+                        forumStatusMutableLiveData.postValue(displayForumQueryStatus);
+                        totalThreadList.addAll(threadInfoList);
+                        threadInfoListMutableLiveData.postValue(totalThreadList);
+                        newThreadListMutableLiveData.postValue(threadInfoList);
                         int totalThreadNumber = forumResult.forumVariables.forumInfo.threadCount;
-                        if(currentThreadInfo.size() >= totalThreadNumber){
-                            hasLoadAll.postValue(true);
+                        if(totalThreadList.size() >= totalThreadNumber){
+                            networkState.postValue(ConstUtils.NETWORK_STATUS_LOADED_ALL);
                             if(displayForumQueryStatus.page != 1){
                                 // rollback
                                 displayForumQueryStatus.page -= 1;
@@ -174,32 +180,45 @@ public class ForumViewModel extends AndroidViewModel {
                         }
                         else {
                             loadAllNoticeOnce.postValue(false);
+                            networkState.postValue(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
+
+                        }
+                        // initial page
+                        if(displayForumQueryStatus.page == 2 && threadInfoList.size() == 0){
+                            errorMessageMutableLiveData.postValue(new ErrorMessage(getApplication().getString(R.string.empty_result),
+                                    getApplication().getString(R.string.empty_hot_threads),R.drawable.ic_empty_hot_thread_64px
+                            ));
+                            networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED);
                         }
 
+                    }
+
+                    if(forumResult.message!=null){
+                        errorMessageMutableLiveData.postValue(forumResult.message.toErrorMessage());
+                        networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED);
                     }
                     forumDetailedInfoMutableLiveData.postValue(forumResult.forumVariables.forumInfo);
                 }
                 else {
                     errorMessageMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),
                             getApplication().getString(R.string.discuz_network_unsuccessful,response.message())));
+                    networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED);
                 }
-                isLoading.postValue(false);
             }
 
             @Override
             public void onFailure(Call<ForumResult> call, Throwable t) {
                 if(displayForumQueryStatus.page == 1){
                     threadInfoListMutableLiveData.postValue(new ArrayList<>());
+                    newThreadListMutableLiveData.postValue(new ArrayList<>());
                 }
                 errorMessageMutableLiveData.postValue(new ErrorMessage(
                         getApplication().getString(R.string.discuz_network_failure_template),
                         t.getLocalizedMessage() == null?t.toString():t.getLocalizedMessage()
                 ));
-                isLoading.postValue(false);
+                networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED);
             }
         });
-
-        Log.d(TAG,"Send request to "+ forumResultCall.request().url().toString());
 
 
     }

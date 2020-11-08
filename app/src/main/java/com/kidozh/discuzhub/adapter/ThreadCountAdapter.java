@@ -15,14 +15,15 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.entities.ThreadCount;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class ThreadCountAdapter extends RecyclerView.Adapter<ThreadCountAdapter.ThreadCountHolder> {
 
     private Context context;
-
-    List<ThreadCount> ThreadCountList;
+    @NonNull
+    List<ThreadCount> ThreadCountList = new ArrayList<>();
 
     private OnRecommendBtnPressed mListener;
 
@@ -42,6 +43,9 @@ public class ThreadCountAdapter extends RecyclerView.Adapter<ThreadCountAdapter.
     }
 
     public void setThreadCountList(@NonNull List<ThreadCount> ThreadCountList){
+        int oldSize = this.ThreadCountList.size();
+        this.ThreadCountList.clear();
+        notifyItemMoved(0,oldSize);
         this.ThreadCountList = ThreadCountList;
         notifyItemRangeInserted(0,ThreadCountList.size());
     }

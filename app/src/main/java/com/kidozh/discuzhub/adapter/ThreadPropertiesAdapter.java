@@ -14,12 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.ThreadCount;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ThreadPropertiesAdapter extends RecyclerView.Adapter<ThreadPropertiesAdapter.bbsThreadPropertiesViewHolder> {
     private Context context;
-
-    List<ThreadCount> threadNotificationList;
+    @NonNull
+    List<ThreadCount> threadNotificationList = new ArrayList<>();
     OnThreadPropertyClicked mListener;
 
     @NonNull
@@ -39,6 +40,9 @@ public class ThreadPropertiesAdapter extends RecyclerView.Adapter<ThreadProperti
     }
 
     public void setThreadNotificationList(@NonNull List<ThreadCount> threadNotificationList){
+        int oldSize = this.threadNotificationList.size();
+        this.threadNotificationList.clear();
+        notifyItemRangeRemoved(0,oldSize);
         this.threadNotificationList = threadNotificationList;
         notifyItemRangeInserted(0,threadNotificationList.size());
     }

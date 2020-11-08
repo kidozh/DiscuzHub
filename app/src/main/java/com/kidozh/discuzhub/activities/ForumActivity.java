@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +35,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter;
 import com.kidozh.discuzhub.adapter.SubForumAdapter;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;
 import com.kidozh.discuzhub.daos.FavoriteForumDao;
@@ -72,8 +74,9 @@ import java.util.Map;
 import es.dmoral.toasty.Toasty;
 import retrofit2.Retrofit;
 
-public class ForumActivity
-        extends BaseStatusActivity implements bbsLinkMovementMethod.OnLinkClickedListener{
+public class ForumActivity extends BaseStatusActivity implements
+        NetworkIndicatorAdapter.OnRefreshBtnListener,
+        bbsLinkMovementMethod.OnLinkClickedListener{
     private static final String TAG = ForumActivity.class.getSimpleName();
 
     private ForumInfo forum;
@@ -90,6 +93,8 @@ public class ForumActivity
     private boolean hasLoadOnce = false;
     
     ActivityBbsShowForumBinding binding;
+    NetworkIndicatorAdapter networkIndicatorAdapter = new NetworkIndicatorAdapter();
+    ConcatAdapter concatAdapter;
 
 
 
@@ -116,6 +121,8 @@ public class ForumActivity
 
         configurePostThreadBtn();
         configureChipGroupFilter();
+
+
     }
 
 
@@ -131,56 +138,67 @@ public class ForumActivity
         // hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
     }
 
+
     private void bindViewModel(){
 
-        forumViewModel.getThreadInfoListLiveData().observe(this, new Observer<List<ThreadInfo>>() {
+        forumViewModel.getNewThreadListMutableLiveData().observe(this, new Observer<List<ThreadInfo>>() {
             @Override
-            public void onChanged(List<ThreadInfo> threadInfos) {
+            public void onChanged(@NonNull List<ThreadInfo> threadInfos) {
                 Map<String,String> threadTypeMap = null;
                 if(forumViewModel.displayForumResultMutableLiveData.getValue()!=null &&
                         forumViewModel.displayForumResultMutableLiveData.getValue().forumVariables.threadTypeInfo !=null){
                     threadTypeMap = forumViewModel.displayForumResultMutableLiveData.getValue().forumVariables.threadTypeInfo.idNameMap;
 
                 }
-                Log.d(TAG,"recv thread type list "+threadTypeMap);
-                adapter.setThreadInfoList(threadInfos,threadTypeMap);
-                if(adapter.getItemCount() == 0){
-                    binding.errorView.setVisibility(View.VISIBLE);
-                    if(forumViewModel.errorMessageMutableLiveData.getValue() == null){
-                        binding.errorView.setVisibility(View.VISIBLE);
-                        binding.errorIcon.setImageResource(R.drawable.ic_blank_forum_thread_64px);
-                        binding.errorValue.setText("");
-                        binding.errorContent.setText(getString(R.string.discuz_network_result_null));
-                    }
+                DisplayForumQueryStatus queryStatus = forumViewModel.forumStatusMutableLiveData.getValue();
+                Log.d(TAG,"forum page "+queryStatus.page+" "+threadInfos.size());
+                if(queryStatus.page == 1 && threadInfos.size() == 0){
+                    return;
                 }
-                else {
-                    binding.errorView.setVisibility(View.GONE);
+                if((queryStatus.page == 2 || queryStatus.page == 1) && adapter.threadInfoList.size() != 0){
+                    // need to clear the cache
+                    adapter.clearList();
+
                 }
 
-
+                adapter.addThreadInfoList(threadInfos,threadTypeMap);
+                if(queryStatus.page == 2 ){
+                    binding.bbsForumThreadRecyclerview.smoothScrollToPosition(0);
+                }
 
             }
         });
-        Context context = this;
-        forumViewModel.hasLoadAll.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
+
+        forumViewModel.networkState.observe(this, integer -> {
+            Log.d(TAG,"Network state changed "+integer);
+            switch (integer){
+                case ConstUtils.NETWORK_STATUS_LOADING:{
+                    binding.bbsForumInfoSwipeRefreshLayout.setRefreshing(true);
+                    networkIndicatorAdapter.setLoadingStatus();
+                    break;
+                }
+                case ConstUtils.NETWORK_STATUS_LOADED_ALL:{
+                    binding.bbsForumInfoSwipeRefreshLayout.setRefreshing(false);
+                    //Log.d(TAG,"Network changed "+integer);
+                    networkIndicatorAdapter.setLoadedAllStatus();
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplication());
                     boolean needVibrate = prefs.getBoolean(getString(R.string.preference_key_vibrate_when_load_all),true);
                     Toasty.success(getApplication(),getString(R.string.thread_has_load_all),Toast.LENGTH_SHORT).show();
                     if(needVibrate){
-                        VibrateUtils.vibrateSlightly(context);
+                        VibrateUtils.vibrateSlightly(this);
 
                     }
+                    break;
                 }
-            }
-        });
+                case ConstUtils.NETWORK_STATUS_SUCCESSFULLY:{
+                    binding.bbsForumInfoSwipeRefreshLayout.setRefreshing(false);
+                    networkIndicatorAdapter.setLoadSuccessfulStatus();
 
-        forumViewModel.isLoading.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                binding.bbsForumInfoSwipeRefreshLayout.setRefreshing(aBoolean);
+                    break;
+                }
+                default:{
+                    binding.bbsForumInfoSwipeRefreshLayout.setRefreshing(false);
+                }
             }
         });
         
@@ -190,10 +208,7 @@ public class ForumActivity
                 Toasty.error(getApplicationContext(),
                         getString(R.string.discuz_api_message_template,errorMessage.key,errorMessage.content),
                         Toast.LENGTH_LONG).show();
-                binding.errorView.setVisibility(View.VISIBLE);
-                binding.errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
-                binding.errorValue.setText(errorMessage.key);
-                binding.errorContent.setText(errorMessage.content);
+                networkIndicatorAdapter.setErrorStatus(errorMessage);
                 VibrateUtils.vibrateForError(getApplication());
             }
         });
@@ -486,14 +501,16 @@ public class ForumActivity
         binding.bbsForumThreadRecyclerview.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
 
         adapter = new ThreadAdapter(null,fid,bbsInfo,userBriefInfo);
-        binding.bbsForumThreadRecyclerview.setAdapter(adapter);
+        concatAdapter = new ConcatAdapter(adapter,networkIndicatorAdapter);
+        binding.bbsForumThreadRecyclerview.setAdapter(concatAdapter);
+
         binding.bbsForumThreadRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(isScrollAtEnd()){
-                    boolean hasLoadAll = forumViewModel.hasLoadAll.getValue();
-                    boolean loading = forumViewModel.isLoading.getValue();
+                if(!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE){
+                    boolean hasLoadAll = forumViewModel.networkState.getValue() == ConstUtils.NETWORK_STATUS_LOADED_ALL;
+                    boolean loading = forumViewModel.networkState.getValue() == ConstUtils.NETWORK_STATUS_LOADING;
                     boolean loadAllOnce = forumViewModel.loadAllNoticeOnce.getValue();
                     Log.d(TAG,"load all "+hasLoadAll+" page "+ forumViewModel.forumStatusMutableLiveData.getValue().page);
                     if(hasLoadAll){
@@ -509,7 +526,6 @@ public class ForumActivity
                         if(!loading){
                             DisplayForumQueryStatus status = forumViewModel.forumStatusMutableLiveData.getValue();
                             if(status!=null){
-                                status.page += 1;
                                 forumViewModel.setForumStatusAndFetchThread(status);
                             }
 
@@ -520,37 +536,8 @@ public class ForumActivity
 
                 }
             }
-
-            public boolean isScrollAtEnd(){
-
-                if (binding.bbsForumThreadRecyclerview.computeVerticalScrollExtent() + binding.bbsForumThreadRecyclerview.computeVerticalScrollOffset()
-                        >= binding.bbsForumThreadRecyclerview.computeVerticalScrollRange()){
-                    return true;
-                }
-                else {
-                    return false;
-                }
-
-            }
         });
-        binding.moreThreadBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                DisplayForumQueryStatus forumStatus = forumViewModel.forumStatusMutableLiveData.getValue();
-                Boolean loadAll = forumViewModel.hasLoadAll.getValue();
-                // to next page
-                if(forumStatus!=null){
-                    if(loadAll){
-                        Toasty.info(getApplication(),getString(R.string.bbs_forum_thread_load_all),Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        forumStatus.page += 1;
-                        forumViewModel.getThreadList(forumStatus);
-                    }
 
-                }
-            }
-        });
     }
 
     private void configureFab(){
@@ -585,6 +572,14 @@ public class ForumActivity
     @Override
     public boolean onLinkClicked(String url) {
         return bbsLinkMovementMethod.parseURLAndOpen(this,bbsInfo,userBriefInfo,url);
+    }
+
+    @Override
+    public void onRefreshBtnClicked() {
+        DisplayForumQueryStatus status = forumViewModel.forumStatusMutableLiveData.getValue();
+        if(status!=null){
+            forumViewModel.setForumStatusAndFetchThread(status);
+        }
     }
 
 

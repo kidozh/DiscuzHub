@@ -1,6 +1,7 @@
 package com.kidozh.discuzhub.activities.ui.HotThreads;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -33,8 +34,8 @@ public class HotThreadsViewModel extends AndroidViewModel {
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
     private OkHttpClient client = new OkHttpClient();
-
-    public MutableLiveData<Integer> pageNum;
+    @NonNull
+    public MutableLiveData<Integer> pageNum = new MutableLiveData<Integer>(1);
     public MutableLiveData<Boolean> isLoading;
     public MutableLiveData<List<ThreadInfo>> threadListLiveData;
     public MutableLiveData<ErrorMessage> errorMessageMutableLiveData = new MutableLiveData<>(null);;
@@ -45,8 +46,6 @@ public class HotThreadsViewModel extends AndroidViewModel {
 
     public HotThreadsViewModel(Application application) {
         super(application);
-        pageNum = new MutableLiveData<Integer>();
-        pageNum.postValue(1);
         isLoading = new MutableLiveData<Boolean>();
         isLoading.postValue(false);
 
@@ -63,7 +62,7 @@ public class HotThreadsViewModel extends AndroidViewModel {
 
     public LiveData<List<ThreadInfo>> getThreadListLiveData() {
         if(threadListLiveData == null){
-            threadListLiveData = new MutableLiveData<List<ThreadInfo>>();
+            threadListLiveData = new MutableLiveData<>(new ArrayList<>());
             getThreadList(pageNum.getValue() == null ? 1 : pageNum.getValue());
         }
         return threadListLiveData;
@@ -77,25 +76,26 @@ public class HotThreadsViewModel extends AndroidViewModel {
     private void getThreadList(int page){
         // init page
         if(!NetworkUtils.isOnline(getApplication())){
-            errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()));
             isLoading.postValue(false);
+            errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()));
+
             return;
         }
         isLoading.postValue(true);
+
         Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService service = retrofit.create(DiscuzApiService.class);
         Call<DisplayThreadsResult> displayThreadsResultCall = service.hotThreadResult(page);
+        Log.d(TAG,"Get hot thread page "+page+" url "+displayThreadsResultCall.request().url().toString());
         displayThreadsResultCall.enqueue(new Callback<DisplayThreadsResult>() {
             @Override
             public void onResponse(Call<DisplayThreadsResult> call, retrofit2.Response<DisplayThreadsResult> response) {
                 if(response.isSuccessful() && response.body()!=null){
+                    isLoading.postValue(false);
                     DisplayThreadsResult threadsResult = response.body();
                     resultMutableLiveData.postValue(threadsResult);
 
-                    List<ThreadInfo> currentThreadInfo = threadListLiveData.getValue();
-                    if(currentThreadInfo == null){
-                        currentThreadInfo = new ArrayList<ThreadInfo>();
-                    }
+                    List<ThreadInfo> currentThreadInfo = new ArrayList<>();
 
                     if(threadsResult.forumVariables !=null){
                         List<ThreadInfo> threadInfos = threadsResult.forumVariables.forumThreadList;
@@ -136,16 +136,17 @@ public class HotThreadsViewModel extends AndroidViewModel {
                     errorMessageMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),
                             getApplication().getString(R.string.discuz_network_unsuccessful,response.message())));
                 }
-                isLoading.postValue(false);
+
             }
 
             @Override
             public void onFailure(Call<DisplayThreadsResult> call, Throwable t) {
+                isLoading.postValue(false);
                 errorMessageMutableLiveData.postValue(new ErrorMessage(
                         getApplication().getString(R.string.discuz_network_failure_template),
                         t.getLocalizedMessage() == null?t.toString():t.getLocalizedMessage()
                 ));
-                isLoading.postValue(false);
+
             }
         });
 
