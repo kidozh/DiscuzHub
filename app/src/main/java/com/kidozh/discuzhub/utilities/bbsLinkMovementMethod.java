@@ -18,7 +18,8 @@ import android.view.MotionEvent;
 import android.widget.TextView;
 import android.text.Layout;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import androidx.appcompat.app.AlertDialog;
+
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.InternalWebViewActivity;
 import com.kidozh.discuzhub.activities.ThreadActivity;
@@ -406,7 +407,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
             boolean outLinkWarn = prefs.getBoolean(context.getString(R.string.preference_key_outlink_warn),true);
             if(outLinkWarn){
 
-                new MaterialAlertDialogBuilder(context)
+                new AlertDialog.Builder(context)
                         .setTitle(R.string.outlink_warn_title)
                         .setMessage(context.getString(R.string.outlink_warn_message,clickedUri.getHost(),baseUri.getHost()))
                         .setNeutralButton(R.string.bbs_show_in_internal_browser, new DialogInterface.OnClickListener() {

@@ -1374,7 +1374,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             boolean outLinkWarn = prefs.getBoolean(getString(R.string.preference_key_outlink_warn),true);
             if(outLinkWarn){
 
-                new MaterialAlertDialogBuilder(this)
+                new AlertDialog.Builder(this)
                         .setTitle(R.string.outlink_warn_title)
                         .setMessage(getString(R.string.outlink_warn_message,clickedUri.getHost(),baseUri.getHost()))
                         .setNeutralButton(R.string.bbs_show_in_internal_browser, new DialogInterface.OnClickListener() {

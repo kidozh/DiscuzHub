@@ -208,8 +208,8 @@
     <string name="preference_summary_off_auto_post_backup">僅當點擊草稿圖標時，你發的帖子才會存到草稿箱。 </string>
     <string name="bbs_draft_box">草稿箱</string>
     <string name="bbs_personal_center">個人信息</string>
-    <string name="bbs_show_in_external_browser">在外部瀏覽器瀏覽</string>
-    <string name="bbs_show_in_internal_browser">在應用內瀏覽器瀏覽</string>
+    <string name="bbs_show_in_external_browser">外部瀏覽器</string>
+    <string name="bbs_show_in_internal_browser">應用內瀏覽</string>
     <string name="bbs_display_dark_mode">深色模式</string>
     <string name="bbs_display_daylight_mode">淺色模式</string>
     <string name="bbs_thread_auto_backup_start">自動備份已經開啟</string>
