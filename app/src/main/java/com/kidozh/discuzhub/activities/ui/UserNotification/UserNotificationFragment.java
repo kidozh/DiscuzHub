@@ -29,6 +29,7 @@ import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.UserNoteListResult;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
@@ -140,6 +141,7 @@ public class UserNotificationFragment extends Fragment {
         binding.fragmentBbsNotificationRecyclerview.setLayoutManager(linearLayoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 linearLayoutManager.getOrientation());
+        binding.fragmentBbsNotificationRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         binding.fragmentBbsNotificationRecyclerview.addItemDecoration(dividerItemDecoration);
         adapter = new NotificationAdapter(bbsInfo,userBriefInfo);
         binding.fragmentBbsNotificationRecyclerview.setAdapter(adapter);

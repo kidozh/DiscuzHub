@@ -27,6 +27,7 @@ import com.kidozh.discuzhub.adapter.UploadAttachmentInfoAdapter;
 import com.kidozh.discuzhub.databinding.DialogUploadAttachmentBinding;
 import com.kidozh.discuzhub.entities.UploadAttachment;
 import com.kidozh.discuzhub.results.PostParameterResult;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.viewModels.PostThreadViewModel;
 
@@ -80,7 +81,7 @@ public class UploadAttachmentDialogFragment extends BottomSheetDialogFragment {
     public void configureAttachmentRecyclerview(){
         binding.uploadAttachmentFileRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new UploadAttachmentInfoAdapter();
-
+        binding.uploadAttachmentFileRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         binding.uploadAttachmentFileRecyclerview.setHasFixedSize(true);
         binding.uploadAttachmentFileRecyclerview.setAdapter(adapter);
 

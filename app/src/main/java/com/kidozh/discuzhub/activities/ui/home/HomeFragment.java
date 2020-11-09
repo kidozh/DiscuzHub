@@ -195,6 +195,7 @@ public class HomeFragment extends Fragment {
 
 
     private void configurePortalRecyclerview(){
+        activityBbsForumIndexBinding.bbsPortalRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         activityBbsForumIndexBinding.bbsPortalRecyclerview.setHasFixedSize(true);
         activityBbsForumIndexBinding.bbsPortalRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         AnimationUtils.INSTANCE.configureRecyclerviewAnimation(getContext(),activityBbsForumIndexBinding.bbsPortalRecyclerview);

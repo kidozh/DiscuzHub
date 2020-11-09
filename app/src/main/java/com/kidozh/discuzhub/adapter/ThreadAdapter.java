@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
@@ -36,6 +37,7 @@ import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -385,6 +387,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 holder.mReplyRecyclerview.setClickable(false);
                 ShortPostAdapter adapter = new ShortPostAdapter();
                 adapter.setShortReplyInfoList(threadInfo.shortReplyList);
+                holder.mReplyRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(mContext));
                 holder.mReplyRecyclerview.setAdapter(adapter);
                 holder.mReplyRecyclerview.setNestedScrollingEnabled(false);
             }

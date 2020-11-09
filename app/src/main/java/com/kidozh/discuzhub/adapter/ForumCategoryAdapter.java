@@ -17,6 +17,7 @@ import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.BBSIndexResult;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 
 import java.util.ArrayList;
@@ -81,6 +82,7 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
         }
 
         ForumAdapter adapter = new ForumAdapter(bbsInfo,curUser);
+        holder.mRecyclerView.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(mContext));
         holder.mRecyclerView.setAdapter(adapter);
         List<ForumInfo> forumInfoListInTheCategory = category.getForumListInTheCategory(allForumInfo);
         adapter.setForumInfoList(forumInfoListInTheCategory);

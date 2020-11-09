@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.SmileyAdapter;
 import com.kidozh.discuzhub.databinding.FragmentSmileyBinding;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 
 import java.util.ArrayList;
@@ -97,7 +98,7 @@ public class SmileyFragment extends Fragment {
     void configureRecyclerView(){
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 6, LinearLayoutManager.VERTICAL, false);
         binding.smileyRecyclerview.setLayoutManager(layoutManager);
-
+        binding.smileyRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         adapter = new SmileyAdapter(getContext(), (v1, position) -> {
             ImageView img = (ImageView) v1;
             smileyClick(img.getDrawable(), position);

@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.activities.ui.HotThreads;
 
+import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 
 import java.util.List;
@@ -95,6 +97,7 @@ public class HotThreadsFragment extends Fragment {
         forumThreadAdapter = new ThreadAdapter(null,null,bbsInfo,userBriefInfo);
         concatAdapter = new ConcatAdapter(forumThreadAdapter,networkIndicatorAdapter);
         binding.fragmentHotThreadRecyclerview.setAdapter(concatAdapter);
+        binding.fragmentHotThreadRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         binding.fragmentHotThreadRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         binding.fragmentHotThreadRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

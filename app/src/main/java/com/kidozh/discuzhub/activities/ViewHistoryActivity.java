@@ -37,6 +37,7 @@ import com.kidozh.discuzhub.databinding.ActivityViewHistoryBinding;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -92,6 +93,7 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
 
     private void configureRecyclerview(){
         binding.viewHistoryRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        binding.viewHistoryRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         binding.viewHistoryRecyclerview.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.HORIZONTAL));
         adapter = new ViewHistoryAdapter();
         adapter.setInfo(bbsInfo,userBriefInfo);

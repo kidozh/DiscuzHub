@@ -29,6 +29,7 @@ import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 
 import java.util.ArrayList;
@@ -104,6 +105,7 @@ public class FavoriteThreadFragment extends Fragment {
     }
 
     private void configureRecyclerview(){
+        binding.favoriteThreadRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         binding.favoriteThreadRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new FavoriteThreadAdapter();
         adapter.setInformation(bbsInfo,userBriefInfo);

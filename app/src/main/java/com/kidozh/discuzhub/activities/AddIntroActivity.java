@@ -24,6 +24,7 @@ import com.kidozh.discuzhub.databinding.ActivityBbsAddIntroBinding;
 import com.kidozh.discuzhub.entities.SuggestURLInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.results.AddCheckResult;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -87,6 +88,7 @@ public class AddIntroActivity extends BaseStatusActivity
         binding.bbsAddIntroRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         binding.bbsAddIntroRecyclerview.setHasFixedSize(true);
         binding.bbsAddIntroRecyclerview.setAdapter(adapter);
+        binding.bbsAddIntroRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         // add examples
         List<SuggestURLInfo> suggestURLInfoList = new ArrayList<>();
         suggestURLInfoList.add(new SuggestURLInfo("https://bbs.nwpu.edu.cn",getString(R.string.bbs_url_example_npubbs),true));

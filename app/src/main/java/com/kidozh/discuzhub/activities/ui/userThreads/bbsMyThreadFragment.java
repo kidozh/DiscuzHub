@@ -26,6 +26,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -109,6 +110,7 @@ public class bbsMyThreadFragment extends Fragment {
                 linearLayoutManager.getOrientation());
         binding.fragmentMyThreadRecyclerview.addItemDecoration(dividerItemDecoration);
         adapter = new ThreadAdapter(null,"",bbsInfo,userBriefInfo);
+        binding.fragmentMyThreadRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         binding.fragmentMyThreadRecyclerview.setAdapter(adapter);
 
     }

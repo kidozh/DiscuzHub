@@ -27,6 +27,7 @@ import com.kidozh.discuzhub.databinding.ActivityViewThreadDraftBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 
 import java.util.List;
@@ -70,6 +71,7 @@ public class bbsShowThreadDraftActivity extends BaseStatusActivity implements re
     private void configureRecyclerview(){
         binding.bbsShowThreadDraftRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         threadDraftAdapter = new ThreadDraftAdapter(bbsInfo,userBriefInfo);
+        binding.bbsShowThreadDraftRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         binding.bbsShowThreadDraftRecyclerview.setAdapter(threadDraftAdapter);
         listLiveData = bbsThreadDraftDatabase.getInstance(this)
                 .getbbsThreadDraftDao()

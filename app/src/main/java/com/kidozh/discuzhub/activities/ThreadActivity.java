@@ -81,6 +81,7 @@ import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -1505,6 +1506,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         //binding.postsRecyclerview.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         binding.postsRecyclerview.setLayoutManager(linearLayoutManager);
+        binding.postsRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         postAdapter = new PostAdapter(this,
                 bbsInfo,
                 userBriefInfo,
@@ -1556,13 +1558,16 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         if(!UserPreferenceUtils.conciseRecyclerView(getApplicationContext())){
             // not to bind this
             binding.bbsThreadInteractiveRecyclerview.setHasFixedSize(true);
+            binding.bbsThreadInteractiveRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
             binding.bbsThreadInteractiveRecyclerview.setLayoutManager(new GridLayoutManager(this, 5));
             binding.bbsThreadInteractiveRecyclerview.setAdapter(countAdapter);
         }
 
         propertiesAdapter = new ThreadPropertiesAdapter();
         binding.bbsThreadPropertyRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        binding.bbsThreadPropertyRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         binding.bbsThreadPropertyRecyclerview.setAdapter(propertiesAdapter);
+
 
 
     }

@@ -54,6 +54,7 @@ import com.kidozh.discuzhub.results.ApiMessageActionResult;
 import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.GlideImageGetter;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -490,11 +491,13 @@ public class ForumActivity extends BaseStatusActivity implements
 
     private void configureRecyclerview(){
         binding.bbsForumSublist.setHasFixedSize(true);
+        binding.bbsForumSublist.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         binding.bbsForumSublist.setLayoutManager(new GridLayoutManager(this,4));
         subForumAdapter = new SubForumAdapter(bbsInfo,userBriefInfo);
         binding.bbsForumSublist.setAdapter(subForumAdapter);
 
         binding.bbsForumThreadRecyclerview.setHasFixedSize(true);
+        binding.bbsForumThreadRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
         binding.bbsForumThreadRecyclerview.setLayoutManager(linearLayoutManager);

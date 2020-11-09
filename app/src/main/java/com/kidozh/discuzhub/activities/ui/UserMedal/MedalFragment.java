@@ -19,6 +19,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.MedalAdapter;
 import com.kidozh.discuzhub.databinding.FragmentMedalListBinding;
 import com.kidozh.discuzhub.results.UserProfileResult;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +76,7 @@ public class MedalFragment extends Fragment {
         binding = FragmentMedalListBinding.inflate(inflater,container,false);
 
         // Set the adapter
+        binding.medalRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         binding.medalRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.medalRecyclerview.setAdapter(adapter);
         if(medalList != null){

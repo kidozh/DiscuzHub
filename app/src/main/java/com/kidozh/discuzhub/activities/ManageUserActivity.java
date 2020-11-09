@@ -29,6 +29,7 @@ import com.kidozh.discuzhub.dialogs.ManageAdapterHelpDialogFragment;
 import com.kidozh.discuzhub.dialogs.ManageUserAdapterHelpDialogFragment;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -88,6 +89,7 @@ public class ManageUserActivity extends BaseStatusActivity
 
     void configureRecyclerView(){
         binding.bbsUserRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        binding.bbsUserRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         userAdapter = new forumUsersAdapter(this, bbsInfo);
         binding.bbsUserRecyclerview.setAdapter(userAdapter);
         // swipe to delete

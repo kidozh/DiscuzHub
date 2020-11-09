@@ -24,6 +24,7 @@ import com.kidozh.discuzhub.adapter.PollOptionAdapter;
 import com.kidozh.discuzhub.databinding.FragmentBbsPollBinding;
 import com.kidozh.discuzhub.entities.bbsPollInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.RecyclerItemClickListener;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -262,6 +263,7 @@ public class bbsPollFragment extends Fragment {
     }
 
     void configureRecyclerview(){
+        binding.bbsPollOptionRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         //binding.bbsPollOptionRecyclerview.setLayoutManager(new GridLayoutManager(getActivity(),2));
         binding.bbsPollOptionRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new PollOptionAdapter();

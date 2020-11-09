@@ -22,6 +22,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.HotForumsResult;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 
@@ -81,6 +82,7 @@ public class HotForumsFragment extends Fragment {
 
     private void configureRecyclerview(){
         adapter = new HotForumAdapter(bbsInfo,userBriefInfo);
+        binding.fragmentHotforumRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         binding.fragmentHotforumRecyclerview.setLayoutManager(new GridLayoutManager(getContext(),2));
         binding.fragmentHotforumRecyclerview.setHasFixedSize(true);
         binding.fragmentHotforumRecyclerview.setAdapter(adapter);

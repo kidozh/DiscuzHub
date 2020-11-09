@@ -22,6 +22,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.UserProfileItemAdapter;
 import com.kidozh.discuzhub.databinding.UserProfileInfoListFragmentBinding;
 import com.kidozh.discuzhub.entities.UserProfileItem;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
@@ -79,6 +80,7 @@ public class UserProfileInfoListFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL);
         binding.userProfileInfoRecyclerview.addItemDecoration(dividerItemDecoration);
+        binding.userProfileInfoRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
     }
 
     private void bindViewModel(){
