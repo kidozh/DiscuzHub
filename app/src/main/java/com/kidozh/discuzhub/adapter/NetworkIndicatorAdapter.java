@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.databinding.ItemNetworkIndicatorFailedBinding;
 import com.kidozh.discuzhub.databinding.ItemNetworkIndicatorLoadAllBinding;
+import com.kidozh.discuzhub.databinding.ItemNetworkIndicatorLoadSuccessfullyBinding;
 import com.kidozh.discuzhub.databinding.ItemNetworkIndicatorLoadingBinding;
 import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -50,13 +51,13 @@ public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     public void setNetStatus(int networkStatus) {
         this.networkStatus = networkStatus;
-        notifyDataSetChanged();
+        notifyItemChanged(0);
     }
 
     public void setLoadingStatus(){
         if(networkStatus == ConstUtils.NETWORK_STATUS_SUCCESSFULLY){
             this.networkStatus = ConstUtils.NETWORK_STATUS_LOADING;
-            notifyItemInserted(0);
+            notifyItemChanged(0);
         }
         else {
             this.networkStatus = ConstUtils.NETWORK_STATUS_LOADING;
@@ -66,13 +67,13 @@ public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     public void setLoadSuccessfulStatus(){
         this.networkStatus = ConstUtils.NETWORK_STATUS_SUCCESSFULLY;
-        notifyItemRemoved(0);
+        notifyItemChanged(0);
     }
 
     public void setLoadedAllStatus(){
         if(networkStatus == ConstUtils.NETWORK_STATUS_SUCCESSFULLY){
             this.networkStatus = ConstUtils.NETWORK_STATUS_LOADED_ALL;
-            notifyItemInserted(0);
+            notifyItemChanged(0);
         }
         else {
             this.networkStatus = ConstUtils.NETWORK_STATUS_LOADED_ALL;
@@ -85,7 +86,7 @@ public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.V
         if(networkStatus == ConstUtils.NETWORK_STATUS_SUCCESSFULLY){
             this.networkStatus = ConstUtils.NETWORK_STATUS_FAILED;
             this.errorMessage = errorMessage;
-            notifyItemInserted(0);
+            notifyItemChanged(0);
         }
         else {
             this.networkStatus = ConstUtils.NETWORK_STATUS_FAILED;
@@ -118,7 +119,8 @@ public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.V
                 return new NetworkIndicatorLoadAllViewHolder(binding);
             }
             case ConstUtils.NETWORK_STATUS_SUCCESSFULLY:{
-
+                ItemNetworkIndicatorLoadSuccessfullyBinding binding = ItemNetworkIndicatorLoadSuccessfullyBinding.inflate(layoutInflater,parent,false);
+                return new NetworkIndicatorLoadSuccessfullyViewHolder(binding);
             }
             case ConstUtils.NETWORK_STATUS_FAILED:{
                 ItemNetworkIndicatorFailedBinding binding = ItemNetworkIndicatorFailedBinding.inflate(layoutInflater,parent,false);
@@ -151,17 +153,7 @@ public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        switch (networkStatus){
-            case ConstUtils.NETWORK_STATUS_LOADING:
-            case ConstUtils.NETWORK_STATUS_LOADED_ALL:
-            case ConstUtils.NETWORK_STATUS_FAILED: {
-                return 1;
-            }
-            case ConstUtils.NETWORK_STATUS_SUCCESSFULLY:{
-                return 0;
-            }
-        }
-        return 0;
+        return 1;
     }
 
     public static class NetworkIndicatorLoadingViewHolder extends RecyclerView.ViewHolder{
@@ -186,6 +178,15 @@ public class NetworkIndicatorAdapter extends RecyclerView.Adapter<RecyclerView.V
         @NonNull
         ItemNetworkIndicatorFailedBinding binding;
         NetworkIndicatorLoadFailedViewHolder(@NonNull ItemNetworkIndicatorFailedBinding binding){
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+    }
+
+    public static class NetworkIndicatorLoadSuccessfullyViewHolder extends RecyclerView.ViewHolder{
+        @NonNull
+        ItemNetworkIndicatorLoadSuccessfullyBinding binding;
+        NetworkIndicatorLoadSuccessfullyViewHolder(@NonNull ItemNetworkIndicatorLoadSuccessfullyBinding binding){
             super(binding.getRoot());
             this.binding = binding;
         }

@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.adapter;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -14,6 +15,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.UserMedal.MedalFragment.OnListFragmentInteractionListener;
 import com.kidozh.discuzhub.results.UserProfileResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,12 +26,15 @@ import java.util.List;
  */
 public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.ViewHolder> {
 
-    private List<UserProfileResult.Medal> medalList;
+    private List<UserProfileResult.Medal> medalList = new ArrayList<>();
     private Context context;
 
-    public void setMedalList(List<UserProfileResult.Medal> medalList) {
-        this.medalList = medalList;
-        notifyDataSetChanged();
+    public void setMedalList(@NonNull List<UserProfileResult.Medal> medalList) {
+        int oldSize = this.medalList.size();
+        this.medalList.clear();
+        notifyItemRangeRemoved(0,oldSize);
+        this.medalList.addAll(medalList);
+        notifyItemRangeInserted(0,this.medalList.size());
     }
 
     @Override

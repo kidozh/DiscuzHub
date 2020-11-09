@@ -52,7 +52,7 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void setForumInfoList(@NonNull List<ForumInfo> forumInfoList) {
         this.forumInfoList.clear();
         notifyItemRangeRemoved(0,this.forumInfoList.size());
-        this.forumInfoList = forumInfoList;
+        this.forumInfoList.addAll(forumInfoList);
         notifyItemRangeInserted(0,forumInfoList.size());
     }
 

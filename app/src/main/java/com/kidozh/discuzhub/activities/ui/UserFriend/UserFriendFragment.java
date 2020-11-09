@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,8 +22,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter;
 import com.kidozh.discuzhub.adapter.bbsUserFriendAdapter;
 import com.kidozh.discuzhub.databinding.FragmentUserFriendBinding;
+import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -103,9 +106,10 @@ public class UserFriendFragment extends Fragment {
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
     ForumInfo forum;
-    private OkHttpClient client = new OkHttpClient();
     bbsUserFriendAdapter adapter;
     private UserFriendViewModel viewModel;
+    ConcatAdapter concatAdapter;
+    NetworkIndicatorAdapter networkIndicatorAdapter = new NetworkIndicatorAdapter();
 
 
     @Override
@@ -123,7 +127,6 @@ public class UserFriendFragment extends Fragment {
         forum = intent.getParcelableExtra(ConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
-        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
         viewModel = new ViewModelProvider(this).get(UserFriendViewModel.class);
         Log.d(TAG,"Set bbs "+bbsInfo+" user "+userBriefInfo);
         viewModel.setInfo(bbsInfo,userBriefInfo, uid, friendCounts);
@@ -135,38 +138,37 @@ public class UserFriendFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 linearLayoutManager.getOrientation());
         binding.userFriendRecyclerview.addItemDecoration(dividerItemDecoration);
-        adapter = new bbsUserFriendAdapter(null,bbsInfo,userBriefInfo);
-        binding.userFriendRecyclerview.setAdapter(adapter);
+        adapter = new bbsUserFriendAdapter(bbsInfo,userBriefInfo);
+        concatAdapter = new ConcatAdapter(adapter,networkIndicatorAdapter);
+        binding.userFriendRecyclerview.setAdapter(concatAdapter);
 
         binding.userFriendRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(isScrollAtEnd()){
+                if(!binding.userFriendRecyclerview.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE){
                     viewModel.getFriendInfo();
 
                 }
-            }
-
-            public boolean isScrollAtEnd(){
-
-                if (binding.userFriendRecyclerview.computeVerticalScrollExtent() + binding.userFriendRecyclerview.computeVerticalScrollOffset()
-                        >= binding.userFriendRecyclerview.computeVerticalScrollRange()){
-                    return true;
-                }
-                else {
-                    return false;
-                }
-
             }
         });
     }
 
     private void bindViewModel(){
+        viewModel.getNewFriendListMutableLiveData().observe(getViewLifecycleOwner(),userFriends -> {
+            if(userFriends!=null){
+                Log.d(TAG,"Add new friends "+userFriends.size()+" page "+viewModel.getPage());
+                adapter.addUserFriendList(userFriends);
+                if(viewModel.getPage() == 2){
+                    // means successfully
+                    binding.userFriendRecyclerview.scrollToPosition(0);
+                }
+            }
+        });
         viewModel.getUserFriendListMutableData().observe(getViewLifecycleOwner(), new Observer<List<UserFriendResult.UserFriend>>() {
             @Override
             public void onChanged(List<UserFriendResult.UserFriend> userFriends) {
-                adapter.setUserFriendList(userFriends);
+
                 if(userFriends == null || userFriends.size() == 0){
                     // check for privacy
                     if(viewModel.getPrivacyMutableLiveData().getValue()!=null && viewModel.getPrivacyMutableLiveData().getValue() == false){
@@ -176,6 +178,7 @@ public class UserFriendFragment extends Fragment {
                         binding.userFriendEmptyImageView.setImageResource(R.drawable.ic_empty_friend_64px);
                     }
                     else {
+
                         binding.userFriendErrorTextview.setVisibility(View.VISIBLE);
                         binding.userFriendEmptyImageView.setVisibility(View.VISIBLE);
                         binding.userFriendEmptyImageView.setImageResource(R.drawable.ic_privacy_24px);
@@ -184,6 +187,7 @@ public class UserFriendFragment extends Fragment {
 
                 }
                 else {
+
                     binding.userFriendErrorTextview.setVisibility(View.GONE);
                     binding.userFriendEmptyImageView.setVisibility(View.GONE);
                 }
@@ -194,9 +198,11 @@ public class UserFriendFragment extends Fragment {
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
                     binding.userFriendSwipeRefreshLayout.setRefreshing(true);
+                    networkIndicatorAdapter.setLoadingStatus();
                 }
                 else {
                     binding.userFriendSwipeRefreshLayout.setRefreshing(false);
+                    networkIndicatorAdapter.setLoadSuccessfulStatus();
                 }
             }
         });
@@ -208,9 +214,9 @@ public class UserFriendFragment extends Fragment {
                     binding.userFriendEmptyImageView.setVisibility(View.VISIBLE);
                     binding.userFriendEmptyImageView.setImageResource(R.drawable.ic_error_outline_24px);
                     String errorText = viewModel.getErrorTextMutableLiveData().getValue();
+
                     if(errorText == null || errorText.length() == 0){
                         binding.userFriendErrorTextview.setText(R.string.network_failed);
-
                     }
                     else {
                         binding.userFriendErrorTextview.setText(errorText);
@@ -218,8 +224,8 @@ public class UserFriendFragment extends Fragment {
 
                 }
                 else {
-//                    binding.userFriendErrorTextview.setVisibility(View.GONE);
-//                    binding.userFriendEmptyImageView.setVisibility(View.GONE);
+                    binding.userFriendErrorTextview.setVisibility(View.GONE);
+                    binding.userFriendEmptyImageView.setVisibility(View.GONE);
                 }
             }
         });
@@ -240,6 +246,11 @@ public class UserFriendFragment extends Fragment {
                         userFriendResult!=null?userFriendResult.friendVariables:null);
             }
         });
+        viewModel.getLoadAllMutableLiveData().observe(getViewLifecycleOwner(),aBoolean -> {
+            if(aBoolean){
+                networkIndicatorAdapter.setLoadedAllStatus();
+            }
+        });
 
     }
 
@@ -249,6 +260,7 @@ public class UserFriendFragment extends Fragment {
             @Override
             public void onRefresh() {
                 viewModel.setPage(1);
+                adapter.clearList();
                 viewModel.getLoadAllMutableLiveData().setValue(false);
 
                 viewModel.getFriendInfo();

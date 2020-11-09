@@ -20,6 +20,7 @@ import com.kidozh.discuzhub.adapter.MedalAdapter;
 import com.kidozh.discuzhub.databinding.FragmentMedalListBinding;
 import com.kidozh.discuzhub.results.UserProfileResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -39,7 +40,7 @@ public class MedalFragment extends Fragment {
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     MedalAdapter adapter = new MedalAdapter();
-    List<UserProfileResult.Medal> medalList;
+    List<UserProfileResult.Medal> medalList = new ArrayList<>();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -76,7 +77,9 @@ public class MedalFragment extends Fragment {
         // Set the adapter
         binding.medalRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.medalRecyclerview.setAdapter(adapter);
-        adapter.setMedalList(medalList);
+        if(medalList != null){
+            adapter.setMedalList(medalList);
+        }
 
         return binding.getRoot();
     }

@@ -45,7 +45,7 @@ public class IntroSuggestionAdapter extends RecyclerView.Adapter<IntroSuggestion
     }
 
     public void setSuggestURLInfoList(@NonNull List<SuggestURLInfo> suggestURLInfoList) {
-        this.suggestURLInfoList = suggestURLInfoList;
+        this.suggestURLInfoList.addAll(suggestURLInfoList);
         notifyItemRangeInserted(0,suggestURLInfoList.size());
     }
 

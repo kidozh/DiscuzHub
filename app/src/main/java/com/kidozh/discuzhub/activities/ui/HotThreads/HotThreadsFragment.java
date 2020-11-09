@@ -148,10 +148,11 @@ public class HotThreadsFragment extends Fragment {
                 if(page == 1 && forumThreadAdapter.threadInfoList.size() != 0){
                     Log.d(TAG,"Clear adapter list "+forumThreadAdapter.threadInfoList.size());
                     forumThreadAdapter.clearList();
-
-
                 }
                 forumThreadAdapter.addThreadInfoList(threadInfos,null);
+                if(page == 1){
+                    binding.fragmentHotThreadRecyclerview.scrollToPosition(0);
+                }
                 dashBoardViewModel.hotThreadCountMutableLiveData.postValue(forumThreadAdapter.getItemCount());
                 if(forumThreadAdapter.threadInfoList == null || forumThreadAdapter.threadInfoList.size() == 0){
                     networkIndicatorAdapter.setErrorStatus(new ErrorMessage(getString(R.string.empty_result),

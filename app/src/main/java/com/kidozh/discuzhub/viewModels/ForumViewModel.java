@@ -119,6 +119,7 @@ public class ForumViewModel extends AndroidViewModel {
         if(displayForumQueryStatus.page == 1){
             loadAll = false;
             loadAllNoticeOnce.postValue(false);
+            threadInfoListMutableLiveData.postValue(new ArrayList<>());
         }
 
         if(loading || loadAll){
@@ -139,7 +140,6 @@ public class ForumViewModel extends AndroidViewModel {
                     ForumResult forumResult = response.body();
                     displayForumResultMutableLiveData.postValue(forumResult);
                     Log.d(TAG, "Get forum Result" + forumResult);
-
 
                     // for list display
                     List<ThreadInfo> threadInfoList = forumResult.forumVariables.forumThreadList;

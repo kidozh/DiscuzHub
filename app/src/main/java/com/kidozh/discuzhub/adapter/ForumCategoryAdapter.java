@@ -46,7 +46,7 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
         int oldSize = this.forumCategoryList.size();
         this.forumCategoryList.clear();
         notifyItemRangeRemoved(0,oldSize);
-        this.forumCategoryList = forumCategoryList;
+        this.forumCategoryList.addAll(forumCategoryList);
         this.allForumInfo = allForumInfo;
 
         //notifyDataSetChanged();

@@ -27,6 +27,7 @@ import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,15 +35,25 @@ import static com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClient;
 
 public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdapter.ViewHolder> {
     private final static String TAG = bbsUserFriendAdapter.class.getSimpleName();
-    private List<UserFriendResult.UserFriend> userFriendList;
+    @NonNull
+    private List<UserFriendResult.UserFriend> userFriendList = new ArrayList<>();
     Context context;
     bbsInformation bbsInfo;
     forumUserBriefInfo curUser;
 
-    public bbsUserFriendAdapter(List<UserFriendResult.UserFriend> userFriendList, bbsInformation bbsInfo, forumUserBriefInfo curUser){
-        this.userFriendList = userFriendList;
+    public bbsUserFriendAdapter(bbsInformation bbsInfo, forumUserBriefInfo curUser){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return userFriendList.get(position).uid;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return R.layout.item_user_friend;
     }
 
     public List<UserFriendResult.UserFriend> getUserFriendList() {
@@ -50,9 +61,26 @@ public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdap
     }
 
     public void setUserFriendList(@NonNull List<UserFriendResult.UserFriend> userFriendList){
+
         int oldSize = this.userFriendList.size();
-        this.userFriendList = userFriendList;
-        notifyItemRangeInserted(oldSize,userFriendList.size()-oldSize);
+        this.userFriendList.clear();
+        notifyItemRangeRemoved(0,oldSize);
+
+        this.userFriendList.addAll(userFriendList);
+        notifyItemRangeInserted(0,userFriendList.size());
+    }
+
+    public void clearList(){
+        int oldSize = userFriendList.size();
+        userFriendList.clear();
+        notifyItemRangeRemoved(0,oldSize);
+    }
+
+    public void addUserFriendList(@NonNull List<UserFriendResult.UserFriend> userFriendList){
+        int oldSize = this.userFriendList.size();
+        this.userFriendList.addAll(userFriendList);
+        Log.d(TAG,"Old size "+oldSize+" insert count "+userFriendList.size());
+        notifyItemRangeInserted(oldSize,userFriendList.size());
     }
 
 

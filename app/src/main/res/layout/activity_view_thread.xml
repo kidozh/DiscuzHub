@@ -203,6 +203,8 @@
                     android:id="@+id/bbs_thread_detail_reply_content"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:maxLines="2"
                     android:textSize="14sp"
                     android:visibility="gone"
@@ -290,9 +292,10 @@
             <LinearLayout
                 android:id="@+id/smiley_root_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="150dp"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/bbs_comment_smiley_tabLayout"

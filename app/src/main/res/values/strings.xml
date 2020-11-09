@@ -790,6 +790,7 @@
     <string name="network_loading_status">Loading contents from server...</string>
     <string name="all_items_have_been_loaded">All items have been loaded.</string>
     <string name="retry_content">Retry</string>
+    <string name="load_content_successfully">Those items have been successfully loaded.</string>
 
 
 </resources>

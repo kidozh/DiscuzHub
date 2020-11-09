@@ -19,6 +19,7 @@ import kotlin.math.max
 class UserFriendViewModel(application: Application) : AndroidViewModel(application) {
     val TAG : String = "UserFriendViewModel"
     var userFriendListMutableData: MutableLiveData<MutableList<UserFriend>?>
+    lateinit var newFriendListMutableLiveData : MutableLiveData<MutableList<UserFriend>>
     var userFriendResultMutableLiveData: MutableLiveData<UserFriendResult?>
     var isLoadingMutableLiveData : MutableLiveData<Boolean>
     var loadAllMutableLiveData : MutableLiveData<Boolean>
@@ -41,8 +42,11 @@ class UserFriendViewModel(application: Application) : AndroidViewModel(applicati
         errorTextMutableLiveData = MutableLiveData("")
         isErrorMutableLiveData = MutableLiveData(false)
         privacyMutableLiveData = MutableLiveData(false)
+        newFriendListMutableLiveData = MutableLiveData(ArrayList())
 
     }
+
+
 
     fun setInfo(bbsInfo: bbsInformation, userBriefInfo: forumUserBriefInfo?, uid: Int, friendCounts: Int) {
         this.bbsInfo = bbsInfo
@@ -64,7 +68,11 @@ class UserFriendViewModel(application: Application) : AndroidViewModel(applicati
             return
         }
         isLoadingMutableLiveData.postValue(true)
+        if(page == 1){
+            userFriendListMutableData.postValue(ArrayList())
+        }
         val apiStr = URLUtils.getFriendApiUrlByUid(uid, page)
+        Log.d(TAG,"Send request to "+apiStr);
         val request = Request.Builder()
                 .url(apiStr)
                 .build()
@@ -77,15 +85,21 @@ class UserFriendViewModel(application: Application) : AndroidViewModel(applicati
 
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful && response.body() != null){
+                    isLoadingMutableLiveData.postValue(false)
                     val s = response.body()!!.string()
                     Log.d(TAG,s);
                     val friendsResult = bbsParseUtils.parseUserFriendsResult(s)
-                    if(friendsResult !=null && friendsResult.friendVariables !=null){
+
+
+                    if(friendsResult?.friendVariables != null){
                         userFriendResultMutableLiveData.postValue(friendsResult)
                         val userFriendList = friendsResult.friendVariables.friendList
                         var currentFriendList = userFriendListMutableData.value
+
                         if (userFriendList != null && currentFriendList !=null) {
                             currentFriendList.addAll(userFriendList)
+                            Log.d(TAG,"get new friend list size "+userFriendList.size);
+                            newFriendListMutableLiveData.postValue(userFriendList)
                         }
                         else{
                             currentFriendList = userFriendList?.toMutableList()
@@ -94,14 +108,16 @@ class UserFriendViewModel(application: Application) : AndroidViewModel(applicati
                         isErrorMutableLiveData.postValue(false)
                         // judge load all
 
-                        var currentFriendNum  = currentFriendList?.size ?: 0
+
+                        var currentFriendNum  = currentFriendList?.size ?:0
                         var totalFriendNum = max(friendsResult.friendVariables.count,friendCounts)
-                        if(totalFriendNum >= currentFriendNum ){
+                        Log.d(TAG,"total count "+currentFriendList?.size+" required "+totalFriendNum+" "+currentFriendNum);
+                        if(totalFriendNum > currentFriendNum ){
                             loadAllMutableLiveData.postValue(false)
+                            page += 1
                         }
                         else{
                             loadAllMutableLiveData.postValue(true)
-                            page += 1
                         }
 
                         if(totalFriendNum !=0 && currentFriendNum == 0){
@@ -131,7 +147,7 @@ class UserFriendViewModel(application: Application) : AndroidViewModel(applicati
                     isErrorMutableLiveData.postValue(true)
                     errorTextMutableLiveData.postValue(getApplication<Application>().getString(R.string.network_failed))
                 }
-                isLoadingMutableLiveData.postValue(false)
+
 
             }
 
