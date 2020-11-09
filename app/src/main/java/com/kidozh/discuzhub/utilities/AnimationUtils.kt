@@ -2,8 +2,10 @@ package com.kidozh.discuzhub.utilities
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.recyclerview.widget.SimpleItemAnimator
+import jp.wasabeef.recyclerview.adapters.*
 import jp.wasabeef.recyclerview.animators.*
 
 object AnimationUtils {
@@ -99,5 +101,31 @@ object AnimationUtils {
                 }
             }
         }
+    }
+
+    fun getAnimatedAdapter(context: Context, adapter: Adapter<out RecyclerView.ViewHolder>)
+            : Adapter<out RecyclerView.ViewHolder>{
+        var animatedAdapter = adapter
+        if (UserPreferenceUtils.getEnableRecyclerviewAnimate(context)) {
+            val adapterAnimationSet = UserPreferenceUtils.getAdapterAnimateType(context)
+
+            if(adapterAnimationSet.contains("AlphaInAnimationAdapter")){
+                animatedAdapter = AlphaInAnimationAdapter(animatedAdapter)
+            }
+            if(adapterAnimationSet.contains("ScaleInAnimationAdapter")){
+                animatedAdapter = ScaleInAnimationAdapter(animatedAdapter)
+            }
+            if(adapterAnimationSet.contains("SlideInBottomAnimationAdapter")){
+                animatedAdapter = SlideInBottomAnimationAdapter(animatedAdapter)
+            }
+            if(adapterAnimationSet.contains("SlideInRightAnimationAdapter")){
+                animatedAdapter = SlideInRightAnimationAdapter(animatedAdapter)
+            }
+            if(adapterAnimationSet.contains("SlideInLeftAnimationAdapter")){
+                animatedAdapter = SlideInLeftAnimationAdapter(animatedAdapter)
+            }
+        }
+
+        return animatedAdapter
     }
 }

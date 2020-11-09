@@ -1516,7 +1516,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         postAdapter.subject =subject;
 
         concatAdapter = new ConcatAdapter(postAdapter,networkIndicatorAdapter);
-        binding.postsRecyclerview.setAdapter(concatAdapter);
+        binding.postsRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,concatAdapter));
         binding.postsRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -1562,13 +1562,13 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             binding.bbsThreadInteractiveRecyclerview.setHasFixedSize(true);
             binding.bbsThreadInteractiveRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
             binding.bbsThreadInteractiveRecyclerview.setLayoutManager(new GridLayoutManager(this, 5));
-            binding.bbsThreadInteractiveRecyclerview.setAdapter(countAdapter);
+            binding.bbsThreadInteractiveRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,countAdapter));
         }
 
         propertiesAdapter = new ThreadPropertiesAdapter();
         binding.bbsThreadPropertyRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         binding.bbsThreadPropertyRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
-        binding.bbsThreadPropertyRecyclerview.setAdapter(propertiesAdapter);
+        binding.bbsThreadPropertyRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,propertiesAdapter));
 
 
 

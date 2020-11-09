@@ -1,135 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ImageView
-        android:id="@+id/item_forum_information_avatar"
-        android:layout_width="128dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:adjustViewBounds="true"
-        android:cropToPadding="true"
-        android:scaleType="fitCenter"
-        android:transitionName="bbs_info_avatar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/vector_drawable_bbs"
-        tools:srcCompat="@drawable/vector_drawable_bbs" />
-
-    <TextView
-        android:id="@+id/item_forum_information_name"
-        android:layout_width="0dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item_bbs_card"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="viewStart"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:transitionName="bbs_info_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/item_forum_information_avatar"
-        app:layout_constraintTop_toTopOf="@+id/item_forum_information_avatar"
-        tools:text="@tools:sample/cities" />
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
 
-    <TextView
-        android:id="@+id/item_forum_information_host"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:singleLine="true"
-        android:textAlignment="viewStart"
-        android:transitionName="bbs_info_bbs_url"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/item_forum_information_integrity"
-        app:layout_constraintTop_toBottomOf="@+id/item_forum_information_name"
-        tools:text="@tools:sample/full_names" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp">
 
-    <TextView
-        android:id="@+id/item_forum_information_siteid"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:textAlignment="center"
-        android:transitionName="bbs_info_siteid"
-        app:layout_constraintEnd_toEndOf="@+id/item_forum_information_avatar"
-        app:layout_constraintStart_toStartOf="@+id/item_forum_information_avatar"
-        app:layout_constraintTop_toBottomOf="@+id/item_forum_information_avatar"
-        tools:text="9303432" />
+            <ImageView
+                android:id="@+id/item_forum_information_avatar"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:adjustViewBounds="true"
+                android:cropToPadding="true"
+                android:scaleType="centerCrop"
+                android:transitionName="bbs_info_avatar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/vector_drawable_bbs"
+                tools:srcCompat="@drawable/vector_drawable_bbs" />
 
-    <ImageView
-        android:id="@+id/item_forum_information_integrity"
-        android:layout_width="20dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/item_forum_information_host"
-        app:layout_constraintStart_toStartOf="@+id/item_forum_information_name"
-        app:layout_constraintTop_toTopOf="@+id/item_forum_information_host"
-        app:srcCompat="@drawable/vector_drawable_safe_lock" />
+            <TextView
+                android:id="@+id/item_forum_information_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textAlignment="viewStart"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textSize="18sp"
+                android:transitionName="bbs_info_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/item_forum_information_avatar"
+                app:layout_constraintTop_toTopOf="@+id/item_forum_information_avatar"
+                tools:text="@tools:sample/cities" />
 
-    <ImageView
-        android:id="@+id/item_forum_information_posts_icon"
-        android:layout_width="32dp"
-        android:layout_height="0dp"
-        android:transitionName="bbs_info_post_number_tag"
-        app:layout_constraintBottom_toBottomOf="@+id/item_forum_information_post_number"
-        app:layout_constraintStart_toStartOf="@+id/item_forum_information_integrity"
-        app:layout_constraintTop_toTopOf="@+id/item_forum_information_post_number"
-        app:srcCompat="@drawable/vector_drawable_post" />
+            <TextView
+                android:id="@+id/item_forum_information_host"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:singleLine="true"
+                android:textAlignment="viewStart"
+                android:transitionName="bbs_info_bbs_url"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/item_forum_information_name"
+                app:layout_constraintTop_toBottomOf="@+id/item_forum_information_name"
+                tools:text="@tools:sample/full_names" />
 
-    <ImageView
-        android:id="@+id/item_forum_information_member_icon"
-        android:layout_width="32dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:transitionName="bbs_info_member_number_tag"
-        app:layout_constraintBottom_toBottomOf="@+id/item_forum_information_posts_icon"
-        app:layout_constraintStart_toEndOf="@+id/item_forum_information_post_number"
-        app:layout_constraintTop_toTopOf="@+id/item_forum_information_posts_icon"
-        app:srcCompat="@drawable/vector_drawable_people_fill" />
+            <TextView
+                android:id="@+id/item_bbs_api_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_bbs_5_api_outlined_24dp"
+                android:drawablePadding="4dp"
+                android:gravity="center_vertical"
+                android:text="@string/bbs_support_ver5"
+                app:layout_constraintStart_toStartOf="@+id/item_forum_information_host"
+                app:layout_constraintTop_toBottomOf="@+id/item_forum_information_host" />
 
-    <TextView
-        android:id="@+id/item_forum_information_post_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:singleLine="true"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:transitionName="bbs_info_post_number"
-        app:layout_constraintStart_toEndOf="@+id/item_forum_information_posts_icon"
-        app:layout_constraintTop_toBottomOf="@+id/item_forum_information_host"
-        tools:text="1.3k" />
+            <TextView
+                android:id="@+id/item_bbs_https"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:drawableStart="@drawable/ic_https_icon_24dp"
+                android:drawablePadding="4dp"
+                android:gravity="center_vertical"
+                android:text="@string/bbs_https_support"
+                app:layout_constraintStart_toEndOf="@+id/item_bbs_api_version"
+                app:layout_constraintTop_toBottomOf="@+id/item_forum_information_host" />
 
-    <TextView
-        android:id="@+id/item_forum_information_member_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:transitionName="bbs_info_member_number"
-        app:layout_constraintStart_toEndOf="@+id/item_forum_information_member_icon"
-        app:layout_constraintTop_toTopOf="@+id/item_forum_information_post_number"
-        tools:text="2.5M" />
+            <TextView
+                android:id="@+id/item_bbs_qq_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:drawableStart="@drawable/ic_suggestion_check_circle_outline_24px"
+                android:drawablePadding="4dp"
+                android:gravity="center_vertical"
+                android:text="@string/bbs_qq_login"
+                app:layout_constraintStart_toEndOf="@+id/item_bbs_https"
+                app:layout_constraintTop_toTopOf="@+id/item_bbs_https" />
 
-    <ImageView
-        android:id="@+id/item_forum_information_qq_connect"
-        android:layout_width="32dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/item_forum_information_member_icon"
-        app:layout_constraintStart_toEndOf="@+id/item_forum_information_member_number"
-        app:layout_constraintTop_toTopOf="@+id/item_forum_information_member_icon"
-        app:srcCompat="@drawable/vector_drawable_qq_status" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/item_forum_information_qq_connect_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/bbs_qq_connect_ok"
-        android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@+id/item_forum_information_qq_connect"
-        app:layout_constraintTop_toTopOf="@+id/item_forum_information_member_number" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

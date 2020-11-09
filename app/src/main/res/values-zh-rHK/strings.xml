@@ -639,6 +639,17 @@
         <item>由上滑入</item>
         <item>由下滑入</item>
     </string-array>
-    <string name="preference_title_recyclerview_animation_list">動畫種類</string>
+    <string name="preference_title_recyclerview_animation_list">界面變更動畫</string>
+    <string name="bbs_support_ver5">最新版本API</string>
+    <string name="bbs_qq_login">QQ登錄</string>
+    <string name="preference_title_adapter_animation">滑動動畫</string>
+
+    <string-array name="preference_entries_adapter_animation">
+        <item>淡入</item>
+        <item>縮放</item>
+        <item>由下滑入</item>
+        <item>由右滑入</item>
+        <item>由左滑入</item>
+    </string-array>
 
 </resources>

@@ -10,6 +10,9 @@ import androidx.annotation.NonNull;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.bbsInformation;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class UserPreferenceUtils {
     private static final String TAG = UserPreferenceUtils.class.getSimpleName();
 
@@ -109,5 +112,11 @@ public class UserPreferenceUtils {
         String preferenceName = context.getString(R.string.preference_key_recyclerview_animation_list);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(preferenceName,"LandingAnimator");
+    }
+
+    public static Set<String> getAdapterAnimateType(@NonNull Context context){
+        String preferenceName = context.getString(R.string.preference_key_adapter_animation);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getStringSet(preferenceName,new HashSet<>());
     }
 }

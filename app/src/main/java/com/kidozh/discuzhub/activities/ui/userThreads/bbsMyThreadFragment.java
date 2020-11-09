@@ -111,7 +111,7 @@ public class bbsMyThreadFragment extends Fragment {
         binding.fragmentMyThreadRecyclerview.addItemDecoration(dividerItemDecoration);
         adapter = new ThreadAdapter(null,"",bbsInfo,userBriefInfo);
         binding.fragmentMyThreadRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
-        binding.fragmentMyThreadRecyclerview.setAdapter(adapter);
+        binding.fragmentMyThreadRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
 
     }
 

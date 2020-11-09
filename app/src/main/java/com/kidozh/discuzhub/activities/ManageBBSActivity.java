@@ -80,7 +80,7 @@ public class ManageBBSActivity extends BaseStatusActivity
         binding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ManageBBSAdapter();
         viewModel.getPagedListLiveData().observe(this, adapter::submitList);
-        binding.recyclerview.setAdapter(adapter);
+        binding.recyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,adapter));
         // swipe to delete
         // swipe to delete support
         RecyclerViewItemTouchCallback callback = new RecyclerViewItemTouchCallback(this);

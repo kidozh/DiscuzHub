@@ -105,7 +105,7 @@ public class SmileyFragment extends Fragment {
         });
 
         adapter.setSmileyInfos(curSmileyInfos);
-        binding.smileyRecyclerview.setAdapter(adapter);
+        binding.smileyRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
     }
 
     private void smileyClick(Drawable d, int position) {

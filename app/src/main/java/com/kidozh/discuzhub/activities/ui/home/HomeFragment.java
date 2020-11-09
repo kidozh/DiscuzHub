@@ -201,7 +201,7 @@ public class HomeFragment extends Fragment {
         AnimationUtils.INSTANCE.configureRecyclerviewAnimation(getContext(),activityBbsForumIndexBinding.bbsPortalRecyclerview);
         adapter = new ForumCategoryAdapter(bbsInfo,userBriefInfo);
         activityBbsForumIndexBinding.bbsPortalRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
-        activityBbsForumIndexBinding.bbsPortalRecyclerview.setAdapter(adapter);
+        activityBbsForumIndexBinding.bbsPortalRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
     }
 
     private void configureRefreshBtn(){

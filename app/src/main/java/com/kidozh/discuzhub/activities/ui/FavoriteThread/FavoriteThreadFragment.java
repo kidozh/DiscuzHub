@@ -110,7 +110,7 @@ public class FavoriteThreadFragment extends Fragment {
         adapter = new FavoriteThreadAdapter();
         adapter.setInformation(bbsInfo,userBriefInfo);
         mViewModel.getFavoriteItemListData().observe(getViewLifecycleOwner(),adapter::submitList);
-        binding.favoriteThreadRecyclerview.setAdapter(adapter);
+        binding.favoriteThreadRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
         binding.favoriteThreadRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
     }
 

@@ -85,7 +85,7 @@ public class HotForumsFragment extends Fragment {
         binding.fragmentHotforumRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         binding.fragmentHotforumRecyclerview.setLayoutManager(new GridLayoutManager(getContext(),2));
         binding.fragmentHotforumRecyclerview.setHasFixedSize(true);
-        binding.fragmentHotforumRecyclerview.setAdapter(adapter);
+        binding.fragmentHotforumRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
 
     }
 

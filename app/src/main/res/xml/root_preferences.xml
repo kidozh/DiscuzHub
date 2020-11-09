@@ -89,6 +89,15 @@
             android:key="@string/preference_key_recyclerview_animation_list"
             android:title="@string/preference_title_recyclerview_animation_list"
             android:summary="%s" />
+        <androidx.preference.MultiSelectListPreference
+            android:dependency="@string/preference_key_recyclerview_animation"
+            android:entries="@array/preference_entries_adapter_animation"
+            android:entryValues="@array/preference_entry_values_adapter_animation"
+            android:icon="@drawable/ic_recyclerview_animation_list_24px"
+            android:key="@string/preference_key_adapter_animation"
+            android:title="@string/preference_title_adapter_animation"
+             />
+
         <androidx.preference.SwitchPreference
             android:defaultValue="true"
             android:icon="@drawable/ic_collapse_forum_rule_24px"

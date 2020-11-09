@@ -76,7 +76,7 @@ public class UserProfileInfoListFragment extends Fragment {
     private void configureRecyclerview(){
         binding.userProfileInfoRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new UserProfileItemAdapter();
-        binding.userProfileInfoRecyclerview.setAdapter(adapter);
+        binding.userProfileInfoRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL);
         binding.userProfileInfoRecyclerview.addItemDecoration(dividerItemDecoration);

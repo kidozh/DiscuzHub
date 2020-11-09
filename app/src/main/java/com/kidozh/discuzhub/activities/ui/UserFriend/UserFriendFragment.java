@@ -142,7 +142,7 @@ public class UserFriendFragment extends Fragment {
         binding.userFriendRecyclerview.addItemDecoration(dividerItemDecoration);
         adapter = new bbsUserFriendAdapter(bbsInfo,userBriefInfo);
         concatAdapter = new ConcatAdapter(adapter,networkIndicatorAdapter);
-        binding.userFriendRecyclerview.setAdapter(concatAdapter);
+        binding.userFriendRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),concatAdapter));
 
         binding.userFriendRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

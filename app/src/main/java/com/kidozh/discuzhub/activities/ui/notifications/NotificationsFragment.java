@@ -138,10 +138,6 @@ public class NotificationsFragment extends Fragment {
         // adapter.notifyDataSetChanged();
         // refresh the fragment
         adapter.notifyDataSetChanged();
-
-
-        //binding.notificationsViewpager.setAdapter(adapter);
-        //binding.notificationsTablayout.selectTab(binding.notificationsTablayout.getTabAt(position));
         setCustomViewToTabLayout();
     }
 

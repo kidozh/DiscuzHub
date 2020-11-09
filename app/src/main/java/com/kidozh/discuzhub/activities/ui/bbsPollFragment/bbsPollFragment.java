@@ -267,7 +267,7 @@ public class bbsPollFragment extends Fragment {
         //binding.bbsPollOptionRecyclerview.setLayoutManager(new GridLayoutManager(getActivity(),2));
         binding.bbsPollOptionRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new PollOptionAdapter();
-        binding.bbsPollOptionRecyclerview.setAdapter(adapter);
+        binding.bbsPollOptionRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
         List<bbsPollInfo.option> options = pollInfo.options;
         if(options!= null && options.size() > 0){
             adapter.setPollOptions(options);

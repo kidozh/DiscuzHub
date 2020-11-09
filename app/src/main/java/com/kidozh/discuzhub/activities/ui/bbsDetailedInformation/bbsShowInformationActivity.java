@@ -33,6 +33,7 @@ import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.databinding.ActivityBbsShowInformationBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
@@ -137,11 +138,11 @@ public class bbsShowInformationActivity extends BaseStatusActivity implements fo
         binding.showBbsInformationRecyclerview.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         binding.showBbsInformationRecyclerview.setLayoutManager(linearLayoutManager);
-        binding.showBbsInformationRecyclerview.setAdapter(adapter);
+        binding.showBbsInformationRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,adapter));
 
         binding.showBbsInformationUserListRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         userAdapter = new forumUsersAdapter(this, bbsInfo);
-        binding.showBbsInformationUserListRecyclerview.setAdapter(userAdapter);
+        binding.showBbsInformationUserListRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,userAdapter));
 
         // render forum user info
 

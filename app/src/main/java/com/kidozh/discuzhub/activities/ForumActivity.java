@@ -494,7 +494,7 @@ public class ForumActivity extends BaseStatusActivity implements
         binding.bbsForumSublist.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         binding.bbsForumSublist.setLayoutManager(new GridLayoutManager(this,4));
         subForumAdapter = new SubForumAdapter(bbsInfo,userBriefInfo);
-        binding.bbsForumSublist.setAdapter(subForumAdapter);
+        binding.bbsForumSublist.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,subForumAdapter));
 
         binding.bbsForumThreadRecyclerview.setHasFixedSize(true);
         binding.bbsForumThreadRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
@@ -505,7 +505,7 @@ public class ForumActivity extends BaseStatusActivity implements
 
         adapter = new ThreadAdapter(null,fid,bbsInfo,userBriefInfo);
         concatAdapter = new ConcatAdapter(adapter,networkIndicatorAdapter);
-        binding.bbsForumThreadRecyclerview.setAdapter(concatAdapter);
+        binding.bbsForumThreadRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,concatAdapter));
 
         binding.bbsForumThreadRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

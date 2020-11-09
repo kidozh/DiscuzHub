@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.adapter;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.databinding.ItemManageBbsBinding;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -38,7 +40,8 @@ public class ManageBBSAdapter extends PagedListAdapter<bbsInformation, ManageBBS
     @Override
     public ManageBBSViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        return new ManageBBSViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_manage_bbs,parent,false));
+        ItemManageBbsBinding binding = ItemManageBbsBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false);
+        return new ManageBBSViewHolder(binding);
     }
 
     @Override
@@ -47,11 +50,28 @@ public class ManageBBSAdapter extends PagedListAdapter<bbsInformation, ManageBBS
         if(forumInfo == null){
             return;
         }
-        holder.forumHost.setText(forumInfo.base_url);
-        holder.forumName.setText(forumInfo.site_name);
-        holder.forumSiteId.setText(forumInfo.mysite_id);
-        holder.forumPostNumber.setText(numberFormatUtils.getShortNumberText(forumInfo.total_posts));
-        holder.forumMemberNumber.setText(numberFormatUtils.getShortNumberText(forumInfo.total_members));
+        holder.binding.itemForumInformationHost.setText(forumInfo.base_url);
+        holder.binding.itemForumInformationName.setText(forumInfo.site_name);
+        if(forumInfo.base_url.startsWith("https://")){
+            holder.binding.itemBbsHttps.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.binding.itemBbsHttps.setVisibility(View.GONE);
+        }
+
+        if(forumInfo.getAPIVersion() > 4){
+            holder.binding.itemBbsApiVersion.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.binding.itemBbsApiVersion.setVisibility(View.GONE);
+        }
+
+        if(forumInfo.qqConnect){
+            holder.binding.itemBbsQqLogin.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.binding.itemBbsQqLogin.setVisibility(View.GONE);
+        }
 
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context));
         URLUtils.setBBS(forumInfo);
@@ -62,32 +82,17 @@ public class ManageBBSAdapter extends PagedListAdapter<bbsInformation, ManageBBS
                 .error(R.drawable.vector_drawable_bbs)
                 .placeholder(R.drawable.vector_drawable_bbs)
                 .centerInside()
-                .into(holder.forumAvatar);
+                .into(holder.binding.itemForumInformationAvatar);
     }
 
 
     public static class ManageBBSViewHolder extends RecyclerView.ViewHolder{
-        
-        ImageView forumAvatar;
-        TextView forumName;
-        TextView forumHost;
-        TextView forumSiteId;
-        TextView forumPostNumber;
-        ImageView forumPostIcon;
-        TextView forumMemberNumber;
-        ImageView forumMemberIcon;
-
-        public ManageBBSViewHolder(@NonNull View itemView) {
-            super(itemView);
-            forumAvatar = itemView.findViewById(R.id.item_forum_information_avatar);
-            forumName = itemView.findViewById(R.id.item_forum_information_name);
-            forumHost = itemView.findViewById(R.id.item_forum_information_host);
-            forumSiteId = itemView.findViewById(R.id.item_forum_information_siteid);
-            forumPostNumber = itemView.findViewById(R.id.item_forum_information_post_number);
-            forumPostIcon = itemView.findViewById(R.id.item_forum_information_posts_icon);
-            forumMemberNumber = itemView.findViewById(R.id.item_forum_information_member_number);
-            forumMemberIcon = itemView.findViewById(R.id.item_forum_information_member_icon);
+        ItemManageBbsBinding binding;
+        public ManageBBSViewHolder(@NonNull ItemManageBbsBinding binding){
+            super(binding.getRoot());
+            this.binding = binding;
         }
+
     }
 
     private static DiffUtil.ItemCallback<bbsInformation> DIFF_CALLBACK = new DiffUtil.ItemCallback<bbsInformation>() {

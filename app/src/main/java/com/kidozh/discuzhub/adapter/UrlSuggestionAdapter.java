@@ -31,8 +31,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class IntroSuggestionAdapter extends RecyclerView.Adapter<IntroSuggestionAdapter.IntroSuggestionViewHolder> {
-    private final static String TAG = IntroSuggestionAdapter.class.getSimpleName();
+public class UrlSuggestionAdapter extends RecyclerView.Adapter<UrlSuggestionAdapter.IntroSuggestionViewHolder> {
+    private final static String TAG = UrlSuggestionAdapter.class.getSimpleName();
     private List<SuggestURLInfo> suggestURLInfoList = new ArrayList<>();
     private Context context;
 
@@ -45,6 +45,9 @@ public class IntroSuggestionAdapter extends RecyclerView.Adapter<IntroSuggestion
     }
 
     public void setSuggestURLInfoList(@NonNull List<SuggestURLInfo> suggestURLInfoList) {
+        int oldSize = this.suggestURLInfoList.size();
+        this.suggestURLInfoList.clear();
+        notifyItemRangeRemoved(0,oldSize);
         this.suggestURLInfoList.addAll(suggestURLInfoList);
         notifyItemRangeInserted(0,suggestURLInfoList.size());
     }

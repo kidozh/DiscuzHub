@@ -91,7 +91,7 @@ public class ManageUserActivity extends BaseStatusActivity
         binding.bbsUserRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         binding.bbsUserRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         userAdapter = new forumUsersAdapter(this, bbsInfo);
-        binding.bbsUserRecyclerview.setAdapter(userAdapter);
+        binding.bbsUserRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,userAdapter));
         // swipe to delete
         // swipe to delete support
         RecyclerViewItemTouchCallback callback = new RecyclerViewItemTouchCallback(this);

@@ -83,7 +83,7 @@ public class UploadAttachmentDialogFragment extends BottomSheetDialogFragment {
         adapter = new UploadAttachmentInfoAdapter();
         binding.uploadAttachmentFileRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         binding.uploadAttachmentFileRecyclerview.setHasFixedSize(true);
-        binding.uploadAttachmentFileRecyclerview.setAdapter(adapter);
+        binding.uploadAttachmentFileRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
 
     }
 

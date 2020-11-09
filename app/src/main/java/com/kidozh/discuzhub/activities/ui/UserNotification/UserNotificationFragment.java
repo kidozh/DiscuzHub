@@ -144,7 +144,7 @@ public class UserNotificationFragment extends Fragment {
         binding.fragmentBbsNotificationRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         binding.fragmentBbsNotificationRecyclerview.addItemDecoration(dividerItemDecoration);
         adapter = new NotificationAdapter(bbsInfo,userBriefInfo);
-        binding.fragmentBbsNotificationRecyclerview.setAdapter(adapter);
+        binding.fragmentBbsNotificationRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
 
 
         binding.fragmentBbsNotificationRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {

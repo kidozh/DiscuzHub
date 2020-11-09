@@ -18,7 +18,7 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.IntroSuggestionAdapter;
+import com.kidozh.discuzhub.adapter.UrlSuggestionAdapter;
 import com.kidozh.discuzhub.database.BBSInformationDatabase;
 import com.kidozh.discuzhub.databinding.ActivityBbsAddIntroBinding;
 import com.kidozh.discuzhub.entities.SuggestURLInfo;
@@ -45,11 +45,11 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class AddIntroActivity extends BaseStatusActivity
-        implements IntroSuggestionAdapter.OnClickSuggestionListener {
+        implements UrlSuggestionAdapter.OnClickSuggestionListener {
     private static final String TAG = AddIntroActivity.class.getSimpleName();
 
 
-    IntroSuggestionAdapter adapter;
+    UrlSuggestionAdapter adapter;
 
     AddBBSViewModel viewModel;
     ActivityBbsAddIntroBinding binding;
@@ -84,10 +84,10 @@ public class AddIntroActivity extends BaseStatusActivity
     }
 
     private void configureRecyclerview(){
-        adapter = new IntroSuggestionAdapter();
+        adapter = new UrlSuggestionAdapter();
         binding.bbsAddIntroRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         binding.bbsAddIntroRecyclerview.setHasFixedSize(true);
-        binding.bbsAddIntroRecyclerview.setAdapter(adapter);
+        binding.bbsAddIntroRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,adapter));
         binding.bbsAddIntroRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         // add examples
         List<SuggestURLInfo> suggestURLInfoList = new ArrayList<>();

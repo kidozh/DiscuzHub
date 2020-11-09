@@ -99,7 +99,7 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
         adapter.setInfo(bbsInfo,userBriefInfo);
         viewModel.getPagedListLiveData().observe(this,adapter::submitList);
 
-        binding.viewHistoryRecyclerview.setAdapter(adapter);
+        binding.viewHistoryRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,adapter));
         // swipe and sort
         RecyclerViewItemTouchCallback callback = new RecyclerViewItemTouchCallback(this);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);

@@ -72,7 +72,7 @@ public class bbsShowThreadDraftActivity extends BaseStatusActivity implements re
         binding.bbsShowThreadDraftRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         threadDraftAdapter = new ThreadDraftAdapter(bbsInfo,userBriefInfo);
         binding.bbsShowThreadDraftRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
-        binding.bbsShowThreadDraftRecyclerview.setAdapter(threadDraftAdapter);
+        binding.bbsShowThreadDraftRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,threadDraftAdapter));
         listLiveData = bbsThreadDraftDatabase.getInstance(this)
                 .getbbsThreadDraftDao()
                 .getAllThreadDraftByBBSId(bbsInfo.getId());

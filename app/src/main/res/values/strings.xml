@@ -849,7 +849,29 @@
         <item>SlideInUpAnimator</item>
         <item>SlideInDownAnimator</item>
     </string-array>
-    <string name="preference_title_recyclerview_animation_list">Animation list</string>
+    <string name="preference_title_recyclerview_animation_list">Change animation</string>
+    <string name="bbs_support_ver5">API 5</string>
+    <string name="bbs_https_support" translatable="false">HTTPS</string>
+    <string name="bbs_qq_login">QQ Login</string>
+
+    <string name="preference_key_adapter_animation" translatable="false">preference_key_adapter_animation</string>
+    <string name="preference_title_adapter_animation">Scroll animation</string>
+
+    <string-array name="preference_entry_values_adapter_animation">
+        <item>AlphaInAnimationAdapter</item>
+        <item>ScaleInAnimationAdapter</item>
+        <item>SlideInBottomAnimationAdapter</item>
+        <item>SlideInRightAnimationAdapter</item>
+        <item>SlideInLeftAnimationAdapter</item>
+    </string-array>
+
+    <string-array name="preference_entries_adapter_animation">
+        <item>Alpha In</item>
+        <item>Scale In</item>
+        <item>Slide In Bottom</item>
+        <item>Slide In Right</item>
+        <item>Slide In Left</item>
+    </string-array>
 
 
 </resources>

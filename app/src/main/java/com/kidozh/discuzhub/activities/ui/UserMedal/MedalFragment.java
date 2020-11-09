@@ -78,7 +78,7 @@ public class MedalFragment extends Fragment {
         // Set the adapter
         binding.medalRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         binding.medalRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.medalRecyclerview.setAdapter(adapter);
+        binding.medalRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
         if(medalList != null){
             adapter.setMedalList(medalList);
         }
