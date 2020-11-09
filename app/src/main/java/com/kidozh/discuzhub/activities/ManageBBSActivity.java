@@ -13,6 +13,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,11 +27,15 @@ import com.kidozh.discuzhub.database.BBSInformationDatabase;
 import com.kidozh.discuzhub.databinding.ActivityManageBbsBinding;
 import com.kidozh.discuzhub.dialogs.ManageAdapterHelpDialogFragment;
 import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.viewModels.ManageBBSViewModel;
 
 import java.util.Collections;
 import java.util.List;
 
+import jp.wasabeef.recyclerview.animators.FadeInAnimator;
+import jp.wasabeef.recyclerview.animators.LandingAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
 
 
 public class ManageBBSActivity extends BaseStatusActivity
@@ -71,8 +76,10 @@ public class ManageBBSActivity extends BaseStatusActivity
     }
 
     void configureRecyclerView(){
+        binding.recyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         binding.recyclerview.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ManageBBSAdapter();
+        viewModel.getPagedListLiveData().observe(this, adapter::submitList);
         binding.recyclerview.setAdapter(adapter);
         // swipe to delete
         // swipe to delete support
@@ -86,16 +93,17 @@ public class ManageBBSActivity extends BaseStatusActivity
     }
 
     void bindViewModel(){
-        viewModel.bbsInfoList.observe(this, new Observer<List<bbsInformation>>() {
+
+        viewModel.getPagedListLiveData().observe(this, new Observer<PagedList<bbsInformation>>() {
             @Override
-            public void onChanged(List<bbsInformation> bbsInformations) {
-                if(bbsInformations == null || bbsInformations.size() == 0){
+            public void onChanged(PagedList<bbsInformation> bbsInformations) {
+                Log.d(TAG,"Recv list length "+bbsInformations.size()+" adapter "+adapter.getItemCount());
+                if(bbsInformations.size() == 0){
                     binding.emptyUserView.setVisibility(View.VISIBLE);
                 }
                 else {
                     binding.emptyUserView.setVisibility(View.GONE);
                 }
-                adapter.setBbsInformationList(bbsInformations);
             }
         });
     }
@@ -108,7 +116,7 @@ public class ManageBBSActivity extends BaseStatusActivity
     @Override
     public void onRecyclerViewSwiped(int position, int direction) {
         // delete bbs
-        List<bbsInformation> bbsInformations= viewModel.bbsInfoList.getValue();
+        List<bbsInformation> bbsInformations= viewModel.getPagedListLiveData().getValue();
         if(bbsInformations!=null && bbsInformations.size()>position){
             showUndoSnackbar(bbsInformations.get(position),position);
         }
@@ -117,7 +125,7 @@ public class ManageBBSActivity extends BaseStatusActivity
 
     @Override
     public void onRecyclerViewMoved(int fromPosition, int toPosition) {
-        List<bbsInformation> bbsInformations= viewModel.bbsInfoList.getValue();
+        List<bbsInformation> bbsInformations= viewModel.getPagedListLiveData().getValue();
         if(bbsInformations !=null){
             if (fromPosition < toPosition) {
                 for (int i = fromPosition; i < toPosition; i++) {

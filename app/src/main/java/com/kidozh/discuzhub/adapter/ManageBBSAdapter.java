@@ -8,28 +8,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class ManageBBSAdapter extends RecyclerView.Adapter<ManageBBSAdapter.ManageBBSViewHolder> {
-    private List<bbsInformation> bbsInformationList;
+public class ManageBBSAdapter extends PagedListAdapter<bbsInformation, ManageBBSAdapter.ManageBBSViewHolder> {
     Context context;
 
-    public void setBbsInformationList(@NonNull List<bbsInformation> bbsInformationList) {
-        this.bbsInformationList = bbsInformationList;
-        notifyItemRangeInserted(0,bbsInformationList.size());
+    public ManageBBSAdapter() {
+        super(DIFF_CALLBACK);
     }
 
     @NonNull
@@ -41,7 +43,10 @@ public class ManageBBSAdapter extends RecyclerView.Adapter<ManageBBSAdapter.Mana
 
     @Override
     public void onBindViewHolder(@NonNull ManageBBSViewHolder holder, int position) {
-        bbsInformation forumInfo = bbsInformationList.get(position);
+        bbsInformation forumInfo = getItem(position);
+        if(forumInfo == null){
+            return;
+        }
         holder.forumHost.setText(forumInfo.base_url);
         holder.forumName.setText(forumInfo.site_name);
         holder.forumSiteId.setText(forumInfo.mysite_id);
@@ -60,16 +65,6 @@ public class ManageBBSAdapter extends RecyclerView.Adapter<ManageBBSAdapter.Mana
                 .into(holder.forumAvatar);
     }
 
-    @Override
-    public int getItemCount() {
-        if(bbsInformationList == null){
-            return 0;
-        }
-        else {
-            return bbsInformationList.size();
-        }
-
-    }
 
     public static class ManageBBSViewHolder extends RecyclerView.ViewHolder{
         
@@ -94,4 +89,16 @@ public class ManageBBSAdapter extends RecyclerView.Adapter<ManageBBSAdapter.Mana
             forumMemberIcon = itemView.findViewById(R.id.item_forum_information_member_icon);
         }
     }
+
+    private static DiffUtil.ItemCallback<bbsInformation> DIFF_CALLBACK = new DiffUtil.ItemCallback<bbsInformation>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull bbsInformation oldItem, @NonNull bbsInformation newItem) {
+            return oldItem.getId() == newItem.getId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull bbsInformation oldItem, @NonNull bbsInformation newItem) {
+            return oldItem.equals(newItem);
+        }
+    };
 }

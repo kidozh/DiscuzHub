@@ -27,6 +27,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.BBSIndexResult;
+import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 
@@ -196,6 +197,7 @@ public class HomeFragment extends Fragment {
     private void configurePortalRecyclerview(){
         activityBbsForumIndexBinding.bbsPortalRecyclerview.setHasFixedSize(true);
         activityBbsForumIndexBinding.bbsPortalRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        AnimationUtils.INSTANCE.configureRecyclerviewAnimation(getContext(),activityBbsForumIndexBinding.bbsPortalRecyclerview);
         adapter = new ForumCategoryAdapter(bbsInfo,userBriefInfo);
         activityBbsForumIndexBinding.bbsPortalRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         activityBbsForumIndexBinding.bbsPortalRecyclerview.setAdapter(adapter);

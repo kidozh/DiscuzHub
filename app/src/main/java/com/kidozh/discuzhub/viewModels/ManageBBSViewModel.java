@@ -6,22 +6,33 @@ import android.app.ListActivity;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 
+import com.kidozh.discuzhub.daos.ViewHistoryDao;
+import com.kidozh.discuzhub.daos.forumInformationDao;
 import com.kidozh.discuzhub.database.BBSInformationDatabase;
+import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 
 import java.util.List;
 
 public class ManageBBSViewModel extends AndroidViewModel {
-    public LiveData<List<bbsInformation>> bbsInfoList;
+
+    private LiveData<PagedList<bbsInformation>> pagedListLiveData;
+    private forumInformationDao forumInformationDao;
+    PagedList.Config myPagingConfig = new PagedList.Config.Builder()
+            .setEnablePlaceholders(true)
+            .setPageSize(10)
+            .build();
 
     public ManageBBSViewModel(@NonNull Application application) {
         super(application);
-        loadBBSList();
+        forumInformationDao = BBSInformationDatabase.getInstance(application).getForumInformationDao();
+        pagedListLiveData = new LivePagedListBuilder<>(forumInformationDao.getBBSPageList(),myPagingConfig).build();
     }
 
-
-    private void loadBBSList(){
-        bbsInfoList = BBSInformationDatabase.getInstance(getApplication()).getForumInformationDao().getAllForumInformations();
+    public LiveData<PagedList<bbsInformation>> getPagedListLiveData() {
+        return pagedListLiveData;
     }
 }

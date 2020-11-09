@@ -791,6 +791,65 @@
     <string name="all_items_have_been_loaded">All items have been loaded.</string>
     <string name="retry_content">Retry</string>
     <string name="load_content_successfully">Those items have been successfully loaded.</string>
+    <string name="preference_key_recyclerview_animation" translatable="false">preference_key_recyclerview_animation</string>
+    <string name="preference_summary_on_recyclerview_animation">Enable list animation and it may freeze the interface.</string>
+    <string name="preference_summary_off_recyclerview_animation">Disable list animation, it may improve app\'s performance in low-profile devices.</string>
+    <string name="preference_title_recyclerview_animation">List\'s animation</string>
+    <string name="preference_key_recyclerview_animation_list" translatable="false">preference_key_recyclerview_animation_list</string>
+
+    <string-array name="preference_entries_recyclerview_animation_list">
+        <item>LandingAnimator</item>
+        <item>ScaleInAnimator</item>
+        <item>ScaleInTopAnimator</item>
+        <item>ScaleInBottomAnimator</item>
+        <item>ScaleInLeftAnimator</item>
+        <item>ScaleInRightAnimator</item>
+
+        <item>FadeInAnimator</item>
+        <item>FadeInDownAnimator</item>
+        <item>FadeInUpAnimator</item>
+        <item>FadeInLeftAnimator</item>
+        <item>FadeInRightAnimator</item>.
+
+        <item>FlipInTopXAnimator</item>
+        <item>FlipInBottomXAnimator</item>
+        <item>FlipInLeftYAnimator</item>
+        <item>FlipInRightYAnimator</item>
+
+        <item>SlideInLeftAnimator</item>
+        <item>SlideInRightAnimator</item>
+        <item>OvershootInLeftAnimator</item>
+        <item>OvershootInRightAnimator</item>
+        <item>SlideInUpAnimator</item>
+        <item>SlideInDownAnimator</item>
+    </string-array>
+    <string-array name="preference_entry_values_recyclerview_animation_list">
+        <item>LandingAnimator</item>
+        <item>ScaleInAnimator</item>
+        <item>ScaleInTopAnimator</item>
+        <item>ScaleInBottomAnimator</item>
+        <item>ScaleInLeftAnimator</item>
+        <item>ScaleInRightAnimator</item>
+
+        <item>FadeInAnimator</item>
+        <item>FadeInDownAnimator</item>
+        <item>FadeInUpAnimator</item>
+        <item>FadeInLeftAnimator</item>
+        <item>FadeInRightAnimator</item>.
+
+        <item>FlipInTopXAnimator</item>
+        <item>FlipInBottomXAnimator</item>
+        <item>FlipInLeftYAnimator</item>
+        <item>FlipInRightYAnimator</item>
+
+        <item>SlideInLeftAnimator</item>
+        <item>SlideInRightAnimator</item>
+        <item>OvershootInLeftAnimator</item>
+        <item>OvershootInRightAnimator</item>
+        <item>SlideInUpAnimator</item>
+        <item>SlideInDownAnimator</item>
+    </string-array>
+    <string name="preference_title_recyclerview_animation_list">Animation list</string>
 
 
 </resources>

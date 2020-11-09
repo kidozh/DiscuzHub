@@ -73,6 +73,23 @@
             android:summaryOn="@string/preference_summary_on_concise_recyclerview"
             android:title="@string/preference_title_concise_recyclerview" />
         <androidx.preference.SwitchPreference
+            android:defaultValue="false"
+            android:icon="@drawable/ic_recyclerview_animate_on_24px"
+            android:key="@string/preference_key_recyclerview_animation"
+
+            android:summaryOn="@string/preference_summary_on_recyclerview_animation"
+            android:summaryOff="@string/preference_summary_off_recyclerview_animation"
+            android:title="@string/preference_title_recyclerview_animation" />
+
+        <androidx.preference.ListPreference
+            android:dependency="@string/preference_key_recyclerview_animation"
+            android:entries="@array/preference_entries_recyclerview_animation_list"
+            android:entryValues="@array/preference_entry_values_recyclerview_animation_list"
+            android:icon="@drawable/ic_recyclerview_animation_list_24px"
+            android:key="@string/preference_key_recyclerview_animation_list"
+            android:title="@string/preference_title_recyclerview_animation_list"
+            android:summary="%s" />
+        <androidx.preference.SwitchPreference
             android:defaultValue="true"
             android:icon="@drawable/ic_collapse_forum_rule_24px"
             android:key="@string/preference_key_collapse_forum_rule"

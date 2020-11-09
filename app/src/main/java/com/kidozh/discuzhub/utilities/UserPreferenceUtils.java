@@ -98,4 +98,16 @@ public class UserPreferenceUtils {
         editor.putInt(preferenceName,indentifier);
         editor.apply();
     }
+
+    public static boolean getEnableRecyclerviewAnimate(@NonNull Context context){
+        String preferenceName = context.getString(R.string.preference_key_recyclerview_animation);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(preferenceName,false);
+    }
+
+    public static String getRecyclerviewAnimateType(@NonNull Context context){
+        String preferenceName = context.getString(R.string.preference_key_recyclerview_animation_list);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(preferenceName,"LandingAnimator");
+    }
 }

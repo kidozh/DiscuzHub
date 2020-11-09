@@ -100,7 +100,7 @@ public class HotThreadsFragment extends Fragment {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(isScrollAtEnd()){
+                if(!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE){
                     if(hotThreadsViewModel.pageNum.getValue() == null){
                         hotThreadsViewModel.setPageNumAndFetchThread(1);
                     }
@@ -112,17 +112,7 @@ public class HotThreadsFragment extends Fragment {
                 }
             }
 
-            public boolean isScrollAtEnd(){
 
-                if (binding.fragmentHotThreadRecyclerview.computeVerticalScrollExtent() + binding.fragmentHotThreadRecyclerview.computeVerticalScrollOffset()
-                        >= binding.fragmentHotThreadRecyclerview.computeVerticalScrollRange()){
-                    return true;
-                }
-                else {
-                    return false;
-                }
-
-            }
         });
     }
 

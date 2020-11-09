@@ -25,7 +25,6 @@ public class ViewHistoryViewModel extends AndroidViewModel {
             .setEnablePlaceholders(true)
             .setPageSize(10)
             .build();
-    private bbsInformation bbsInfo;
 
     public ViewHistoryViewModel(Application application){
         super(application);
@@ -37,25 +36,12 @@ public class ViewHistoryViewModel extends AndroidViewModel {
 
 
     public void setBBSInfo(bbsInformation bbsInfo){
-        this.bbsInfo = bbsInfo;
         pagedListLiveData = new LivePagedListBuilder<>(viewHistoryDao.getViewHistoryPageListByBBSId(bbsInfo.getId()),myPagingConfig).build();
     }
 
     public void setSearchText(bbsInformation bbsInfo, String text){
-
-        this.bbsInfo = bbsInfo;
         pagedListLiveData = new LivePagedListBuilder<>(viewHistoryDao.getViewHistoryPageListByBBSIdWithSearchText(bbsInfo.getId(),text),myPagingConfig).build();
     }
-
-//    public ViewHistoryViewModel(ViewHistoryDatabase viewHistoryDatabase){
-//        DataSource.Factory<Integer,ViewHistory> factory =
-//                viewHistoryDatabase.getDao().getViewHistoryPageList();
-//        PagedList.Config myPagingConfig = new PagedList.Config.Builder()
-//                .setEnablePlaceholders(true)
-//                .build();
-//        pagedListLiveData = new LivePagedListBuilder<>(factory,myPagingConfig)
-//                .build();
-//    }
 
     public LiveData<PagedList<ViewHistory>> getPagedListLiveData() {
         return pagedListLiveData;

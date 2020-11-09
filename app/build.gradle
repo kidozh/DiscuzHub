@@ -134,6 +134,8 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-jackson:$retrofit_version"
 
+    implementation 'jp.wasabeef:recyclerview-animators:4.0.1'
+
 
 }
 repositories {

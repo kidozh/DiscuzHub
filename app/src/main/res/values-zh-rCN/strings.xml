@@ -606,5 +606,36 @@
     <string name="all_items_have_been_loaded">已经加载了所有项目。</string>
     <string name="retry_content">重试</string>
     <string name="load_content_successfully">成功访问到内容。</string>
+    <string name="preference_summary_on_recyclerview_animation">启动列表动画。但这个在低配置机器上可能会导致画面卡顿。</string>
+    <string name="preference_summary_off_recyclerview_animation">禁用列表动画。有助于提升画面流畅性。</string>
+    <string name="preference_title_recyclerview_animation">列表动画</string>
+
+    <string-array name="preference_entries_recyclerview_animation_list">
+        <item>着陆</item>
+        <item>缩放</item>
+        <item>由上缩放</item>
+        <item>由下缩放</item>
+        <item>由左缩放</item>
+        <item>由右缩放</item>
+
+        <item>淡入淡出</item>
+        <item>由下淡入淡出</item>
+        <item>由上淡入淡出</item>
+        <item>由左淡入淡出</item>
+        <item>由右淡入淡出</item>.
+
+        <item>上半轴翻转</item>
+        <item>下半轴翻转</item>
+        <item>左半轴翻转</item>
+        <item>右半轴翻转</item>
+
+        <item>由左滑入</item>
+        <item>由右滑入</item>
+        <item>由左过冲滑入</item>
+        <item>由右过冲滑入</item>
+        <item>由上滑入</item>
+        <item>由下滑入</item>
+    </string-array>
+    <string name="preference_title_recyclerview_animation_list">动画种类</string>
 
 </resources>

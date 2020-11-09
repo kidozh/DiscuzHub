@@ -742,11 +742,20 @@ public class UserProfileActivity extends BaseStatusActivity implements
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if(viewHistory.name == null){
+                viewHistory.name = "";
+            }
+        }
+
+        @Override
         protected Void doInBackground(Void... voids) {
             dao = ViewHistoryDatabase.getInstance(getApplicationContext()).getDao();
             List<ViewHistory> viewHistories = dao
                     .getViewHistoryByBBSIdAndFid(viewHistory.belongedBBSId,viewHistory.fid);
             if(viewHistories ==null || viewHistories.size() == 0){
+
                 dao.insert(viewHistory);
             }
             else {
