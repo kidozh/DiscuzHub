@@ -9,6 +9,21 @@ import jp.wasabeef.recyclerview.animators.*
 object AnimationUtils {
 
     fun getRecyclerviewAnimation(context: Context): ItemAnimator? {
+        var animator = getRecyclerviewAnimationType(context)
+        if(animator == null){
+            return null
+        }
+        // increase the duration for better display
+        return animator.apply {
+            addDuration = 240
+            removeDuration = 240
+            moveDuration = 500
+            changeDuration = 500
+        }
+
+    }
+
+    fun getRecyclerviewAnimationType(context: Context): ItemAnimator? {
         if (UserPreferenceUtils.getEnableRecyclerviewAnimate(context)) {
             val animationType = UserPreferenceUtils.getRecyclerviewAnimateType(context)
             when (animationType) {

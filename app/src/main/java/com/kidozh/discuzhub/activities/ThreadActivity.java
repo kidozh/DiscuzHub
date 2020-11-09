@@ -247,10 +247,12 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
                     && threadResult.threadPostVariables.detailedThreadInfo!=null){
                 authorid = threadResult.threadPostVariables.detailedThreadInfo.authorId;
             }
-            if(viewThreadQueryStatus==null|| viewThreadQueryStatus.page == 1){
+            Log.d(TAG,"queried page "+viewThreadQueryStatus.page);
+            if(viewThreadQueryStatus.page == 1){
                 postAdapter.clearList();
                 postAdapter.addThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue(),authorid);
                 binding.postsRecyclerview.scrollToPosition(0);
+
             }
             else {
                 postAdapter.addThreadInfoList(postInfos,threadDetailViewModel.threadStatusMutableLiveData.getValue(),authorid);
