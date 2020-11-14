@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -66,6 +67,7 @@ import com.kidozh.discuzhub.utilities.numberFormatUtils;
 import com.kidozh.discuzhub.viewModels.ForumViewModel;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -382,6 +384,12 @@ public class ForumActivity extends BaseStatusActivity implements
                         intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                         intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                         intent.putExtra(ConstUtils.PASS_POST_TYPE, ConstUtils.TYPE_POST_THREAD);
+                        if(forumViewModel.displayForumResultMutableLiveData
+                                .getValue().forumVariables.threadTypeInfo != null){
+                            intent.putExtra(ConstUtils.PASS_THREAD_CATEGORY_KEY, (Serializable) forumViewModel.displayForumResultMutableLiveData
+                                    .getValue().forumVariables.threadTypeInfo.idNameMap);
+                        }
+
 
                         Log.d(TAG,"You pass fid name"+forum.name);
 

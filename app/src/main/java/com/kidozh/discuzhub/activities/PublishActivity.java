@@ -111,7 +111,8 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
     
     private EmotionInputHandler handler;
 
-    private String fid, forumApiString,forumName, uploadHash, formHash;
+    private String fid,forumName, uploadHash, formHash;
+    Map<String,String> threadCategoryMapper;
     private ProgressDialog uploadDialog;
     private forumUserBriefInfo bbsPersonInfo;
 
@@ -149,18 +150,12 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
         //binding.bbsPostThreadEditBarLinearLayout = (HorizontalScrollView) binding.bbsPostThreadEditorBar;
 
-
-
-        bbsPersonInfo = bbsParseUtils.parseBreifUserInfo(forumApiString);
-        // parse api result
-        Map<String,String> threadTypeMapper = bbsParseUtils.parseThreadType(forumApiString);
-        if (threadTypeMapper == null){
+        if (threadCategoryMapper == null){
             binding.bbsPostThreadCateSpinner.setVisibility(View.GONE);
         }
         else {
-            configureSpinner(threadTypeMapper);
+            configureSpinner(threadCategoryMapper);
         }
-        formHash = bbsParseUtils.parseFormHash(forumApiString);
 
         configureEditBar();
         configureInputHandler();
@@ -180,6 +175,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         forum = intent.getParcelableExtra(ConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        threadCategoryMapper = (Map<String, String>) intent.getSerializableExtra(ConstUtils.PASS_THREAD_CATEGORY_KEY);
         // check if it comes from draft box
         bbsThreadDraft threadDraft = (bbsThreadDraft) intent.getSerializableExtra(ConstUtils.PASS_THREAD_DRAFT_KEY);
         postThreadViewModel.bbsThreadDraftMutableLiveData.setValue(threadDraft);
@@ -199,7 +195,6 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
             if(binding.bbsPostThreadCateSpinner.getSelectedItem()!=null){
                 binding.bbsPostThreadCateSpinner.setSelection(Integer.parseInt(threadDraft.typeid));
             }
-            forumApiString = threadDraft.apiString;
 
         }
         else if(replyMessage !=null){
@@ -216,9 +211,6 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
         postThreadViewModel.setBBSInfo(bbsInfo,userBriefInfo,fid);
         forumName = intent.getStringExtra("fid_name");
-        if(forumApiString==null){
-            forumApiString = intent.getStringExtra("api_result");
-        }
 
     }
 
@@ -434,13 +426,13 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
     private void configureSpinner(Map<String,String> threadTypeMapper){
         List<String> threadTypeNames = new ArrayList<String>();
-        Iterator keys = threadTypeMapper.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> keys = threadTypeMapper.entrySet().iterator();
         while (keys.hasNext()){
-            Map.Entry entry = (Map.Entry) keys.next();
+            Map.Entry<String, String> entry = keys.next();
 
-            String key = (String) entry.getKey();
+            String key = entry.getKey();
 
-            String value = (String)entry.getValue();
+            String value = entry.getValue();
             threadTypeNames.add(value);
 
         }
@@ -509,22 +501,6 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 fragment.show(getSupportFragmentManager(),PostThreadPasswordDialogFragment.class.getSimpleName());
                 break;
             }
-//            case R.id.action_backspace:
-//                int start = edContent.getSelectionStart();
-//                int end = edContent.getSelectionEnd();
-//                if (start == 0) {
-//                    return;
-//                }
-//                if ((start == end) && start > 0) {
-//                    start = start - 1;
-//                }
-//                edContent.getText().delete(start, end);
-//                break;
-//            case R.id.tv_select_type:
-//                typeidSpinner.setData(typeiddatas);
-//                typeidSpinner.setWidth(view.getWidth());
-//                typeidSpinner.showAsDropDown(view, 0, 15);
-//                break;
             default:
                 break;
         }
@@ -551,7 +527,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                         forumName,
                         String.valueOf(binding.bbsPostThreadCateSpinner.getSelectedItemPosition()),
                         binding.bbsPostThreadCateSpinner.getSelectedItem().toString(),
-                        forumApiString
+                        ""
                 );
                 postThreadViewModel.bbsThreadDraftMutableLiveData.setValue(threadDraft);
                 // need to create an id for attachment attach
@@ -567,7 +543,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                         forumName,
                         "0",
                         "",
-                        forumApiString
+                        ""
                 );
                 postThreadViewModel.bbsThreadDraftMutableLiveData.setValue(threadDraft);
             }
@@ -1174,7 +1150,8 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
             super.onPreExecute();
             // need typeid
             int selectPos = binding.bbsPostThreadCateSpinner.getSelectedItemPosition();
-            List<String> numKeys = bbsParseUtils.getThreadTypeList(forumApiString);
+            List<String> threadCategoryKeys = new ArrayList<>(threadCategoryMapper.keySet());
+
 
 
             String subject = binding.bbsPostThreadSubjectEditText.getText().toString();
@@ -1235,8 +1212,8 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 }
             }
 
-            if(numKeys!=null && numKeys.size() >0){
-                String typeId = numKeys.get(selectPos);
+            if(threadCategoryKeys!=null && threadCategoryKeys.size() >0){
+                String typeId = threadCategoryKeys.get(selectPos);
                 formBody.add("typeid",typeId);
             }
 

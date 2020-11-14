@@ -7,6 +7,7 @@ public class ConstUtils {
     public static final String PASS_BBS_USER_KEY = "PASS_BBS_USER_KEY";
     public static final String PASS_PRIVATE_MESSAGE_KEY = "PASS_PRIVATE_MESSAGE_KEY";
     public static final String PASS_THREAD_DRAFT_KEY = "PASS_THREAD_DRAFT_KEY";
+    public static final String PASS_THREAD_CATEGORY_KEY = "PASS_THREAD_CATEGORY_KEY";
     public static final String PASS_IS_VIEW_HISTORY = "PASS_IS_VIEW_HISTORY";
     public static final String PASS_POST_TYPE = "PASS_POST_TYPE";
     public static final String PASS_POST_MESSAGE = "PASS_POST_MESSAGE";
