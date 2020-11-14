@@ -18,24 +18,31 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        single {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            applicationIdSuffix ".bbs"
+        }
         debug {
             pseudoLocalesEnabled true
         }
     }
-    flavorDimensions "version"
-    productFlavors{
-        bbs {
-            dimension "version"
-            applicationId 'com.example.bbs'
-        }
-    }
+//    flavorDimensions "version"
+//    productFlavors{
+//
+//        single {
+//            dimension "version"
+//            applicationId 'com.example.bbs'
+//        }
+//    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    dataBinding {
-        //noinspection DataBindingWithoutKapt
-        enabled = true
+    buildFeatures{
+        dataBinding = true
+        viewBinding = true
     }
 }
 

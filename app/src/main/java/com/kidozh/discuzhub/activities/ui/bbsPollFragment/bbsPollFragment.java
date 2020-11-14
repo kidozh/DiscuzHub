@@ -156,12 +156,12 @@ public class bbsPollFragment extends Fragment {
 
         if(pollInfo.allowVote){
             chip.setText(R.string.poll_can_vote);
-            chip.setChipIcon(context.getDrawable(R.drawable.vector_drawable_check_24px));
+            chip.setChipIcon(context.getDrawable(R.drawable.ic_check_24px));
             chip.setChipBackgroundColorResource(R.color.colorSafeStatus);
         }
         else {
             chip.setText(R.string.poll_cannot_vote);
-            chip.setChipIcon(context.getDrawable(R.drawable.vector_drawable_block_24px));
+            chip.setChipIcon(context.getDrawable(R.drawable.ic_block_white_24px));
             chip.setChipBackgroundColorResource(R.color.colorUnSafeStatus);
         }
         chip.setTextColor(context.getColor(R.color.colorPureWhite));
@@ -278,10 +278,9 @@ public class bbsPollFragment extends Fragment {
             public void onItemClick(View view, int position) {
                 // if check
                 if(pollInfo.allowVote){
-                    List<bbsPollInfo.option> options = adapter.getPollOptions();
                     // trigger it
-                    options.get(position).checked = !options.get(position).checked;
-                    adapter.setPollOptions(options);
+                    adapter.pollOptions.get(position).checked = !adapter.pollOptions.get(position).checked;
+                    adapter.notifyItemChanged(position);
                     int checkedNumber = pollInfo.getCheckedOptionNumber();
 
                     if(checkedNumber <= pollInfo.maxChoices && checkedNumber >0){

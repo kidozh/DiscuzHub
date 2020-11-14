@@ -125,7 +125,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                     val user: forumUserBriefInfo? = viewModel.currentUserMutableLiveData.value
                     val intent = Intent(this, ViewHistoryActivity::class.java)
                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbs)
-                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                     startActivity(intent)
                     true
                 }
