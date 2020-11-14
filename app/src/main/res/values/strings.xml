@@ -8,7 +8,7 @@
     </string-array>
     <string name="add_a_forum_by_url_safe_client_check">Use safe client to ensure HTTPS integrity and migrate to HTTPS if possible.</string>
     <string name="bbs_anonymous">Incognito</string>
-    <string name="bbs_register_an_account">Register</string>
+    <string name="bbs_register_an_account">Register at %1$s</string>
     <string name="delete_forum_information">The forum is deleted.</string>
     <string name="bbs_undo_delete">undo</string>
     <string name="network_failed">Failed to fetch the information due to network error</string>
@@ -872,6 +872,9 @@
         <item>Slide In Right</item>
         <item>Slide In Left</item>
     </string-array>
+    <string name="switch_user">Switch to user: %1$s.</string>
+    <string name="switch_incognitive">Switch to incognitive mode.</string>
+    <string name="incognitive_mode">No users signed in. Incognitive mode enabled.</string>
 
 
 </resources>

@@ -274,8 +274,6 @@ public class UserNotificationFragment extends Fragment {
         if (context instanceof OnNewMessageChangeListener) {
             mListener = (OnNewMessageChangeListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
         }
     }
 

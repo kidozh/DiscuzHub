@@ -109,6 +109,10 @@ public class bbsInformation implements Serializable {
         return this.useSafeClient && this.base_url.startsWith("https://");
     }
 
+    public String getRegisterURL(){
+        return base_url + "/member.php?mod="+register_name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

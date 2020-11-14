@@ -5,7 +5,7 @@
     <string name="action_settings">設置</string>
     <string name="add_a_forum_by_url_safe_client_check">使用安全的認證方式以保護HTTPS通信安全</string>
     <string name="bbs_anonymous">匿名訪問</string>
-    <string name="bbs_register_an_account">註冊</string>
+    <string name="bbs_register_an_account">%1$s註冊</string>
     <string name="delete_forum_information">已經刪除了此論壇的所有信息。 </string>
     <string name="bbs_undo_delete">撤銷</string>
     <string name="network_failed">網絡出錯了。 </string>
@@ -651,5 +651,8 @@
         <item>由右滑入</item>
         <item>由左滑入</item>
     </string-array>
+    <string name="switch_user">使用%1$s訪問論壇。</string>
+    <string name="switch_incognitive">使用匿名模式訪問論壇。</string>
+    <string name="incognitive_mode">還沒有一個登錄的賬號，因此您將以匿名模式訪問論壇。</string>
 
 </resources>

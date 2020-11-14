@@ -2,6 +2,8 @@ package com.kidozh.discuzhub.adapter;
 
 import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +19,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.SingleDiscuzActivity;
 import com.kidozh.discuzhub.databinding.ItemManageBbsBinding;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
@@ -30,6 +34,7 @@ import java.util.List;
 
 
 public class ManageBBSAdapter extends PagedListAdapter<bbsInformation, ManageBBSAdapter.ManageBBSViewHolder> {
+    private static final String TAG = ManageBBSAdapter.class.getSimpleName();
     Context context;
 
     public ManageBBSAdapter() {
@@ -83,6 +88,11 @@ public class ManageBBSAdapter extends PagedListAdapter<bbsInformation, ManageBBS
                 .placeholder(R.drawable.vector_drawable_bbs)
                 .centerInside()
                 .into(holder.binding.itemForumInformationAvatar);
+        holder.binding.itemBbsCard.setOnClickListener(v -> {
+            Intent intent = new Intent(context, SingleDiscuzActivity.class);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,forumInfo);
+            context.startActivity(intent);
+        });
     }
 
 

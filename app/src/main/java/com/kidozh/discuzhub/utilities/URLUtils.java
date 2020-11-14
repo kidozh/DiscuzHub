@@ -38,10 +38,6 @@ public class URLUtils {
         return BASE_URL + "/api/mobile/index.php?version=4&module=check";
     }
 
-    public static String getBBSRegisterUrl(String registerName){
-        return BASE_URL + "/member.php?mod="+registerName;
-    }
-
     public static String getBBSLogoUrl(){
         return BASE_URL + "/static/image/common/logo.png";
     }

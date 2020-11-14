@@ -29,6 +29,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
@@ -51,8 +52,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import cn.gavinliu.android.lib.shapedimageview.ShapedImageView;
 
 
 public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -575,7 +574,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView mThreadViewNum;
         TextView mThreadReplyNum;
         TextView mThreadType;
-        ShapedImageView mAvatarImageview;
+        ShapeableImageView mAvatarImageview;
         CardView mCardview;
         RecyclerView mReplyRecyclerview;
         TextView mRecommendationNumber;
@@ -608,7 +607,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView mThreadReplyNum;
         TextView mThreadType;
         CardView mCardview;
-        ShapedImageView mAvatarImageview;
+        ShapeableImageView mAvatarImageview;
 
 
 

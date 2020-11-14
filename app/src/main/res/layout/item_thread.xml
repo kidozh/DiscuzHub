@@ -12,9 +12,8 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="8dp"
         app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -23,16 +22,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <cn.gavinliu.android.lib.shapedimageview.ShapedImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/bbs_post_avatar_imageView"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:transitionName="user_info_avatar"
-                app:shape_mode="circle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearance="@style/circleImageView"
+                app:shapeAppearanceOverlay="@style/circleImageView"
                 app:srcCompat="@drawable/avatar_person_male"
                 tools:srcCompat="@tools:sample/avatars[0]" />
 

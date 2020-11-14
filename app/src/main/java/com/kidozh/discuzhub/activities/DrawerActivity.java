@@ -78,8 +78,7 @@ import kotlin.jvm.functions.Function3;
 public class DrawerActivity extends BaseStatusActivity implements
         bbsPrivateMessageFragment.OnNewMessageChangeListener,
         bbsPublicMessageFragment.OnNewMessageChangeListener,
-        UserNotificationFragment.OnNewMessageChangeListener,
-        NotificationsFragment.onPrivateMessageChangeListener{
+        UserNotificationFragment.OnNewMessageChangeListener{
     private final static String TAG = DrawerActivity.class.getSimpleName();
 
     MainDrawerViewModel viewModel;
@@ -469,13 +468,12 @@ public class DrawerActivity extends BaseStatusActivity implements
                             bbsInformation forumInfo = viewModel.currentBBSInformationMutableLiveData.getValue();
                             if(forumInfo!=null){
                                 new AlertDialog.Builder(activity)
-                                        .setTitle(getString(R.string.bbs_register_an_account)+" "+forumInfo.site_name)
+                                        .setTitle(getString(R.string.bbs_register_an_account,forumInfo.site_name))
                                         .setMessage(R.string.bbs_register_account_notification)
                                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                URLUtils.setBBS(forumInfo);
-                                                Uri uri = Uri.parse(URLUtils.getBBSRegisterUrl(forumInfo.register_name));
+                                                Uri uri = Uri.parse(forumInfo.getRegisterURL());
                                                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                                                 activity.startActivity(intent);
                                             }
@@ -780,13 +778,6 @@ public class DrawerActivity extends BaseStatusActivity implements
         if(notificationsFragment!=null){
             notificationsFragment.setNewMessageNum(i);
         }
-
-    }
-
-
-
-    @Override
-    public void setPrivateMessageNum(int privateMessageNum) {
 
     }
 

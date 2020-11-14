@@ -530,10 +530,6 @@ public class NotificationsFragment extends Fragment {
     }
 
 
-    public interface onPrivateMessageChangeListener{
-        public void setPrivateMessageNum(int privateMessageNum);
-
-    }
 
     public void renderTabNumber(bbsParseUtils.noticeNumInfo noticeNumInfo){
         if(noticeNumInfo == null){

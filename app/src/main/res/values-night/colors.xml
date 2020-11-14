@@ -20,6 +20,7 @@
 
     <color name="colorLoadAllLayoutBackground">@color/colorWetasphalt</color>
     <color name="colorLoadAllTextColor">@color/colorCloud</color>
+    <color name="colorThreadTitleBackground">@color/colorCloud</color>
 
 
 </resources>

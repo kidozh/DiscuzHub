@@ -22,7 +22,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.SingleDiscuzActivity"></activity>
+        <activity android:name=".activities.SingleDiscuzActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.SearchPostsActivity" />
         <activity
             android:name=".activities.ViewHistoryActivity"

@@ -125,41 +125,41 @@ public class BaseStatusActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        int id = item.getItemId();
-        switch (id){
-            case android.R.id.home:{
-                this.finishAfterTransition();
-                return false;
-            }
-            case R.id.bbs_forum_nav_personal_center:{
-                Intent intent = new Intent(this, UserProfileActivity.class);
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                intent.putExtra("UID",userBriefInfo.uid);
-                startActivity(intent);
-                return true;
-            }
-            case R.id.bbs_settings:{
-                Intent intent = new Intent(this,SettingsActivity.class);
-                startActivity(intent);
-                return true;
-            }
-            case R.id.bbs_forum_nav_draft_box:{
-                Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                startActivity(intent);
-                return true;
-            }
-            case R.id.bbs_about_app:{
-                Intent intent = new Intent(this, AboutAppActivity.class);
-                startActivity(intent);
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//
+//        int id = item.getItemId();
+//        switch (id){
+//            case android.R.id.home:{
+//                this.finishAfterTransition();
+//                return false;
+//            }
+//            case R.id.bbs_forum_nav_personal_center:{
+//                Intent intent = new Intent(this, UserProfileActivity.class);
+//                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+//                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+//                intent.putExtra("UID",userBriefInfo.uid);
+//                startActivity(intent);
+//                return true;
+//            }
+//            case R.id.bbs_settings:{
+//                Intent intent = new Intent(this,SettingsActivity.class);
+//                startActivity(intent);
+//                return true;
+//            }
+//            case R.id.bbs_forum_nav_draft_box:{
+//                Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
+//                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+//                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+//                startActivity(intent);
+//                return true;
+//            }
+//            case R.id.bbs_about_app:{
+//                Intent intent = new Intent(this, AboutAppActivity.class);
+//                startActivity(intent);
+//                return true;
+//            }
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 }

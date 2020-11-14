@@ -75,6 +75,7 @@
 
     <color name="colorLoadAllLayoutBackground">@color/colorCloud</color>
     <color name="colorLoadAllTextColor">@color/colorMidnightblue</color>
+    <color name="colorThreadTitleBackground">@color/colorCloud</color>
 
 
 

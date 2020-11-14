@@ -47,8 +47,7 @@ import okhttp3.Response;
 public class bbsShowPortalActivity extends BaseStatusActivity
         implements bbsPrivateMessageFragment.OnNewMessageChangeListener,
         bbsPublicMessageFragment.OnNewMessageChangeListener,
-        UserNotificationFragment.OnNewMessageChangeListener,
-        NotificationsFragment.onPrivateMessageChangeListener{
+        UserNotificationFragment.OnNewMessageChangeListener{
     private static final String TAG = bbsShowPortalActivity.class.getSimpleName();
 
     HomeFragment homeFragment;
@@ -417,13 +416,6 @@ public class bbsShowPortalActivity extends BaseStatusActivity
 
 
 
-
-    }
-
-
-
-    @Override
-    public void setPrivateMessageNum(int privateMessageNum) {
 
     }
 

@@ -226,8 +226,7 @@ public class bbsPublicMessageFragment extends Fragment {
         if (context instanceof bbsPrivateMessageFragment.OnNewMessageChangeListener) {
             mListener = (bbsPrivateMessageFragment.OnNewMessageChangeListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+
         }
     }
 

@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/view_history_icon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -31,6 +31,8 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearance="@style/circleImageView"
+                app:shapeAppearanceOverlay="@style/circleImageView"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <TextView

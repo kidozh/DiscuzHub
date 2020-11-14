@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <cn.gavinliu.android.lib.shapedimageview.ShapedImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/bbs_post_avatar_imageView"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
@@ -32,7 +32,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/bbs_post_publisher"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/bbs_post_publisher"
-                app:shape_mode="circle"
+                app:shapeAppearance="@style/circleImageView"
+                app:shapeAppearanceOverlay="@style/circleImageView"
                 app:srcCompat="@drawable/avatar_person_male"
                 tools:srcCompat="@tools:sample/avatars[0]" />
 

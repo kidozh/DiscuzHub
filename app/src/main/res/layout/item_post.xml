@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <cn.gavinliu.android.lib.shapedimageview.ShapedImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/bbs_post_avatar_imageView"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
@@ -34,7 +34,8 @@
                 android:transitionName="user_info_avatar"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:shape_mode="circle"
+                app:shapeAppearance="@style/circleImageView"
+                app:shapeAppearanceOverlay="@style/circleImageView"
                 tools:srcCompat="@tools:sample/avatars[0]" />
 
             <TextView
