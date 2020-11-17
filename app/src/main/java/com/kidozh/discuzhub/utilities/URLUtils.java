@@ -326,15 +326,6 @@ public class URLUtils {
         return uri.toString();
     }
 
-    public static String getHotForumURL(){
-
-        Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
-                .appendQueryParameter("version","4")
-                .appendQueryParameter("module","hotforum")
-                .build();
-        return uri.toString();
-    }
-
     public static String getReplyPostURLInLabel(int pid, int ptid){
         return "forum.php?mod=redirect&goto=findpost&pid="+pid+"&ptid="+ptid;
     }
