@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
+        app:cardElevation="4dp"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,17 +71,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bbs_post_publish_date"
                 tools:text="@tools:sample/last_names" />
-
-            <TextView
-                android:id="@+id/bbs_thread_content"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="@+id/bbs_thread_title"
-                app:layout_constraintStart_toStartOf="@+id/bbs_thread_title"
-                app:layout_constraintTop_toBottomOf="@+id/bbs_thread_title"
-                tools:text="@tools:sample/lorem" />
 
             <TextView
                 android:id="@+id/bbs_thread_type"

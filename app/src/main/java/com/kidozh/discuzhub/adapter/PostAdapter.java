@@ -662,15 +662,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                         resource.setBounds(0,0,screenWidth,newHeight);
 
                     }
-                    else if(screenWidth == 0){
+                    else{
                         myDrawable.setBounds(0,0,width,height);
                         drawable.setBounds(0,0,width,height);
                         resource.setBounds(0,0,width,height);
-                    }
-                    else {
-                        myDrawable.setBounds(0,0,width*2,height*2);
-                        drawable.setBounds(0,0,width*2,height*2);
-                        resource.setBounds(0,0,width*2,height*2);
                     }
 
                     myDrawable.setDrawable(drawable);
@@ -685,7 +680,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
         @Override
         public void onLoadCleared(@Nullable Drawable placeholder) {
-
+            myDrawable.setDrawable(placeholder);
         }
     }
 
@@ -694,9 +689,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
         private Context mContext;
         TextView textView;
-
-        private int mListItemCount = 0;
-        private Vector<String> mListParents = new Vector<String>();
 
         public HtmlTagHandler(Context context, TextView textView) {
             mContext = context.getApplicationContext();

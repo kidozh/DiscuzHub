@@ -509,7 +509,7 @@ public class ForumActivity extends BaseStatusActivity implements
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
         binding.bbsForumThreadRecyclerview.setLayoutManager(linearLayoutManager);
-        binding.bbsForumThreadRecyclerview.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        //binding.bbsForumThreadRecyclerview.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
 
         adapter = new ThreadAdapter(null,fid,bbsInfo,userBriefInfo);
         concatAdapter = new ConcatAdapter(adapter,networkIndicatorAdapter);
