@@ -227,7 +227,6 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
         else if(holderRaw instanceof ThreadViewHolder){
             ThreadViewHolder holder = (ThreadViewHolder) holderRaw;
-            holder.mContent.setVisibility(View.GONE);
             Spanned sp = Html.fromHtml(threadInfo.subject);
             SpannableString spannableString = new SpannableString(sp);
             holder.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE);

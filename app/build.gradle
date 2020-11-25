@@ -8,19 +8,19 @@ android {
         applicationId "com.kidozh.discuzhub"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 25
-        versionName "3.3"
+        versionCode 27
+        versionName "3.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+//            minifyEnabled true
+//            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         single {
-            minifyEnabled true
-            shrinkResources true
+//            minifyEnabled true
+//            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             applicationIdSuffix ".bbs"
         }
