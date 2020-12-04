@@ -21,13 +21,14 @@ import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 
 public class ThreadDraftAdapter extends RecyclerView.Adapter<ThreadDraftAdapter.ViewHolder> {
 
-    List<bbsThreadDraft> bbsThreadDraftList;
+    List<bbsThreadDraft> bbsThreadDraftList = new ArrayList<>();
     Context context;
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
