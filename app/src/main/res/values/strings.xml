@@ -875,6 +875,7 @@
     <string name="switch_user">Switch to user: %1$s.</string>
     <string name="switch_incognitive">Switch to incognitive mode.</string>
     <string name="incognitive_mode">No users signed in. Incognitive mode enabled.</string>
+    <string name="default_notification_channel_id" translatable="false">1452471547</string>
 
 
 </resources>

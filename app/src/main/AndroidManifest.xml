@@ -21,7 +21,8 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:targetApi="n">
         <activity android:name=".activities.SingleDiscuzActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.SearchPostsActivity" />
