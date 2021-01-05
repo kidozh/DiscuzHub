@@ -112,7 +112,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
     private EmotionInputHandler handler;
 
     private String fid,forumName, uploadHash, formHash;
-    Map<String,String> threadCategoryMapper;
+    Map<String,String> threadCategoryMapper = new HashMap<>();
     private ProgressDialog uploadDialog;
     private forumUserBriefInfo bbsPersonInfo;
 
@@ -175,7 +175,13 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         forum = intent.getParcelableExtra(ConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
-        threadCategoryMapper = (Map<String, String>) intent.getSerializableExtra(ConstUtils.PASS_THREAD_CATEGORY_KEY);
+        if(intent.getSerializableExtra(ConstUtils.PASS_THREAD_CATEGORY_KEY) !=null){
+            threadCategoryMapper = (Map<String, String>) intent.getSerializableExtra(ConstUtils.PASS_THREAD_CATEGORY_KEY);
+        }
+        else{
+            threadCategoryMapper = new HashMap<>();
+        }
+
         // check if it comes from draft box
         bbsThreadDraft threadDraft = (bbsThreadDraft) intent.getSerializableExtra(ConstUtils.PASS_THREAD_DRAFT_KEY);
         postThreadViewModel.bbsThreadDraftMutableLiveData.setValue(threadDraft);

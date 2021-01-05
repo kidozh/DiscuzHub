@@ -58,6 +58,8 @@ public class SplashScreenActivity extends BaseStatusActivity {
         notificationUtils.createUsersUpdateChannel(this);
     }
 
+
+
     private void registerWorkManager(){
         Log.d(TAG,"Register work");
 

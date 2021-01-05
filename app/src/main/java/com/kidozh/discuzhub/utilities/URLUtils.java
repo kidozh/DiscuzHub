@@ -150,7 +150,13 @@ public class URLUtils {
     }
 
     public static String getUploadImageUrl() {
-        return BASE_URL + "/misc.php?mod=swfupload&operation=upload&simple=1&type=image";
+        Uri uri = Uri.parse(BASE_URL + "/api/mobile/index.php").buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","forumupload")
+                .appendQueryParameter("simple","1")
+                .appendQueryParameter("type","image")
+                .build();
+        return uri.toString();
     }
 
     public static String getCheckPostUrl(String fid){
@@ -163,10 +169,9 @@ public class URLUtils {
     }
 
     public static String getSWFUploadAttachmentUrl(String fid) {
-        Uri uri = Uri.parse(BASE_URL + "/misc.php").buildUpon()
-                .appendQueryParameter("mod", "swfupload")
-                .appendQueryParameter("action", "swfupload")
-                .appendQueryParameter("operation", "upload")
+        Uri uri = Uri.parse(BASE_URL + "/api/mobile/index.php").buildUpon()
+                .appendQueryParameter("version","4")
+                .appendQueryParameter("module","forumupload")
                 .appendQueryParameter("fid",fid)
                 .build();
         return uri.toString();
