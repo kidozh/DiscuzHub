@@ -877,6 +877,7 @@
     <string name="incognitive_mode">No users signed in. Incognitive mode enabled.</string>
     <string name="default_notification_channel_id" translatable="false">1452471547</string>
     <string name="bbs_url_example_qzzn">QZZN</string>
+    <string name="auto_check_url">Automatically check and add bbs</string>
 
 
 </resources>

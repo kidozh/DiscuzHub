@@ -652,5 +652,6 @@
     <string name="switch_incognitive">使用匿名模式访问论坛。</string>
     <string name="incognitive_mode">还没有一个登录的账号，因此您将以匿名模式访问论坛。</string>
     <string name="bbs_url_example_qzzn">QZZN论坛</string>
+    <string name="auto_check_url">自动根据建议添加论坛</string>
 
 </resources>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".activities.AddIntroActivity">
@@ -68,11 +68,11 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <CheckBox
-            android:id="@+id/bbs_add_intro_https_checkbox"
+            android:id="@+id/auto_add_bbs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="@string/bbs_add_intro_https_check"
+            android:text="@string/auto_check_url"
             app:layout_constraintStart_toStartOf="@+id/textInputLayout"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
@@ -81,8 +81,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="@+id/bbs_add_intro_https_checkbox"
-            app:layout_constraintTop_toBottomOf="@+id/bbs_add_intro_https_checkbox"
+            app:layout_constraintStart_toStartOf="@+id/auto_add_bbs"
+            app:layout_constraintTop_toBottomOf="@+id/auto_add_bbs"
             app:srcCompat="@drawable/ic_help_outlined_24px" />
 
         <TextView

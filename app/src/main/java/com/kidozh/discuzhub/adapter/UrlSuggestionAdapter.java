@@ -42,6 +42,7 @@ public class UrlSuggestionAdapter extends RecyclerView.Adapter<UrlSuggestionAdap
 
     public interface OnClickSuggestionListener{
         void onClickSuggestion(SuggestURLInfo suggestURLInfo);
+        void onURLVerified(String base_url);
     }
 
     public void setSuggestURLInfoList(@NonNull List<SuggestURLInfo> suggestURLInfoList) {
@@ -163,6 +164,9 @@ public class UrlSuggestionAdapter extends RecyclerView.Adapter<UrlSuggestionAdap
                                 holder.checkProgressbar.setVisibility(View.GONE);
                                 holder.suggestionOKIcon.setVisibility(View.VISIBLE);
                                 holder.suggestionOKIcon.setImageDrawable(context.getDrawable(R.drawable.ic_suggestion_check_circle_outline_24px));
+                                if(mListener!=null){
+                                    mListener.onURLVerified(base_url);
+                                }
                             }
                         });
                     }
