@@ -51,11 +51,8 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
     }
 
     public void setSubForumInfoList(@NonNull List<ForumResult.SubForumInfo> subForumInfoList) {
-        int oldSize = this.subForumInfoList.size();
-        this.subForumInfoList.clear();
-        notifyItemRangeRemoved(0,oldSize);
-        this.subForumInfoList.addAll(subForumInfoList);
-        notifyItemRangeChanged(0,subForumInfoList.size());
+        this.subForumInfoList = subForumInfoList;
+        notifyDataSetChanged();
     }
 
     @NonNull

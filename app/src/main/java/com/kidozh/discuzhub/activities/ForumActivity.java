@@ -222,7 +222,9 @@ public class ForumActivity extends BaseStatusActivity implements
             public void onChanged(ForumResult forumResult) {
                 setBaseResult(forumResult,forumResult!=null?forumResult.forumVariables:null);
                 // deal with sublist
+                Log.d(TAG,"GET result "+forumResult);
                 if(forumResult !=null && forumResult.forumVariables!=null){
+                    Log.d(TAG,"GET sublist size "+forumResult.forumVariables.subForumLists.size());
                     subForumAdapter.setSubForumInfoList(forumResult.forumVariables.subForumLists);
                     configureThreadTypeChipGroup(forumResult.forumVariables.threadTypeInfo);
                     if(forumResult.forumVariables.forumInfo !=null){

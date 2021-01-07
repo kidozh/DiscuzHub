@@ -95,7 +95,7 @@ public class AddIntroActivity extends BaseStatusActivity
         suggestURLInfoList.add(new SuggestURLInfo("https://bbs.comsenz-service.com",getString(R.string.bbs_url_example_discuz_support),true));
         suggestURLInfoList.add(new SuggestURLInfo("https://www.mcbbs.net",getString(R.string.bbs_url_example_mcbbs),true));
         suggestURLInfoList.add(new SuggestURLInfo("https://keylol.com",getString(R.string.bbs_url_example_keylol),true));
-        suggestURLInfoList.add(new SuggestURLInfo("https://www.1point3acres.com/bbs",getString(R.string.bbs_url_example_1point3acres),true));
+        suggestURLInfoList.add(new SuggestURLInfo("https://bbs.qzzn.com",getString(R.string.bbs_url_example_qzzn),true));
         suggestURLInfoList.add(new SuggestURLInfo("https://www.right.com.cn/forum",getString(R.string.bbs_url_example_right_com),true));
         adapter.setSuggestURLInfoList(suggestURLInfoList);
     }

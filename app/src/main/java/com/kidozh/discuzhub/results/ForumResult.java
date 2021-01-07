@@ -40,7 +40,7 @@ public class ForumResult extends BaseResult {
         @JsonProperty("groupiconid")
         public Map<String, String> groupIconId;
         @JsonProperty("sublist")
-        public List<SubForumInfo> subForumLists;
+        public List<SubForumInfo> subForumLists = new ArrayList<>();
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         public int tpp, page;
         @JsonProperty("reward_unit")
