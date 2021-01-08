@@ -3,6 +3,7 @@ package com.kidozh.discuzhub.activities.ui.ForumDisplayOption
 import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -91,6 +92,16 @@ class ForumDisplayOptionFragment : BottomSheetDialogFragment() {
             if (result != null) {
                 val threadCategory = result.forumVariables.threadTypeInfo
                 // parse it
+
+                if(threadCategory==null || threadCategory.idNameMap == null){
+                    binding.categoryGroup.visibility = View.GONE
+                    binding.categoryText.visibility = View.GONE
+                    return@Observer
+                }
+                else{
+                    binding.categoryGroup.visibility = View.VISIBLE
+                    binding.categoryText.visibility = View.VISIBLE
+                }
                 val threadTypeMap = threadCategory.idNameMap
                 binding.categoryGroup.removeAllViews()
                 Log.d(TAG, "Get thread category type " + threadTypeMap.keys)
@@ -210,6 +221,7 @@ class ForumDisplayOptionFragment : BottomSheetDialogFragment() {
                 status.page = 1
                 model.forumStatusMutableLiveData.postValue(status)
                 model.setForumStatusAndFetchThread(model.forumStatusMutableLiveData.getValue())
+                dismiss()
             }
         }
         binding.resetButton.setOnClickListener { v->

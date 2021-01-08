@@ -129,7 +129,6 @@ public class bbsShowThreadDraftActivity extends BaseStatusActivity implements re
         else {
             AlertDialog alertDialogs = new MaterialAlertDialogBuilder(this)
                     .setTitle(getString(R.string.bbs_delete_all_draft))
-                    .setIcon(getDrawable(R.drawable.vector_drawable_warning_24px))
                     .setMessage(getString(R.string.bbs_delete_all_drafts_alert,bbsInfo.site_name))
                     .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
                         @Override

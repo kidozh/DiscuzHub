@@ -84,7 +84,6 @@
             android:name=".activities.showImageFullscreenActivity"
             android:colorMode="wideColorGamut"
             tools:targetApi="o" />
-        <activity android:name=".activities.ui.bbsDetailedInformation.bbsShowInformationActivity" />
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_global_settings" />

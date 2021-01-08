@@ -57,7 +57,7 @@
                 android:layout_marginStart="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bbs_post_thread_editor_bar"
-                app:srcCompat="@drawable/vector_drawable_update_24px" />
+                app:srcCompat="@drawable/ic_update_24px" />
 
             <TextView
                 android:id="@+id/bbs_post_thread_backup_info_textview"

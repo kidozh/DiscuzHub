@@ -188,7 +188,6 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
         else {
             AlertDialog alertDialogs = new AlertDialog.Builder(this)
                     .setTitle(getString(R.string.delete_all_view_history))
-                    .setIcon(ContextCompat.getDrawable(this,R.drawable.vector_drawable_warning_24px))
                     .setMessage(getString(R.string.delete_all_view_history_description))
                     .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
                         @Override

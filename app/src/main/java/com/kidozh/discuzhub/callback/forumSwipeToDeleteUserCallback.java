@@ -25,7 +25,7 @@ public class forumSwipeToDeleteUserCallback extends ItemTouchHelper.SimpleCallba
     public forumSwipeToDeleteUserCallback(forumUsersAdapter forumInfoAdapter){
         super(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         this.forumInfoAdapter = forumInfoAdapter;
-        icon = ContextCompat.getDrawable(forumInfoAdapter.getContext(), R.drawable.vector_drawable_trashbin);
+        icon = ContextCompat.getDrawable(forumInfoAdapter.getContext(), R.drawable.ic_trashbin_24dp);
         background = new ColorDrawable(forumInfoAdapter.getContext().getColor(R.color.colorAccent));
         listener = (onSwipedInteraction) forumInfoAdapter.getContext();
     }

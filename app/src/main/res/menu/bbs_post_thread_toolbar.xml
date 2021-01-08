@@ -4,13 +4,13 @@
 
     <item
         android:id="@+id/bbs_post_thread_toolbar_save_draft"
-        android:icon="@drawable/vector_drawable_save_24px"
+        android:icon="@drawable/ic_save_24px"
         android:title="@string/bbs_send_a_thread"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/bbs_toolbar_send_item"
-        android:icon="@drawable/vector_drawable_send_24px_solid"
+        android:icon="@drawable/ic_send_24px_solid"
         android:title="@string/bbs_send_a_thread"
         app:showAsAction="ifRoom" />
 </menu>

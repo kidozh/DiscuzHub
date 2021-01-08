@@ -73,7 +73,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/bbs_thread_draft_message"
                 app:layout_constraintTop_toBottomOf="@+id/bbs_thread_draft_message"
-                app:srcCompat="@drawable/vector_drawable_update_24px" />
+                app:srcCompat="@drawable/ic_update_24px" />
 
             <TextView
                 android:id="@+id/bbs_thread_draft_update_time"

@@ -43,6 +43,7 @@
                             android:layout_marginTop="8dp"
                             android:clickable="true"
                             android:drawableStart="@drawable/ic_forum_description_outlined_24px"
+                            android:gravity="top"
                             android:text="@string/bbs_forum_description_not_set"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -59,6 +60,7 @@
                             android:ellipsize="end"
                             android:focusable="auto"
                             android:foreground="?attr/selectableItemBackground"
+                            android:gravity="top"
                             android:text="@string/bbs_rule_not_set"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -117,8 +119,6 @@
                         android:id="@+id/bbs_forum_sublist"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
                         tools:itemCount="1">
 
                     </androidx.recyclerview.widget.RecyclerView>
@@ -151,7 +151,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:descendantFocusability="beforeDescendants"
-                        tools:itemCount="1"
+                        tools:itemCount="3"
                         tools:listitem="@layout/item_thread">
 
 

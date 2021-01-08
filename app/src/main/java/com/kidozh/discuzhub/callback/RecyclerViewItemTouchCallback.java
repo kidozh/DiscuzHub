@@ -1,11 +1,9 @@
 package com.kidozh.discuzhub.callback;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -13,8 +11,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
-
-import org.jetbrains.annotations.NotNull;
 
 public class RecyclerViewItemTouchCallback extends ItemTouchHelper.Callback {
     private String TAG = RecyclerViewItemTouchCallback.class.getSimpleName();
@@ -31,7 +27,7 @@ public class RecyclerViewItemTouchCallback extends ItemTouchHelper.Callback {
 
     public RecyclerViewItemTouchCallback(Context context){
         this.context = context;
-        icon = ContextCompat.getDrawable(context, R.drawable.vector_drawable_trashbin);
+        icon = ContextCompat.getDrawable(context, R.drawable.ic_trashbin_24dp);
         background = new ColorDrawable(context.getColor(R.color.colorWarn));
         if(context instanceof onInteraction){
 

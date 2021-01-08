@@ -61,7 +61,7 @@
             android:defaultValue="@string/preference_default_display_mode"
             android:entries="@array/string_dark_mode_night_shift"
             android:entryValues="@array/dark_mode_night_shift"
-            android:icon="@drawable/vector_drawable_style_24px"
+            android:icon="@drawable/ic_style_24px"
             android:key="@string/preference_key_display_mode"
             android:summary="%s"
             android:title="@string/preference_title_display_mode" />
@@ -140,7 +140,7 @@
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@drawable/vector_drawable_update_24px"
+            android:icon="@drawable/ic_update_24px"
             android:key="@string/preference_key_send_post_backup"
             android:summaryOff="@string/preference_summary_off_send_post_backup"
             android:summaryOn="@string/preference_summary_on_send_post_backup"
@@ -151,7 +151,7 @@
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:icon="@drawable/vector_drawable_settings_backup_restore_24px"
+            android:icon="@drawable/ic_settings_backup_restore_24px"
             android:key="@string/preference_key_auto_post_backup"
             android:summaryOff="@string/preference_summary_off_auto_post_backup"
             android:summaryOn="@string/preference_summary_on_auto_post_backup"
@@ -165,9 +165,9 @@
 
         <androidx.preference.SwitchPreference
             android:defaultValue="true"
-            android:icon="@drawable/vector_drawable_sync_24px"
+            android:icon="@drawable/ic_sync_24px"
             android:key="@string/preference_key_sync_information"
-            app:icon="@drawable/vector_drawable_sync_24px"
+            app:icon="@drawable/ic_sync_24px"
             app:key="@string/preference_key_sync_information"
             android:title="@string/sync_title" />
 
@@ -191,7 +191,7 @@
             app:dependency="@string/preference_key_sync_information" />
         <androidx.preference.SwitchPreference
             android:defaultValue="true"
-            android:icon="@drawable/vector_drawable_snooze_24px"
+            android:icon="@drawable/ic_snooze_24px"
             android:key="@string/preference_key_dont_distrub_at_night"
             android:summaryOff="@string/preference_summary_off_sync_at_night"
             android:summaryOn="@string/preference_summary_on_sync_at_night"
