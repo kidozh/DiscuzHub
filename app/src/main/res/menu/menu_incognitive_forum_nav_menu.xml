@@ -9,6 +9,11 @@
         android:visible="true"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/forum_filter"
+        android:icon="@drawable/ic_round_filter_list_24"
+        android:title="@string/filter_forum"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/bbs_favorite"
         android:icon="@drawable/ic_not_favorite_24px"
         android:title="@string/favorite"

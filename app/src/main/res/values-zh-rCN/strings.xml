@@ -670,5 +670,14 @@
     <string name="status_digest">精华帖</string>
     <string name="status_hot">热门贴</string>
     <string name="time_filter">时间过滤</string>
+    <string name="button_reset">重置</string>
+    <string name="reset_all_option">已重置所有选项。</string>
+    <string name="advance_view_configuration">高级显示选项</string>
+    <string name="filter_forum">筛选帖子</string>
+    <string name="time_filter_day">一天内</string>
+    <string name="time_filter_week">一周内</string>
+    <string name="time_filter_month">一月内</string>
+    <string name="time_filter_quarter">一季内</string>
+    <string name="time_filter_year">一年内</string>
 
 </resources>

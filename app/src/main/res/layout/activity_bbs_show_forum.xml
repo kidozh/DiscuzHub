@@ -118,16 +118,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp">
+                        android:layout_marginEnd="8dp"
+                        tools:itemCount="1">
 
                     </androidx.recyclerview.widget.RecyclerView>
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/bbs_forum_thread_type_chipgroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:selectionRequired="false"
-                        app:singleSelection="true" />
 
                 </LinearLayout>
 

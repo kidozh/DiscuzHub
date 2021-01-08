@@ -656,5 +656,31 @@
     <string name="incognitive_mode">還沒有一個登錄的賬號，因此您將以匿名模式訪問論壇。</string>
     <string name="bbs_url_example_qzzn">QZZN</string>
     <string name="auto_check_url">自動根據建議添加論壇</string>
+    <string name="forum_category">主題分類</string>
+    <string name="sort_key">排序方式</string>
+    <string name="sort_key_reply">最新回复</string>
+    <string name="sort_key_publish">最新發布</string>
+    <string name="sort_key_view">最多查看</string>
+    <string name="sort_key_heat">最火人氣</string>
+    <string name="thread_type">帖子類型</string>
+    <string name="type_all">所有</string>
+    <string name="type_poll">投票</string>
+    <string name="type_reward">懸賞</string>
+    <string name="type_activity">活動</string>
+    <string name="type_debate">辯論</string>
+    <string name="thread_status">主題狀態</string>
+    <string name="status_all">所有狀態</string>
+    <string name="status_digest">精華帖</string>
+    <string name="status_hot">熱門貼</string>
+    <string name="time_filter">時間過濾</string>
+    <string name="button_reset">重置</string>
+    <string name="reset_all_option">已重置所有選項。 </string>
+    <string name="advance_view_configuration">高級顯示選項</string>
+    <string name="filter_forum">篩選帖子</string>
+    <string name="time_filter_day">一天內</string>
+    <string name="time_filter_week">一周內</string>
+    <string name="time_filter_month">一月內</string>
+    <string name="time_filter_quarter">一季內</string>
+    <string name="time_filter_year">一年內</string>
 
 </resources>

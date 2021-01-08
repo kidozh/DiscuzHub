@@ -92,13 +92,14 @@ public class ForumResult extends BaseResult {
         public String prefix;
         @JsonProperty("types")
         @JsonDeserialize(using = ForumThreadTypeDeserializer.class)
-        public Map<String, String> idNameMap;
+        public HashMap<String, String> idNameMap = new HashMap<>();
         @JsonProperty("icons")
         @JsonDeserialize(using = ForumThreadTypeDeserializer.class)
-        public Map<String, String> idIconMap;
+        public Map<String, String> idIconMap= new HashMap<>();
         @JsonProperty("moderators")
         @JsonDeserialize(using = ForumThreadTypeDeserializer.class)
-        public Map<String, String> idModeratorMap;
+        public Map<String, String> idModeratorMap= new HashMap<>();
+
     }
 
     public static class ForumThreadTypeDeserializer extends JsonDeserializer<Map<String,String>>{

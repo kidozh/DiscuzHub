@@ -38,7 +38,7 @@ import retrofit2.Retrofit;
 
 public class ForumViewModel extends AndroidViewModel {
     private String TAG = ForumViewModel.class.getSimpleName();
-
+    @NonNull
     public MutableLiveData<DisplayForumQueryStatus> forumStatusMutableLiveData;
 
     bbsInformation bbsInfo;
@@ -155,6 +155,8 @@ public class ForumViewModel extends AndroidViewModel {
                             displayForumQueryStatus.page -= 1;
                             forumStatusMutableLiveData.postValue(displayForumQueryStatus);
                         }
+                        threadInfoListMutableLiveData.postValue(totalThreadList);
+                        newThreadListMutableLiveData.postValue(threadInfoList);
                         errorMessageMutableLiveData.postValue(new ErrorMessage(
                                 getApplication().getString(R.string.empty_result),
                                 getApplication().getString(R.string.discuz_network_result_null)
@@ -184,7 +186,7 @@ public class ForumViewModel extends AndroidViewModel {
 
                         }
                         // initial page
-                        if(displayForumQueryStatus.page == 2 && threadInfoList.size() == 0){
+                        if((displayForumQueryStatus.page == 2||displayForumQueryStatus.page==1) && threadInfoList.size() == 0){
                             errorMessageMutableLiveData.postValue(new ErrorMessage(getApplication().getString(R.string.empty_result),
                                     getApplication().getString(R.string.empty_hot_threads),R.drawable.ic_empty_hot_thread_64px
                             ));

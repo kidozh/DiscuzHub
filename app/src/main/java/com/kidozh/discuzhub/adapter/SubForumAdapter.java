@@ -76,13 +76,6 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
         URLUtils.setBBS(bbsInfo);
         holder.mBBSForumImage.setImageResource(R.drawable.ic_sub_forum_24px);
-//        Glide.with(context)
-//                .load(URLUtils.getForumImageUrl(forum.fid))
-//                .apply(RequestOptions
-//                        .placeholderOf(R.drawable.ic_forum_24px)
-//                        .error(R.drawable.ic_forum_24px))
-//                .into(holder.mBBSForumImage);
-        Log.d(TAG,"fid image "+URLUtils.getForumImageUrl(forum.fid));
         holder.mCardview.setOnClickListener(v -> {
             ForumInfo putForum = new ForumInfo();
             putForum.fid = forum.fid;

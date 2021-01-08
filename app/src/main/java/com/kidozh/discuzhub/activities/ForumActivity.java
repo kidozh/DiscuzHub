@@ -36,6 +36,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ui.ForumDisplayOption.ForumDisplayOptionFragment;
 import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter;
 import com.kidozh.discuzhub.adapter.SubForumAdapter;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;
@@ -121,9 +122,7 @@ public class ForumActivity extends BaseStatusActivity implements
         configureRecyclerview();
         configureSwipeRefreshLayout();
         setForumRuleCollapseListener();
-
         configurePostThreadBtn();
-        configureChipGroupFilter();
 
 
     }
@@ -156,6 +155,7 @@ public class ForumActivity extends BaseStatusActivity implements
                 DisplayForumQueryStatus queryStatus = forumViewModel.forumStatusMutableLiveData.getValue();
                 Log.d(TAG,"forum page "+queryStatus.page+" "+threadInfos.size());
                 if(queryStatus.page == 1 && threadInfos.size() == 0){
+                    adapter.clearList();
                     return;
                 }
                 if((queryStatus.page == 2 || queryStatus.page == 1) && adapter.threadInfoList.size() != 0){
@@ -226,7 +226,6 @@ public class ForumActivity extends BaseStatusActivity implements
                 if(forumResult !=null && forumResult.forumVariables!=null){
                     Log.d(TAG,"GET sublist size "+forumResult.forumVariables.subForumLists.size());
                     subForumAdapter.setSubForumInfoList(forumResult.forumVariables.subForumLists);
-                    configureThreadTypeChipGroup(forumResult.forumVariables.threadTypeInfo);
                     if(forumResult.forumVariables.forumInfo !=null){
                         
                         ForumInfo forumInfo = forumResult.forumVariables.forumInfo;
@@ -329,6 +328,9 @@ public class ForumActivity extends BaseStatusActivity implements
 
     }
 
+    ForumDisplayOptionFragment forumDisplayOptionFragment = new ForumDisplayOptionFragment();
+
+
     private void recordViewHistory(ForumInfo forumInfo){
         SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
         boolean recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history),false);
@@ -430,66 +432,7 @@ public class ForumActivity extends BaseStatusActivity implements
 
     }
 
-    private void configureChipGroupFilter(){
-        binding.bbsForumThreadTypeChipgroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(ChipGroup group, int checkedId) {
-                DisplayForumQueryStatus status = forumViewModel.forumStatusMutableLiveData.getValue();
-                if(status == null){
-                    status = new DisplayForumQueryStatus(forum.fid,1);
-                }
-                int position = -1;
-                for(int i=0;i<ChoiceResList.size();i++){
-                    int selectedId = ChoiceResList.get(i);
-                    if(selectedId == checkedId){
-                        position = i;
-                    }
-                }
-                Log.d(TAG,"choice group "+checkedId+" POS "+position);
-                if(position == -1){
-                    // failed
-                    status.clear();
-                    reConfigureAndRefreshPage(status);
-                }
-                else {
-                    ChoiceChipInfo choiceChipInfo = choiceChipInfoList.get(position);
-                    // need to
-                    switch (choiceChipInfo.filterType){
 
-                        case (URLUtils.FILTER_TYPE_POLL):{
-                            status.filter = "specialtype";
-                            break;
-                        }
-                        case (URLUtils.FILTER_TYPE_NEWEST):{
-                            status.filter = "lastpost";
-                            break;
-                        }
-                        case (URLUtils.FILTER_TYPE_HEATS):{
-                            status.filter = "heat";
-                            break;
-                        }
-                        case (URLUtils.FILTER_TYPE_HOTTEST):{
-                            status.filter = "hot";
-                            break;
-                        }
-                        case (URLUtils.FILTER_TYPE_DIGEST):{
-                            status.filter = "digest";
-                            break;
-                        }
-                        case (URLUtils.FILTER_TYPE_ID):{
-                            status.filterId = choiceChipInfo.filterName;
-                            break;
-                        }
-                        default:{
-                            status.clear();
-                        }
-
-                    }
-                    reConfigureAndRefreshPage(status);
-                }
-            }
-        });
-    }
 
 
 
@@ -557,31 +500,6 @@ public class ForumActivity extends BaseStatusActivity implements
 
     }
 
-    public void addTypeChipToChipGroup(String typeId, String name){
-        choiceChipInfoList.add(new ChoiceChipInfo(URLUtils.FILTER_TYPE_ID,name,typeId));
-        Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_choice,binding.bbsForumThreadTypeChipgroup,false);
-        Spanned threadSpanned = Html.fromHtml(name);
-        SpannableString threadSpannableString = new SpannableString(threadSpanned);
-        chip.setText(threadSpannableString);
-        chip.setClickable(true);
-        binding.bbsForumThreadTypeChipgroup.addView(chip);
-        ChoiceResList.add(chip.getId());
-    }
-
-    public void addFilterChipToChipGroup(String filterType,String name){
-        choiceChipInfoList.add(new ChoiceChipInfo(filterType,name,name));
-
-        Chip chip = (Chip) getLayoutInflater().inflate(R.layout.layout_chip_choice,binding.bbsForumThreadTypeChipgroup,false);
-
-        chip.setChipBackgroundColor(getColorStateList(R.color.chip_background_select_state));
-        //chip.setTextColor(createColorStateList(R.color.colorPureWhite,R.color.colorPr));
-        chip.setTextColor(getColor(R.color.colorTextDefault));
-        chip.setText(name);
-        chip.setClickable(true);
-        binding.bbsForumThreadTypeChipgroup.addView(chip);
-        ChoiceResList.add(chip.getId());
-    }
-
     @Override
     public boolean onLinkClicked(String url) {
         return bbsLinkMovementMethod.parseURLAndOpen(this,bbsInfo,userBriefInfo,url);
@@ -593,54 +511,6 @@ public class ForumActivity extends BaseStatusActivity implements
         if(status!=null){
             forumViewModel.setForumStatusAndFetchThread(status);
         }
-    }
-
-
-    private class ChoiceChipInfo{
-        public String filterType,name,filterName;
-
-        public ChoiceChipInfo(String filterType, String name, String filterName) {
-            this.filterType = filterType;
-            this.name = name;
-            this.filterName = filterName;
-        }
-    }
-
-    List<ChoiceChipInfo> choiceChipInfoList = new ArrayList<>();
-    List<Integer> ChoiceResList = new ArrayList<>();
-
-    boolean firstRenderChipGroup = true;
-
-    private void configureThreadTypeChipGroup(ForumResult.ThreadTypeInfo threadTypeInfo){
-
-        if(!firstRenderChipGroup){
-            return;
-        }
-
-        choiceChipInfoList.clear();
-        ChoiceResList.clear();
-        binding.bbsForumThreadTypeChipgroup.removeAllViews();
-        // add oridnary filter first
-        addFilterChipToChipGroup(URLUtils.FILTER_TYPE_POLL,getString(R.string.bbs_thread_filter_poll));
-        addFilterChipToChipGroup(URLUtils.FILTER_TYPE_NEWEST,getString(R.string.bbs_thread_filter_newest));
-        addFilterChipToChipGroup(URLUtils.FILTER_TYPE_HEATS,getString(R.string.bbs_thread_filter_heat));
-        addFilterChipToChipGroup(URLUtils.FILTER_TYPE_HOTTEST,getString(R.string.bbs_thread_filter_hottest));
-        addFilterChipToChipGroup(URLUtils.FILTER_TYPE_DIGEST,getString(R.string.bbs_thread_filter_digest));
-        try{
-            // parse it
-            Map<String,String> threadTypeMap = threadTypeInfo.idNameMap;
-            for(String key:threadTypeMap.keySet()){
-                String name = threadTypeMap.get(key);
-                addTypeChipToChipGroup(key,name);
-            }
-
-
-
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-        firstRenderChipGroup = false;
     }
 
 
@@ -657,6 +527,10 @@ public class ForumActivity extends BaseStatusActivity implements
         if(id == android.R.id.home){
             this.finishAfterTransition();
             return false;
+        }
+        else if(id == R.id.forum_filter){
+            forumDisplayOptionFragment.show(getSupportFragmentManager(),ForumDisplayOptionFragment.class.getSimpleName());
+            return true;
         }
         else if(id == R.id.bbs_forum_nav_personal_center){
             Intent intent = new Intent(this, UserProfileActivity.class);

@@ -900,6 +900,10 @@
     <string name="time_filter_month">Month</string>
     <string name="time_filter_quarter">Quarter</string>
     <string name="time_filter_year">Year</string>
+    <string name="button_reset">reset</string>
+    <string name="reset_all_option">All options are reset.</string>
+    <string name="advance_view_configuration">Advanced view setting</string>
+    <string name="filter_forum">Filter</string>
 
 
 </resources>
