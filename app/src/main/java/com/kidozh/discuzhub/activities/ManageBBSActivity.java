@@ -30,6 +30,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.viewModels.ManageBBSViewModel;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -127,20 +128,14 @@ public class ManageBBSActivity extends BaseStatusActivity
     public void onRecyclerViewMoved(int fromPosition, int toPosition) {
         List<bbsInformation> bbsInformations= viewModel.getPagedListLiveData().getValue();
         if(bbsInformations !=null){
-            if (fromPosition < toPosition) {
-                for (int i = fromPosition; i < toPosition; i++) {
-                    Collections.swap(bbsInformations, i, i + 1);
-                }
-            } else {
-                for (int i = fromPosition; i > toPosition; i--) {
-                    Collections.swap(bbsInformations, i, i - 1);
-                }
-            }
-            // change the position
-            for(int i=0;i<bbsInformations.size(); i++){
+            bbsInformations = new ArrayList<>(bbsInformations);
+            // swap the data directly
+            Log.d(TAG,"list "+bbsInformations+" from "+fromPosition+" to "+toPosition);
+            Collections.swap(bbsInformations,fromPosition, toPosition);
+            for(int i=0;i<bbsInformations.size();i++){
                 bbsInformations.get(i).position = i;
             }
-            Log.d(TAG,"Moving from "+fromPosition+" To "+toPosition);
+
             new UpdateBBSTask(bbsInformations).execute();
         }
 
