@@ -1,7 +1,6 @@
 package com.kidozh.discuzhub.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +15,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.bbsShowPortalActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.InputStream;
@@ -71,17 +67,6 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
                 .placeholder(R.drawable.avatar_person_male)
                 .centerInside()
                 .into(holder.mUserAvatar);
-        holder.mUserCardview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent intent = new Intent(context, bbsShowCategoryForumActivity.class);
-                Intent intent = new Intent(context, bbsShowPortalActivity.class);
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userInfo);
-                VibrateUtils.vibrateForClick(context);
-                context.startActivity(intent);
-            }
-        });
 
     }
 

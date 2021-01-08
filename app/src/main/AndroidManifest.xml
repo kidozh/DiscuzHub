@@ -73,9 +73,6 @@
                     android:scheme="http" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.bbsShowPortalActivity"
-            android:label="@string/title_activity_bbs_show_portal" />
         <activity android:name=".activities.LoginActivity" />
         <activity
             android:name=".activities.showImageFullscreenActivity"
