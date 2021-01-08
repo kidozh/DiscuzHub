@@ -904,6 +904,16 @@
     <string name="reset_all_option">All options are reset.</string>
     <string name="advance_view_configuration">Advanced view setting</string>
     <string name="filter_forum">Filter</string>
+    <string name="single_discuz_portal_title">You are using app from</string>
+    <string name="warn_app_id">Please comply with Discuz Hub DIY policy and don\'t use application id: \"com.kidozh.discuzhub\". Tap to get the reason and solution.</string>
+    <string name="loading_bbs_check_info">Checking %1$s information from Discuz mobile API. It may takes upmost 5 seconds.</string>
+    <string name="check_discuz_successfully">%1$s passed Discuz! mobile API test and is compatible with the APP.</string>
+    <string name="agree_bbs_policy">I agree to $1%s\'s term of use</string>
+    <string name="agree_discuzhub_policy">I understand this app is powered by DiscuzHub and agree to DiscuzHub\'s term of use and privacy policy.</string>
+    <string name="http_warn">Use HTTP is insecure and your data(especially password) may be hijacked. Contact %1$s\'s administrator to use HTTPS protocol if possible!</string>
+    <string name="agreement">Agreement</string>
+    <string name="enter_bbs">Enter</string>
+    <string name="package_name_conflicted">Package name is conflicted with DiscuzHub and the app can\'t add bbs now!</string>
 
 
 </resources>

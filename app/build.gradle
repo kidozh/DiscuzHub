@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-//apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 30
@@ -12,21 +11,35 @@ android {
         versionCode 31
         versionName "3.10"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [
+                discuz_title: "NOT_IMPLEMENTED",
+                discuz_base_url: "NOT_IMPLEMENTED",
+        ]
     }
     buildTypes {
+
         release {
-//            minifyEnabled true
-//            shrinkResources true
+
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         single {
-//            minifyEnabled true
-//            shrinkResources true
+            // fill your bbs id
+            manifestPlaceholders = [
+                    discuz_title: "论坛名称（如：西北工业大学三行四方）",
+                    discuz_base_url: "论坛名称（如：https://bbs.example.com）",
+            ]
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             applicationIdSuffix ".bbs"
         }
         debug {
+            manifestPlaceholders = [
+                    discuz_title: "QZZN论坛",
+                    discuz_base_url: "http://bbs.qzzn.com",
+            ]
+            debuggable true
             pseudoLocalesEnabled true
+            applicationIdSuffix ".debug"
+
         }
     }
 //    flavorDimensions "version"

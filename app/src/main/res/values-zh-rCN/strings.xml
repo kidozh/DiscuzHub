@@ -679,5 +679,15 @@
     <string name="time_filter_month">一月内</string>
     <string name="time_filter_quarter">一季内</string>
     <string name="time_filter_year">一年内</string>
+    <string name="single_discuz_portal_title">你正要访问论坛</string>
+    <string name="warn_app_id">请遵循我们（DiscuzHub）的政策，避免使用\"com.kidozh.discuzhub\"这个应用ID。点此了解原因和解决方案。</string>
+    <string name="loading_bbs_check_info">正在检查%1$s是否具有Discuz移动接口，这将至多耗费5秒时间。</string>
+    <string name="check_discuz_successfully">%1$s 具有移动接口，能够使用本应用访问此论坛。点此查看详情。</string>
+    <string name="agree_bbs_policy">我同意%1$s的使用条款。</string>
+    <string name="agree_discuzhub_policy">我理解此应用由DiscuzHub驱动，并同意其隐私政策及使用条款。</string>
+    <string name="http_warn">HTTP协议是一种不安全的协议。传递数据时您的信息（例如密码）很容易遭到泄露，您浏览的信息也极有可能遭到篡改。请联系%1$s管理员以使用HTTPS协议！</string>
+    <string name="agreement">使用相关协议</string>
+    <string name="enter_bbs">进入</string>
+    <string name="package_name_conflicted">此包与DiscuzHub冲突，无法继续接下来的操作。</string>
 
 </resources>

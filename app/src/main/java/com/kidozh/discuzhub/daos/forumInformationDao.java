@@ -31,6 +31,11 @@ public interface forumInformationDao {
     @Query("SELECT * FROM bbsInformation WHERE base_url LIKE '%' || :baseURL || '%' ")
     List<bbsInformation> getBBSInformationsByBaseURL(String baseURL);
 
+    @Query("SELECT * FROM bbsInformation WHERE base_url LIKE '%' || :baseURL || '%' LIMIT 1")
+    LiveData<bbsInformation> getBBSInformationLiveDataByBaseURL(String baseURL);
+
+    @Query("SELECT * FROM bbsInformation WHERE base_url LIKE '%' || :baseURL || '%' LIMIT 1")
+    bbsInformation getBBSInformationByBaseURL(String baseURL);
 
 
     @Insert

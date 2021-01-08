@@ -23,6 +23,7 @@
     <color name="colorNephritis">#27AE60</color>
     <color name="colorTurquoise">#1ABC9C</color>
     <color name="colorGreensea">#16A085</color>
+    <color name="colorGreenseaBackground">#2E16A085</color>
     <color name="colorPeterRiver">#3498DB</color>
     <color name="colorBelizahole">#2980B9</color>
     <color name="colorAmethyst">#9B59B6</color>
@@ -40,8 +41,9 @@
     <color name="colorHighlight">@color/colorPeterRiver</color>
     <color name="colorSafeStatus">@color/colorTurquoise</color>
     <color name="colorUnSafeStatus">@color/colorAlizarin</color>
-    <color name="colorWarn">@color/colorCarrot</color>
+    <color name="colorUnSafeStatusBackground">#34E74C3C</color>
     <color name="colorDanger">@color/colorPomegranate</color>
+    <color name="colorDangerBackground">#55C0392B</color>
 
     <color name="black_overlay">#66000000</color>
 
@@ -76,6 +78,9 @@
     <color name="colorLoadAllLayoutBackground">@color/colorCloud</color>
     <color name="colorLoadAllTextColor">@color/colorMidnightblue</color>
     <color name="colorThreadTitleBackground">@color/colorCloud</color>
+
+    <color name="colorWarn">@color/colorCarrot</color>
+    <color name="colorWarnBackground">#4EE67E22</color>
 
 
 

@@ -23,8 +23,14 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
+        <activity android:name=".activities.PortalActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activities.SingleDiscuzActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -36,11 +42,7 @@
         <activity
             android:name=".activities.DrawerActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activities.AddIntroActivity"
@@ -97,6 +99,14 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <meta-data
+            android:name="discuz_base_url"
+            android:value="${discuz_base_url}" />
+
+        <meta-data
+            android:name="discuz_title"
+            android:value="${discuz_title}" />
     </application>
 
 </manifest>

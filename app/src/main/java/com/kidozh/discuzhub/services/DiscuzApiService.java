@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.services;
 
+import com.kidozh.discuzhub.results.AddCheckResult;
 import com.kidozh.discuzhub.results.BBSIndexResult;
 import com.kidozh.discuzhub.results.BaseResult;
 import com.kidozh.discuzhub.results.BuyThreadResult;
@@ -142,5 +143,8 @@ public interface DiscuzApiService {
         @Query("report_select") String option,
         @Query("message") String message
     );
+
+    @GET(DISCUZ_API_PATH+"?version=4&module=check")
+    Call<AddCheckResult> getCheckResult();
 
 }
