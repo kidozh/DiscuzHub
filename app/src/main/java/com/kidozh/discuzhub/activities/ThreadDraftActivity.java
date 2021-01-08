@@ -34,8 +34,8 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 
-public class bbsShowThreadDraftActivity extends BaseStatusActivity implements recyclerViewSwipeToDeleteCallback.onRecyclerviewSwiped{
-    private final String TAG = bbsShowThreadDraftActivity.class.getSimpleName();
+public class ThreadDraftActivity extends BaseStatusActivity implements recyclerViewSwipeToDeleteCallback.onRecyclerviewSwiped{
+    private final String TAG = ThreadDraftActivity.class.getSimpleName();
 
 
     ThreadDraftAdapter threadDraftAdapter;

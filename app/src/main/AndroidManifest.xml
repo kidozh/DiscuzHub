@@ -23,10 +23,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
-        <receiver
-            android:name=".receiver.PushReceiver"
-            android:enabled="true"
-            android:exported="true"></receiver>
+
 
         <activity
             android:name=".activities.SingleDiscuzActivity"
@@ -50,7 +47,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.AboutAppActivity" />
         <activity android:name=".activities.InternalWebViewActivity" />
-        <activity android:name=".activities.bbsShowThreadDraftActivity" />
+        <activity android:name=".activities.ThreadDraftActivity" />
         <activity
             android:name=".activities.UserProfileActivity"
             android:label="@string/title_activity_show_personal_info" />

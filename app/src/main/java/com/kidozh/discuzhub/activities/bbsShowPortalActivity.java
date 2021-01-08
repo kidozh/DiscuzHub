@@ -334,7 +334,7 @@ public class bbsShowPortalActivity extends BaseStatusActivity
             return true;
         }
         else if(id == R.id.bbs_forum_nav_draft_box){
-            Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
+            Intent intent = new Intent(this, ThreadDraftActivity.class);
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             startActivity(intent);

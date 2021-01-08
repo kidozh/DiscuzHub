@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -27,14 +26,11 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.ConcatAdapter;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.ForumDisplayOption.ForumDisplayOptionFragment;
 import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter;
@@ -69,7 +65,6 @@ import com.kidozh.discuzhub.viewModels.ForumViewModel;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -541,7 +536,7 @@ public class ForumActivity extends BaseStatusActivity implements
             return true;
         }
         else if(id == R.id.bbs_forum_nav_draft_box){
-            Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
+            Intent intent = new Intent(this, ThreadDraftActivity.class);
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             startActivity(intent,null);

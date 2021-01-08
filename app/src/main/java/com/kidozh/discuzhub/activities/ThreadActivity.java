@@ -50,7 +50,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
@@ -1987,7 +1986,7 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
             return true;
         }
         else if(id == R.id.bbs_forum_nav_draft_box){
-            Intent intent = new Intent(this, bbsShowThreadDraftActivity.class);
+            Intent intent = new Intent(this, ThreadDraftActivity.class);
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             startActivity(intent,null);

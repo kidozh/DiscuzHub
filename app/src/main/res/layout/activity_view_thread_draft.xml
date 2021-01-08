@@ -6,7 +6,7 @@
         android:id="@+id/bbs_show_thread_draft_coordinatorlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activities.bbsShowThreadDraftActivity">
+        tools:context=".activities.ThreadDraftActivity">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
