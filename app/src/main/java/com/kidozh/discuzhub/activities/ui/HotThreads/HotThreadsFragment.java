@@ -95,6 +95,7 @@ public class HotThreadsFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         binding.fragmentHotThreadRecyclerview.setLayoutManager(linearLayoutManager);
         forumThreadAdapter = new ThreadAdapter(null,null,bbsInfo,userBriefInfo);
+        forumThreadAdapter.ignoreDigestStyle = true;
         concatAdapter = new ConcatAdapter(forumThreadAdapter,networkIndicatorAdapter);
         binding.fragmentHotThreadRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),concatAdapter));
         binding.fragmentHotThreadRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));

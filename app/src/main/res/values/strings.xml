@@ -878,6 +878,28 @@
     <string name="default_notification_channel_id" translatable="false">1452471547</string>
     <string name="bbs_url_example_qzzn">QZZN</string>
     <string name="auto_check_url">Automatically check and add bbs</string>
+    <string name="forum_category">Thread category</string>
+    <string name="sort_key">Sort by</string>
+    <string name="sort_key_reply">Reply</string>
+    <string name="sort_key_publish">Publish</string>
+    <string name="sort_key_view">View</string>
+    <string name="sort_key_heat">Heat</string>
+    <string name="thread_type">Thread type</string>
+    <string name="type_all">All</string>
+    <string name="type_poll">Poll</string>
+    <string name="type_reward">Reward</string>
+    <string name="type_activity">Activity</string>
+    <string name="type_debate">Debate</string>
+    <string name="thread_status">Status</string>
+    <string name="status_all">All</string>
+    <string name="status_digest">Digest</string>
+    <string name="status_hot">Hot</string>
+    <string name="time_filter">Time filter</string>
+    <string name="time_filter_day">Today</string>
+    <string name="time_filter_week">Week</string>
+    <string name="time_filter_month">Month</string>
+    <string name="time_filter_quarter">Quarter</string>
+    <string name="time_filter_year">Year</string>
 
 
 </resources>

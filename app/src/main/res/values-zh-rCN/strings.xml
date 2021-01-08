@@ -653,5 +653,22 @@
     <string name="incognitive_mode">还没有一个登录的账号，因此您将以匿名模式访问论坛。</string>
     <string name="bbs_url_example_qzzn">QZZN论坛</string>
     <string name="auto_check_url">自动根据建议添加论坛</string>
+    <string name="forum_category">主题分类</string>
+    <string name="sort_key">排序方式</string>
+    <string name="sort_key_reply">最新回复</string>
+    <string name="sort_key_publish">最新发布</string>
+    <string name="sort_key_view">最多查看</string>
+    <string name="sort_key_heat">最火人气</string>
+    <string name="thread_type">帖子类型</string>
+    <string name="type_all">所有</string>
+    <string name="type_poll">投票</string>
+    <string name="type_reward">悬赏</string>
+    <string name="type_activity">活动</string>
+    <string name="type_debate">辩论</string>
+    <string name="thread_status">主题状态</string>
+    <string name="status_all">所有状态</string>
+    <string name="status_digest">精华帖</string>
+    <string name="status_hot">热门贴</string>
+    <string name="time_filter">时间过滤</string>
 
 </resources>

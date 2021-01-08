@@ -57,6 +57,7 @@ import java.util.Map;
 public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = ThreadAdapter.class.getSimpleName();
     public List<ThreadInfo> threadInfoList = new ArrayList<>();
+    public boolean ignoreDigestStyle = false;
     Context mContext;
     public String fid;
     bbsInformation bbsInfo;
@@ -116,7 +117,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         viewHistoryDao = ViewHistoryDatabase.getInstance(mContext).getDao();
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
-        if(viewType == R.layout.item_thread_pinned){
+        if(!ignoreDigestStyle && viewType == R.layout.item_thread_pinned){
             View view = inflater.inflate(R.layout.item_thread_pinned, parent, shouldAttachToParentImmediately);
             return new PinnedViewHolder(view);
         }

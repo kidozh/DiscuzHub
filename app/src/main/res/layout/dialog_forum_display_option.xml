@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/category_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:padding="4dp"
+                android:textColor="@color/colorCloud"
+                android:text="@string/forum_category"
+                 />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/category_group"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/action_init" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:id="@+id/sort_key_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimary"
+                android:padding="4dp"
+                android:text="@string/sort_key"
+                android:textColor="@color/colorCloud" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/sort_key_group"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/sort_key_reply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sort_key_reply" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/sort_key_publish"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sort_key_publish" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/sort_key_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sort_key_view" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/sort_key_heat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sort_key_heat" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:id="@+id/type_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:padding="4dp"
+                android:text="@string/thread_type"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/colorCloud" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/type_group"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/type_poll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/type_poll" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/type_reward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/type_reward" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/type_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/type_activity" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/type_debate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/type_debate" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:id="@+id/status_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:padding="4dp"
+                android:text="@string/thread_status"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/colorCloud" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/status_group"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/status_digest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/status_digest" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/status_hot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/status_hot" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:id="@+id/time_filter_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:padding="4dp"
+                android:text="@string/time_filter"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/colorCloud" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/time_filter_group"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/time_filter_today"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/time_filter_day" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/time_filter_week"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/time_filter_week" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/time_filter_month"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/time_filter_month" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/time_filter_quarter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/time_filter_quarter" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/time_filter_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/time_filter_year" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@android:string/ok" />
+        </LinearLayout>
+
+    </ScrollView>
+</layout>
