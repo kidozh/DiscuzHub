@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-    <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -47,8 +47,8 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:padding="8dp"
-                android:src="@drawable/ic_color_lens_24px"
-                android:visibility="visible" />
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_outline_color_lens_24" />
 
             <ImageView
                 android:id="@+id/action_emotion"
@@ -67,7 +67,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:padding="8dp"
-                android:src="@drawable/ic_insert_photo_24dp" />
+                android:src="@drawable/ic_image_outlined_24px" />
 
             <ImageView
                 android:id="@+id/action_insert_link"
