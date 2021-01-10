@@ -55,6 +55,7 @@
     <color name="MaterialColorBlue">#2196F3</color>
     <color name="MaterialColorLightBlue">#03A9F4</color>
     <color name="MaterialColorCyan">#00BCD4</color>
+    <color name="MaterialColorCyanBackground">#2200BCD4</color>
     <color name="MaterialColorTeal">#009688</color>
     <color name="MaterialColorGreen">#4CAF50</color>
     <color name="MaterialColorLightGreen">#8BC34A</color>

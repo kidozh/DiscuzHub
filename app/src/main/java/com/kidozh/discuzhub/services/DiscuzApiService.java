@@ -20,6 +20,7 @@ import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -62,8 +63,6 @@ public interface DiscuzApiService {
             @Query("formhash") String formhash,
             @Query("id") int tid,
             @Field("description") String description
-
-
     );
 
     @FormUrlEncoded
@@ -73,8 +72,6 @@ public interface DiscuzApiService {
             @Field("deletesubmit") String submit,
             @Field("handlekey") String handleKey,
             @Query("favid") int favid
-
-
     );
 
 
@@ -110,6 +107,9 @@ public interface DiscuzApiService {
 
     @GET(DISCUZ_API_PATH+"?version=4&module=secure")
     Call<SecureInfoResult> secureResult(@Query("type") String type);
+
+    @GET(DISCUZ_API_PATH+"?version=4&module=secure")
+    Call<SecureInfoResult> captchaCall(@Query("type") String type);
 
     @GET(DISCUZ_API_PATH+"?version=4&module=recommend")
     Call<ApiMessageActionResult> recommendThread(
@@ -147,4 +147,7 @@ public interface DiscuzApiService {
     @GET(DISCUZ_API_PATH+"?version=4&module=check")
     Call<AddCheckResult> getCheckResult();
 
+    @FormUrlEncoded
+    @POST(DISCUZ_API_PATH+"?version=4&module=login")
+    Call<LoginResult> loginCall(@FieldMap HashMap<String,String> options);
 }

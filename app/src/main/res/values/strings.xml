@@ -904,7 +904,7 @@
     <string name="reset_all_option">All options are reset.</string>
     <string name="advance_view_configuration">Advanced view setting</string>
     <string name="filter_forum">Filter</string>
-    <string name="single_discuz_portal_title">You are using app from</string>
+    <string name="single_discuz_portal_title">Let\'s get started!</string>
     <string name="warn_app_id">Please comply with Discuz Hub DIY policy and don\'t use application id: \"com.kidozh.discuzhub\". Tap to get the reason and solution.</string>
     <string name="loading_bbs_check_info">Checking %1$s information from Discuz mobile API. It may takes upmost 5 seconds.</string>
     <string name="check_discuz_successfully">%1$s passed Discuz! mobile API test and is compatible with the APP.</string>
@@ -914,6 +914,26 @@
     <string name="agreement">Agreement</string>
     <string name="enter_bbs">Enter</string>
     <string name="package_name_conflicted">Package name is conflicted with DiscuzHub and the app can\'t add bbs now!</string>
+    <string name="api_5_title">Mobile API ver. 5</string>
+    <string name="api_5_description">API 5 allows you to use further service with discuz X</string>
+    <string name="api_4_title">Mobile API ver. 4</string>
+    <string name="api_4_description">You can interact with Discuz X with API 4 service. The service is stable and comes with basis operations.</string>
+    <string name="discuz_version_title">Discuz version %1$s</string>
+    <string name="discuz_version_description">This indicates the version of Discuz X.</string>
+    <string name="discuz_plugin_version_title">Plugin version %1$s</string>
+    <string name="discuz_plugin_version_description">Every extended function run on Discuz plugin. Newer plugin enables better performance and security.</string>
+    <string name="site_name_description">It is the official name of the BBS and will be saved in final database.</string>
+    <string name="discuz_charset_title">Charset %1$s</string>
+    <string name="discuz_charset_description_utf8">UTF-8 is used and support most languages.</string>
+    <string name="discuz_charset_description_gbk">GBK is used in simplified Chinese charset. Using other kinds of languages will make chars garbled.</string>
+    <string name="discuz_charset_description_big5">BIG-5 is used in tranditional Chinese. Using other kinds of languages will make chars garbled.</string>
+    <string name="discuz_charset_unknown">Unknown charset</string>
+    <string name="discuz_mobile_allow_register">Mobile module is equipped with registration, but it may not configures correctly.</string>
+    <string name="discuz_allow_qq">This site allows login and registration by QQ.</string>
+    <string name="discuz_post_members">This site has %1$s members and %2$s posts.</string>
+    <string name="discuz_single_copyright">Powered by Discuz Hub.</string>
+    <string name="login_parameter_not_ready">Login parameters is not ready, please wait and try later.</string>
+    <string name="login_user">Signing in the user %1$s ...</string>
 
 
 </resources>

@@ -57,6 +57,17 @@ public abstract class BBSInformationDatabase extends RoomDatabase {
                 .build();
     }
 
+    public static BBSInformationDatabase getMainUIDatabase(final Context context){
+        return Room.databaseBuilder(context, BBSInformationDatabase.class,DB_NAME)
+                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_2_3)
+                .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
+                .build();
+    }
+
+
+
     public abstract forumInformationDao getForumInformationDao();
 
 

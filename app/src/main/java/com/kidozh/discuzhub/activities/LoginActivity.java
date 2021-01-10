@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.activities;
 
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -24,12 +25,15 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
 import com.kidozh.discuzhub.databinding.ActivityLoginBbsBinding;
+import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.LoginResult;
+import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -37,15 +41,20 @@ import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.viewModels.LoginViewModel;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Cookie;
 import okhttp3.FormBody;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -67,6 +76,7 @@ public class LoginActivity extends BaseStatusActivity {
         setContentView(binding.getRoot());
         
         viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+
         configureData();
         configureActionBar();
         setInformation();
@@ -83,17 +93,16 @@ public class LoginActivity extends BaseStatusActivity {
         }
         else {
             binding.loginBbsUrl.setText(getString(R.string.user_relogin,userBriefInfo.username));
+            binding.loginBbsAccountTextInputEditText.setText(userBriefInfo.username);
         }
 
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-        if(userBriefInfo == null){
 
-        }
         Glide.with(this)
                 .load(URLUtils.getBBSLogoUrl())
-                .error(R.drawable.vector_drawable_bbs)
-                .placeholder(R.drawable.vector_drawable_bbs)
+                .error(R.drawable.ic_baseline_public_24)
+                .placeholder(R.drawable.ic_baseline_public_24)
                 .centerInside()
                 .into(binding.loginBbsAvatar);
         binding.loginBbsSecurityQuestionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -121,7 +130,7 @@ public class LoginActivity extends BaseStatusActivity {
         binding.loginBbsCaptchaImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewModel.getSecureInfo();
+                viewModel.loadSecureInfo();
                 VibrateUtils.vibrateForClick(getApplication());
             }
         });
@@ -173,130 +182,168 @@ public class LoginActivity extends BaseStatusActivity {
     }
 
     void bindViewModel(){
-        viewModel.errorString.observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                if(s!=null && s.length()!=0){
-                    Toasty.error(getApplication(),s,Toast.LENGTH_LONG).show();
-                    VibrateUtils.vibrateForError(getApplication());
-                }
+
+        viewModel.getErrorMessage().observe(this, errorMessage -> {
+            if(errorMessage != null){
+                Toasty.error(this,
+                        getString(R.string.discuz_api_message_template,errorMessage.key,errorMessage.content),
+                        Toast.LENGTH_LONG).show();
             }
+
         });
-        viewModel.getSecureInfoResultMutableLiveData().observe(this, new Observer<SecureInfoResult>() {
-            @Override
-            public void onChanged(SecureInfoResult secureInfoResult) {
-                if(secureInfoResult != null){
 
-                    if(secureInfoResult.secureVariables == null){
-                        binding.loginBbsCaptchaInputLayout.setVisibility(View.GONE);
-                        binding.loginBbsCaptchaImageView.setVisibility(View.GONE);
-                    }
-                    else {
-                        binding.loginBbsCaptchaInputLayout.setVisibility(View.VISIBLE);
-                        binding.loginBbsCaptchaImageView.setVisibility(View.VISIBLE);
-                        binding.loginBbsCaptchaImageView.setImageDrawable(getDrawable(R.drawable.ic_captcha_placeholder_24px));
-                        // need a captcha
-                        String captchaURL = secureInfoResult.secureVariables.secCodeURL;
-                        String captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash);
-                        // load it
-                        Request captchaRequest = new Request.Builder()
-                                .url(captchaURL)
-                                .build();
-                        // get first
-                        client.newCall(captchaRequest).enqueue(new Callback() {
-                            @Override
-                            public void onFailure(Call call, IOException e) {
-
-                            }
-
-                            @Override
-                            public void onResponse(Call call, Response response) throws IOException {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    // get the session
-                                    binding.loginBbsCaptchaImageView.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-
-                                            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
-                                            Glide.get(getApplication()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-
-                                            // forbid cache captcha
-                                            RequestOptions options = new RequestOptions()
-                                                    .fitCenter()
-                                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                                    .placeholder(R.drawable.ic_captcha_placeholder_24px)
-                                                    .error(R.drawable.ic_post_status_warned_24px);
-                                            GlideUrl pictureGlideURL = new GlideUrl(captchaImageURL,
-                                                    new LazyHeaders.Builder()
-                                                            .addHeader("Referer",captchaURL)
-                                                            .build()
-                                            );
-
-                                            Glide.with(getApplication())
-                                                    .load(pictureGlideURL)
-                                                    .apply(options)
-                                                    .into(binding.loginBbsCaptchaImageView);
-                                        }
-                                    });
-
-                                }
-
-                            }
-                        });
-
-
-                    }
-                }
-                else {
+        viewModel.getSecureInfoResultMutableLiveData().observe(this,secureInfoResult -> {
+            if(secureInfoResult != null){
+                if(secureInfoResult.secureVariables == null){
                     binding.loginBbsCaptchaInputLayout.setVisibility(View.GONE);
                     binding.loginBbsCaptchaImageView.setVisibility(View.GONE);
                 }
+                else{
+                    // need further query
+                    binding.loginBbsCaptchaInputLayout.setVisibility(View.VISIBLE);
+                    binding.loginBbsCaptchaImageView.setVisibility(View.VISIBLE);
+                    binding.loginBbsCaptchaImageView.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_captcha_placeholder_24px));
+                    String captchaURL = secureInfoResult.secureVariables.secCodeURL;
+                    String captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash);
+                    Request captchaRequest = new Request.Builder()
+                            .url(captchaURL)
+                            .build();
+                    client.newCall(captchaRequest).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                        }
+
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (response.isSuccessful() && response.body() != null) {
+                                // get the session
+                                binding.loginBbsCaptchaImageView.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
+                                        Glide.get(getApplication()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+
+                                        // forbid cache captcha
+                                        RequestOptions options = new RequestOptions()
+                                                .fitCenter()
+                                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                                .placeholder(R.drawable.ic_captcha_placeholder_24px)
+                                                .error(R.drawable.ic_post_status_warned_24px);
+                                        GlideUrl pictureGlideURL = new GlideUrl(captchaImageURL,
+                                                new LazyHeaders.Builder()
+                                                        .addHeader("Referer",captchaURL)
+                                                        .build()
+                                        );
+
+                                        Glide.with(getApplication())
+                                                .load(pictureGlideURL)
+                                                .apply(options)
+                                                .into(binding.loginBbsCaptchaImageView);
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                }
             }
+            else{
+                // not get login parameter
+
+            }
+        });
+
+        viewModel.getLoginResultMutableLiveData().observe(this, loginResult -> {
+            if(loginResult!=null){
+                MessageResult loginMessage = loginResult.message;
+                if(loginMessage !=null){
+                    String key = loginMessage.key;
+                    if(key.equals("login_succeed")){
+                        forumUserBriefInfo user = loginResult.variables.getUserBriefInfo();
+                        user.belongedBBSID = bbsInfo.getId();
+                        if(userBriefInfo !=null){
+                            // relogin user
+                            user.setId(userBriefInfo.getId());
+                        }
+                        Toasty.success(this,
+                                getString(R.string.discuz_api_message_template,loginMessage.key,loginMessage.content),
+                                Toast.LENGTH_LONG).show();
+                        new saveUserToDatabaseAsyncTask(user,client,bbsInfo.base_url).execute();
+
+                    }
+                    else{
+                        if(key.equals("login_seccheck2")){
+                            // need captcha
+                            viewModel.loadSecureInfo();
+                        }
+                        Toasty.error(this,
+                                getString(R.string.discuz_api_message_template,loginMessage.key,loginMessage.content),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
         });
     }
 
     void configureLoginBtn(){
-        binding.loginBbsLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(binding.loginBbsAccountTextInputEditText.getText()!=null && binding.loginBbsPasswordTextInputEditText.getText()!=null && binding.loginBbsCaptchaEditText.getText()!=null){
-                    String account = binding.loginBbsAccountTextInputEditText.getText().toString();
-                    String password = binding.loginBbsPasswordTextInputEditText.getText().toString();
-                    String captchaText = binding.loginBbsCaptchaEditText.getText().toString();
-                    if(needCaptcha() && captchaText.length() == 0){
-                        binding.loginBbsCaptchaInputLayout.setError(getString(R.string.field_required));
-                        binding.loginBbsCaptchaInputLayout.setErrorEnabled(true);
-                        return;
-                    }
-                    else {
-                        binding.loginBbsCaptchaInputLayout.setErrorEnabled(false);
-                    }
+        binding.loginBbsLoginButton.setOnClickListener(v -> {
+            if(binding.loginBbsAccountTextInputEditText.getText()!=null && binding.loginBbsPasswordTextInputEditText.getText()!=null && binding.loginBbsCaptchaEditText.getText()!=null){
+                String account = binding.loginBbsAccountTextInputEditText.getText().toString();
+                String password = binding.loginBbsPasswordTextInputEditText.getText().toString();
+                String captchaText = binding.loginBbsCaptchaEditText.getText().toString();
 
 
-                    if(password.length()==0 || account.length() == 0){
-                        if(account.length() == 0){
-                            binding.loginBbsPasswordTextInputLayout.setErrorEnabled(true);
-                            binding.loginBbsAccountTextInputLayout.setError(getString(R.string.field_required));
-                            //binding.loginBbsAccountTextInputEditText.setError();
-                        }
-                        if(password.length() == 0){
-                            binding.loginBbsPasswordTextInputLayout.setErrorEnabled(true);
-                            binding.loginBbsPasswordTextInputLayout.setError(getString(R.string.field_required));
-                            //binding.loginBbsPasswordTextInputEditText.setError();
-                        }
-                        Toasty.warning(getApplicationContext(),getString(R.string.bbs_login_account_password_required),Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        sendLoginRequest();
-                    }
+
+                String secureHash = null;
+
+                SecureInfoResult secureInfoResult = viewModel.getSecureInfoResultMutableLiveData().getValue();
+                if(secureInfoResult!=null && secureInfoResult.secureVariables!=null){
+                    secureHash = secureInfoResult.secureVariables.secHash;
+                }
+                if(needCaptcha() && captchaText.length() == 0){
+                    binding.loginBbsCaptchaInputLayout.setError(getString(R.string.field_required));
+                    binding.loginBbsCaptchaInputLayout.setErrorEnabled(true);
+                    return;
                 }
                 else {
-
-                    Toasty.warning(getApplicationContext(),getString(R.string.bbs_login_account_password_required),Toast.LENGTH_SHORT).show();
+                    binding.loginBbsCaptchaInputLayout.setErrorEnabled(false);
                 }
 
+
+                if(password.length()==0 || account.length() == 0){
+                    if(account.length() == 0){
+                        binding.loginBbsPasswordTextInputLayout.setErrorEnabled(true);
+                        binding.loginBbsAccountTextInputLayout.setError(getString(R.string.field_required));
+                        //binding.loginBbsAccountTextInputEditText.setError();
+                    }
+                    if(password.length() == 0){
+                        binding.loginBbsPasswordTextInputLayout.setErrorEnabled(true);
+                        binding.loginBbsPasswordTextInputLayout.setError(getString(R.string.field_required));
+                        //binding.loginBbsPasswordTextInputEditText.setError();
+                    }
+                    Toasty.warning(getApplicationContext(),getString(R.string.bbs_login_account_password_required),Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    viewModel.login(
+                            client,
+                            account,password,
+                            binding.loginBbsSecurityQuestionSpinner.getSelectedItemPosition(),
+                            binding.loginBbsSecurityAnswerEditText.getText().toString(),
+                            secureHash,
+                            binding.loginBbsCaptchaEditText.getText().toString()
+
+                    );
+                }
+            }
+            else {
+
+                Toasty.warning(getApplicationContext(),getString(R.string.bbs_login_account_password_required),Toast.LENGTH_SHORT).show();
             }
         });
+
 
         binding.loginBbsLoginInWebButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -308,200 +355,17 @@ public class LoginActivity extends BaseStatusActivity {
         });
     }
 
-    void sendLoginRequest(){
-        viewModel.error.postValue(false);
-        if(viewModel.getSecureInfoResultMutableLiveData().getValue() == null){
-            return;
-        }
-        if(binding.loginBbsAccountTextInputEditText.getText() == null
-                || binding.loginBbsPasswordTextInputEditText.getText() == null){
-            return;
-        }
-        String account = binding.loginBbsAccountTextInputEditText.getText().toString();
-        String password = binding.loginBbsPasswordTextInputEditText.getText().toString();
-        String captcha = binding.loginBbsCaptchaEditText.getText().toString();
-        forumUserBriefInfo savedUserBriefInfo = new forumUserBriefInfo("","","","","",50,"");
-        //Log.d(TAG,"Send user id "+userBriefInfo.getId());
-        if(userBriefInfo !=null){
-            savedUserBriefInfo.setId(userBriefInfo.getId());
-        }
-        NetworkUtils.clearUserCookieInfo(getApplicationContext(),savedUserBriefInfo);
 
-
-        // exact login url
-        // need formhash
-        SecureInfoResult secureInfoResult = viewModel.getSecureInfoResultMutableLiveData().getValue();
-
-        String loginUrl = URLUtils.getLoginUrl();
-
-
-        FormBody.Builder formBodyBuilder = new FormBody.Builder()
-                .add("loginfield", "username")
-                .add("cookietime", "2592000")
-
-                .add("questionid",String.valueOf(binding.loginBbsSecurityQuestionSpinner.getSelectedItemPosition()))
-
-                .add("quickforward", "yes")
-                .add("handlekey", "1s")
-
-                .add("referer",bbsInfo.base_url);
-        String answer = binding.loginBbsSecurityAnswerEditText.getText().toString();
-        switch (getCharsetType()){
-            case CHARSET_GBK:{
-                try {
-                    formBodyBuilder.addEncoded("answer", URLEncoder.encode(answer,"GBK"))
-                            .add("username", URLEncoder.encode(account,"GBK"))
-                            .add("password", URLEncoder.encode(password,"GBK"))
-                    ;
-                    break;
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-            }
-            case CHARSET_BIG5:{
-                try {
-                    formBodyBuilder.addEncoded("answer", URLEncoder.encode(answer,"BIG5"))
-                            .add("username", URLEncoder.encode(account,"BIG5"))
-                            .add("password", URLEncoder.encode(password,"BIG5"))
-                    ;
-                    break;
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-            }
-            default:{
-                formBodyBuilder.add("answer",answer)
-                        .add("username", account)
-                        .add("password", password);
-            }
-        }
-
-        if(needCaptcha()){
-            Log.d(TAG,"Formhash "+secureInfoResult.secureVariables.formHash);
-            formBodyBuilder
-                    .add("seccodehash",secureInfoResult.secureVariables.secHash)
-                    .add("seccodemodid", "member::logging")
-                    //.add("formhash",secureInfoResult.secureVariables.formHash)
-                    ;
-            switch (getCharsetType()){
-                case CHARSET_GBK:{
-                    try {
-                        formBodyBuilder.addEncoded("seccodeverify", URLEncoder.encode(captcha,"GBK"))
-
-                        ;
-                        break;
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                }
-                case CHARSET_BIG5:{
-                    try {
-                        formBodyBuilder.addEncoded("seccodeverify", URLEncoder.encode(captcha,"BIG5"))
-
-                        ;
-                        break;
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                }
-                default:{
-                    formBodyBuilder.add("seccodeverify", captcha);
-                }
-            }
-        }
-
-        FormBody formBody = formBodyBuilder
-                .build();
-
-        Log.d(TAG,"send login url "+loginUrl+" form post "
-                +account + " "+password+" "
-                +" verify "+captcha);
-        Request request = new Request.Builder()
-                .url(loginUrl)
-                .post(formBody)
-                .build();
-
-        Handler mHandler = new Handler(Looper.getMainLooper());
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        // showing error information
-                        Toasty.error(getApplicationContext(),getString(R.string.network_failed),Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful() && response.body()!=null){
-
-                    String res = response.body().string();
-                    // fetch the api URL
-                    Log.d(TAG,"get result json "+res);
-                    ObjectMapper mapper = new ObjectMapper();
-                    LoginResult loginResult = null;
-                    try{
-                        loginResult = mapper.readValue(res, LoginResult.class);
-                    }
-                    catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    if(loginResult !=null && loginResult.variables !=null){
-                        forumUserBriefInfo parsedUserInfo = loginResult.variables.getUserBriefInfo();
-                        if(parsedUserInfo !=null
-                                && loginResult.message!=null
-                                && loginResult.message.key.equals("login_succeed")){
-                            // successful
-                            parsedUserInfo.belongedBBSID = bbsInfo.getId();
-                            if(userBriefInfo !=null){
-                                // relogin user
-                                parsedUserInfo.setId(userBriefInfo.getId());
-                            }
-                            new saveUserToDatabaseAsyncTask(parsedUserInfo,client).execute();
-                        }
-                        else {
-                            if(loginResult.message!=null){
-                                if(loginResult.message.key.equals("login_seccheck2")){
-                                    Log.d(TAG,"Need seccode to login ");
-                                    viewModel.getSecureInfo();
-                                }
-                                viewModel.error.postValue(true);
-                                viewModel.errorString.postValue(loginResult.message.content);
-
-                            }
-                            else {
-                                viewModel.error.postValue(true);
-                                viewModel.errorString.postValue(getString(R.string.parse_failed));
-                            }
-                        }
-                    }
-                    else {
-                        if(loginResult !=null && loginResult.message!=null){
-                            viewModel.error.postValue(true);
-                            viewModel.errorString.postValue(loginResult.message.content);
-                        }
-                        else {
-                            viewModel.error.postValue(true);
-                            viewModel.errorString.postValue(getString(R.string.parse_failed));
-                        }
-                    }
-
-                }
-            }
-        });
-    }
 
     private class saveUserToDatabaseAsyncTask extends AsyncTask<Void,Void,Void>{
         forumUserBriefInfo userBriefInfo;
         OkHttpClient client;
         long insertedId;
-        saveUserToDatabaseAsyncTask(forumUserBriefInfo userBriefInfo, OkHttpClient client){
+        HttpUrl httpUrl;
+        saveUserToDatabaseAsyncTask(forumUserBriefInfo userBriefInfo, OkHttpClient client, String httpURL){
             this.userBriefInfo = userBriefInfo;
             this.client = client;
+            this.httpUrl = HttpUrl.parse(httpURL);
         }
 
         @Override
@@ -515,19 +379,17 @@ public class LoginActivity extends BaseStatusActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             Context context = getApplicationContext();
-            Toasty.success(context,
-                    String.format(context.getString(R.string.save_user_to_bbs_successfully_template),userBriefInfo.username,bbsInfo.site_name),
-                    Toast.LENGTH_SHORT
-            ).show();
             Log.d(TAG,"save user to database id: "+userBriefInfo.getId()+"  "+insertedId);
             userBriefInfo.setId((int) insertedId);
-            // transiting data
-            NetworkUtils.copySharedPrefence(
-                    context.getSharedPreferences("CookiePersistence",Context.MODE_PRIVATE),
-                    context.getSharedPreferences(NetworkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE)
-            );
 
-            Log.d(TAG, "Transiting data to preference "+ NetworkUtils.getSharedPreferenceNameByUser(userBriefInfo));
+            OkHttpClient savedClient = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplicationContext(),userBriefInfo);
+            List<Cookie> cookies = client.cookieJar().loadForRequest(httpUrl);
+            Log.d(TAG,"Http url "+httpUrl.toString()+" cookie list size "+cookies.size());
+            savedClient.cookieJar().saveFromResponse(httpUrl,cookies);
+            // manually set the cookie to shared preference
+            SharedPrefsCookiePersistor sharedPrefsCookiePersistor = new SharedPrefsCookiePersistor(context.getSharedPreferences(NetworkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE));
+            sharedPrefsCookiePersistor.saveAll(savedClient.cookieJar().loadForRequest(httpUrl));
+            Log.d(TAG,"Http url "+httpUrl.toString()+" saved cookie list size "+savedClient.cookieJar().loadForRequest(httpUrl).size());
 
             finishAfterTransition();
         }
@@ -550,8 +412,10 @@ public class LoginActivity extends BaseStatusActivity {
         Intent intent = getIntent();
         bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
-        viewModel.setBBSInfo(bbsInfo,userBriefInfo);
         client = NetworkUtils.getPreferredClientWithCookieJar(getApplicationContext());
+        viewModel.setInfo(bbsInfo,userBriefInfo,client);
+
+
         if(bbsInfo == null){
             finishAfterTransition();
         }

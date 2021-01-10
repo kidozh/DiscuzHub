@@ -679,9 +679,9 @@
     <string name="time_filter_month">一月内</string>
     <string name="time_filter_quarter">一季内</string>
     <string name="time_filter_year">一年内</string>
-    <string name="single_discuz_portal_title">你正要访问论坛</string>
+    <string name="single_discuz_portal_title">开始</string>
     <string name="warn_app_id">请遵循我们（DiscuzHub）的政策，避免使用\"com.kidozh.discuzhub\"这个应用ID。点此了解原因和解决方案。</string>
-    <string name="loading_bbs_check_info">正在检查%1$s是否具有Discuz移动接口，这将至多耗费5秒时间。</string>
+    <string name="loading_bbs_check_info">正在检查%1$s是否具有Discuz移动接口，这将至多耗费10秒时间。</string>
     <string name="check_discuz_successfully">%1$s 具有移动接口，能够使用本应用访问此论坛。点此查看详情。</string>
     <string name="agree_bbs_policy">我同意%1$s的使用条款。</string>
     <string name="agree_discuzhub_policy">我理解此应用由DiscuzHub驱动，并同意其隐私政策及使用条款。</string>
@@ -689,5 +689,25 @@
     <string name="agreement">使用相关协议</string>
     <string name="enter_bbs">进入</string>
     <string name="package_name_conflicted">此包与DiscuzHub冲突，无法继续接下来的操作。</string>
+    <string name="api_5_title">移动API 5版本</string>
+    <string name="api_5_description">此版本可以让论坛更好地展示，在性能、功能上更好地适配移动端的需求。</string>
+    <string name="api_4_title">移动API 4版本</string>
+    <string name="api_4_description">这个预制版本可以让你很容易的与论坛进行一些基本的交互。</string>
+    <string name="discuz_version_description">此处显示了Discuz X的架构版本，更新的版本有助于功能完善以及安全修复。</string>
+    <string name="discuz_version_title">Discuz 架构版本 %1$s</string>
+    <string name="discuz_plugin_version_title">插件版本 %1$s</string>
+    <string name="discuz_plugin_version_description">论坛里几乎所有扩展内容都运行于插件之上，更新的插件版本能让运行变得更加安全及高效。</string>
+    <string name="site_name_description">这就是此站点的名称，这个名称将最终储存入数据库中。</string>
+    <string name="discuz_charset_title">字符集%1$s</string>
+    <string name="discuz_charset_description_utf8">UTF-8是一个通用的字符集，可以支持大多数的字符显示。</string>
+    <string name="discuz_charset_description_gbk">GBK是简体中文常见的字符集。使用其他语言的字符可能会导致乱码。</string>
+    <string name="discuz_charset_description_big5">BIG-5是繁体中文常见的字符集。使用其他语言的字符可能会导致乱码。</string>
+    <string name="discuz_charset_unknown">未知字符集</string>
+    <string name="discuz_mobile_allow_register">移动接口现在开放注册，然而大部分论坛都未对注册模块进行了很好的调试。</string>
+    <string name="discuz_allow_qq">此站点允许使用QQ登录账号。</string>
+    <string name="discuz_post_members">此论坛有%1$s名用户，一共发了%2$s个帖子。</string>
+    <string name="discuz_single_copyright">由Discuz Hub驱动</string>
+    <string name="login_parameter_not_ready">登录未就绪，请稍后再试。</string>
+    <string name="login_user">正在登陆%1$s这个账号 。。。</string>
 
 </resources>

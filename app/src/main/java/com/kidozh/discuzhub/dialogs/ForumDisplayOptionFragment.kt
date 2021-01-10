@@ -1,4 +1,4 @@
-package com.kidozh.discuzhub.activities.ui.ForumDisplayOption
+package com.kidozh.discuzhub.dialogs
 
 import android.app.Dialog
 import android.os.Bundle

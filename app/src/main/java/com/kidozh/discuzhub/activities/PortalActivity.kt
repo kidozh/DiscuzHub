@@ -13,6 +13,8 @@ import com.kidozh.discuzhub.BuildConfig
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.database.BBSInformationDatabase
 import com.kidozh.discuzhub.databinding.ActivityPortalBinding
+import com.kidozh.discuzhub.dialogs.DiscuzDetailDialogFragment
+import com.kidozh.discuzhub.dialogs.ForumDisplayOptionFragment
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.URLUtils
 import com.kidozh.discuzhub.viewModels.PortalViewModel
@@ -165,6 +167,13 @@ class PortalActivity : AppCompatActivity() {
                     }
                 }
 
+                // activate click
+                binding.loadingCardview.isClickable = true
+                binding.loadingCardview.setOnClickListener { v->
+                    val bbs = checkResult.toBBSInformation(baseURL)
+                    val fragment = DiscuzDetailDialogFragment(bbs)
+                    fragment.show(supportFragmentManager,DiscuzDetailDialogFragment::class.simpleName)
+                }
 
             } else {
                 binding.checkLoadingProgressbar.visibility = View.INVISIBLE

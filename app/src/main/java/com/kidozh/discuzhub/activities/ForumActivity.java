@@ -32,7 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ui.ForumDisplayOption.ForumDisplayOptionFragment;
+import com.kidozh.discuzhub.dialogs.ForumDisplayOptionFragment;
 import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter;
 import com.kidozh.discuzhub.adapter.SubForumAdapter;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;

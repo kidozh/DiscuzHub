@@ -44,38 +44,15 @@ public class NetworkUtils {
     private static String preferenceName = "use_safe_https_client";
 
     public static OkHttpClient getPreferredClientWithCookieJar(Context context){
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
-//        Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
         return getSafeOkHttpClientWithCookieJar(context);
-//        if(useSafeHttpClient){
-//            return getSafeOkHttpClientWithCookieJar(context);
-//        }
-//        else {
-//            return getUnsafeOkHttpClientWithCookieJar(context);
-//        }
     }
 
     public static OkHttpClient getPreferredClient(Context context){
         return getSafeOkHttpClient(context);
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
-//        Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
-//
-//        if(useSafeHttpClient){
-//            return getSafeOkHttpClient(context);
-//        }
-//        else {
-//            return getUnsafeOkHttpClient(context);
-//        }
     }
 
     public static OkHttpClient getPreferredClient(Context context,Boolean useSafeHttpClient){
         return getSafeOkHttpClient(context);
-//        if(useSafeHttpClient){
-//            return getSafeOkHttpClient(context);
-//        }
-//        else {
-//            return getUnsafeOkHttpClient(context);
-//        }
     }
 
     public static OkHttpClient getSafeOkHttpClient(Context context){
@@ -109,48 +86,33 @@ public class NetworkUtils {
         }
         else {
             return getSafeOkHttpClientWithCookieJarByUser(context,briefInfo);
-//            if(useSafeHttpClient){
-//                return getSafeOkHttpClientWithCookieJarByUser(context,briefInfo);
-//            }
-//            else {
-//                return getUnSafeOkHttpClientWithCookieJarByUser(context,briefInfo);
-//            }
         }
 
 
     }
 
     public static OkHttpClient getPreferredClientWithCookieJarByUserWithDefaultHeader(Context context, forumUserBriefInfo briefInfo){
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
-//        Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
         if(briefInfo==null){
             return getPreferredClient(context);
         }
         else {
             return getSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(context,briefInfo);
-//            if(useSafeHttpClient){
-//                return getSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(context,briefInfo);
-//            }
-//            else {
-//                return getUnSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(context,briefInfo);
-//            }
         }
 
 
     }
 
     public static void copySharedPrefence(SharedPreferences fromSp, SharedPreferences toSp){
-        SharedPreferences sp1 = toSp, sp = fromSp;
-        SharedPreferences.Editor ed = sp1.edit();
+        SharedPreferences.Editor ed = toSp.edit();
 
         // SharedPreferences sp = Sp2; //The shared preferences to copy from
         ed.clear(); // This clears the one we are copying to, but you don't necessarily need to do that.
         //Cycle through all the entries in the sp
-        Log.d(TAG,"Start copy preference "+sp.getAll().entrySet());
-        for(Map.Entry<String,?> entry : sp.getAll().entrySet()){
+        Log.d(TAG,"Start copy preference "+ fromSp.getAll().entrySet());
+        for(Map.Entry<String,?> entry : fromSp.getAll().entrySet()){
             Object v = entry.getValue();
             String key = entry.getKey();
-            Log.d(TAG,"Transition "+key+" val :"+v.toString());
+            //Log.d(TAG,"Transition "+key+" val :"+v.toString());
             //Now we just figure out what type it is, so we can copy it.
             // Note that i am using Boolean and Integer instead of boolean and int.
             // That's because the Entry class can only hold objects and int and boolean are primatives.
@@ -168,6 +130,7 @@ public class NetworkUtils {
                 ed.putString(key, ((String)v));
         }
         ed.apply(); //save it.
+        fromSp.edit().clear().apply();
     }
 
     public static String getSharedPreferenceNameByUser(@NonNull forumUserBriefInfo briefInfo){
