@@ -1101,6 +1101,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
     }
 
     private void configureToolbar(){
+        setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.bbs_post_thread));

@@ -62,6 +62,7 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
     }
 
     private void configureActionBar(){
+        setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.bbs_draft_box));

@@ -111,6 +111,7 @@ class AboutAppActivity : BaseStatusActivity() {
     }
 
     private fun configureActionBar() {
+        setSupportActionBar(binding.toolbar)
         if (supportActionBar != null) {
 
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)

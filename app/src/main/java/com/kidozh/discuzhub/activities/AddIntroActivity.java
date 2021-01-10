@@ -71,6 +71,7 @@ public class AddIntroActivity extends BaseStatusActivity
         configureAddGuide();
     }
 
+
     private void configureAddGuide(){
         binding.bbsAddGuide.setPaintFlags(binding.bbsAddGuide.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         binding.bbsAddGuide.setOnClickListener(new View.OnClickListener() {

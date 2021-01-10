@@ -473,6 +473,7 @@ public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implemen
     }
 
     private void configureActionBar(){
+        setSupportActionBar(binding.toolbar);
         if(getSupportActionBar() !=null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);

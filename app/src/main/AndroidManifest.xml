@@ -24,7 +24,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
         <activity android:name=".activities.PortalActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,20 +33,17 @@
         </activity>
         <activity
             android:name=".activities.SingleDiscuzActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme"/>
         <activity android:name=".activities.SearchPostsActivity" />
         <activity
             android:name=".activities.ViewHistoryActivity"
-            android:label="@string/view_history"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/view_history" />
         <activity
-            android:name=".activities.DrawerActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".activities.DrawerActivity"/>
 
-        </activity>
         <activity
             android:name=".activities.AddIntroActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity android:name=".activities.AboutAppActivity" />
         <activity android:name=".activities.InternalWebViewActivity" />
         <activity android:name=".activities.ThreadDraftActivity" />
@@ -84,14 +81,11 @@
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_global_settings" />
         <activity
-            android:name=".activities.ForumActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".activities.ForumActivity" />
         <activity
-            android:name=".activities.ThreadActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".activities.ThreadActivity" />
         <activity
-            android:name=".activities.SplashScreenActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".activities.SplashScreenActivity" />
         <activity android:name=".activities.PublishActivity" />
         <activity android:name=".activities.ManageUserActivity" />
         <activity android:name=".activities.ManageBBSActivity" />

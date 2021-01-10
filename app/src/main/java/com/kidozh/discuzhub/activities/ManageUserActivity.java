@@ -78,6 +78,7 @@ public class ManageUserActivity extends BaseStatusActivity
     }
 
     void configureActionBar(){
+        setSupportActionBar(binding.toolbar);
         if(getSupportActionBar() !=null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);

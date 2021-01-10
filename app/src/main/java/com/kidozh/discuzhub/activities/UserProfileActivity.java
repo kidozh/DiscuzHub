@@ -136,7 +136,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
     }
 
     void configureActionBar(){
-
+        setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setSubtitle(String.valueOf(userId));
     }

@@ -19,24 +19,25 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
+import com.kidozh.discuzhub.databinding.SettingsActivityBinding;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 
 import es.dmoral.toasty.Toasty;
 
 public class SettingsActivity extends BaseStatusActivity {
-
+    SettingsActivityBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings_activity);
+        binding = SettingsActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.settings, new SettingsFragment())
                 .commit();
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
 
     }
