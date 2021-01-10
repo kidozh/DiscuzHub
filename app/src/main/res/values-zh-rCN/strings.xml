@@ -709,5 +709,7 @@
     <string name="discuz_single_copyright">由Discuz Hub驱动</string>
     <string name="login_parameter_not_ready">登录未就绪，请稍后再试。</string>
     <string name="login_user">正在登陆%1$s这个账号 。。。</string>
+    <string name="bbs_anonymous_mode_title">匿名用户</string>
+    <string name="bbs_anonymous_mode_description">你正在以匿名模式浏览%1$s。部分的功能在您登陆前都会被禁用。</string>
 
 </resources>

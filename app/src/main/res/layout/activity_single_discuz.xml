@@ -99,6 +99,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
+            app:headerLayout="@layout/nav_header_main"
             app:menu="@menu/single_drawer_navigation" />
     </androidx.drawerlayout.widget.DrawerLayout>
 

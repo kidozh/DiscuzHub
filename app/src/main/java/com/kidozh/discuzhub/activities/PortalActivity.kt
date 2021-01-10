@@ -33,7 +33,8 @@ class PortalActivity : AppCompatActivity() {
         model = ViewModelProvider(this).get(PortalViewModel::class.java)
         setContentView(binding.root)
         Log.d(TAG, "Build configuration " + BuildConfig.BUILD_TYPE)
-        if(BuildConfig.BUILD_TYPE.contentEquals("single")){
+
+        if(BuildConfig.BUILD_TYPE.contentEquals("debug") || BuildConfig.BUILD_TYPE.contentEquals("release")){
             jumpToDefaultActivity()
             return;
         }

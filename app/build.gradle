@@ -31,10 +31,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             applicationIdSuffix ".bbs"
         }
+        qzzn {
+            // an example for QZZN BBS
+            manifestPlaceholders = [
+                    discuz_title: "QZZN论坛",
+                    discuz_base_url: "https://bbs.qzzn.com",
+            ]
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // be sure to change your own application id
+            applicationIdSuffix ".qzzn"
+
+        }
         debug {
             manifestPlaceholders = [
                     discuz_title: "QZZN论坛",
-                    discuz_base_url: "http://192.168.1.114",
+                    discuz_base_url: "https://bbs.qzzn.com",
             ]
             debuggable true
             pseudoLocalesEnabled true

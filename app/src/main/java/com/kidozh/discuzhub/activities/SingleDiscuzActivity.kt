@@ -18,6 +18,10 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager.*
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
+import com.bumptech.glide.request.RequestOptions
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.activities.ui.BlankBBSFragment.BlankBBSFragment
 import com.kidozh.discuzhub.activities.ui.DashBoard.DashBoardFragment
@@ -25,19 +29,23 @@ import com.kidozh.discuzhub.activities.ui.home.HomeFragment
 import com.kidozh.discuzhub.activities.ui.notifications.NotificationsFragment
 import com.kidozh.discuzhub.adapter.UserSpinnerAdapter
 import com.kidozh.discuzhub.databinding.ActivitySingleDiscuzBinding
+import com.kidozh.discuzhub.databinding.NavHeaderMainBinding
 import com.kidozh.discuzhub.databinding.SingleDrawerNavigationHeaderBinding
 import com.kidozh.discuzhub.entities.bbsInformation
 import com.kidozh.discuzhub.entities.forumUserBriefInfo
 import com.kidozh.discuzhub.utilities.ConstUtils
+import com.kidozh.discuzhub.utilities.URLUtils
 import com.kidozh.discuzhub.viewModels.SingleDiscuzViewModel
 import es.dmoral.toasty.Toasty
+import java.io.InputStream
+import java.net.URL
 
 class SingleDiscuzActivity : BaseStatusActivity() {
     val TAG = SingleDiscuzViewModel::class.simpleName
     lateinit var binding: ActivitySingleDiscuzBinding
     lateinit var headerBinding: SingleDrawerNavigationHeaderBinding
+    lateinit var navHeaderBinding: NavHeaderMainBinding
     lateinit var viewModel: SingleDiscuzViewModel
-    private var bbsInfo: bbsInformation? = null
     private var userAdapter: UserSpinnerAdapter = UserSpinnerAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,6 +77,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
     }
 
     private fun configureSpinner(){
+        navHeaderBinding = NavHeaderMainBinding.bind(binding.drawerNavigation.getHeaderView(0))
         headerBinding = SingleDrawerNavigationHeaderBinding.inflate(layoutInflater)
         binding.drawerNavigation.addHeaderView(headerBinding.root)
         headerBinding.userSpinner.adapter = userAdapter
@@ -146,11 +155,37 @@ class SingleDiscuzActivity : BaseStatusActivity() {
         })
         viewModel.currentUserMutableLiveData.observe(this, Observer { user ->
             renderViewPagerAndBtnNavigation()
+            if (user == null) {
+                navHeaderBinding.userAvatar.setImageDrawable(
+                        getDrawable(R.drawable.ic_anonymous_user_icon_24px)
+                )
+                navHeaderBinding.headerTitle.setText(R.string.bbs_anonymous_mode_title)
+                navHeaderBinding.headerSubtitle.setText(
+                        getString(R.string.bbs_anonymous_mode_description, bbsInfo.site_name))
+            } else {
+                var avatar_num: Int = user.getUid() % 16
+                if (avatar_num < 0) {
+                    avatar_num = -avatar_num
+                }
+                val avatarResource: Int = getResources().getIdentifier(String.format("avatar_%s", avatar_num + 1), "drawable", packageName)
+                URLUtils.bbsInfo = bbsInfo
+                val source: String = URLUtils.getLargeAvatarUrlByUid(user.getUid())
+                val glideUrl = GlideUrl(source,
+                        LazyHeaders.Builder().addHeader("referer", source).build()
+                )
+                Glide.with(this)
+                        .load(glideUrl)
+                        .apply(RequestOptions.placeholderOf(avatarResource).error(avatarResource))
+                        .into(navHeaderBinding.userAvatar)
+                navHeaderBinding.headerTitle.setText(user.username)
+                navHeaderBinding.headerSubtitle.setText(getString(R.string.user_id_description,user.getUid().toString()))
+            }
         })
         viewModel.userListLiveData.observe(this, Observer { userList ->
             // add incognitive mode
             userAdapter.setUserList(userList)
             if (userList.size == 0) {
+                viewModel.currentUserMutableLiveData.postValue(null)
                 headerBinding.userSpinner.visibility = GONE
             } else {
                 headerBinding.userSpinner.visibility = VISIBLE
