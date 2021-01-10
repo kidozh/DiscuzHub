@@ -682,5 +682,35 @@
     <string name="time_filter_month">一月內</string>
     <string name="time_filter_quarter">一季內</string>
     <string name="time_filter_year">一年內</string>
+    <string name="single_discuz_portal_title">開始</string>
+    <string name="warn_app_id">請遵循我們（DiscuzHub）的政策，避免使用\"com.kidozh.discuzhub\"這個應用ID。點此了解原因和解決方案。 </string>
+    <string name="loading_bbs_check_info">正在檢查%1$s是否具有Discuz移動接口，這將至多耗費10秒時間。 </string>
+    <string name="check_discuz_successfully">%1$s 具有移動接口，能夠使用本應用訪問此論壇。點此查看詳情。 </string>
+    <string name="agree_bbs_policy">我同意%1$s的使用條款。 </string>
+    <string name="agree_discuzhub_policy">我理解此應用由DiscuzHub驅動，並同意其隱私政策及使用條款。 </string>
+    <string name="http_warn">HTTP協議是一種不安全的協議。傳遞數據時您的信息（例如密碼）很容易遭到洩露，您瀏覽的信息也極有可能遭到篡改。請聯繫%1$s管理員以使用HTTPS協議！ </string>
+    <string name="agreement">使用相關協議</string>
+    <string name="enter_bbs">進入</string>
+    <string name="package_name_conflicted">此包與DiscuzHub衝突，無法繼續接下來的操作。 </string>
+    <string name="api_5_title">移動API 5版本</string>
+    <string name="api_5_description">此版本可以讓論壇更好地展示，在性能、功能上更好地適配移動端的需求。 </string>
+    <string name="api_4_title">移動API 4版本</string>
+    <string name="api_4_description">這個預製版本可以讓你很容易的與論壇進行一些基本的交互。 </string>
+    <string name="discuz_version_description">此處顯示了Discuz X的架構版本，更新的版本有助於功能完善以及安全修復。 </string>
+    <string name="discuz_version_title">Discuz 架構版本 %1$s</string>
+    <string name="discuz_plugin_version_title">插件版本 %1$s</string>
+    <string name="discuz_plugin_version_description">論壇裡幾乎所有擴展內容都運行於插件之上，更新的插件版本能讓運行變得更加安全及高效。 </string>
+    <string name="site_name_description">這就是此站點的名稱，這個名稱將最終儲存入數據庫中。 </string>
+    <string name="discuz_charset_title">字符集%1$s</string>
+    <string name="discuz_charset_description_utf8">UTF-8是一個通用的字符集，可以支持大多數的字符顯示。 </string>
+    <string name="discuz_charset_description_gbk">GBK是簡體中文常見的字符集。使用其他語言的字符可能會導致亂碼。 </string>
+    <string name="discuz_charset_description_big5">BIG-5是繁體中文常見的字符集。使用其他語言的字符可能會導致亂碼。 </string>
+    <string name="discuz_charset_unknown">未知字符集</string>
+    <string name="discuz_mobile_allow_register">移動接口現在開放註冊，然而大部分論壇都未對註冊模塊進行了很好的調試。 </string>
+    <string name="discuz_allow_qq">此站點允許使用QQ登錄賬號。 </string>
+    <string name="discuz_post_members">此論壇有%1$s名用戶，一共發了%2$s個帖子。 </string>
+    <string name="discuz_single_copyright">由Discuz Hub驅動</string>
+    <string name="login_parameter_not_ready">登錄未就緒，請稍後再試。 </string>
+    <string name="login_user">正在登陸%1$s這個賬號 。 。 。 </string>
 
 </resources>
