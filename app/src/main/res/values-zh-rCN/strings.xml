@@ -711,5 +711,7 @@
     <string name="login_user">正在登陆%1$s这个账号 。。。</string>
     <string name="bbs_anonymous_mode_title">匿名用户</string>
     <string name="bbs_anonymous_mode_description">你正在以匿名模式浏览%1$s。部分的功能在您登陆前都会被禁用。</string>
+    <string name="preference_title_theme">选择应用主题</string>
+    <string name="choose_theme_title">选择应用主题</string>
 
 </resources>

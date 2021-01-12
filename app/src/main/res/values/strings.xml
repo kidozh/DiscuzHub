@@ -936,6 +936,11 @@
     <string name="login_user">Signing in the user %1$s ...</string>
     <string name="bbs_anonymous_mode_title">Anonymous user</string>
     <string name="bbs_anonymous_mode_description">You are browsing the %1$s without registing an account. Some functionality will be disabled until you sign in.</string>
+    <string name="preference_key_theme" translatable="false">preference_key_theme</string>
+    <string name="preference_title_theme">Select App\'s theme</string>
+    <string name="choose_theme_title">Choose App\'s theme</string>
+
+    <string name="preference_key_theme_index" translatable="false">preference_key_theme_index</string>
 
 
 </resources>

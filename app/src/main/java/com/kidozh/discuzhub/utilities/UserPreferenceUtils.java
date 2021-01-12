@@ -119,4 +119,18 @@ public class UserPreferenceUtils {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getStringSet(preferenceName,new HashSet<>());
     }
+
+    public static Integer getThemeIndex(@NonNull Context context){
+        String preferenceName = context.getString(R.string.preference_key_theme_index);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getInt(preferenceName,0);
+    }
+
+    public static void setThemeIndex(@NonNull Context context, int index){
+        String preferenceName = context.getString(R.string.preference_key_theme_index);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(preferenceName,index);
+        editor.apply();
+    }
 }

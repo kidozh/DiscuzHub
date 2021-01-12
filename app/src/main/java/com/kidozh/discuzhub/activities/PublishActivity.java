@@ -228,7 +228,6 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         postThreadViewModel.getThreadPostParameterResultMutableLiveData().observe(this, new Observer<PostParameterResult>() {
             @Override
             public void onChanged(PostParameterResult postParameterResult) {
-                setBaseResult((BaseResult) postParameterResult,postParameterResult!=null?postParameterResult.permissionVariables:null);
                 if(postParameterResult !=null){
                     bbsPersonInfo = postParameterResult.permissionVariables.getUserBriefInfo();
                     formHash = postParameterResult.permissionVariables.formHash;
@@ -290,7 +289,6 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         postThreadViewModel.getSecureInfoResultMutableLiveData().observe(this, new Observer<SecureInfoResult>() {
             @Override
             public void onChanged(SecureInfoResult secureInfoResult) {
-                setBaseResult(secureInfoResult,secureInfoResult!=null?secureInfoResult.secureVariables:null);
                 if(secureInfoResult !=null){
                     if(secureInfoResult.secureVariables == null){
                         // don't need a code

@@ -174,7 +174,6 @@ public class UserProfileActivity extends BaseStatusActivity implements
             public void onChanged(UserProfileResult userProfileResult) {
                 Log.d(TAG,"User profile result "+userProfileResult);
 
-                setBaseResult(userProfileResult,userProfileResult!=null?userProfileResult.userProfileVariableResult:null);
                 if(userProfileResult !=null
                         && userProfileResult.userProfileVariableResult !=null
                         && userProfileResult.userProfileVariableResult.space !=null){

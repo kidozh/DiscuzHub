@@ -2,6 +2,7 @@ package com.kidozh.discuzhub.activities;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -53,6 +54,8 @@ public class SettingsActivity extends BaseStatusActivity {
 
         void bindPreferenceListener(){
             // night mode preference
+            Intent intent = new Intent(getContext(),ChooseThemeActivity.class);
+            findPreference(getString(R.string.preference_key_theme)).setIntent(intent);
             findPreference(getString(R.string.preference_key_display_mode)).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {

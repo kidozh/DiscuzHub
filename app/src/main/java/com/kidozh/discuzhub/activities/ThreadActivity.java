@@ -556,7 +556,6 @@ public class ThreadActivity extends BaseStatusActivity implements SmileyFragment
         threadDetailViewModel.threadPostResultMutableLiveData.observe(this, new Observer<ThreadResult>() {
             @Override
             public void onChanged(ThreadResult threadResult) {
-                setBaseResult(threadResult,threadResult!=null?threadResult.threadPostVariables:null);
                 if(threadResult !=null ){
                     if(threadResult.threadPostVariables !=null
                             && threadResult.threadPostVariables.detailedThreadInfo !=null

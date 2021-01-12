@@ -187,8 +187,10 @@ public class HomeFragment extends Fragment {
         });
         homeViewModel.bbsIndexResultMutableLiveData.observe(getViewLifecycleOwner(),bbsIndexResult -> {
             if(getContext() instanceof BaseStatusInteract){
-                ((BaseStatusInteract) getContext()).setBaseResult(bbsIndexResult,
-                        bbsIndexResult!=null?bbsIndexResult.forumVariables:null);
+                if(bbsIndexResult != null && bbsIndexResult.forumVariables!=null){
+                    ((BaseStatusInteract) getContext()).setBaseResult(bbsIndexResult, bbsIndexResult.forumVariables);
+                }
+
             }
         });
     }

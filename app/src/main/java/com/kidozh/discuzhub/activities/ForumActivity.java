@@ -215,7 +215,6 @@ public class ForumActivity extends BaseStatusActivity implements
         forumViewModel.displayForumResultMutableLiveData.observe(this, new Observer<ForumResult>() {
             @Override
             public void onChanged(ForumResult forumResult) {
-                setBaseResult(forumResult,forumResult!=null?forumResult.forumVariables:null);
                 // deal with sublist
                 Log.d(TAG,"GET result "+forumResult);
                 if(forumResult !=null && forumResult.forumVariables!=null){

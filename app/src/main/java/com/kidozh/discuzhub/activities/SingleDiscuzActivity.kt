@@ -147,7 +147,10 @@ class SingleDiscuzActivity : BaseStatusActivity() {
     }
 
     fun bindViewModel(){
-        viewModel.setBBSInfo(bbsInfo)
+        if(bbsInfo !=null){
+            viewModel.setBBSInfo(bbsInfo!!)
+        }
+
         viewModel.currentBBSMutableLiveData.observe(this, Observer { bbsInfo ->
             if (bbsInfo != null) {
                 binding.toolbarTitle.setText(bbsInfo.site_name)
@@ -160,8 +163,11 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                         getDrawable(R.drawable.ic_anonymous_user_icon_24px)
                 )
                 navHeaderBinding.headerTitle.setText(R.string.bbs_anonymous_mode_title)
-                navHeaderBinding.headerSubtitle.setText(
-                        getString(R.string.bbs_anonymous_mode_description, bbsInfo.site_name))
+                if(bbsInfo!=null){
+                    navHeaderBinding.headerSubtitle.setText(
+                            getString(R.string.bbs_anonymous_mode_description, bbsInfo!!.site_name))
+                }
+
             } else {
                 var avatar_num: Int = user.getUid() % 16
                 if (avatar_num < 0) {

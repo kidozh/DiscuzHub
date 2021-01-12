@@ -20,11 +20,12 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme.Default"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
-        <activity android:name=".activities.PortalActivity"
-            android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".activities.PortalActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,18 +33,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.SingleDiscuzActivity"
-            android:theme="@style/AppTheme"/>
+            android:name=".activities.SingleDiscuzActivity" />
         <activity android:name=".activities.SearchPostsActivity" />
         <activity
             android:name=".activities.ViewHistoryActivity"
             android:label="@string/view_history" />
+        <activity android:name=".activities.DrawerActivity" />
         <activity
-            android:name=".activities.DrawerActivity"/>
-
-        <activity
-            android:name=".activities.AddIntroActivity"
-            android:theme="@style/AppTheme" />
+            android:name=".activities.AddIntroActivity" />
         <activity android:name=".activities.AboutAppActivity" />
         <activity android:name=".activities.InternalWebViewActivity" />
         <activity android:name=".activities.ThreadDraftActivity" />
@@ -80,24 +77,23 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_global_settings" />
-        <activity
-            android:name=".activities.ForumActivity" />
-        <activity
-            android:name=".activities.ThreadActivity" />
-        <activity
-            android:name=".activities.SplashScreenActivity" />
+        <activity android:name=".activities.ForumActivity" />
+        <activity android:name=".activities.ThreadActivity" />
+        <activity android:name=".activities.SplashScreenActivity" />
         <activity android:name=".activities.PublishActivity" />
         <activity android:name=".activities.ManageUserActivity" />
         <activity android:name=".activities.ManageBBSActivity" />
+        <activity android:name=".activities.ChooseThemeActivity"
+            android:label="@string/preference_title_theme">
+
+        </activity>
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
         <meta-data
             android:name="discuz_base_url"
             android:value="${discuz_base_url}" />
-
         <meta-data
             android:name="discuz_title"
             android:value="${discuz_title}" />
