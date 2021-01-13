@@ -144,6 +144,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         configureSwipeRefreshLayout()
         configureCommentBtn()
         configureSmileyLayout()
+        configureChipGroup()
 
     }
 
@@ -204,6 +205,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             text = string
             chipIcon = ContextCompat.getDrawable(context,res)
             id = res
+            iconStartPadding = 8.0F
         }
     }
 
@@ -298,6 +300,11 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                             getString(R.string.thread_buy_price, detailedThreadInfo.price),
                             getColor(R.color.colorPumpkin),
                     )
+                    chip.isClickable = true
+                    chip.setOnClickListener{ v->
+                        Toasty.info(this, getString(R.string.buy_thread_loading), Toast.LENGTH_SHORT).show()
+                        threadDetailViewModel.getThreadPriceInfo(tid)
+                    }
 
 
                     binding.threadProperty.addView(chip)
