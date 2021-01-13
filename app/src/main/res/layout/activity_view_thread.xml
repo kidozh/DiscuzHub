@@ -48,14 +48,12 @@
                             android:orientation="vertical">
 
 
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/bbs_thread_property_recyclerview"
+                            <com.google.android.material.chip.ChipGroup
+                                android:id="@+id/thread_property"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:nestedScrollingEnabled="false"
-                                tools:itemCount="1">
+                                android:layout_height="wrap_content">
 
-                            </androidx.recyclerview.widget.RecyclerView>
+                            </com.google.android.material.chip.ChipGroup>
 
                             <TextView
                                 android:id="@+id/bbs_thread_subject"

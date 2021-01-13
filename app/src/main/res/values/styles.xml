@@ -15,7 +15,20 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
+        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>
 
+        <!-- navigation bar -->
+        <item name="android:navigationBarColor">@color/colorBackgroundDefault</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
+        <item name="android:actionMenuTextColor">@color/colorTextDefault</item>
+
+
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+        <item name="actionMenuTextColor">@color/colorTextDefault</item>
 
         <item name="cardViewStyle">@style/CardView.DayNight</item>
 
@@ -133,23 +146,13 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <!-- status bar configuration -->
-<!--        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>-->
+
+
 
         <item name="android:actionBarStyle">@style/LightActionBar</item>
         <item name="android:toolbarStyle">@style/LightActionBar</item>
         <item name="actionBarStyle">@style/LightActionBar</item>
-        <!-- navigation bar -->
-        <item name="android:navigationBarColor">@color/colorBackgroundDefault</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
-        <item name="android:actionMenuTextColor">@color/colorTextDefault</item>
 
-
-        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
-
-        <!-- 支持库兼容 -->
-        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
-        <item name="actionMenuTextColor">@color/colorTextDefault</item>
 
     </style>
 

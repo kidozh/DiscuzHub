@@ -58,6 +58,7 @@
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="@string/preference_title_display">
         <Preference
+            android:icon="@drawable/ic_baseline_format_paint_24"
             android:key="@string/preference_key_theme"
             android:title="@string/preference_title_theme">
 
@@ -73,7 +74,7 @@
             android:defaultValue="@string/preference_default_display_mode"
             android:entries="@array/string_dark_mode_night_shift"
             android:entryValues="@array/dark_mode_night_shift"
-            android:icon="@drawable/ic_style_24px"
+            android:icon="@drawable/ic_baseline_style_24"
             android:key="@string/preference_key_display_mode"
             android:summary="%s"
             android:title="@string/preference_title_display_mode" />

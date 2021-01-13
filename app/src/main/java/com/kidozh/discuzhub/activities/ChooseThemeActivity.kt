@@ -55,13 +55,13 @@ class ChooseThemeActivity : AppCompatActivity(), AppThemeAdapter.OnThemeCardClic
 
     fun configureRecyclerview(){
         themeList = ThemeUtils(this).themeList
-
+        val position = UserPreferenceUtils.getThemeIndex(this)
         binding.themeRecyclerview.layoutManager = GridLayoutManager(this, 4)
         Log.d(TAG, "Configure recyclerview "+themeList.size)
 
         val adapter = AppThemeAdapter()
         binding.themeRecyclerview.adapter = adapter
-        adapter.addAppTheme(themeList)
+        adapter.addAppTheme(themeList,position)
 
     }
 

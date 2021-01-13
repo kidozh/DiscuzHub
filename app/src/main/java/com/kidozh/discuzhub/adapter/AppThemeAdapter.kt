@@ -14,6 +14,7 @@ import com.kidozh.discuzhub.entities.AppTheme
 class AppThemeAdapter: RecyclerView.Adapter<AppThemeAdapter.AppThemeViewHolder>() {
     val TAG = AppThemeAdapter::class.simpleName
     var appThemeList = ArrayList<AppTheme>()
+    var selectedPosition = 0
     lateinit var context: Context
     var listener: OnThemeCardClicked? = null
     class AppThemeViewHolder : RecyclerView.ViewHolder {
@@ -24,9 +25,16 @@ class AppThemeAdapter: RecyclerView.Adapter<AppThemeAdapter.AppThemeViewHolder>(
 
     }
 
-    fun addAppTheme(appThemeList: ArrayList<AppTheme>){
+    fun addAppTheme(appThemeList: ArrayList<AppTheme>,selectedPosition: Int){
         this.appThemeList = appThemeList
+        this.selectedPosition = selectedPosition
         notifyItemRangeInserted(0,appThemeList.size)
+    }
+
+    fun changeSelectedAppTheme(newSelectedPosition: Int){
+        notifyItemChanged(selectedPosition)
+        this.selectedPosition = newSelectedPosition
+        notifyItemChanged(newSelectedPosition)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AppThemeViewHolder {
@@ -53,6 +61,13 @@ class AppThemeAdapter: RecyclerView.Adapter<AppThemeAdapter.AppThemeViewHolder>(
             holder.binding.themeGradientCard.setOnClickListener { v->
                 listener!!.onThemeCardSelected(position)
             }
+        }
+
+        if(position == selectedPosition){
+            holder.binding.checkLabel.visibility = View.VISIBLE
+        }
+        else{
+            holder.binding.checkLabel.visibility = View.GONE
         }
     }
 

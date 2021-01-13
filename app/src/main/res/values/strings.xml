@@ -945,6 +945,17 @@
     <string name="search_description">Search threads or other stuff here.</string>
     <string name="settings_description">Customize app with your preferences.</string>
     <string name="about_description">About us.</string>
+    <string name="theme_belizahole">Default</string>
+    <string name="theme_pink">Pink</string>
+    <string name="theme_purple">Purple</string>
+    <string name="theme_blue">Blue</string>
+    <string name="theme_cyan">Cyan</string>
+    <string name="theme_green">Green</string>
+    <string name="theme_lime">Lime</string>
+    <string name="theme_yellow">Yellow</string>
+    <string name="theme_orange">Orange</string>
+    <string name="theme_gray">Gray</string>
+    <string name="theme_deep_gray">Deep gray</string>
 
 
 </resources>
