@@ -5,21 +5,21 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/add_a_account"
-            android:icon="@drawable/ic_person_add_24px"
+            android:icon="@drawable/ic_baseline_person_add_24"
             android:title="@string/add_a_account" />
         <item
             android:id="@+id/register_an_account"
-            android:icon="@drawable/ic_register_account_24px"
+            android:icon="@drawable/ic_baseline_how_to_reg_24"
             android:title="@string/register_an_account" />
     </group>
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/manage_users"
-            android:icon="@drawable/ic_manage_user_24px"
+            android:icon="@drawable/ic_baseline_people_24"
             android:title="@string/bbs_manage_users" />
         <item
             android:id="@+id/view_history"
-            android:icon="@drawable/ic_history_24px"
+            android:icon="@drawable/ic_baseline_history_24"
             android:title="@string/view_history" />
     </group>
 </menu>

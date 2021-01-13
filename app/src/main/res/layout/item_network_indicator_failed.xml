@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="8dp"
-            android:backgroundTint="@color/MaterialColorDeepOrange"
+            android:backgroundTint="@color/colorAccent"
             android:text="@string/retry_content"
             app:icon="@drawable/ic_refresh_round_white_24px" />
     </LinearLayout>

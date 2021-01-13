@@ -941,6 +941,10 @@
     <string name="choose_theme_title">Choose App\'s theme</string>
 
     <string name="preference_key_theme_index" translatable="false">preference_key_theme_index</string>
+    <string name="draft_box_description">There holds your unpublished work.</string>
+    <string name="search_description">Search threads or other stuff here.</string>
+    <string name="settings_description">Customize app with your preferences.</string>
+    <string name="about_description">About us.</string>
 
 
 </resources>

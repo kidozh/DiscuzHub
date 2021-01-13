@@ -228,7 +228,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:background="@color/colorPrimary"
+            android:background="?attr/colorPrimary"
             android:padding="4dp"
             android:text="@string/agreement"
             android:textColor="@color/colorPureWhite"

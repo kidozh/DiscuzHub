@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".activities.ui.UserGroup.UserGroupInfoFragment">
@@ -50,6 +50,7 @@
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/colorPomegranate"
                 app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
                 app:cardPreventCornerOverlap="true"
                 app:cardUseCompatPadding="true">
 
@@ -191,8 +192,7 @@
                         android:src="@drawable/ic_signature_size_24px"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/user_admin_group_allow_attach_icon"
-                        app:layout_constraintTop_toBottomOf="@+id/user_admin_group_allow_attach_icon"
-                        />
+                        app:layout_constraintTop_toBottomOf="@+id/user_admin_group_allow_attach_icon" />
 
                     <TextView
                         android:id="@+id/user_admin_group_max_signature_size_textview"
@@ -233,6 +233,7 @@
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/colorPrimaryDark"
                 app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
                 app:cardPreventCornerOverlap="true"
                 app:cardUseCompatPadding="true">
 
@@ -374,8 +375,7 @@
                         android:src="@drawable/ic_signature_size_24px"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/user_group_allow_attach_icon"
-                        app:layout_constraintTop_toBottomOf="@+id/user_group_allow_attach_icon"
-                        />
+                        app:layout_constraintTop_toBottomOf="@+id/user_group_allow_attach_icon" />
 
                     <TextView
                         android:id="@+id/user_group_max_signature_size_textview"

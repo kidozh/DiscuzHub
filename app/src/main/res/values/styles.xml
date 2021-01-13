@@ -69,6 +69,7 @@
         <item name="background">@color/colorPrimary</item>
         <item name="android:backgroundStacked">@color/colorPrimary</item>
         <item name="android:titleTextStyle">@style/DarkActionBarTitle</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
 
 
         <item name="titleTextStyle">@style/DarkActionBarTitle</item>
@@ -132,7 +133,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <!-- status bar configuration -->
-        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>
+<!--        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>-->
 
         <item name="android:actionBarStyle">@style/LightActionBar</item>
         <item name="android:toolbarStyle">@style/LightActionBar</item>

@@ -713,5 +713,9 @@
     <string name="bbs_anonymous_mode_description">你正在以匿名模式浏览%1$s。部分的功能在您登陆前都会被禁用。</string>
     <string name="preference_title_theme">选择应用主题</string>
     <string name="choose_theme_title">选择应用主题</string>
+    <string name="draft_box_description">这个论坛下所有未发表的稿子。</string>
+    <string name="search_description">搜索帖子、用户及其他有趣的东西。</string>
+    <string name="settings_description">自定义应用。</string>
+    <string name="about_description">关于我们</string>
 
 </resources>

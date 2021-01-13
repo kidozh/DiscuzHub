@@ -52,7 +52,7 @@
                 android:id="@+id/user_friend_idx"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryDark"
+                android:background="?attr/colorPrimary"
                 android:padding="2dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="@color/colorCloud"

@@ -101,7 +101,7 @@ class DiscuzDetailDialogFragment(bbs: bbsInformation) : BottomSheetDialogFragmen
         ))
         if(!bbs.hideRegister){
             infoList.add(DiscuzInformationAdapter.DiscuzInfoItem(
-                    ContextCompat.getDrawable(context,R.drawable.ic_register_account_24px),
+                    ContextCompat.getDrawable(context,R.drawable.ic_baseline_how_to_reg_24),
                     getString(R.string.bbs_allow_register),
                     getString(R.string.discuz_mobile_allow_register)
             ))

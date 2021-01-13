@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:text="@string/bbs_follow_user"
-                app:icon="@drawable/vector_drawable_plus"
+                app:icon="@drawable/ic_baseline_add_24"
                 app:layout_constraintBottom_toBottomOf="@+id/show_personal_info_message_btn"
                 app:layout_constraintEnd_toStartOf="@+id/show_personal_info_message_btn"
                 app:layout_constraintTop_toTopOf="@+id/show_personal_info_message_btn" />

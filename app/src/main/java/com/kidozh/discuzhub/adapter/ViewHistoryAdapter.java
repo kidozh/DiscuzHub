@@ -91,8 +91,8 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
             else {
                 Glide.with(context)
                         .load(history.avatarURL)
-                        .placeholder(R.drawable.ic_history_24px)
-                        .error(R.drawable.ic_history_24px)
+                        .placeholder(R.drawable.ic_baseline_history_24)
+                        .error(R.drawable.ic_baseline_history_24)
                         .into(holder.icon);
             }
             // click things

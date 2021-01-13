@@ -104,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="@string/favoite_status_sync"
-                android:textColor="@color/colorPrimary"
+                android:textColor="?attr/colorPrimary"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/favorite_thread_reply"
                 app:layout_constraintStart_toEndOf="@+id/favorite_thread_reply"

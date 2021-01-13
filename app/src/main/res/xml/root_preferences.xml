@@ -36,7 +36,7 @@
             android:title="@string/preference_title_use_browser_client" />
         <androidx.preference.SwitchPreference
             android:defaultValue="false"
-            android:icon="@drawable/ic_history_24px"
+            android:icon="@drawable/ic_baseline_history_24"
             android:key="@string/preference_key_record_history"
             android:summaryOff="@string/preference_summary_off_record_history"
             android:summaryOn="@string/preference_summary_on_record_history"

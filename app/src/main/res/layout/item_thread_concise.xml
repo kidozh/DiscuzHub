@@ -95,7 +95,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:textColor="@color/colorPrimary"
+                android:textColor="?attr/colorPrimaryDark"
                 android:textSize="12sp"
                 app:layout_constraintStart_toEndOf="@+id/bbs_thread_reply_number"
                 app:layout_constraintTop_toTopOf="@+id/bbs_post_publish_date"

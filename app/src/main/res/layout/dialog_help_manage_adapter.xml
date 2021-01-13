@@ -23,7 +23,7 @@
         android:text="@string/swipe_to_delete"
         android:textAlignment="viewStart"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/colorPrimary"
+        android:textColor="?attr/colorPrimary"
         app:layout_constraintStart_toEndOf="@+id/swipe_icon"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,7 +66,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/swap_item"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="@color/colorPrimary"
+        android:textColor="?attr/colorPrimary"
         app:layout_constraintStart_toEndOf="@+id/swap_vert_icon"
         app:layout_constraintTop_toBottomOf="@+id/swipe_description" />
 
