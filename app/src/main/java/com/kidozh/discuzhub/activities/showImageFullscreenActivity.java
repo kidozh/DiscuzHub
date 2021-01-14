@@ -97,9 +97,7 @@ public class showImageFullscreenActivity extends BaseStatusActivity {
     }
 
     private void configureActionBar(){
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle(R.string.show_picture);
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
