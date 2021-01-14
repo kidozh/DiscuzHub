@@ -956,6 +956,19 @@
     <string name="theme_orange">Orange</string>
     <string name="theme_gray">Gray</string>
     <string name="theme_deep_gray">Deep gray</string>
+    <string name="theme_android_default">Android Default</string>
+    <string name="theme_android_default_2">Android default 2</string>
+    <string name="theme_green_indigo">Green-Indigo</string>
+    <string name="theme_pure_deep_purple">Pure deep purple</string>
+    <string name="theme_pure_pink">Pure pink</string>
+    <string name="theme_pure_teal">Pure Teal</string>
+    <string name="theme_indigo_deep_orange">Indigo-Deep orange</string>
+    <string name="theme_blue_gray_gray">Blue gray - Gray</string>
+    <string name="theme_light_green_green">Light green - Green</string>
+    <string name="theme_indigo_pink">Indigo - Pink</string>
+    <string name="theme_pure_brown">Pure brown</string>
+    <string name="theme_indigo_teal">Indigo - teal</string>
+    <string name="theme_indigo_blue_gray">Indigo - Blue gray</string>
 
 
 </resources>

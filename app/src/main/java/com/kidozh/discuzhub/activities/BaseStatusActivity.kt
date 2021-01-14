@@ -21,6 +21,7 @@ import android.os.Handler
 import android.preference.PreferenceManager
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import com.kidozh.discuzhub.utilities.ThemeUtils
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils
 
 open class BaseStatusActivity : AppCompatActivity() {
@@ -40,12 +41,7 @@ open class BaseStatusActivity : AppCompatActivity() {
 
     var themeIndex : Int = 0
 
-    val styleList = intArrayOf(
-            R.style.AppTheme_Default, R.style.AppTheme_Red, R.style.AppTheme_Purple,
-            R.style.AppTheme_Indigo, R.style.AppTheme_Cyan, R.style.AppTheme_Green,
-            R.style.AppTheme_Lime, R.style.AppTheme_Yellow, R.style.AppTheme_Orange,
-            R.style.AppTheme_Gray, R.style.AppTheme_Black,
-    )
+    val styleList = ThemeUtils.styleList
 
     fun configureTheme(){
         val position = UserPreferenceUtils.getThemeIndex(this)

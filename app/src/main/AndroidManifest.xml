@@ -47,7 +47,7 @@
         <activity
             android:name=".activities.UserProfileActivity"
             android:label="@string/title_activity_show_personal_info" />
-        <activity android:name=".activities.bbsPrivateMessageDetailActivity" />
+        <activity android:name=".activities.PrivateMessageActivity" />
         <activity
             android:name=".activities.WebViewLoginActivity"
             android:label="@string/qq_login_feedback"

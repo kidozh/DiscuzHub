@@ -25,7 +25,7 @@ import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
-import com.kidozh.discuzhub.activities.bbsPrivateMessageDetailActivity;
+import com.kidozh.discuzhub.activities.PrivateMessageActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -115,7 +115,7 @@ public class bbsPrivateMessageAdapter extends RecyclerView.Adapter<bbsPrivateMes
         holder.privateMessageCardview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, bbsPrivateMessageDetailActivity.class);
+                Intent intent = new Intent(context, PrivateMessageActivity.class);
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,curBBS);
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(ConstUtils.PASS_PRIVATE_MESSAGE_KEY,privateM);

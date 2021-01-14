@@ -296,4 +296,186 @@
         <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
     </style>
 
+    <style name="AppTheme.AndroidDefault">
+        <item name="colorPrimary">#6200EE</item>
+        <item name="colorPrimaryDark">#3700B3</item>
+        <item name="colorAccent">#BB86FC</item>
+
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkActionBar</item>
+        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+    </style>
+
+    <style name="AppTheme.AndroidDefault2">
+        <item name="colorPrimary">#6200EE</item>
+        <item name="colorPrimaryDark">#3700B3</item>
+        <item name="colorAccent">#03DAC5</item>
+
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkActionBar</item>
+        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+    </style>
+
+    <style name="AppTheme.GreenIndigo">
+        <item name="colorPrimary">#4CAF50</item>
+        <item name="colorPrimaryDark">#388E3C</item>
+        <item name="colorAccent">#536DFE</item>
+
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkActionBar</item>
+        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+    </style>
+
+    <style name="AppTheme.PureDeepPurple">
+        <item name="colorPrimary">#673AB7</item>
+        <item name="colorPrimaryDark">#512DA8</item>
+        <item name="colorAccent">#7C4DFF</item>
+
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkActionBar</item>
+        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+    </style>
+
+    <style name="AppTheme.PurePink">
+        <item name="colorPrimary">#E91E63</item>
+        <item name="colorPrimaryDark">#C2185B</item>
+        <item name="colorAccent">#FF4081</item>
+
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkActionBar</item>
+        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+    </style>
+
+    <style name="AppTheme.PureTeal">
+        <item name="colorPrimary">#009688</item>
+        <item name="colorPrimaryDark">#00796B</item>
+        <item name="colorAccent">#009688</item>
+
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkActionBar</item>
+        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+    </style>
+
+    <style name="AppTheme.IndigoDeepOrange">
+        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimaryDark">#303F9F</item>
+        <item name="colorAccent">#FF5722</item>
+
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkActionBar</item>
+        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+    </style>
+
+    <style name="AppTheme.BlueGrayGray">
+        <item name="colorPrimary">#607D8B</item>
+        <item name="colorPrimaryDark">#455A64</item>
+        <item name="colorAccent">#9E9E9E</item>
+
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkActionBar</item>
+        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+    </style>
+
+    <style name="AppTheme.LightGreenGreen">
+        <item name="colorPrimary">#8BC34A</item>
+        <item name="colorPrimaryDark">#689F38</item>
+        <item name="colorAccent">#4CAF50</item>
+
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkActionBar</item>
+        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+    </style>
+
+    <style name="AppTheme.IndigoPink">
+        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimaryDark">#303F9F</item>
+        <item name="colorAccent">#FF4081</item>
+
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkActionBar</item>
+        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+    </style>
+
+    <style name="AppTheme.PureBrown">
+        <item name="colorPrimary">#795548</item>
+        <item name="colorPrimaryDark">#5D4037</item>
+        <item name="colorAccent">#795548</item>
+
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkActionBar</item>
+        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+    </style>
+
+    <style name="AppTheme.IndigoTeal">
+        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimaryDark">#303F9F</item>
+        <item name="colorAccent">#009688</item>
+
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkActionBar</item>
+        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+    </style>
+
+    <style name="AppTheme.IndigoBlueGray">
+        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimaryDark">#303F9F</item>
+        <item name="colorAccent">#607D8B</item>
+
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:toolbarStyle">@style/DarkActionBar</item>
+        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+
+        <!-- 支持库兼容 -->
+        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
+    </style>
+
 </resources>

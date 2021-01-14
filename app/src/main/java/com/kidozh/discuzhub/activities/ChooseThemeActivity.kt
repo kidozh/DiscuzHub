@@ -18,13 +18,8 @@ import es.dmoral.toasty.Toasty
 class ChooseThemeActivity : AppCompatActivity(), AppThemeAdapter.OnThemeCardClicked {
     lateinit var binding: ActivityChooseThemeBinding
     val TAG = ChooseThemeActivity::class.simpleName
-    val styleList = intArrayOf(
-            R.style.AppTheme_Default, R.style.AppTheme_Red, R.style.AppTheme_Purple,
-            R.style.AppTheme_Indigo, R.style.AppTheme_Cyan, R.style.AppTheme_Green,
-            R.style.AppTheme_Lime, R.style.AppTheme_Yellow, R.style.AppTheme_Orange,
-            R.style.AppTheme_Gray, R.style.AppTheme_Black,
-    )
-
+    val styleList = ThemeUtils.styleList
+    val adapter = AppThemeAdapter()
     lateinit var themeList : ArrayList<AppTheme>
 
 
@@ -59,7 +54,7 @@ class ChooseThemeActivity : AppCompatActivity(), AppThemeAdapter.OnThemeCardClic
         binding.themeRecyclerview.layoutManager = GridLayoutManager(this, 4)
         Log.d(TAG, "Configure recyclerview "+themeList.size)
 
-        val adapter = AppThemeAdapter()
+
         binding.themeRecyclerview.adapter = adapter
         adapter.addAppTheme(themeList,position)
 
@@ -83,7 +78,8 @@ class ChooseThemeActivity : AppCompatActivity(), AppThemeAdapter.OnThemeCardClic
             setTheme(styleList[position])
             theme.applyStyle(styleList[position],true)
             UserPreferenceUtils.setThemeIndex(this, position)
-            recreate()
+            adapter.changeSelectedAppTheme(position)
+            // recreate()
         }
 
     }

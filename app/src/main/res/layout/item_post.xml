@@ -63,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:background="?attr/colorPrimary"
+                android:background="?attr/colorPrimaryDark"
                 android:paddingStart="4dp"
                 android:paddingTop="2dp"
                 android:paddingEnd="4dp"
@@ -170,7 +170,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="8dp"
                         android:text="@string/post_is_edited"
-                        android:textColor="?attr/colorPrimary" />
+                        android:textColor="@color/colorPrimary" />
                 </LinearLayout>
             </LinearLayout>
 

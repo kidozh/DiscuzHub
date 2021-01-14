@@ -21,5 +21,23 @@
             android:id="@+id/view_history"
             android:icon="@drawable/ic_baseline_history_24"
             android:title="@string/view_history" />
+        <item
+            android:id="@+id/draft_box"
+            android:icon="@drawable/ic_baseline_drafts_24"
+            android:title="@string/bbs_draft_box" />
+        <item
+            android:id="@+id/search"
+            android:icon="@drawable/ic_baseline_search_24"
+            android:title="@string/search" />
+    </group>
+    <group >
+        <item
+            android:id="@+id/action_settings"
+            android:icon="@drawable/ic_baseline_app_settings_alt_24"
+            android:title="@string/action_settings" />
+        <item
+            android:id="@+id/about_app"
+            android:icon="@drawable/ic_baseline_info_24"
+            android:title="@string/app_about" />
     </group>
 </menu>

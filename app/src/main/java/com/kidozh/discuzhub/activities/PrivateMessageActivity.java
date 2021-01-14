@@ -47,9 +47,9 @@ import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class bbsPrivateMessageDetailActivity extends BaseStatusActivity implements SmileyFragment.OnSmileyPressedInteraction {
+public class PrivateMessageActivity extends BaseStatusActivity implements SmileyFragment.OnSmileyPressedInteraction {
 
-    private static final String TAG = bbsPrivateMessageDetailActivity.class.getSimpleName();
+    private static final String TAG = PrivateMessageActivity.class.getSimpleName();
 
     bbsInformation bbsInfo;
 

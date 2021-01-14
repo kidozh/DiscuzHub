@@ -125,7 +125,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
                         false,"",userId,1,1,
                         username,"",username,""
                 );
-                Intent intent = new Intent(getApplicationContext(), bbsPrivateMessageDetailActivity.class);
+                Intent intent = new Intent(getApplicationContext(), PrivateMessageActivity.class);
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 intent.putExtra(ConstUtils.PASS_PRIVATE_MESSAGE_KEY,privateM);

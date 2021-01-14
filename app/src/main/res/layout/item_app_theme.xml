@@ -50,10 +50,12 @@
             android:id="@+id/check_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:tint="@color/MaterialColorTeal"
             app:layout_constraintBottom_toTopOf="@+id/theme_name"
             app:layout_constraintEnd_toEndOf="@+id/theme_gradient_card"
-            app:srcCompat="@drawable/ic_baseline_check_circle_24" />
+            app:layout_constraintStart_toStartOf="@+id/theme_gradient_card"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_check_circle_24"
+            app:tint="@color/colorPureWhite" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

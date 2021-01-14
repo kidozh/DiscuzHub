@@ -356,15 +356,26 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                     val historyCount = ViewHistoryDatabase.getInstance(application).dao.getViewHistoryCount(id)
                     Log.d(TAG,"GET History count "+historyCount)
 
-                    var badgeStyle = BadgeStyle().apply {
-                        textColor = ColorHolder.fromColorRes(R.color.colorPureWhite)
-                        badgeBackground = getDrawable(R.color.colorPrimary)
-                    }
+
                     runOnUiThread {
-                        binding.materialDrawerSliderView.updateName(
+                        val viewHistory = PrimaryDrawerItem().apply {
+                            name = StringHolder(R.string.view_history)
+                            isSelectable = false
+                            icon = ImageHolder(R.drawable.ic_baseline_history_24)
+                            identifier = FUNC_VIEW_HISTORY
+                            description = StringHolder(R.string.preference_summary_on_record_history)
+                            badgeStyle = badgeStyle
+                            badge = StringHolder(historyCount.toString())
+                        }
+
+                        binding.materialDrawerSliderView.updateBadge(
                                 FUNC_VIEW_HISTORY,
                                 StringHolder(historyCount.toString())
                         )
+                        binding.materialDrawerSliderView.adapter.notifyAdapterDataSetChanged()
+                        binding.materialDrawerSliderView.adapterWrapper?.notifyDataSetChanged()
+                        binding.materialDrawerSliderView.itemAdapter.fastAdapter?.notifyDataSetChanged()
+                        binding.materialDrawerSliderView.updateItem(viewHistory)
                     }
 
 

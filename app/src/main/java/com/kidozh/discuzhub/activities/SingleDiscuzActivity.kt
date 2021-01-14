@@ -138,6 +138,35 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                     startActivity(intent)
                     true
                 }
+
+                R.id.draft_box -> {
+                    val userBriefInfo = viewModel.currentUserMutableLiveData.value
+                    val intent = Intent(this, ThreadDraftActivity::class.java)
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbs)
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                    startActivity(intent)
+                    true
+                }
+                R.id.about_app -> {
+                    val intent = Intent(this, AboutAppActivity::class.java)
+                    startActivity(intent)
+                     true
+                }
+                R.id.action_settings -> {
+                    val intent = Intent(this, SettingsActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+                R.id.search -> {
+
+                    val userBriefInfo = viewModel.currentUserMutableLiveData.value
+                    val intent = Intent(this, SearchPostsActivity::class.java)
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbs)
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                    startActivity(intent)
+                    true
+                }
+
                 else -> {
                     false
                 }

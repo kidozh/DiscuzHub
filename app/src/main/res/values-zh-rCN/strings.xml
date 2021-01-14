@@ -728,5 +728,18 @@
     <string name="theme_orange">橙-蓝</string>
     <string name="theme_gray">灰-蓝</string>
     <string name="theme_deep_gray">灰/银-翠绿</string>
+    <string name="theme_android_default">Android原生</string>
+    <string name="theme_android_default_2">Android原生 2</string>
+    <string name="theme_green_indigo">绿-靛青</string>
+    <string name="theme_pure_deep_purple">纯深紫</string>
+    <string name="theme_pure_pink">纯粉色</string>
+    <string name="theme_pure_teal">纯青色</string>
+    <string name="theme_indigo_deep_orange">靛青-橙红</string>
+    <string name="theme_blue_gray_gray">蓝灰-灰</string>
+    <string name="theme_light_green_green">淡绿-绿</string>
+    <string name="theme_indigo_pink">靛青 - 粉色</string>
+    <string name="theme_pure_brown">纯棕色</string>
+    <string name="theme_indigo_teal">靛青 - 青</string>
+    <string name="theme_indigo_blue_gray">靛青 - 灰蓝</string>
 
 </resources>
