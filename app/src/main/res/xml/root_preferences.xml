@@ -126,7 +126,7 @@
 
         <androidx.preference.SwitchPreference
             android:defaultValue="true"
-            android:icon="@drawable/ic_eco_24px"
+            android:icon="@drawable/ic_baseline_eco_24"
             android:key="@string/preference_key_data_save_mode"
             android:summaryOff="@string/preference_summary_off_data_save"
             android:summaryOn="@string/preference_summary_on_data_save"

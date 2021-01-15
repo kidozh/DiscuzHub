@@ -148,22 +148,22 @@ public class DashBoardFragment extends Fragment {
             switch (position){
                 case 0:{
                     tab.setText(R.string.hot_thread);
-                    tab.setIcon(R.drawable.ic_thread_24px);
+                    tab.setIcon(R.drawable.ic_baseline_thread_24);
                     break;
                 }
                 case 1:{
                     tab.setText(R.string.hot_forum);
-                    tab.setIcon(R.drawable.ic_dashboard_forum_24px);
+                    tab.setIcon(R.drawable.ic_baseline_forum_24);
                     break;
                 }
                 case 2:{
                     tab.setText(R.string.marked_thread);
-                    tab.setIcon(R.drawable.ic_mark_thread_24px);
+                    tab.setIcon(R.drawable.ic_baseline_marked_thread_24);
                     break;
                 }
                 case 3:{
                     tab.setText(R.string.marked_forum);
-                    tab.setIcon(R.drawable.ic_mark_forum_24px);
+                    tab.setIcon(R.drawable.ic_baseline_bookmarks_24);
                     break;
                 }
 
