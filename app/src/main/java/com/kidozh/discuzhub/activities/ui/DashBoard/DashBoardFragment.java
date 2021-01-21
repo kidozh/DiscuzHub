@@ -102,46 +102,6 @@ public class DashBoardFragment extends Fragment {
         viewModel.setFavoriteThreadInfo(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0);
         binding.viewpager2.setAdapter(new DashBoardViewPagerAdapter(getChildFragmentManager(),getLifecycle()));
 
-        viewModel.FavoriteThreadNumber.observe(getViewLifecycleOwner(), integer -> {
-            Log.d(TAG,"get favorite thread number "+integer);
-            if(integer > 0){
-                Objects.requireNonNull(binding.tablayout.getTabAt(2)).getOrCreateBadge().setNumber(integer);
-            }
-            else {
-                Objects.requireNonNull(binding.tablayout.getTabAt(2)).removeBadge();
-            }
-
-        });
-
-        viewModel.favoriteForumNumber.observe(getViewLifecycleOwner(), integer -> {
-            Log.d(TAG,"get favorite thread number "+integer);
-            if(integer > 0){
-                Objects.requireNonNull(binding.tablayout.getTabAt(3)).getOrCreateBadge().setNumber(integer);
-            }
-            else {
-                Objects.requireNonNull(binding.tablayout.getTabAt(3)).removeBadge();
-            }
-
-        });
-
-        viewModel.hotThreadCountMutableLiveData.observe(getViewLifecycleOwner(), integer -> {
-            if(integer > 0){
-                Objects.requireNonNull(binding.tablayout.getTabAt(0)).getOrCreateBadge().setNumber(integer);
-            }
-            else {
-                Objects.requireNonNull(binding.tablayout.getTabAt(0)).removeBadge();
-            }
-        });
-
-        viewModel.hotForumCountMutableLiveData.observe(getViewLifecycleOwner(),integer -> {
-            if(integer > 0){
-                Objects.requireNonNull(binding.tablayout.getTabAt(1)).getOrCreateBadge().setNumber(integer);
-            }
-            else {
-                Objects.requireNonNull(binding.tablayout.getTabAt(1)).removeBadge();
-            }
-        });
-
 
         new TabLayoutMediator(binding.tablayout,binding.viewpager2,
                 (tab, position) -> {
