@@ -11,7 +11,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.results.BBSIndexResult;
+import com.kidozh.discuzhub.results.DiscuzIndexResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
@@ -30,11 +30,11 @@ public class HomeViewModel extends AndroidViewModel {
     private final static String TAG = HomeViewModel.class.getSimpleName();
 
     private MutableLiveData<String> mText;
-    private MutableLiveData<List<BBSIndexResult.ForumCategory>> forumCategories;
+    private MutableLiveData<List<DiscuzIndexResult.ForumCategory>> forumCategories;
     public MutableLiveData<ErrorMessage> errorMessageMutableLiveData = new MutableLiveData<>(null);
     public MutableLiveData<forumUserBriefInfo> userBriefInfoMutableLiveData;
     public MutableLiveData<Boolean> isLoading;
-    public MutableLiveData<BBSIndexResult> bbsIndexResultMutableLiveData;
+    public MutableLiveData<DiscuzIndexResult> bbsIndexResultMutableLiveData;
 
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
@@ -57,9 +57,9 @@ public class HomeViewModel extends AndroidViewModel {
 
     }
 
-    public LiveData<List<BBSIndexResult.ForumCategory>> getForumCategoryInfo(){
+    public LiveData<List<DiscuzIndexResult.ForumCategory>> getForumCategoryInfo(){
         if(forumCategories == null){
-            forumCategories = new MutableLiveData<List<BBSIndexResult.ForumCategory>>();
+            forumCategories = new MutableLiveData<List<DiscuzIndexResult.ForumCategory>>();
             loadForumCategoryInfo();
         }
         return forumCategories;
@@ -76,21 +76,21 @@ public class HomeViewModel extends AndroidViewModel {
         OkHttpClient client = NetworkUtils.getPreferredClientWithCookieJarByUser(this.getApplication(),userBriefInfo);
         Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
         DiscuzApiService service = retrofit.create(DiscuzApiService.class);
-        Call<BBSIndexResult> bbsIndexResultCall = service.indexResult();
+        Call<DiscuzIndexResult> bbsIndexResultCall = service.indexResult();
         isLoading.postValue(true);
 
-        bbsIndexResultCall.enqueue(new Callback<BBSIndexResult>() {
+        bbsIndexResultCall.enqueue(new Callback<DiscuzIndexResult>() {
             @Override
-            public void onResponse(Call<BBSIndexResult> call, Response<BBSIndexResult> response) {
+            public void onResponse(Call<DiscuzIndexResult> call, Response<DiscuzIndexResult> response) {
                 if(response.isSuccessful() && response.body()!=null){
-                    BBSIndexResult indexResult = response.body();
+                    DiscuzIndexResult indexResult = response.body();
                     bbsIndexResultMutableLiveData.postValue(indexResult);
                     if(indexResult.forumVariables !=null){
                         forumUserBriefInfo serverReturnedUser = indexResult.forumVariables.getUserBriefInfo();
                         userBriefInfoMutableLiveData.postValue(serverReturnedUser);
                         errorMessageMutableLiveData.postValue(null);
                         // prepare to render index page
-                        List<BBSIndexResult.ForumCategory> categoryList = indexResult.forumVariables.forumCategoryList;
+                        List<DiscuzIndexResult.ForumCategory> categoryList = indexResult.forumVariables.forumCategoryList;
                         forumCategories.postValue(categoryList);
 
 
@@ -123,7 +123,7 @@ public class HomeViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onFailure(Call<BBSIndexResult> call, Throwable t) {
+            public void onFailure(Call<DiscuzIndexResult> call, Throwable t) {
                 errorMessageMutableLiveData.postValue(new ErrorMessage(
                         getApplication().getString(R.string.discuz_network_failure_template),
                         t.getLocalizedMessage() == null?t.toString():t.getLocalizedMessage()

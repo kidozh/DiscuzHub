@@ -16,7 +16,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.results.BBSIndexResult;
+import com.kidozh.discuzhub.results.DiscuzIndexResult;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 
@@ -28,7 +28,7 @@ import java.util.List;
 public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdapter.bbsShowPortalViewHolder> {
     private final static String TAG = ForumCategoryAdapter.class.getSimpleName();
     Context mContext;
-    List<BBSIndexResult.ForumCategory> forumCategoryList = new ArrayList<>();
+    List<DiscuzIndexResult.ForumCategory> forumCategoryList = new ArrayList<>();
     bbsInformation bbsInfo;
     forumUserBriefInfo curUser;
     List<ForumInfo> allForumInfo;
@@ -43,7 +43,7 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
         this.curUser = userBriefInfo;
     }
 
-    public void setForumCategoryList(@NonNull List<BBSIndexResult.ForumCategory> forumCategoryList, List<ForumInfo> allForumInfo) {
+    public void setForumCategoryList(@NonNull List<DiscuzIndexResult.ForumCategory> forumCategoryList, List<ForumInfo> allForumInfo) {
         int oldSize = this.forumCategoryList.size();
         this.forumCategoryList.clear();
         notifyItemRangeRemoved(0,oldSize);
@@ -71,7 +71,7 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
 
     @Override
     public void onBindViewHolder(@NonNull bbsShowPortalViewHolder holder, int position) {
-        BBSIndexResult.ForumCategory category = forumCategoryList.get(position);
+        DiscuzIndexResult.ForumCategory category = forumCategoryList.get(position);
         holder.mPortalCatagoryName.setText(category.name);
         if(UserPreferenceUtils.conciseRecyclerView(mContext)){
             holder.mRecyclerView.setLayoutManager(new GridLayoutManager(mContext,4));

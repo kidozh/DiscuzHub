@@ -26,7 +26,7 @@ import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
-import com.kidozh.discuzhub.results.BBSIndexResult;
+import com.kidozh.discuzhub.results.DiscuzIndexResult;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -119,9 +119,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void bindLiveDataFromViewModel(){
-        homeViewModel.getForumCategoryInfo().observe(getViewLifecycleOwner(), new Observer<List<BBSIndexResult.ForumCategory>>() {
+        homeViewModel.getForumCategoryInfo().observe(getViewLifecycleOwner(), new Observer<List<DiscuzIndexResult.ForumCategory>>() {
             @Override
-            public void onChanged(List<BBSIndexResult.ForumCategory> forumCategories) {
+            public void onChanged(List<DiscuzIndexResult.ForumCategory> forumCategories) {
                 if(homeViewModel.bbsIndexResultMutableLiveData.getValue() !=null &&
                         homeViewModel.bbsIndexResultMutableLiveData.getValue().forumVariables !=null){
                     List<ForumInfo> allForumInfo = homeViewModel.bbsIndexResultMutableLiveData.getValue().forumVariables.forumInfoList;

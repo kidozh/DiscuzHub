@@ -969,6 +969,7 @@
     <string name="theme_pure_brown">Pure brown</string>
     <string name="theme_indigo_teal">Indigo - teal</string>
     <string name="theme_indigo_blue_gray">Indigo - Blue gray</string>
+    <string name="dashboard_new_threads">New Threads</string>
 
 
 </resources>

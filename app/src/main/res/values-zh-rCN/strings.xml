@@ -741,5 +741,6 @@
     <string name="theme_pure_brown">纯棕色</string>
     <string name="theme_indigo_teal">靛青 - 青</string>
     <string name="theme_indigo_blue_gray">靛青 - 灰蓝</string>
+    <string name="dashboard_new_threads">最新回复</string>
 
 </resources>

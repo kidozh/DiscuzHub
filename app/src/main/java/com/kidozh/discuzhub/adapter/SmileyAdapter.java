@@ -39,7 +39,8 @@ public class SmileyAdapter extends RecyclerView.Adapter<SmileyAdapter.SmileyView
 
     public void setSmileyInfos(@NonNull List<bbsParseUtils.smileyInfo> smileyInfos) {
         this.smileyInfos = smileyInfos;
-        notifyItemMoved(0,smileyInfos.size());
+        notifyDataSetChanged();
+        // notifyItemMoved(0,smileyInfos.size());
     }
 
     public List<bbsParseUtils.smileyInfo> getSmileyInfos() {

@@ -1,8 +1,7 @@
 package com.kidozh.discuzhub.services;
 
 import com.kidozh.discuzhub.results.AddCheckResult;
-import com.kidozh.discuzhub.results.BBSIndexResult;
-import com.kidozh.discuzhub.results.BaseResult;
+import com.kidozh.discuzhub.results.DiscuzIndexResult;
 import com.kidozh.discuzhub.results.BuyThreadResult;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.results.FavoriteForumResult;
@@ -11,10 +10,10 @@ import com.kidozh.discuzhub.results.FavoriteThreadResult;
 import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.results.HotForumsResult;
 import com.kidozh.discuzhub.results.LoginResult;
+import com.kidozh.discuzhub.results.NewThreadsResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.ThreadResult;
 import com.kidozh.discuzhub.results.UserNoteListResult;
-import com.kidozh.discuzhub.results.VariableResults;
 
 import java.util.HashMap;
 
@@ -97,7 +96,7 @@ public interface DiscuzApiService {
     );
 
     @GET(DISCUZ_API_PATH+"?version=4&module=forumindex")
-    Call<BBSIndexResult> indexResult();
+    Call<DiscuzIndexResult> indexResult();
 
     @GET(DISCUZ_API_PATH+"?version=4&module=forumdisplay")
     Call<ForumResult> forumDisplayResult(@QueryMap HashMap<String,String> options);
@@ -150,4 +149,10 @@ public interface DiscuzApiService {
     @FormUrlEncoded
     @POST(DISCUZ_API_PATH+"?version=4&module=login")
     Call<LoginResult> loginCall(@FieldMap HashMap<String,String> options);
+
+    @GET(DISCUZ_API_PATH+"?version=4&module=newthreads&limit=20")
+    Call<NewThreadsResult> newThreadsResult(
+            @Query("fids") String fids,
+            @Query("start") int start
+    );
 }

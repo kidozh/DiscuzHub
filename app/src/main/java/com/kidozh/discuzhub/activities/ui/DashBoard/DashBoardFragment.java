@@ -24,6 +24,7 @@ import com.kidozh.discuzhub.activities.ui.FavoriteForum.FavoriteForumFragment;
 import com.kidozh.discuzhub.activities.ui.FavoriteThread.FavoriteThreadFragment;
 import com.kidozh.discuzhub.activities.ui.HotForums.HotForumsFragment;
 import com.kidozh.discuzhub.activities.ui.HotThreads.HotThreadsFragment;
+import com.kidozh.discuzhub.activities.ui.NewThreads.NewThreadsFragment;
 import com.kidozh.discuzhub.databinding.FragmentDashboardBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -112,16 +113,21 @@ public class DashBoardFragment extends Fragment {
                     break;
                 }
                 case 1:{
+                    tab.setText(R.string.dashboard_new_threads);
+                    tab.setIcon(R.drawable.ic_baseline_quickreply_24);
+                    break;
+                }
+                case 2:{
                     tab.setText(R.string.hot_forum);
                     tab.setIcon(R.drawable.ic_baseline_forum_24);
                     break;
                 }
-                case 2:{
+                case 3:{
                     tab.setText(R.string.marked_thread);
                     tab.setIcon(R.drawable.ic_baseline_marked_thread_24);
                     break;
                 }
-                case 3:{
+                case 4:{
                     tab.setText(R.string.marked_forum);
                     tab.setIcon(R.drawable.ic_baseline_bookmarks_24);
                     break;
@@ -155,12 +161,15 @@ public class DashBoardFragment extends Fragment {
                     return HotThreadsFragment.newInstance(bbsInfo,userBriefInfo);
                 }
                 case 1:{
-                    return HotForumsFragment.newInstance(bbsInfo,userBriefInfo);
+                    return NewThreadsFragment.Companion.newInstance(bbsInfo,userBriefInfo);
                 }
                 case 2:{
-                    return FavoriteThreadFragment.newInstance(bbsInfo,userBriefInfo,"tid");
+                    return HotForumsFragment.newInstance(bbsInfo,userBriefInfo);
                 }
                 case 3:{
+                    return FavoriteThreadFragment.newInstance(bbsInfo,userBriefInfo,"tid");
+                }
+                case 4:{
                     return FavoriteForumFragment.newInstance(bbsInfo,userBriefInfo);
                 }
             }
@@ -169,7 +178,7 @@ public class DashBoardFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return 4;
+            return 5;
         }
 
 

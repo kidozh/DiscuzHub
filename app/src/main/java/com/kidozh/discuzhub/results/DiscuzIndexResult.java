@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BBSIndexResult extends BaseResult implements Serializable{
+public class DiscuzIndexResult extends BaseResult implements Serializable{
     @JsonProperty("Variables")
     public ForumVariables forumVariables;
 
