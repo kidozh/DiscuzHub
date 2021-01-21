@@ -101,7 +101,7 @@ public class DashBoardFragment extends Fragment {
     private void bindTabLayoutAndViewPager2(){
         viewModel.setFavoriteThreadInfo(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0);
         binding.viewpager2.setAdapter(new DashBoardViewPagerAdapter(getChildFragmentManager(),getLifecycle()));
-
+        binding.viewpager2.setUserInputEnabled(false);
 
         new TabLayoutMediator(binding.tablayout,binding.viewpager2,
                 (tab, position) -> {
