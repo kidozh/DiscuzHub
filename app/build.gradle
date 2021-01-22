@@ -8,8 +8,8 @@ android {
         applicationId "com.kidozh.discuzhub"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 32
-        versionName "4.1"
+        versionCode 33
+        versionName "4.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [
                 discuz_title: "NOT_IMPLEMENTED",
@@ -41,6 +41,15 @@ android {
             // be sure to change your own application id
             applicationIdSuffix ".qzzn"
 
+        }
+        keylol {
+            // fill your bbs id
+            manifestPlaceholders = [
+                    discuz_title: "Keylol - 其乐",
+                    discuz_base_url: "https://keylol.com",
+            ]
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            applicationIdSuffix ".keylol"
         }
         debug {
             manifestPlaceholders = [
