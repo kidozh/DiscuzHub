@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        tools:context=".activities.ui.userThreads.bbsMyThreadFragment">
+        tools:context=".activities.ui.userThreads.UserThreadFragment">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/fragment_my_thread_swipeRefreshLayout"

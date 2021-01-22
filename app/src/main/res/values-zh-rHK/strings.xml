@@ -731,5 +731,22 @@
     <string name="theme_orange">橙-藍</string>
     <string name="theme_gray">灰-藍</string>
     <string name="theme_deep_gray">灰/銀-翠綠</string>
+    <string name="theme_android_default">Android原生</string>
+    <string name="theme_android_default_2">Android原生 2</string>
+    <string name="theme_green_indigo">綠-靛青</string>
+    <string name="theme_pure_deep_purple">純深紫</string>
+    <string name="theme_pure_pink">純粉色</string>
+    <string name="theme_pure_teal">純青色</string>
+    <string name="theme_indigo_deep_orange">靛青-橙紅</string>
+    <string name="theme_blue_gray_gray">藍灰-灰</string>
+    <string name="theme_light_green_green">淡綠-綠</string>
+    <string name="theme_indigo_pink">靛青 - 粉色</string>
+    <string name="theme_pure_brown">純棕色</string>
+    <string name="theme_indigo_teal">靛青 - 青</string>
+    <string name="theme_indigo_blue_gray">靛青 - 灰藍</string>
+    <string name="dashboard_new_threads">最新回复</string>
+    <string name="dashboard_explore_fragment">內嵌瀏覽器</string>
+    <string name="explore_in_page_warn_description">我們認知到部分論壇開啟了PWA技術，這樣使得我們無法正常的讀取當前訪問鏈接，也無法跳轉到正確的內置頁面。當你的論壇的鏈接始終無法跳轉到正確的界面時，請選擇使用電腦端的界面，其能正常跳轉。</string>
+    <string name="explore_in_page_warn_title">可能鏈接無法正常跳轉到頁面裡</string>
 
 </resources>

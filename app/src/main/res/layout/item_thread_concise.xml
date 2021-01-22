@@ -12,9 +12,9 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="8dp"
+        app:cardCornerRadius="8dp"
         app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

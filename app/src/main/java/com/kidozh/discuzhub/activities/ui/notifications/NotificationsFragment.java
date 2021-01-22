@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
@@ -25,7 +24,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.UserNotification.UserNotificationFragment;
 import com.kidozh.discuzhub.activities.ui.bbsNotificationMessagePortalFragment;
 import com.kidozh.discuzhub.activities.ui.privacyProtect.privacyProtectFragment;
-import com.kidozh.discuzhub.activities.ui.userThreads.bbsMyThreadFragment;
+import com.kidozh.discuzhub.activities.ui.userThreads.UserThreadFragment;
 import com.kidozh.discuzhub.databinding.FragmentNotificationsBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -475,7 +474,7 @@ public class NotificationsFragment extends Fragment {
                 }
 
                 case 4:{
-                    return bbsMyThreadFragment.newInstance(bbsInformation,userBriefInfo);
+                    return UserThreadFragment.newInstance(bbsInformation,userBriefInfo);
 
                 }
             }

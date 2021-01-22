@@ -970,6 +970,9 @@
     <string name="theme_indigo_teal">Indigo - teal</string>
     <string name="theme_indigo_blue_gray">Indigo - Blue gray</string>
     <string name="dashboard_new_threads">New Threads</string>
+    <string name="dashboard_explore_fragment">Web Page</string>
+    <string name="explore_in_page_warn_description">We know that some discuz! forums enable PWA approach and it may stop webview from loading url. If the page can\'t navigate to proper inner page, please use PC versioned page!</string>
+    <string name="explore_in_page_warn_title">The page may not navigate automatically</string>
 
 
 </resources>

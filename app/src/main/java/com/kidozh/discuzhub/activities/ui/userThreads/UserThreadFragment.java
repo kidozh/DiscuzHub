@@ -44,10 +44,10 @@ import okhttp3.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class bbsMyThreadFragment extends Fragment {
-    private String TAG = bbsMyThreadFragment.class.getSimpleName();
+public class UserThreadFragment extends Fragment {
+    private String TAG = UserThreadFragment.class.getSimpleName();
 
-    public bbsMyThreadFragment() {
+    public UserThreadFragment() {
         // Required empty public constructor
     }
 
@@ -59,8 +59,8 @@ public class bbsMyThreadFragment extends Fragment {
     FragmentBbsMyThreadBinding binding;
     ContentEmptyInformationBinding emptyBinding;
 
-    public static bbsMyThreadFragment newInstance(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
-        bbsMyThreadFragment fragment = new bbsMyThreadFragment();
+    public static UserThreadFragment newInstance(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+        UserThreadFragment fragment = new UserThreadFragment();
         Bundle args = new Bundle();
         args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
         args.putSerializable(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
@@ -106,9 +106,6 @@ public class bbsMyThreadFragment extends Fragment {
     private void configureRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         binding.fragmentMyThreadRecyclerview.setLayoutManager(linearLayoutManager);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
-                linearLayoutManager.getOrientation());
-        binding.fragmentMyThreadRecyclerview.addItemDecoration(dividerItemDecoration);
         adapter = new ThreadAdapter(null,"",bbsInfo,userBriefInfo);
         binding.fragmentMyThreadRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
         binding.fragmentMyThreadRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));

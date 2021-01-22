@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.activities.ui.ExplorePage.ExplorePageFragment;
 import com.kidozh.discuzhub.activities.ui.FavoriteForum.FavoriteForumFragment;
 import com.kidozh.discuzhub.activities.ui.FavoriteThread.FavoriteThreadFragment;
 import com.kidozh.discuzhub.activities.ui.HotForums.HotForumsFragment;
@@ -123,11 +124,16 @@ public class DashBoardFragment extends Fragment {
                     break;
                 }
                 case 3:{
+                    tab.setText(R.string.dashboard_explore_fragment);
+                    tab.setIcon(R.drawable.ic_baseline_explore_24);
+                    break;
+                }
+                case 4:{
                     tab.setText(R.string.marked_thread);
                     tab.setIcon(R.drawable.ic_baseline_marked_thread_24);
                     break;
                 }
-                case 4:{
+                case 5:{
                     tab.setText(R.string.marked_forum);
                     tab.setIcon(R.drawable.ic_baseline_bookmarks_24);
                     break;
@@ -167,9 +173,12 @@ public class DashBoardFragment extends Fragment {
                     return HotForumsFragment.newInstance(bbsInfo,userBriefInfo);
                 }
                 case 3:{
-                    return FavoriteThreadFragment.newInstance(bbsInfo,userBriefInfo,"tid");
+                    return ExplorePageFragment.Companion.newInstance(bbsInfo,userBriefInfo);
                 }
                 case 4:{
+                    return FavoriteThreadFragment.newInstance(bbsInfo,userBriefInfo,"tid");
+                }
+                case 5:{
                     return FavoriteForumFragment.newInstance(bbsInfo,userBriefInfo);
                 }
             }
@@ -178,7 +187,7 @@ public class DashBoardFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return 5;
+            return 6;
         }
 
 
