@@ -35,9 +35,9 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 public class NetworkUtils {
     private static String TAG = NetworkUtils.class.getSimpleName();
-    public final static int CONNECT_TIMEOUT =5;
-    public final static int READ_TIMEOUT=5;
-    public final static int WRITE_TIMEOUT=5;
+    public final static int CONNECT_TIMEOUT =10;
+    public final static int READ_TIMEOUT = 10;
+    public final static int WRITE_TIMEOUT=10;
 
 
 
