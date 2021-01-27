@@ -1342,7 +1342,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                             if (returnedMessage == null) {
                                 Toasty.error(applicationContext, getString(R.string.network_failed), Toast.LENGTH_LONG).show()
                             } else {
-                                Toasty.error(applicationContext, returnedMessage.string, Toast.LENGTH_LONG).show()
+                                Toasty.error(applicationContext, getString(R.string.discuz_api_message_template, returnedMessage.value, returnedMessage.string), Toast.LENGTH_LONG).show()
                             }
                         }
                     }
