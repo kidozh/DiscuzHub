@@ -8,6 +8,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
@@ -67,18 +69,37 @@ class ExplorePageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         configureWebview()
-        triggerWarnDialog()
+//        triggerWarnDialog()
     }
 
     fun configureWebview() {
-        val webSettings: WebSettings = binding.explorePageWebview.getSettings()
-        //webSettings.javaScriptEnabled = true
+        val webSettings: WebSettings = binding.explorePageWebview.settings
+        webSettings.javaScriptEnabled = true
         webSettings.useWideViewPort = true
         webSettings.loadWithOverviewMode = true
         webSettings.setSupportZoom(true)
         webSettings.builtInZoomControls = true
         webSettings.javaScriptCanOpenWindowsAutomatically = true
         webSettings.loadsImagesAutomatically = true
+
+        // configure service worker
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            val swController =  ServiceWorkerController.getInstance()
+            swController.setServiceWorkerClient(object : ServiceWorkerClient(){
+                override fun shouldInterceptRequest(request: WebResourceRequest?): WebResourceResponse? {
+                    if (request != null) {
+
+                        runActivity.runOnUiThread {
+                            parseURLAndOpen(runActivity, bbsInfo, userBriefInfo, request.url.toString())
+                        }
+                    }
+                    return super.shouldInterceptRequest(request)
+                }
+            })
+
+        }
+
+
         cookieClient = CookieWebViewClient()
 
         cookieClient.cookieManager.setAcceptThirdPartyCookies(binding.explorePageWebview, true)
@@ -122,19 +143,19 @@ class ExplorePageFragment : Fragment() {
 
     }
 
-    fun triggerWarnDialog() {
-        /* Some web page use PWA and disable automatic url navigation
-        *  trigger this dialog to warn user to use PC versioned page in priority
-        *  */
-        val dialog = AlertDialog.Builder(requireContext())
-                .setTitle(getString(R.string.explore_in_page_warn_title))
-                .setMessage(getString(R.string.explore_in_page_warn_description))
-                .setPositiveButton(android.R.string.ok) { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .create()
-        dialog.show()
-    }
+//    fun triggerWarnDialog() {
+//        /* Some web page use PWA and disable automatic url navigation
+//        *  trigger this dialog to warn user to use PC versioned page in priority
+//        *  */
+//        val dialog = AlertDialog.Builder(requireContext())
+//                .setTitle(getString(R.string.explore_in_page_warn_title))
+//                .setMessage(getString(R.string.explore_in_page_warn_description))
+//                .setPositiveButton(android.R.string.ok) { dialog, _ ->
+//                    dialog.dismiss()
+//                }
+//                .create()
+//        dialog.show()
+//    }
 
 
 
