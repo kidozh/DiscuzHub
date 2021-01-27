@@ -88,7 +88,7 @@ class ExplorePageFragment : Fragment() {
             swController.setServiceWorkerClient(object : ServiceWorkerClient(){
                 override fun shouldInterceptRequest(request: WebResourceRequest?): WebResourceResponse? {
                     if (request != null) {
-
+                        Log.d(TAG, "load service worker url "+request.url)
                         runActivity.runOnUiThread {
                             parseURLAndOpen(runActivity, bbsInfo, userBriefInfo, request.url.toString())
                         }
@@ -101,7 +101,6 @@ class ExplorePageFragment : Fragment() {
 
 
         cookieClient = CookieWebViewClient()
-
         cookieClient.cookieManager.setAcceptThirdPartyCookies(binding.explorePageWebview, true)
         // set cookie
         val currentHttpUrl = HttpUrl.parse(exploreURL)
