@@ -507,7 +507,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         })
 
         // for secure reason
-        threadDetailViewModel.getSecureInfo().observe(this, Observer { secureInfoResult ->
+        threadDetailViewModel.secureInfo.observe(this, Observer { secureInfoResult ->
             if (secureInfoResult != null) {
                 if (secureInfoResult.secureVariables == null) {
                     // don't need a code
@@ -516,7 +516,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 } else {
                     binding.bbsPostCaptchaEditText.visibility = View.VISIBLE
                     binding.bbsPostCaptchaImageview.visibility = View.VISIBLE
-                    binding.bbsPostCaptchaImageview.setImageDrawable(getDrawable(R.drawable.ic_captcha_placeholder_24px))
+                    binding.bbsPostCaptchaImageview.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_captcha_placeholder_24px))
                     // need a captcha
                     val captchaURL = secureInfoResult.secureVariables.secCodeURL
                     val captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash)
@@ -1329,10 +1329,11 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                             binding.bbsThreadDetailCommentButton.setText(R.string.bbs_thread_comment)
                             binding.bbsThreadDetailCommentButton.isEnabled = true
                             binding.bbsThreadDetailCommentEditText.setText("")
-                            reloadThePage()
+                            //reloadThePage()
                             threadDetailViewModel.threadStatusMutableLiveData.value?.let { threadDetailViewModel.getThreadDetail(it) }
                             //getThreadComment();
-                            Toasty.success(applicationContext, returnedMessage.string, Toast.LENGTH_LONG).show()
+                            Toasty.success(applicationContext, getString(R.string.discuz_api_message_template, returnedMessage.value, returnedMessage.string), Toast.LENGTH_LONG).show()
+
                         }
                     } else {
                         mHandler.post {

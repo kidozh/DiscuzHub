@@ -77,28 +77,30 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
     }
 
 
-    fun getSecureInfo(): MutableLiveData<SecureInfoResult?> {
-        return secureInfoResultMutableLiveData
-    }
+//    fun getSecureInfo(): MutableLiveData<SecureInfoResult?> {
+//        return secureInfoResultMutableLiveData
+//    }
 
-    val secureInfo: Unit
+    val secureInfo: MutableLiveData<SecureInfoResult?>
         get() {
             val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url, client)
             val service = retrofit.create(DiscuzApiService::class.java)
             val secureInfoResultCall = service.secureResult("post")
+            Log.d(TAG,"Send secure info "+secureInfoResultCall.request().url())
             secureInfoResultCall.enqueue(object : Callback<SecureInfoResult?> {
                 override fun onResponse(call: Call<SecureInfoResult?>, response: Response<SecureInfoResult?>) {
                     if (response.isSuccessful && response.body() != null) {
-                        secureInfoResultMutableLiveData!!.postValue(response.body())
+                        secureInfoResultMutableLiveData.postValue(response.body())
                     } else {
-                        secureInfoResultMutableLiveData!!.postValue(null)
+                        secureInfoResultMutableLiveData.postValue(null)
                     }
                 }
 
                 override fun onFailure(call: Call<SecureInfoResult?>, t: Throwable) {
-                    secureInfoResultMutableLiveData!!.postValue(null)
+                    secureInfoResultMutableLiveData.postValue(null)
                 }
             })
+            return secureInfoResultMutableLiveData
         }
 
     fun getThreadDetail(viewThreadQueryStatus: ViewThreadQueryStatus) {
@@ -114,7 +116,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
             // clear it first
             totalPostListLiveData.value = ArrayList()
         }
-        val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo!!.base_url, client!!)
+        val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url, client)
         val service = retrofit.create(DiscuzApiService::class.java)
         val threadResultCall = service.viewThreadResult(viewThreadQueryStatus.generateQueryHashMap())
         threadResultCall.enqueue(object : Callback<ThreadResult?> {
@@ -180,7 +182,6 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                             var totalThreadCommentsNumber = 0
                             if (currentThreadInfoList != null) {
                                 totalThreadCommentsNumber = currentThreadInfoList.size
-                            } else {
                             }
                             Log.d(TAG, "PAGE " + viewThreadQueryStatus.page + " MAX POSITION " + maxThreadNumber + " CUR " + totalThreadCommentsNumber + " " + totalThreadSize)
                             if (totalThreadSize >= maxThreadNumber + 1) {
@@ -222,7 +223,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun recommendThread(tid: Int, recommend: Boolean) {
-        val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo!!.base_url, client!!)
+        val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url, client)
         val service = retrofit.create(DiscuzApiService::class.java)
         val formHashValue = formHash.value
         if (TextUtils.isEmpty(formHashValue)) {
