@@ -14,7 +14,7 @@ import com.kidozh.discuzhub.entities.bbsInformation;
 import java.util.List;
 
 @Dao
-public interface forumInformationDao {
+public interface DiscuzDao {
 
     @Query("SELECT * FROM bbsInformation ORDER BY position,id ASC")
     LiveData<List<bbsInformation>> getAllForumInformations();

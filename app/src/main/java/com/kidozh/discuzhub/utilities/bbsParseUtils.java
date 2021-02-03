@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.kidozh.discuzhub.entities.FavoriteThread;
+import com.kidozh.discuzhub.entities.Smiley;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.AddCheckResult;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
@@ -520,48 +521,11 @@ public class bbsParseUtils {
         }
     }
 
-    public static class smileyInfo implements Parcelable {
-        public String code, imageRelativePath;
-        public int category;
+    
 
-        public smileyInfo(String code, String imageRelativePath, int category) {
-            this.code = code;
-            this.imageRelativePath = imageRelativePath;
-            this.category = category;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(code);
-            dest.writeString(imageRelativePath);
-            dest.writeInt(category);
-        }
-
-        public static final Creator<smileyInfo> CREATOR = new Creator<smileyInfo>() {
-            @Override
-            public smileyInfo createFromParcel(Parcel source) {
-                String code = source.readString();
-                String imageRelativePath = source.readString();
-                int category = source.readInt();
-
-                return new smileyInfo(code, imageRelativePath, category);
-            }
-
-            @Override
-            public smileyInfo[] newArray(int size) {
-                return new smileyInfo[size];
-            }
-        };
-    }
-
-    public static List<smileyInfo> parseSmileyInfo(String s) {
+    public static List<Smiley> parseSmiley(String s) {
         try {
-            List<smileyInfo> smileyInfoList = new ArrayList<>();
+            List<Smiley> SmileyList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONArray smileyCateList = variables.getJSONArray("smilies");
@@ -569,14 +533,14 @@ public class bbsParseUtils {
                 JSONArray smileyCates = smileyCateList.getJSONArray(i);
                 for (int j = 0; j < smileyCates.length(); j++) {
                     JSONObject smiley = smileyCates.getJSONObject(j);
-                    smileyInfoList.add(new smileyInfo(
+                    SmileyList.add(new Smiley(
                             smiley.getString("code"),
                             smiley.getString("image"),
                             i
                     ));
                 }
             }
-            return smileyInfoList;
+            return SmileyList;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -586,7 +550,7 @@ public class bbsParseUtils {
 
     public static int parseSmileyCateNum(String s) {
         try {
-            List<smileyInfo> smileyInfoList = new ArrayList<>();
+            List<Smiley> SmileyList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(s);
             JSONObject variables = jsonObject.getJSONObject("Variables");
             JSONArray smileyCateList = variables.getJSONArray("smilies");

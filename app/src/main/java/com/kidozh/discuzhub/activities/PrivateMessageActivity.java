@@ -30,7 +30,7 @@ import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
+import com.kidozh.discuzhub.utilities.SmileyPicker;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
@@ -65,7 +65,7 @@ public class PrivateMessageActivity extends BaseStatusActivity implements Smiley
     int smileyCateNum;
 
 
-    private bbsSmileyPicker smileyPicker;
+    private SmileyPicker smileyPicker;
     private EmotionInputHandler handler;
     ActivityBbsPrivateMessageDetailBinding binding;
 
@@ -90,7 +90,7 @@ public class PrivateMessageActivity extends BaseStatusActivity implements Smiley
 
         });
 
-        smileyPicker = new bbsSmileyPicker(this);
+        smileyPicker = new SmileyPicker(this);
         smileyPicker.setListener((str,a)->{
             handler.insertSmiley(str,a);
         });

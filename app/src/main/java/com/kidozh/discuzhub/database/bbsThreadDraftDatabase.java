@@ -9,7 +9,7 @@ import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.kidozh.discuzhub.daos.bbsThreadDraftDao;
+import com.kidozh.discuzhub.daos.ThreadDraftDao;
 import com.kidozh.discuzhub.entities.ThreadDraft;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
@@ -53,7 +53,7 @@ public abstract class bbsThreadDraftDatabase extends RoomDatabase {
                 .build();
     }
 
-    public abstract bbsThreadDraftDao getbbsThreadDraftDao();
+    public abstract ThreadDraftDao getbbsThreadDraftDao();
 
 
 }

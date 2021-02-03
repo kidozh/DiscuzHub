@@ -21,8 +21,11 @@ import android.widget.ImageView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.SmileyAdapter;
 import com.kidozh.discuzhub.databinding.FragmentSmileyBinding;
+import com.kidozh.discuzhub.entities.Smiley;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +49,7 @@ public class SmileyFragment extends Fragment {
 
     SmileyAdapter adapter;
 
-    private List<bbsParseUtils.smileyInfo> curSmileyInfos = new ArrayList<>();
+    private ArrayList<Smiley> curSmileyInfos = new ArrayList<>();
 
     private OnSmileyPressedInteraction mListener;
 
@@ -61,10 +64,10 @@ public class SmileyFragment extends Fragment {
      * @return A new instance of fragment SmileyFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SmileyFragment newInstance(List<bbsParseUtils.smileyInfo> allSmileyInfos) {
+    public static SmileyFragment newInstance(ArrayList<Smiley> allSmileyInfos) {
         SmileyFragment fragment = new SmileyFragment();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(SMILEY_PARAM, (ArrayList<? extends Parcelable>) allSmileyInfos);
+        args.putSerializable(SMILEY_PARAM, allSmileyInfos);
         fragment.setArguments(args);
         return fragment;
     }
@@ -73,7 +76,8 @@ public class SmileyFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            curSmileyInfos = getArguments().getParcelableArrayList(SMILEY_PARAM);
+            curSmileyInfos = (ArrayList<Smiley>) getArguments().getSerializable(SMILEY_PARAM);
+
         }
     }
 
@@ -81,7 +85,7 @@ public class SmileyFragment extends Fragment {
     FragmentSmileyBinding binding;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentSmileyBinding.inflate(inflater,container,false);
@@ -98,14 +102,14 @@ public class SmileyFragment extends Fragment {
     void configureRecyclerView(){
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 6, LinearLayoutManager.VERTICAL, false);
         binding.smileyRecyclerview.setLayoutManager(layoutManager);
-        binding.smileyRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
+        binding.smileyRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(requireContext()));
         adapter = new SmileyAdapter(getContext(), (v1, position) -> {
             ImageView img = (ImageView) v1;
             smileyClick(img.getDrawable(), position);
         });
 
         adapter.setSmileyInfos(curSmileyInfos);
-        binding.smileyRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
+        binding.smileyRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(requireContext(),adapter));
     }
 
     private void smileyClick(Drawable d, int position) {

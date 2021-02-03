@@ -7,7 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 import com.kidozh.discuzhub.daos.UploadAttachmentDao;
-import com.kidozh.discuzhub.daos.bbsThreadDraftDao;
+import com.kidozh.discuzhub.daos.ThreadDraftDao;
 import com.kidozh.discuzhub.entities.UploadAttachment;
 import com.kidozh.discuzhub.entities.ThreadDraft;
 
@@ -33,5 +33,5 @@ public abstract class UploadAttachmentDatabase extends RoomDatabase {
 
     public abstract UploadAttachmentDao getUploadAttachmentDao();
 
-    public abstract bbsThreadDraftDao getBBSThreadDraftDao();
+    public abstract ThreadDraftDao getBBSThreadDraftDao();
 }

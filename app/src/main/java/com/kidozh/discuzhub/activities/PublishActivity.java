@@ -65,7 +65,7 @@ import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.bbsColorPicker;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.bbsSmileyPicker;
+import com.kidozh.discuzhub.utilities.SmileyPicker;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
@@ -120,7 +120,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
     Forum forum;
     private bbsColorPicker myColorPicker;
-    private bbsSmileyPicker smileyPicker;
+    private SmileyPicker smileyPicker;
     //private bbsThreadDraft threadDraft;
 
 
@@ -672,7 +672,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
     private void configureEditTools(){
         myColorPicker = new bbsColorPicker(this);
-        smileyPicker = new bbsSmileyPicker(this);
+        smileyPicker = new SmileyPicker(this);
         smileyPicker.setListener((str,a)->{
             String decodeStr = str.replace("/","")
                     .replace("\\","");

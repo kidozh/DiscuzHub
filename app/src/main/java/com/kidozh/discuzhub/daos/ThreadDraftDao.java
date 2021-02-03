@@ -13,7 +13,7 @@ import com.kidozh.discuzhub.entities.ThreadDraft;
 import java.util.List;
 
 @Dao
-public interface bbsThreadDraftDao {
+public interface ThreadDraftDao {
 
     @Query("SELECT * FROM ThreadDraft")
     LiveData<List<ThreadDraft>> getAllThreadDraft();

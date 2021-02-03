@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import com.kidozh.discuzhub.daos.forumInformationDao;
+import com.kidozh.discuzhub.daos.DiscuzDao;
 import com.kidozh.discuzhub.database.BBSInformationDatabase;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -26,17 +26,17 @@ public class MainDrawerViewModel extends AndroidViewModel {
     public MutableLiveData<List<forumUserBriefInfo>> forumUserListMutableLiveData =
             new MutableLiveData<>(null);
 
-    private forumInformationDao forumInformationDao;
+    private DiscuzDao DiscuzDao;
 
     public MainDrawerViewModel(@NonNull Application application) {
         super(application);
-        forumInformationDao = BBSInformationDatabase.getInstance(getApplication()).getForumInformationDao();
-        allBBSInformationMutableLiveData = forumInformationDao.getAllForumInformations();
+        DiscuzDao = BBSInformationDatabase.getInstance(getApplication()).getForumInformationDao();
+        allBBSInformationMutableLiveData = DiscuzDao.getAllForumInformations();
 
     }
 
     public void setCurrentBBSById(LifecycleOwner lifecycleOwner, int bbsId){
-        LiveData<bbsInformation> selectedBBSInfo= forumInformationDao.getForumInformationLiveDataById(bbsId);
+        LiveData<bbsInformation> selectedBBSInfo= DiscuzDao.getForumInformationLiveDataById(bbsId);
         selectedBBSInfo.observe(lifecycleOwner, new Observer<bbsInformation>() {
             @Override
             public void onChanged(bbsInformation bbsInformation) {

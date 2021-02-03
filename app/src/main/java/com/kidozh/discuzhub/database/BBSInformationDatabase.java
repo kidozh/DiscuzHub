@@ -9,7 +9,7 @@ import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.kidozh.discuzhub.daos.forumInformationDao;
+import com.kidozh.discuzhub.daos.DiscuzDao;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
@@ -68,7 +68,7 @@ public abstract class BBSInformationDatabase extends RoomDatabase {
 
 
 
-    public abstract forumInformationDao getForumInformationDao();
+    public abstract DiscuzDao getForumInformationDao();
 
 
 }

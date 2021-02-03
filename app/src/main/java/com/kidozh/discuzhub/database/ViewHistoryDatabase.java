@@ -6,11 +6,8 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
-import androidx.room.migration.Migration;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
-import com.kidozh.discuzhub.daos.forumInformationDao;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.utilities.DateConverter;
 

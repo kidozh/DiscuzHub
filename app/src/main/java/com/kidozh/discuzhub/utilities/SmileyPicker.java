@@ -37,8 +37,8 @@ import okhttp3.Response;
  * 表情选择器
  */
 
-public class bbsSmileyPicker extends PopupWindow {
-    private static final String TAG = bbsSmileyPicker.class.getSimpleName();
+public class SmileyPicker extends PopupWindow {
+    private static final String TAG = SmileyPicker.class.getSimpleName();
     private Context mContext;
     private OnItemClickListener listener;
     private SmileyAdapter adapter;
@@ -54,7 +54,7 @@ public class bbsSmileyPicker extends PopupWindow {
     PopupwindowSmileyViewBinding binding;
 
 
-    public bbsSmileyPicker(Context context) {
+    public SmileyPicker(Context context) {
         super(context);
         mContext = context;
         configureClient();

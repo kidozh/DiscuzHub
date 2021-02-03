@@ -15,8 +15,7 @@ import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter.OnRefreshBtnListener
 import com.kidozh.discuzhub.adapter.ThreadCountAdapter.OnRecommendBtnPressed
 import com.kidozh.discuzhub.adapter.PostAdapter
 import com.kidozh.discuzhub.adapter.ThreadCountAdapter
-import com.kidozh.discuzhub.utilities.bbsParseUtils.smileyInfo
-import com.kidozh.discuzhub.utilities.bbsSmileyPicker
+import com.kidozh.discuzhub.utilities.SmileyPicker
 import com.kidozh.discuzhub.utilities.EmotionInputHandler
 import com.kidozh.discuzhub.viewModels.ThreadViewModel
 import androidx.recyclerview.widget.ConcatAdapter
@@ -84,6 +83,7 @@ import java.net.URLEncoder
 import java.text.DateFormat
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 
 class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilterChanged, onAdapterReply, OnLinkClicked, bbsPollFragment.OnFragmentInteractionListener, OnThreadPropertyClicked, OnAdvanceOptionClicked, ReportDialogListener, OnRefreshBtnListener, OnRecommendBtnPressed {
     lateinit var binding: ActivityViewThreadBinding
@@ -98,11 +98,11 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     var thread: Thread? = null
     private var hasLoadOnce = false
     private var notifyLoadAll = false
-    var allSmileyInfos: List<smileyInfo>? = null
+    var allSmileyInfos: List<Smiley>? = null
     var smileyCateNum = 0
     var poll: Poll? = null
     private var selectedThreadComment: Post? = null
-    private var smileyPicker: bbsSmileyPicker? = null
+    private var smileyPicker: SmileyPicker? = null
     private var handler: EmotionInputHandler? = null
     lateinit var threadDetailViewModel: ThreadViewModel
     private var concatAdapter: ConcatAdapter? = null
@@ -164,7 +164,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
 
     private fun configureSmileyLayout() {
         handler = EmotionInputHandler(binding.bbsThreadDetailCommentEditText) { enable: Boolean, s: String? -> }
-        smileyPicker = bbsSmileyPicker(this)
+        smileyPicker = SmileyPicker(this)
         smileyPicker!!.setListener { str: String?, a: Drawable? -> handler!!.insertSmiley(str, a) }
     }
 
@@ -727,7 +727,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 override fun onResponse(call: Call, response: Response) {
                     if (response.isSuccessful && response.body() != null) {
                         val s = response.body()!!.string()
-                        val smileyInfoList = bbsParseUtils.parseSmileyInfo(s)
+                        val smileyInfoList = bbsParseUtils.parseSmiley(s)
                         val cateNum = bbsParseUtils.parseSmileyCateNum(s)
                         smileyCateNum = cateNum
                         mHandler.post {
@@ -743,7 +743,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                             }
                             // bind tablayout and viewpager
                             binding.bbsCommentSmileyTabLayout.setupWithViewPager(binding.bbsCommentSmileyViewPager)
-                            val adapter: smileyViewPagerAdapter = smileyViewPagerAdapter(supportFragmentManager,
+                            val adapter: SmileyViewPagerAdapter = SmileyViewPagerAdapter(supportFragmentManager,
                                     FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
                             adapter.cateNum = cateNum
                             adapter.notifyDataSetChanged()
@@ -1147,7 +1147,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         }
     }
 
-    inner class smileyViewPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
+    inner class SmileyViewPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
         var cateNum = 0
         
         
@@ -1157,7 +1157,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         }
 
         override fun getItem(position: Int): Fragment {
-            val cateSmileyInfo: MutableList<smileyInfo> = ArrayList()
+            val cateSmileyInfo: ArrayList<Smiley> = ArrayList()
             for (i in allSmileyInfos!!.indices) {
                 val smileyInfo = allSmileyInfos!![i]
                 if (smileyInfo.category == position) {
