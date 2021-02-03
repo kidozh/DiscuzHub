@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.entities.ForumInfo;
+import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.DiscuzIndexResult;
@@ -31,7 +31,7 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
     List<DiscuzIndexResult.ForumCategory> forumCategoryList = new ArrayList<>();
     bbsInformation bbsInfo;
     forumUserBriefInfo curUser;
-    List<ForumInfo> allForumInfo;
+    List<Forum> allForum;
 
     ForumCategoryAdapter(Context context){
         this.mContext = context;
@@ -43,12 +43,12 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
         this.curUser = userBriefInfo;
     }
 
-    public void setForumCategoryList(@NonNull List<DiscuzIndexResult.ForumCategory> forumCategoryList, List<ForumInfo> allForumInfo) {
+    public void setForumCategoryList(@NonNull List<DiscuzIndexResult.ForumCategory> forumCategoryList, List<Forum> allForum) {
         int oldSize = this.forumCategoryList.size();
         this.forumCategoryList.clear();
         notifyItemRangeRemoved(0,oldSize);
         this.forumCategoryList.addAll(forumCategoryList);
-        this.allForumInfo = allForumInfo;
+        this.allForum = allForum;
 
         //notifyDataSetChanged();
         notifyItemRangeInserted(0,forumCategoryList.size());
@@ -84,8 +84,8 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
         ForumAdapter adapter = new ForumAdapter(bbsInfo,curUser);
         holder.mRecyclerView.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(mContext));
         holder.mRecyclerView.setAdapter(adapter);
-        List<ForumInfo> forumInfoListInTheCategory = category.getForumListInTheCategory(allForumInfo);
-        adapter.setForumInfoList(forumInfoListInTheCategory);
+        List<Forum> forumListInTheCategory = category.getForumListInTheCategory(allForum);
+        adapter.setForumList(forumListInTheCategory);
 
 
 

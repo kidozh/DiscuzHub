@@ -2,17 +2,11 @@ package com.kidozh.discuzhub.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,7 +16,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.databinding.DialogReportBinding;
-import com.kidozh.discuzhub.entities.PostInfo;
+import com.kidozh.discuzhub.entities.Post;
 
 
 import es.dmoral.toasty.Toasty;
@@ -30,7 +24,7 @@ import es.dmoral.toasty.Toasty;
 public class ReportPostDialogFragment extends DialogFragment {
     private static String TAG = ReportPostDialogFragment.class.getSimpleName();
     @NonNull
-    PostInfo postInfo;
+    Post post;
 
     public interface ReportDialogListener {
         public void onReportSubmit(int pid,String reportReason,boolean reportForOtherReason);
@@ -40,8 +34,8 @@ public class ReportPostDialogFragment extends DialogFragment {
     DialogReportBinding binding;
 
 
-    public ReportPostDialogFragment(@NonNull PostInfo postInfo){
-        this.postInfo = postInfo;
+    public ReportPostDialogFragment(@NonNull Post post){
+        this.post = post;
     }
 
 
@@ -117,7 +111,7 @@ public class ReportPostDialogFragment extends DialogFragment {
                         reason = binding.reportInputReason.getText().toString();
                     }
 
-                    listener.onReportSubmit(postInfo.pid,reason,isOtherChecked);
+                    listener.onReportSubmit(post.pid,reason,isOtherChecked);
                 }
             }
         });

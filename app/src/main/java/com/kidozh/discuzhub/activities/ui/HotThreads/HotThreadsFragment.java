@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.activities.ui.HotThreads;
 
-import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ConcatAdapter;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -26,7 +24,7 @@ import com.kidozh.discuzhub.databinding.FragmentHotThreadBinding;
 import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -134,21 +132,21 @@ public class HotThreadsFragment extends Fragment {
     }
 
     private void bindVieModel(){
-        hotThreadsViewModel.getThreadListLiveData().observe(getViewLifecycleOwner(), new Observer<List<ThreadInfo>>() {
+        hotThreadsViewModel.getThreadListLiveData().observe(getViewLifecycleOwner(), new Observer<List<Thread>>() {
             @Override
-            public void onChanged(List<ThreadInfo> threadInfos) {
+            public void onChanged(List<Thread> threads) {
                 int page = hotThreadsViewModel.pageNum.getValue();
-                Log.d(TAG,"Recv list page "+page +" size : "+forumThreadAdapter.threadInfoList.size());
-                if(page == 1 && forumThreadAdapter.threadInfoList.size() != 0){
-                    Log.d(TAG,"Clear adapter list "+forumThreadAdapter.threadInfoList.size());
+                Log.d(TAG,"Recv list page "+page +" size : "+forumThreadAdapter.threadList.size());
+                if(page == 1 && forumThreadAdapter.threadList.size() != 0){
+                    Log.d(TAG,"Clear adapter list "+forumThreadAdapter.threadList.size());
                     forumThreadAdapter.clearList();
                 }
-                forumThreadAdapter.addThreadInfoList(threadInfos,null);
+                forumThreadAdapter.addThreadInfoList(threads,null);
                 if(page == 1){
                     binding.fragmentHotThreadRecyclerview.scrollToPosition(0);
                 }
                 dashBoardViewModel.hotThreadCountMutableLiveData.postValue(forumThreadAdapter.getItemCount());
-                if(forumThreadAdapter.threadInfoList == null || forumThreadAdapter.threadInfoList.size() == 0){
+                if(forumThreadAdapter.threadList == null || forumThreadAdapter.threadList.size() == 0){
                     networkIndicatorAdapter.setErrorStatus(new ErrorMessage(getString(R.string.empty_result),
                             getString(R.string.empty_hot_threads),R.drawable.ic_empty_hot_thread_64px
                     ));

@@ -22,7 +22,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
+import com.kidozh.discuzhub.activities.FullImageActivity;
 
 import org.xml.sax.XMLReader;
 
@@ -120,7 +120,7 @@ public class MyTagHandler implements Html.TagHandler {
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                             //Log.d(TAG,"The resource is loaded and ready to open in external activity...");
-                            Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
+                            Intent intent = new Intent(mContext, FullImageActivity.class);
                             intent.putExtra("URL",url);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 

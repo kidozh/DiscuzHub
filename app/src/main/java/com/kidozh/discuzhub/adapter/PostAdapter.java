@@ -22,7 +22,6 @@ import android.text.Spanned;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.text.style.StrikethroughSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,9 +49,9 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
+import com.kidozh.discuzhub.activities.FullImageActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
-import com.kidozh.discuzhub.entities.PostInfo;
+import com.kidozh.discuzhub.entities.Post;
 import com.kidozh.discuzhub.entities.ViewThreadQueryStatus;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -73,7 +72,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -82,7 +80,7 @@ import okhttp3.OkHttpClient;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThreadCommentViewHolder> {
     private final static String TAG = PostAdapter.class.getSimpleName();
-    private List<PostInfo> postInfoList = new ArrayList<>();
+    private List<Post> postList = new ArrayList<>();
     private Context mContext,context;
     public String subject;
     private OkHttpClient client = new OkHttpClient();
@@ -112,34 +110,34 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
     }
 
     public void clearList(){
-        int oldSize = this.postInfoList.size();
-        this.postInfoList.clear();
+        int oldSize = this.postList.size();
+        this.postList.clear();
         notifyItemRangeRemoved(0,oldSize);
     }
 
-    public void addThreadInfoList(List<PostInfo> postInfoList, ViewThreadQueryStatus viewThreadQueryStatus, int authorId){
-        int oldSize = this.postInfoList.size();
-        Iterator<PostInfo> iterator = postInfoList.iterator();
+    public void addThreadInfoList(List<Post> postList, ViewThreadQueryStatus viewThreadQueryStatus, int authorId){
+        int oldSize = this.postList.size();
+        Iterator<Post> iterator = postList.iterator();
         while (iterator.hasNext()){
-            PostInfo postInfo = iterator.next();
-            if(postInfo.message == null){
+            Post post = iterator.next();
+            if(post.message == null){
                 iterator.remove();
             }
         }
-        this.postInfoList.addAll(postInfoList);
+        this.postList.addAll(postList);
         this.viewThreadQueryStatus = viewThreadQueryStatus;
         this.authorId = authorId;
-        notifyItemRangeInserted(oldSize,postInfoList.size());
+        notifyItemRangeInserted(oldSize, postList.size());
     }
 
-    public List<PostInfo> getThreadInfoList() {
-        return postInfoList;
+    public List<Post> getThreadInfoList() {
+        return postList;
     }
 
     @Override
     public long getItemId(int position) {
-        PostInfo postInfo = postInfoList.get(position);
-        return postInfo.pid;
+        Post post = postList.get(position);
+        return post.pid;
     }
 
     @NonNull
@@ -161,12 +159,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
     @Override
     public void onBindViewHolder(@NonNull PostAdapter.bbsForumThreadCommentViewHolder holder, int position) {
-        PostInfo postInfo = postInfoList.get(position);
-        if(postInfo.author == null){
+        Post post = postList.get(position);
+        if(post.author == null){
             return;
         }
-        holder.mThreadPublisher.setText(postInfo.author);
-        if(postInfo.authorId == authorId){
+        holder.mThreadPublisher.setText(post.author);
+        if(post.authorId == authorId){
             holder.isAuthorLabel.setVisibility(View.VISIBLE);
         }
         else {
@@ -174,7 +172,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
         }
         // parse status
-        int status = postInfo.status;
+        int status = post.status;
         int BACKGROUND_ALPHA = 25;
         final int POST_HIDDEN = 1, POST_WARNED = 2, POST_REVISED = 4, POST_MOBILE = 8;
         if((status & POST_HIDDEN) != 0){
@@ -211,7 +209,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             holder.mPostStatusMobileIcon.setVisibility(View.GONE);
         }
 
-        String decodeString = postInfo.message;
+        String decodeString = post.message;
         // extract quote message
         //String quoteRegexInVer4 = "^<div class=.reply_wrap.>.*?</div><br />";
         String quoteRegexInVer4 = "^<div class=\"reply_wrap\">(.+?)</div><br .>";
@@ -292,12 +290,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
         //DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
         //holder.mPublishDate.setText(df.format(postInfo.publishAt));
-        holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext,postInfo.publishAt));
+        holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext, post.publishAt));
 
-        holder.mThreadType.setText(context.getString(R.string.post_index_number,postInfo.position));
+        holder.mThreadType.setText(context.getString(R.string.post_index_number, post.position));
 
 
-        int avatar_num = postInfo.authorId % 16;
+        int avatar_num = post.authorId % 16;
         if(avatar_num < 0){
             avatar_num = -avatar_num;
         }
@@ -306,7 +304,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
         Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-        String source = URLUtils.getSmallAvatarUrlByUid(postInfo.authorId);
+        String source = URLUtils.getSmallAvatarUrlByUid(post.authorId);
         RequestOptions options = new RequestOptions()
                 .placeholder(mContext.getDrawable(avatarResource))
                 .error(mContext.getDrawable(avatarResource))
@@ -339,7 +337,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,curUser);
 
-                intent.putExtra("UID",postInfo.authorId);
+                intent.putExtra("UID", post.authorId);
                 ActivityOptions options = ActivityOptions
                         .makeSceneTransitionAnimation((Activity) mContext, holder.mAvatarImageview, "user_info_avatar");
 
@@ -361,7 +359,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             holder.mPostAdvanceOptionImageView.setVisibility(View.VISIBLE);
             // bind option
             holder.mPostAdvanceOptionImageView.setOnClickListener(v -> {
-                showPopupMenu(holder.mPostAdvanceOptionImageView,postInfo);
+                showPopupMenu(holder.mPostAdvanceOptionImageView, post);
             });
         }
         else {
@@ -369,9 +367,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         }
 
 
-        if(postInfo.getAllAttachments() != null){
+        if(post.getAllAttachments() != null){
             AttachmentAdapter attachmentAdapter = new AttachmentAdapter();
-            attachmentAdapter.setAttachmentInfoList(postInfo.getAllAttachments());
+            attachmentAdapter.setAttachmentInfoList(post.getAllAttachments());
             holder.mRecyclerview.setNestedScrollingEnabled(false);
 
             holder.mRecyclerview.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
@@ -379,7 +377,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         }
         else {
             AttachmentAdapter attachmentAdapter = new AttachmentAdapter();
-            attachmentAdapter.setAttachmentInfoList(postInfo.getAllAttachments());
+            attachmentAdapter.setAttachmentInfoList(post.getAllAttachments());
             holder.mRecyclerview.setNestedScrollingEnabled(false);
             holder.mRecyclerview.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
             holder.mRecyclerview.setAdapter(attachmentAdapter);
@@ -391,7 +389,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             holder.mFilterByAuthorIdBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.setAuthorId(postInfo.authorId);
+                    mListener.setAuthorId(post.authorId);
                 }
             });
         }
@@ -411,7 +409,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
     }
 
-    public void showPopupMenu(View view,PostInfo postInfo){
+    public void showPopupMenu(View view, Post post){
         if(onAdvanceOptionClickedListener ==null){
             return;
         }
@@ -423,7 +421,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
             switch (item.getItemId()){
                 case R.id.action_report_post:{
-                    onAdvanceOptionClickedListener.reportPost(postInfo);
+                    onAdvanceOptionClickedListener.reportPost(post);
                     return true;
                 }
             }
@@ -450,11 +448,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
     @Override
     public int getItemCount() {
-        if(postInfoList == null){
+        if(postList == null){
             return 0;
         }
         else {
-            return postInfoList.size();
+            return postList.size();
         }
 
     }
@@ -792,7 +790,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                                 @Override
                                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                     isLoading = false;
-                                    Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
+                                    Intent intent = new Intent(mContext, FullImageActivity.class);
                                     intent.putExtra("URL",url);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -845,7 +843,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
                                 @Override
                                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                     isLoading = false;
-                                    Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
+                                    Intent intent = new Intent(mContext, FullImageActivity.class);
                                     intent.putExtra("URL",url);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -872,7 +870,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
     }
 
     public interface OnAdvanceOptionClicked{
-        public void reportPost(PostInfo postInfo);
+        public void reportPost(Post post);
     }
     
 

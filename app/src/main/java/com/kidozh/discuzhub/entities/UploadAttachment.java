@@ -12,7 +12,7 @@ import java.io.Serializable;
 import static androidx.room.ForeignKey.CASCADE;
 
 @Entity(
-        foreignKeys = @ForeignKey(entity = bbsThreadDraft.class,
+        foreignKeys = @ForeignKey(entity = ThreadDraft.class,
                 parentColumns = "id",
                 childColumns = "emp_id",
                 onDelete = CASCADE),

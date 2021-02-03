@@ -90,13 +90,13 @@ public class FavoriteThread implements Serializable {
         return Objects.hash(id, favid, uid, idKey, idType, spaceUid, title, description, author, date, iconLabel, url, replies);
     }
 
-    public ThreadInfo toThread(){
-        ThreadInfo threadInfo = new ThreadInfo();
-        threadInfo.tid = idKey;
-        threadInfo.publishAt = date;
-        threadInfo.subject = title;
-        threadInfo.author = author;
-        threadInfo.replies = String.valueOf(replies);
-        return threadInfo;
+    public Thread toThread(){
+        Thread thread = new Thread();
+        thread.tid = idKey;
+        thread.publishAt = date;
+        thread.subject = title;
+        thread.author = author;
+        thread.replies = String.valueOf(replies);
+        return thread;
     }
 }

@@ -12,7 +12,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -37,7 +37,7 @@ public class HotThreadsViewModel extends AndroidViewModel {
     @NonNull
     public MutableLiveData<Integer> pageNum = new MutableLiveData<Integer>(1);
     public MutableLiveData<Boolean> isLoading;
-    public MutableLiveData<List<ThreadInfo>> threadListLiveData;
+    public MutableLiveData<List<Thread>> threadListLiveData;
     public MutableLiveData<ErrorMessage> errorMessageMutableLiveData = new MutableLiveData<>(null);;
     public MutableLiveData<DisplayThreadsResult> resultMutableLiveData = new MutableLiveData<>();
 
@@ -60,7 +60,7 @@ public class HotThreadsViewModel extends AndroidViewModel {
 
 
 
-    public LiveData<List<ThreadInfo>> getThreadListLiveData() {
+    public LiveData<List<Thread>> getThreadListLiveData() {
         if(threadListLiveData == null){
             threadListLiveData = new MutableLiveData<>(new ArrayList<>());
             getThreadList(pageNum.getValue() == null ? 1 : pageNum.getValue());
@@ -95,12 +95,12 @@ public class HotThreadsViewModel extends AndroidViewModel {
                     DisplayThreadsResult threadsResult = response.body();
                     resultMutableLiveData.postValue(threadsResult);
 
-                    List<ThreadInfo> currentThreadInfo = new ArrayList<>();
+                    List<Thread> currentThread = new ArrayList<>();
 
                     if(threadsResult.forumVariables !=null){
-                        List<ThreadInfo> threadInfos = threadsResult.forumVariables.forumThreadList;
-                        if(threadInfos != null){
-                            currentThreadInfo.addAll(threadInfos);
+                        List<Thread> threads = threadsResult.forumVariables.forumThreadList;
+                        if(threads != null){
+                            currentThread.addAll(threads);
                         }
                         errorMessageMutableLiveData.postValue(null);
                     }
@@ -130,7 +130,7 @@ public class HotThreadsViewModel extends AndroidViewModel {
                         }
                     }
 
-                    threadListLiveData.postValue(currentThreadInfo);
+                    threadListLiveData.postValue(currentThread);
                 }
                 else {
                     errorMessageMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),

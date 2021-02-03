@@ -4,24 +4,20 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.UploadAttachmentInfoAdapter;
 import com.kidozh.discuzhub.databinding.DialogPostThreadConfirmedBinding;
+import com.kidozh.discuzhub.entities.ThreadDraft;
 import com.kidozh.discuzhub.entities.UploadAttachment;
-import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.viewModels.PostThreadViewModel;
 
 import java.util.List;
@@ -89,7 +85,7 @@ public class PostThreadConfirmDialogFragment extends DialogFragment {
     }
 
     private void renderPage(){
-        bbsThreadDraft draft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+        ThreadDraft draft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
         if(draft!=null){
             binding.dialogPostThreadSubjectTextview.setText(draft.subject);
             if(draft.password.length()!=0){

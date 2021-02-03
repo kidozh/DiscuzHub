@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ThreadInfo implements Serializable{
+public class Thread implements Serializable{
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     public int tid, price, recommend, fid,
             heat, status, favtimes, sharetimes, stamp ,icon,

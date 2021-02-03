@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity
 @TypeConverters(DateConverter.class)
-public class bbsThreadDraft implements Serializable {
+public class ThreadDraft implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
@@ -37,7 +37,7 @@ public class bbsThreadDraft implements Serializable {
     public List<UploadAttachment> uploadAttachmentList = new ArrayList<>();
 
     @Ignore
-    public bbsThreadDraft(String subject, String content, Date lastUpdateAt, int belongBBSId, String fid, String forumName, String typeid, String typeName, String apiString) {
+    public ThreadDraft(String subject, String content, Date lastUpdateAt, int belongBBSId, String fid, String forumName, String typeid, String typeName, String apiString) {
         this.subject = subject;
         this.content = content;
         this.lastUpdateAt = lastUpdateAt;
@@ -49,7 +49,7 @@ public class bbsThreadDraft implements Serializable {
         this.apiString = apiString;
     }
 
-    public bbsThreadDraft(int id, String subject, String content, Date lastUpdateAt, int belongBBSId, String fid, String forumName, String typeid, String typeName, String apiString, String password, String freeMessage) {
+    public ThreadDraft(int id, String subject, String content, Date lastUpdateAt, int belongBBSId, String fid, String forumName, String typeid, String typeName, String apiString, String password, String freeMessage) {
         this.id = id;
         this.subject = subject;
         this.content = content;

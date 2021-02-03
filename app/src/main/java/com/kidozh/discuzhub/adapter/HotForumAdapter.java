@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ForumActivity;
-import com.kidozh.discuzhub.entities.ForumInfo;
+import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.HotForum;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -76,12 +76,12 @@ public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotFor
         holder.hotForumCardview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ForumInfo forumInfo = new ForumInfo();
-                forumInfo.fid = hotForum.fid;
-                forumInfo.todayPosts = hotForum.todayPosts;
-                forumInfo.name = hotForum.name;
+                Forum forum = new Forum();
+                forum.fid = hotForum.fid;
+                forum.todayPosts = hotForum.todayPosts;
+                forum.name = hotForum.name;
                 Intent intent = new Intent(context, ForumActivity.class);
-                intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,forumInfo);
+                intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, forum);
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                 Log.d(TAG,"put base url "+bbsInfo.base_url);

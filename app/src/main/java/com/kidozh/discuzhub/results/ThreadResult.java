@@ -12,9 +12,8 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.kidozh.discuzhub.entities.PostInfo;
-import com.kidozh.discuzhub.entities.ThreadInfo;
-import com.kidozh.discuzhub.entities.bbsPollInfo;
+import com.kidozh.discuzhub.entities.Post;
+import com.kidozh.discuzhub.entities.Poll;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 
 import java.io.IOException;
@@ -35,7 +34,7 @@ public class ThreadResult extends BaseResult {
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         public int fid;
         @JsonProperty("postlist")
-        public List<PostInfo> postInfoList;
+        public List<Post> postList;
         @JsonProperty("allowpostcomment")
         public List<String> allowPostCommentList;
         @JsonIgnore
@@ -60,7 +59,7 @@ public class ThreadResult extends BaseResult {
         // for poll
         @JsonIgnoreProperties(ignoreUnknown = true)
         @JsonProperty("special_poll")
-        public bbsPollInfo pollInfo;
+        public Poll pollInfo;
 
     }
 

@@ -52,13 +52,12 @@ import com.kidozh.discuzhub.databinding.ContentBbsPostThreadEditorBarBinding;
 import com.kidozh.discuzhub.dialogs.PostThreadConfirmDialogFragment;
 import com.kidozh.discuzhub.dialogs.PostThreadInsertLinkDialogFragment;
 import com.kidozh.discuzhub.dialogs.PostThreadPasswordDialogFragment;
-import com.kidozh.discuzhub.entities.PostInfo;
+import com.kidozh.discuzhub.entities.Post;
+import com.kidozh.discuzhub.entities.ThreadDraft;
 import com.kidozh.discuzhub.entities.UploadAttachment;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.bbsThreadDraft;
-import com.kidozh.discuzhub.entities.ForumInfo;
+import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.results.BaseResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.PostParameterResult;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
@@ -119,7 +118,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
     Uri curOutputFileUri;
     String curOutputFilePath;
 
-    ForumInfo forum;
+    Forum forum;
     private bbsColorPicker myColorPicker;
     private bbsSmileyPicker smileyPicker;
     //private bbsThreadDraft threadDraft;
@@ -128,7 +127,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
     private PostThreadViewModel postThreadViewModel;
     int postType = 0, tid;
     String replyMessage = "";
-    PostInfo replyPost = null;
+    Post replyPost = null;
 
     LiveData<List<UploadAttachment>> uploadAttachmentLiveData;
 
@@ -183,13 +182,13 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         }
 
         // check if it comes from draft box
-        bbsThreadDraft threadDraft = (bbsThreadDraft) intent.getSerializableExtra(ConstUtils.PASS_THREAD_DRAFT_KEY);
+        ThreadDraft threadDraft = (ThreadDraft) intent.getSerializableExtra(ConstUtils.PASS_THREAD_DRAFT_KEY);
         postThreadViewModel.bbsThreadDraftMutableLiveData.setValue(threadDraft);
         URLUtils.setBBS(bbsInfo);
         // check the type
         postType = intent.getIntExtra(ConstUtils.PASS_POST_TYPE,0);
         replyMessage = intent.getStringExtra(ConstUtils.PASS_POST_MESSAGE);
-        replyPost = (PostInfo) intent.getSerializableExtra(ConstUtils.PASS_REPLY_POST);
+        replyPost = (Post) intent.getSerializableExtra(ConstUtils.PASS_REPLY_POST);
         tid = intent.getIntExtra("tid",-1);
         if(isAPostReply() && tid == -1){
             finishAfterTransition();
@@ -260,12 +259,12 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
             }
         });
 
-        postThreadViewModel.bbsThreadDraftMutableLiveData.observe(this, new Observer<bbsThreadDraft>() {
+        postThreadViewModel.bbsThreadDraftMutableLiveData.observe(this, new Observer<ThreadDraft>() {
             @Override
-            public void onChanged(bbsThreadDraft bbsThreadDraft) {
-                if(bbsThreadDraft !=null){
+            public void onChanged(ThreadDraft ThreadDraft) {
+                if(ThreadDraft !=null){
                     // password rendering
-                    String password = bbsThreadDraft.password;
+                    String password = ThreadDraft.password;
                     if(password.length()!=0){
                         editorBarBinding.actionSetPassword.setImageResource(R.drawable.ic_thread_password_24px);
                     }
@@ -372,13 +371,13 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
             }
         });
 
-        bbsThreadDraft draft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+        ThreadDraft draft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
         if(draft!=null){
             uploadAttachmentLiveData = UploadAttachmentDatabase.getInstance(this).getUploadAttachmentDao().getAllUploadAttachmentFromDraft(draft.getId());
             uploadAttachmentLiveData.observe(this, new Observer<List<UploadAttachment>>() {
                 @Override
                 public void onChanged(List<UploadAttachment> uploadAttachments) {
-                    bbsThreadDraft draft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+                    ThreadDraft draft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
                     if(draft!=null){
                         draft.uploadAttachmentList = uploadAttachments;
                         postThreadViewModel.bbsThreadDraftMutableLiveData.postValue(draft);
@@ -413,7 +412,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 Toasty.warning(getApplicationContext(),getString(R.string.reply_password_not_set),Toast.LENGTH_SHORT).show();
                 return;
             }
-            bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+            ThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
             if(threadDraft !=null){
                 PostThreadPasswordDialogFragment postThreadPasswordDialogFragment = new PostThreadPasswordDialogFragment(threadDraft.password);
                 postThreadPasswordDialogFragment.show(getSupportFragmentManager(),PostThreadPasswordDialogFragment.class.getSimpleName());
@@ -518,12 +517,12 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         if(isAPostReply()){
             autoPostBackup = false;
         }
-        bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+        ThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
         // create an initial backup
         if(threadDraft == null && !isAPostReply()){
             if(binding.bbsPostThreadCateSpinner.getSelectedItem()!=null){
 
-                threadDraft = new bbsThreadDraft(binding.bbsPostThreadSubjectEditText.getText().toString(),
+                threadDraft = new ThreadDraft(binding.bbsPostThreadSubjectEditText.getText().toString(),
                         binding.bbsPostThreadMessage.getText().toString(),
                         new Date(),
                         bbsInfo.getId(),
@@ -539,7 +538,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
             }
             else {
-                threadDraft = new bbsThreadDraft(binding.bbsPostThreadSubjectEditText.getText().toString(),
+                threadDraft = new ThreadDraft(binding.bbsPostThreadSubjectEditText.getText().toString(),
                         binding.bbsPostThreadMessage.getText().toString(),
                         new Date(),
                         bbsInfo.getId(),
@@ -572,7 +571,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+                    ThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
                     threadDraft.subject = binding.bbsPostThreadSubjectEditText.getText().toString();
                     threadDraft.content = binding.bbsPostThreadMessage.getText().toString();
                     threadDraft.lastUpdateAt = new Date();
@@ -607,7 +606,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
     @Override
     public void onPasswordSubmit(String password) {
-        bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+        ThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
         if(threadDraft !=null){
             threadDraft.password = password;
             postThreadViewModel.bbsThreadDraftMutableLiveData.postValue(threadDraft);
@@ -631,14 +630,14 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
 
     public class addThreadDraftTask extends AsyncTask<Void, Void, Void> {
-        private bbsThreadDraft insertThreadDraft;
+        private ThreadDraft insertThreadDraft;
         private Context context;
         private Boolean saveThenFinish = false;
-        public addThreadDraftTask(Context context,bbsThreadDraft threadDraft ){
+        public addThreadDraftTask(Context context, ThreadDraft threadDraft ){
             this.insertThreadDraft = threadDraft;
             this.context = context;
         }
-        public addThreadDraftTask(Context context,bbsThreadDraft threadDraft,Boolean saveThenFinish){
+        public addThreadDraftTask(Context context, ThreadDraft threadDraft, Boolean saveThenFinish){
             this.insertThreadDraft = threadDraft;
             this.context = context;
             this.saveThenFinish = saveThenFinish;
@@ -658,7 +657,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             postThreadViewModel.bbsThreadDraftMutableLiveData.postValue(insertThreadDraft);
-            bbsThreadDraft threadDraft = insertThreadDraft;
+            ThreadDraft threadDraft = insertThreadDraft;
             DateFormat df = getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
             binding.bbsPostThreadBackupInfoTextview.setText(getString(R.string.bbs_thread_auto_backup_updated_time_template,
                     df.format(threadDraft.lastUpdateAt)
@@ -904,7 +903,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                         int resCode = Integer.parseInt(s);
                         if(resCode >= 0){
                             // need to add to viewModel
-                            bbsThreadDraft draft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+                            ThreadDraft draft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
                             UploadAttachment uploadAttachment = new UploadAttachment(resCode,filename);
                             if(draft!=null){
                                 uploadAttachment.setEmpId(draft.getId());
@@ -1165,7 +1164,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
             FormBody.Builder formBody = new FormBody.Builder();
             List<String> aids = handler.getImagesAids();
             // check password
-            bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+            ThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
             String password;
             if(threadDraft == null){
                 password = "";
@@ -1374,7 +1373,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
             // auto backup ?
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()) ;
             boolean autoPostBackup = prefs.getBoolean(getString(R.string.preference_key_send_post_backup),true);
-            bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+            ThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
             if(autoPostBackup && !isAPostReply()){
                 new addThreadDraftTask(getApplicationContext(),threadDraft).execute();
             }
@@ -1438,7 +1437,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         }
         else if(id == R.id.bbs_post_thread_toolbar_save_draft){
             if(!isAPostReply()){
-                bbsThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
+                ThreadDraft threadDraft = postThreadViewModel.bbsThreadDraftMutableLiveData.getValue();
                 addThreadDraftTask task = new addThreadDraftTask(this,threadDraft,true);
                 task.execute();
             }

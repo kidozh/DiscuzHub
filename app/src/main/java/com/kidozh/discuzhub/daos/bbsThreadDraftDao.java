@@ -8,41 +8,40 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.bbsThreadDraft;
+import com.kidozh.discuzhub.entities.ThreadDraft;
 
 import java.util.List;
 
 @Dao
 public interface bbsThreadDraftDao {
 
-    @Query("SELECT * FROM bbsThreadDraft")
-    LiveData<List<bbsThreadDraft>> getAllThreadDraft();
+    @Query("SELECT * FROM ThreadDraft")
+    LiveData<List<ThreadDraft>> getAllThreadDraft();
 
-    @Query("SELECT * FROM bbsThreadDraft WHERE belongBBSId=:bbsid ORDER BY lastUpdateAt DESC")
-    LiveData<List<bbsThreadDraft>> getAllThreadDraftByBBSId(int bbsid);
+    @Query("SELECT * FROM ThreadDraft WHERE belongBBSId=:bbsid ORDER BY lastUpdateAt DESC")
+    LiveData<List<ThreadDraft>> getAllThreadDraftByBBSId(int bbsid);
 
-    @Query("SELECT COUNT(id) FROM bbsThreadDraft")
+    @Query("SELECT COUNT(id) FROM ThreadDraft")
     LiveData<Integer> getDraftNumber();
 
     @Insert
-    void insert(bbsThreadDraft... bbsThreadDrafts);
+    void insert(ThreadDraft... ThreadDrafts);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insert(bbsThreadDraft bbsThreadDraft);
+    long insert(ThreadDraft ThreadDraft);
 
     @Update
-    void update(bbsThreadDraft... bbsThreadDrafts);
+    void update(ThreadDraft... ThreadDrafts);
 
     @Update
-    void update(bbsThreadDraft bbsThreadDraft);
+    void update(ThreadDraft ThreadDraft);
 
     @Delete
-    void delete(bbsThreadDraft bbsThreadDraft);
+    void delete(ThreadDraft ThreadDraft);
 
-    @Query("DELETE FROM bbsThreadDraft WHERE belongBBSId=:bbsid")
+    @Query("DELETE FROM ThreadDraft WHERE belongBBSId=:bbsid")
     void deleteAllForumInformation(int bbsid);
 
-    @Query("SELECT COUNT(id) FROM bbsThreadDraft WHERE belongBBSId =:bbsid")
+    @Query("SELECT COUNT(id) FROM ThreadDraft WHERE belongBBSId =:bbsid")
     LiveData<Integer> getAllDraftsCount(int bbsid);
 }

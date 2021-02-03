@@ -7,7 +7,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kidozh.discuzhub.R
-import com.kidozh.discuzhub.activities.ThreadActivity
 import com.kidozh.discuzhub.daos.FavoriteThreadDao
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase
 import com.kidozh.discuzhub.entities.*
@@ -22,24 +21,23 @@ import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 import kotlin.collections.ArrayList
 
 class ThreadViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = ThreadViewModel::class.java.simpleName
     lateinit var bbsInfo: bbsInformation
     lateinit var client: OkHttpClient
-    private var forum: ForumInfo? = null
+    private var forum: Forum? = null
     private var tid = 0
     private var userBriefInfo: forumUserBriefInfo? = null
     var networkStatus = MutableLiveData(ConstUtils.NETWORK_STATUS_SUCCESSFULLY)
     var notifyLoadAll = MutableLiveData(false)
     var formHash: MutableLiveData<String>
     var errorText: MutableLiveData<String>
-    var pollInfoLiveData: MutableLiveData<bbsPollInfo?>
+    var pollLiveData: MutableLiveData<Poll?>
     var bbsPersonInfoMutableLiveData: MutableLiveData<forumUserBriefInfo>
-    var totalPostListLiveData: MutableLiveData<MutableList<PostInfo>>
-    var newPostList: MutableLiveData<List<PostInfo>> = MutableLiveData(ArrayList())
+    var totalPostListLiveData: MutableLiveData<MutableList<Post>>
+    var newPostList: MutableLiveData<List<Post>> = MutableLiveData(ArrayList())
     lateinit var threadStatusMutableLiveData: MutableLiveData<ViewThreadQueryStatus>
     var detailedThreadInfoMutableLiveData: MutableLiveData<DetailedThreadInfo>
     var threadPostResultMutableLiveData: MutableLiveData<ThreadResult?> = MutableLiveData(null)
@@ -53,7 +51,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
     var threadPriceInfoMutableLiveData = MutableLiveData<BuyThreadResult?>(null)
     var buyThreadResultMutableLiveData = MutableLiveData<BuyThreadResult?>(null)
     var dao: FavoriteThreadDao
-    fun setBBSInfo(bbsInfo: bbsInformation, userBriefInfo: forumUserBriefInfo?, forum: ForumInfo?, tid: Int) {
+    fun setBBSInfo(bbsInfo: bbsInformation, userBriefInfo: forumUserBriefInfo?, forum: Forum?, tid: Int) {
         this.bbsInfo = bbsInfo
         this.userBriefInfo = userBriefInfo
         this.forum = forum
@@ -138,10 +136,10 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                             detailedThreadInfo = threadResult.threadPostVariables.detailedThreadInfo
                             detailedThreadInfoMutableLiveData.postValue(threadResult.threadPostVariables.detailedThreadInfo)
                             val pollInfo = threadResult.threadPostVariables.pollInfo
-                            if (pollInfoLiveData.value == null && pollInfo != null) {
-                                pollInfoLiveData.postValue(pollInfo)
+                            if (pollLiveData.value == null && pollInfo != null) {
+                                pollLiveData.postValue(pollInfo)
                             }
-                            val postInfoList = threadResult.threadPostVariables.postInfoList
+                            val postInfoList = threadResult.threadPostVariables.postList
                             // remove null object
                             if (postInfoList.size != 0) {
                                 newPostList.postValue(postInfoList)
@@ -178,10 +176,10 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                         // load all?
                         if (detailedThreadInfo != null) {
                             val maxThreadNumber = detailedThreadInfo.replies
-                            val currentThreadInfoList: List<PostInfo>? = totalPostListLiveData.value
+                            val currentThreadList: List<Post>? = totalPostListLiveData.value
                             var totalThreadCommentsNumber = 0
-                            if (currentThreadInfoList != null) {
-                                totalThreadCommentsNumber = currentThreadInfoList.size
+                            if (currentThreadList != null) {
+                                totalThreadCommentsNumber = currentThreadList.size
                             }
                             Log.d(TAG, "PAGE " + viewThreadQueryStatus.page + " MAX POSITION " + maxThreadNumber + " CUR " + totalThreadCommentsNumber + " " + totalThreadSize)
                             if (totalThreadSize >= maxThreadNumber + 1) {
@@ -419,7 +417,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
         bbsPersonInfoMutableLiveData = MutableLiveData()
         totalPostListLiveData = MutableLiveData()
         newPostList = MutableLiveData(ArrayList())
-        pollInfoLiveData = MutableLiveData(null)
+        pollLiveData = MutableLiveData(null)
         threadStatusMutableLiveData = MutableLiveData()
         errorText = MutableLiveData("")
         detailedThreadInfoMutableLiveData = MutableLiveData()

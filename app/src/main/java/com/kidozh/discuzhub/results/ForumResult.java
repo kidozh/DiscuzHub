@@ -12,14 +12,13 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.kidozh.discuzhub.entities.ForumInfo;
-import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.entities.Forum;
+import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,11 +31,11 @@ public class ForumResult extends BaseResult {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ForumVariables extends VariableResults{
         @JsonProperty("forum")
-        public ForumInfo forumInfo;
+        public Forum forum;
         @JsonProperty("group")
         public GroupInfo groupInfo;
         @JsonProperty("forum_threadlist")
-        public List<ThreadInfo> forumThreadList;
+        public List<Thread> forumThreadList;
         @JsonProperty("groupiconid")
         public Map<String, String> groupIconId;
         @JsonProperty("sublist")

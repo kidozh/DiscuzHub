@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.kidozh.discuzhub.entities.ForumInfo;
+import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer;
 
 import java.io.Serializable;
@@ -32,7 +32,7 @@ public class DiscuzIndexResult extends BaseResult implements Serializable{
         @JsonProperty("catlist")
         public List<ForumCategory> forumCategoryList;
         @JsonProperty("forumlist")
-        public List<ForumInfo> forumInfoList;
+        public List<Forum> forumList;
 
 
     }
@@ -71,9 +71,9 @@ public class DiscuzIndexResult extends BaseResult implements Serializable{
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         public List<Integer> forumIdList;
 
-        public ForumInfo getForumByFid(int fid,@NonNull List<ForumInfo> allForumInfoList){
-            for(int j=0;j <allForumInfoList.size();j++){
-                ForumInfo currentForum = allForumInfoList.get(j);
+        public Forum getForumByFid(int fid, @NonNull List<Forum> allForumList){
+            for(int j = 0; j < allForumList.size(); j++){
+                Forum currentForum = allForumList.get(j);
                 if(currentForum.fid == fid){
                     return currentForum;
 
@@ -82,23 +82,23 @@ public class DiscuzIndexResult extends BaseResult implements Serializable{
             return null;
         }
 
-        public List<ForumInfo> getForumListInTheCategory(@NonNull List<ForumInfo> allForumInfoList){
+        public List<Forum> getForumListInTheCategory(@NonNull List<Forum> allForumList){
             if(forumIdList == null){
                 return new ArrayList<>();
             }
-            List<ForumInfo> returnedForumInfoList = new ArrayList<>();
+            List<Forum> returnedForumList = new ArrayList<>();
             for(int i=0; i<forumIdList.size(); i++){
                 int searchedFid = forumIdList.get(i);
                 // search from other infolist
-                for(int j=0;j <allForumInfoList.size();j++){
-                    ForumInfo currentForum = allForumInfoList.get(j);
+                for(int j = 0; j < allForumList.size(); j++){
+                    Forum currentForum = allForumList.get(j);
                     if(currentForum.fid == searchedFid){
-                        returnedForumInfoList.add(currentForum);
+                        returnedForumList.add(currentForum);
                         break;
                     }
                 }
             }
-            return returnedForumInfoList;
+            return returnedForumList;
         }
     }
 

@@ -131,7 +131,7 @@ class NewThreadsFragment : Fragment() {
 
         viewModel.newThreadListMutableLiveData.observe(viewLifecycleOwner, { threadList ->
             val page = viewModel.pageMutableLiveData.value
-            threadAdapter.threadInfoList = threadList
+            threadAdapter.threadList = threadList
             threadAdapter.notifyDataSetChanged()
 
         })

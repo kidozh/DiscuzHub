@@ -30,16 +30,12 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
-import com.kidozh.discuzhub.adapter.PostAdapter;
+import com.kidozh.discuzhub.activities.FullImageActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
@@ -48,12 +44,10 @@ import org.xml.sax.XMLReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import okhttp3.OkHttpClient;
 
@@ -361,7 +355,7 @@ public class GlideImageGetter implements Html.ImageGetter {
                                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                     Log.d(TAG,"Find the image! Goes to other activity");
                                     isLoading = false;
-                                    Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
+                                    Intent intent = new Intent(mContext, FullImageActivity.class);
                                     intent.putExtra("URL",url);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 

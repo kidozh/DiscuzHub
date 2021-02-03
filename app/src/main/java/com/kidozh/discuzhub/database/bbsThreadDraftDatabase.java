@@ -10,13 +10,11 @@ import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.kidozh.discuzhub.daos.bbsThreadDraftDao;
-import com.kidozh.discuzhub.daos.forumInformationDao;
-import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.bbsThreadDraft;
+import com.kidozh.discuzhub.entities.ThreadDraft;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
 
-@Database(entities = {bbsThreadDraft.class},version = 3, exportSchema = false)
+@Database(entities = {ThreadDraft.class},version = 3, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class bbsThreadDraftDatabase extends RoomDatabase {
     private static final String DB_NAME = "bbsThreadDraftDatabase.db";

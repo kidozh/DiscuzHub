@@ -1,12 +1,8 @@
 package com.kidozh.discuzhub.entities;
 
-import android.content.SharedPreferences;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
@@ -28,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PostInfo implements Serializable {
-    private static final String TAG = PostInfo.class.getSimpleName();
+public class Post implements Serializable {
+    private static final String TAG = Post.class.getSimpleName();
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @NonNull
     public int pid, tid;

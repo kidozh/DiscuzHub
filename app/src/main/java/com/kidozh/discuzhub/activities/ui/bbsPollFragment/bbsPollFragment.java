@@ -22,7 +22,7 @@ import com.google.android.material.chip.Chip;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.PollOptionAdapter;
 import com.kidozh.discuzhub.databinding.FragmentBbsPollBinding;
-import com.kidozh.discuzhub.entities.bbsPollInfo;
+import com.kidozh.discuzhub.entities.Poll;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.RecyclerItemClickListener;
@@ -60,7 +60,7 @@ public class bbsPollFragment extends Fragment {
 
 
     // TODO: Rename and change types of parameters
-    private bbsPollInfo pollInfo;
+    private Poll pollInfo;
     private int tid;
     private forumUserBriefInfo userBriefInfo;
     private String formhash;
@@ -78,7 +78,7 @@ public class bbsPollFragment extends Fragment {
      * @return A new instance of fragment bbsPollFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static bbsPollFragment newInstance(bbsPollInfo pollInfo,forumUserBriefInfo userBriefInfo, int tid, String formhash) {
+    public static bbsPollFragment newInstance(Poll pollInfo, forumUserBriefInfo userBriefInfo, int tid, String formhash) {
         bbsPollFragment fragment = new bbsPollFragment();
         Bundle args = new Bundle();
         args.putSerializable(ConstUtils.PASS_POLL_KEY,pollInfo);
@@ -93,7 +93,7 @@ public class bbsPollFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            pollInfo = (bbsPollInfo) getArguments().getSerializable(ConstUtils.PASS_POLL_KEY);
+            pollInfo = (Poll) getArguments().getSerializable(ConstUtils.PASS_POLL_KEY);
             userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
             tid = getArguments().getInt(ConstUtils.PASS_TID_KEY);
             client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
@@ -192,7 +192,7 @@ public class bbsPollFragment extends Fragment {
         binding.bbsPollVoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<bbsPollInfo.option> options = adapter.getPollOptions();
+                List<Poll.option> options = adapter.getPollOptions();
                 int checkedNumber = pollInfo.getCheckedOptionNumber();
 
                 if(pollInfo.allowVote && checkedNumber > 0 && checkedNumber<=pollInfo.maxChoices && formhash!=null){
@@ -202,7 +202,7 @@ public class bbsPollFragment extends Fragment {
                             .add("formhash",formhash);
                     // append pollanswers[]: id accordingly
                     for(int i=0;i<options.size();i++){
-                        bbsPollInfo.option option = options.get(i);
+                        Poll.option option = options.get(i);
                         if(option.checked){
                             Log.d(TAG,"Option id "+option.id);
                             formBodyBuilder.add("pollanswers[]",option.id);
@@ -268,7 +268,7 @@ public class bbsPollFragment extends Fragment {
         binding.bbsPollOptionRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new PollOptionAdapter();
         binding.bbsPollOptionRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
-        List<bbsPollInfo.option> options = pollInfo.options;
+        List<Poll.option> options = pollInfo.options;
         if(options!= null && options.size() > 0){
             adapter.setPollOptions(options);
         }

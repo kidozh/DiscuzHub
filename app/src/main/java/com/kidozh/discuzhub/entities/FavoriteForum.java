@@ -95,8 +95,8 @@ public class FavoriteForum implements Serializable {
         return Objects.hash(id, favid, uid, idKey, idType, spaceUid, title, description, author, date, iconLabel, url, threads, posts, todayposts, yesterdayposts, belongedBBSId, userId);
     }
 
-    public ForumInfo toForum(){
-        ForumInfo forum = new ForumInfo();
+    public Forum toForum(){
+        Forum forum = new Forum();
         forum.fid = idKey;
         forum.name = title;
         forum.todayPosts = todayposts;

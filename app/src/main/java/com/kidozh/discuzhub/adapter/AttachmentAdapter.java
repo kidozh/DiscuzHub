@@ -1,21 +1,14 @@
 package com.kidozh.discuzhub.adapter;
 
-import android.app.DownloadManager;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,10 +26,10 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.BaseStatusActivity;
-import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
+import com.kidozh.discuzhub.activities.FullImageActivity;
 import com.kidozh.discuzhub.databinding.ItemBbsAttachmentInfoBinding;
 import com.kidozh.discuzhub.dialogs.DownloadAttachmentDialogFragment;
-import com.kidozh.discuzhub.entities.PostInfo;
+import com.kidozh.discuzhub.entities.Post;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
@@ -44,20 +37,18 @@ import com.kidozh.discuzhub.utilities.NetworkUtils;
 import java.io.InputStream;
 import java.util.List;
 
-import es.dmoral.toasty.Toasty;
-
 
 public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.bbsAttachmentViewHolder> {
     private static final String TAG = AttachmentAdapter.class.getSimpleName();
     Context mContext;
-    private List<PostInfo.Attachment> attachmentInfoList;
+    private List<Post.Attachment> attachmentInfoList;
 
-    public void setAttachmentInfoList(@NonNull List<PostInfo.Attachment> attachmentInfoList) {
+    public void setAttachmentInfoList(@NonNull List<Post.Attachment> attachmentInfoList) {
         this.attachmentInfoList = attachmentInfoList;
         notifyItemRangeChanged(0,attachmentInfoList.size());
     }
 
-    public List<PostInfo.Attachment> getAttachmentInfoList() {
+    public List<Post.Attachment> getAttachmentInfoList() {
         return attachmentInfoList;
     }
 
@@ -72,7 +63,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.bb
         return new bbsAttachmentViewHolder(binding);
     }
 
-    void loadImageWithGlideInNetwork(bbsAttachmentViewHolder holder, PostInfo.Attachment attachmentInfo){
+    void loadImageWithGlideInNetwork(bbsAttachmentViewHolder holder, Post.Attachment attachmentInfo){
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(mContext));
         Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
         String source = URLUtils.getAttachmentURL(attachmentInfo);
@@ -100,7 +91,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.bb
                         holder.binding.attachmentCardview.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
+                                Intent intent = new Intent(mContext, FullImageActivity.class);
                                 intent.putExtra("URL",source);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -117,7 +108,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.bb
     }
 
     private void renderPicture(bbsAttachmentViewHolder holder, int position){
-        PostInfo.Attachment attachmentInfo = attachmentInfoList.get(position);
+        Post.Attachment attachmentInfo = attachmentInfoList.get(position);
 
         if(NetworkUtils.canDownloadImageOrFile(mContext)){
             loadImageWithGlideInNetwork(holder,attachmentInfo);
@@ -165,7 +156,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.bb
                             holder.binding.attachmentCardview.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Intent intent = new Intent(mContext, showImageFullscreenActivity.class);
+                                    Intent intent = new Intent(mContext, FullImageActivity.class);
                                     intent.putExtra("URL",source);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -186,7 +177,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.bb
 
     @Override
     public void onBindViewHolder(@NonNull bbsAttachmentViewHolder holder, int position) {
-        PostInfo.Attachment attachmentInfo = attachmentInfoList.get(position);
+        Post.Attachment attachmentInfo = attachmentInfoList.get(position);
 
         Log.d(TAG,"Cur attachment position : "+position+" filename "+attachmentInfo.filename);
         if(attachmentInfo.price != 0){

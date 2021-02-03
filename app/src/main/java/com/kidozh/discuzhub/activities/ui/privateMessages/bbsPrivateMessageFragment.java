@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Handler;
@@ -17,15 +16,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.bbsPrivateMessageAdapter;
 import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
 import com.kidozh.discuzhub.databinding.FragmentBbsPrivateMessageBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.ForumInfo;
+import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -103,7 +100,7 @@ public class bbsPrivateMessageFragment extends Fragment {
 
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
-    ForumInfo forum;
+    Forum forum;
     private OkHttpClient client = new OkHttpClient();
     bbsPrivateMessageAdapter adapter;
     private int globalPage = 1;

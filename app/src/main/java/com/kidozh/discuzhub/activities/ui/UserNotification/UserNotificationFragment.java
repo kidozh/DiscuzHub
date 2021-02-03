@@ -17,25 +17,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.NotificationAdapter;
 import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
 import com.kidozh.discuzhub.databinding.FragmentBbsNotificationBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.List;
-
-import okhttp3.OkHttpClient;
 
 /**
  * A simple {@link Fragment} subclass.

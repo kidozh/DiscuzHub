@@ -25,22 +25,15 @@ import androidx.lifecycle.ViewModelProvider
 import android.content.Intent
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.URLUtils
-import android.text.Spanned
 import android.text.Html
 import android.text.SpannableString
 import android.widget.TextView
-import com.kidozh.discuzhub.activities.ThreadActivity
-import com.kidozh.discuzhub.utilities.EmotionInputHandler.TextChangeListener
 import android.graphics.drawable.Drawable
-import com.kidozh.discuzhub.results.ThreadResult
 import es.dmoral.toasty.Toasty
 import com.kidozh.discuzhub.R
 import android.widget.Toast
 import com.kidozh.discuzhub.utilities.VibrateUtils
-import com.kidozh.discuzhub.utilities.bbsParseUtils.DetailedThreadInfo
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils
-import android.content.SharedPreferences
-import com.kidozh.discuzhub.results.SecureInfoResult
 import kotlin.Throws
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.bumptech.glide.Glide
@@ -49,18 +42,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.LazyHeaders
 import com.kidozh.discuzhub.results.ApiMessageActionResult
-import com.kidozh.discuzhub.results.MessageResult
 import com.kidozh.discuzhub.results.BuyThreadResult
-import com.kidozh.discuzhub.results.BuyThreadResult.BuyThreadVariableResult
 import android.content.DialogInterface
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.kidozh.discuzhub.utilities.NetworkUtils
-import com.kidozh.discuzhub.activities.PublishActivity
 import android.view.View.OnFocusChangeListener
 import com.kidozh.discuzhub.utilities.bbsParseUtils
-import com.kidozh.discuzhub.activities.ForumActivity
-import com.kidozh.discuzhub.activities.UserProfileActivity
-import com.kidozh.discuzhub.activities.InternalWebViewActivity
 import android.app.ActivityOptions
 import android.app.Activity
 import android.app.AlertDialog
@@ -72,7 +58,6 @@ import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.GridLayoutManager
-import com.kidozh.discuzhub.utilities.bbsParseUtils.returnMessage
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.text.TextUtils
@@ -88,18 +73,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import com.google.android.material.chip.Chip
-import com.kidozh.discuzhub.daos.ViewHistoryDao
 import com.kidozh.discuzhub.database.ViewHistoryDatabase
-import com.kidozh.discuzhub.daos.FavoriteThreadDao
-import retrofit2.Retrofit
-import com.kidozh.discuzhub.services.DiscuzApiService
-import com.kidozh.discuzhub.database.FavoriteThreadDatabase
 import com.kidozh.discuzhub.databinding.ActivityViewThreadBinding
 import com.kidozh.discuzhub.entities.*
 import okhttp3.*
 import java.io.IOException
 import java.io.InputStream
-import java.io.UnsupportedEncodingException
 import java.lang.Exception
 import java.net.URLEncoder
 import java.text.DateFormat
@@ -115,14 +94,14 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     lateinit var postAdapter: PostAdapter
     lateinit var countAdapter: ThreadCountAdapter
     var formHash: String? = null
-    var forum: ForumInfo? = null
-    var threadInfo: ThreadInfo? = null
+    var forum: Forum? = null
+    var thread: Thread? = null
     private var hasLoadOnce = false
     private var notifyLoadAll = false
     var allSmileyInfos: List<smileyInfo>? = null
     var smileyCateNum = 0
-    var pollInfo: bbsPollInfo? = null
-    private var selectedThreadComment: PostInfo? = null
+    var poll: Poll? = null
+    private var selectedThreadComment: Post? = null
     private var smileyPicker: bbsSmileyPicker? = null
     private var handler: EmotionInputHandler? = null
     lateinit var threadDetailViewModel: ThreadViewModel
@@ -157,15 +136,15 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             return;
         }
         userBriefInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY) as forumUserBriefInfo?
-        threadInfo = intent.getSerializableExtra(ConstUtils.PASS_THREAD_KEY) as ThreadInfo?
+        thread = intent.getSerializableExtra(ConstUtils.PASS_THREAD_KEY) as Thread?
         tid = intent.getIntExtra("TID", 0)
         fid = intent.getIntExtra("FID", 0)
         subject = intent.getStringExtra("SUBJECT")
         // hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
         URLUtils.setBBS(bbsInfo)
         threadDetailViewModel.setBBSInfo(bbsInfo!!, userBriefInfo, forum, tid)
-        if (threadInfo != null && threadInfo!!.subject != null) {
-            val sp = Html.fromHtml(threadInfo!!.subject)
+        if (thread != null && thread!!.subject != null) {
+            val sp = Html.fromHtml(thread!!.subject)
             val spannableString = SpannableString(sp)
             binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
         }
@@ -219,7 +198,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 binding.bbsCommentConstraintLayout.visibility = View.VISIBLE
             }
         })
-        threadDetailViewModel.newPostList.observe(this, { postInfos: List<PostInfo> ->
+        threadDetailViewModel.newPostList.observe(this, { posts: List<Post> ->
             var authorid = 0
             val threadResult = threadDetailViewModel.threadPostResultMutableLiveData.value
             val viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value
@@ -229,10 +208,10 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             Log.d(TAG, "queried page " + viewThreadQueryStatus!!.page)
             if (viewThreadQueryStatus.page == 1) {
                 postAdapter.clearList()
-                postAdapter.addThreadInfoList(postInfos, threadDetailViewModel.threadStatusMutableLiveData.value, authorid)
+                postAdapter.addThreadInfoList(posts, threadDetailViewModel.threadStatusMutableLiveData.value, authorid)
                 binding.postsRecyclerview.scrollToPosition(0)
             } else {
-                postAdapter.addThreadInfoList(postInfos, threadDetailViewModel.threadStatusMutableLiveData.value, authorid)
+                postAdapter.addThreadInfoList(posts, threadDetailViewModel.threadStatusMutableLiveData.value, authorid)
             }
         })
         threadDetailViewModel.networkStatus.observe(this, { integer: Int ->
@@ -267,7 +246,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 VibrateUtils.vibrateForError(application)
             }
         })
-        threadDetailViewModel.pollInfoLiveData.observe(this, { bbsPollInfo ->
+        threadDetailViewModel.pollLiveData.observe(this, { bbsPollInfo ->
             if (bbsPollInfo != null) {
                 Log.d(TAG, "get poll " + bbsPollInfo.votersCount)
                 val fragmentManager = supportFragmentManager
@@ -811,8 +790,8 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     override fun onPollResultFetched() {
         // reset poll to get realtime result
         Log.d(TAG, "POLL is voted")
-        pollInfo = null
-        threadDetailViewModel.pollInfoLiveData.value = null
+        poll = null
+        threadDetailViewModel.pollLiveData.value = null
         reloadThePage()
         threadDetailViewModel.threadStatusMutableLiveData.value?.let { threadDetailViewModel.getThreadDetail(it) }
     }
@@ -842,7 +821,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 }
                 Log.d(TAG, "Find the current $redirectPid tid $redirectTid")
                 if (redirectTid != tid) {
-                    val putThreadInfo = ThreadInfo()
+                    val putThreadInfo = Thread()
                     putThreadInfo.tid = redirectTid
                     val intent = Intent(this, ThreadActivity::class.java)
                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
@@ -878,7 +857,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                     redirectTid = tidString!!.toInt()
                 } catch (e: Exception) {
                 }
-                val putThreadInfo = ThreadInfo()
+                val putThreadInfo = Thread()
                 putThreadInfo.tid = redirectTid
                 val intent = Intent(this, ThreadActivity::class.java)
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
@@ -899,7 +878,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                     0
                 }
                 val intent = Intent(this, ForumActivity::class.java)
-                val clickedForum = ForumInfo()
+                val clickedForum = Forum()
                 clickedForum.fid = fid
                 intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum)
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
@@ -996,7 +975,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
 
 //                                    int page = Integer.parseInt(pageStr);
                                     val intent = Intent(context, ForumActivity::class.java)
-                                    val clickedForum = ForumInfo()
+                                    val clickedForum = Forum()
                                     clickedForum.fid = fid
                                     intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum)
                                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
@@ -1028,7 +1007,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                                 val pageStr = matcher.group("page")
                                 // handle it
                                 if (tidStr != null) {
-                                    val putThreadInfo = ThreadInfo()
+                                    val putThreadInfo = Thread()
                                     var tid = 0
                                     tid = try {
                                         tidStr.toInt()
@@ -1146,12 +1125,12 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         // prompt dialog first
     }
 
-    override fun reportPost(postInfo: PostInfo) {
+    override fun reportPost(post: Post) {
         if (userBriefInfo == null) {
             Toasty.warning(this, getString(R.string.report_login_required), Toast.LENGTH_LONG).show()
         } else {
             val fragmentManager = supportFragmentManager
-            val reportPostDialogFragment = ReportPostDialogFragment(postInfo)
+            val reportPostDialogFragment = ReportPostDialogFragment(post)
             reportPostDialogFragment.show(fragmentManager, ReportPostDialogFragment::class.java.simpleName)
         }
     }

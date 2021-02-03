@@ -2,13 +2,10 @@ package com.kidozh.discuzhub.results;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.kidozh.discuzhub.entities.ThreadInfo;
 import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

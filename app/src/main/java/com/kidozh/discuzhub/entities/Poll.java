@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class bbsPollInfo implements Serializable {
+public class Poll implements Serializable {
     @JsonFormat(shape= JsonFormat.Shape.STRING)
     @JsonDeserialize(using= OneZeroBooleanDeserializer.class)
     public boolean multiple;

@@ -19,8 +19,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.showImageFullscreenActivity;
-import com.kidozh.discuzhub.entities.bbsPollInfo;
+import com.kidozh.discuzhub.activities.FullImageActivity;
+import com.kidozh.discuzhub.entities.Poll;
 import com.kidozh.discuzhub.utilities.URLUtils;
 
 import java.util.ArrayList;
@@ -31,10 +31,10 @@ import java.util.List;
 public class PollOptionAdapter extends RecyclerView.Adapter<PollOptionAdapter.ViewHolder> {
     private final String TAG = PollOptionAdapter.class.getSimpleName();
 
-    public List<bbsPollInfo.option> pollOptions = new ArrayList<>();
+    public List<Poll.option> pollOptions = new ArrayList<>();
     private Context context;
 
-    public void setPollOptions(List<bbsPollInfo.option> pollOptions) {
+    public void setPollOptions(List<Poll.option> pollOptions) {
         int oldSize = this.pollOptions.size();
         this.pollOptions.clear();
         notifyItemRangeRemoved(0,oldSize);
@@ -46,7 +46,7 @@ public class PollOptionAdapter extends RecyclerView.Adapter<PollOptionAdapter.Vi
         notifyItemChanged(position);
     }
 
-    public List<bbsPollInfo.option> getPollOptions() {
+    public List<Poll.option> getPollOptions() {
         return pollOptions;
     }
 
@@ -59,7 +59,7 @@ public class PollOptionAdapter extends RecyclerView.Adapter<PollOptionAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        bbsPollInfo.option option = pollOptions.get(position);
+        Poll.option option = pollOptions.get(position);
         holder.pollOptionName.setText(option.name);
         holder.pollOptionProgressBar.setMax(100);
         holder.pollOptionProgressBar.setProgress((int) option.percent);
@@ -88,7 +88,7 @@ public class PollOptionAdapter extends RecyclerView.Adapter<PollOptionAdapter.Vi
             holder.pollOptionWatchPicture.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, showImageFullscreenActivity.class);
+                    Intent intent = new Intent(context, FullImageActivity.class);
                     intent.putExtra("URL",imageUrl);
                     context.startActivity(intent);
                 }

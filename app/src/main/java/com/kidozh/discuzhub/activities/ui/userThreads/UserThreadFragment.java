@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -23,7 +22,7 @@ import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
 import com.kidozh.discuzhub.databinding.FragmentBbsMyThreadBinding;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
@@ -163,18 +162,18 @@ public class UserThreadFragment extends Fragment {
                                 threadsResult!=null?threadsResult.forumVariables:null);
                     }
                     if(threadsResult!=null && threadsResult.forumVariables !=null) {
-                        List<ThreadInfo> threadInfoList = threadsResult.forumVariables.forumThreadList;
+                        List<Thread> threadList = threadsResult.forumVariables.forumThreadList;
 
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                adapter.addThreadInfoList(threadInfoList, null);
-                                if (page == 1 && adapter.threadInfoList.size() != 0) {
+                                adapter.addThreadInfoList(threadList, null);
+                                if (page == 1 && adapter.threadList.size() != 0) {
                                     adapter.clearList();
 
                                 }
-                                adapter.addThreadInfoList(threadInfoList, null);
-                                if(threadInfoList == null || threadInfoList.size() == 0){
+                                adapter.addThreadInfoList(threadList, null);
+                                if(threadList == null || threadList.size() == 0){
                                     emptyBinding.emptyView.setVisibility(View.VISIBLE);
                                 }
                                 else {

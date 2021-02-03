@@ -1,7 +1,5 @@
 package com.kidozh.discuzhub.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,21 +11,19 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.databinding.ActivityShowImageFullscreenBinding;
-import com.kidozh.discuzhub.widgets.PinchImageView;
 
 import java.io.File;
 
 
 import es.dmoral.toasty.Toasty;
 
-public class showImageFullscreenActivity extends BaseStatusActivity {
-    private static final String TAG = showImageFullscreenActivity.class.getSimpleName();
+public class FullImageActivity extends BaseStatusActivity {
+    private static final String TAG = FullImageActivity.class.getSimpleName();
 
     String url = "";
     ActivityShowImageFullscreenBinding binding;

@@ -1,13 +1,10 @@
 package com.kidozh.discuzhub.utilities;
 
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.kidozh.discuzhub.entities.DisplayForumQueryStatus;
-import com.kidozh.discuzhub.entities.PostInfo;
-import com.kidozh.discuzhub.entities.ViewThreadQueryStatus;
+import com.kidozh.discuzhub.entities.Post;
 import com.kidozh.discuzhub.entities.bbsInformation;
 
 public class URLUtils {
@@ -124,7 +121,7 @@ public class URLUtils {
         return uri.toString();
     }
 
-    public static String getAttachmentURL(PostInfo.Attachment attachmentInfo){
+    public static String getAttachmentURL(Post.Attachment attachmentInfo){
         String source;
 
         if(attachmentInfo.remote){

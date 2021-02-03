@@ -71,7 +71,7 @@
         </activity>
         <activity android:name=".activities.LoginActivity" />
         <activity
-            android:name=".activities.showImageFullscreenActivity"
+            android:name=".activities.FullImageActivity"
             android:colorMode="wideColorGamut"
             tools:targetApi="o" />
         <activity

@@ -24,8 +24,8 @@ import com.kidozh.discuzhub.adapter.ThreadDraftAdapter;
 import com.kidozh.discuzhub.callback.recyclerViewSwipeToDeleteCallback;
 import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
 import com.kidozh.discuzhub.databinding.ActivityViewThreadDraftBinding;
+import com.kidozh.discuzhub.entities.ThreadDraft;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -39,7 +39,7 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
 
 
     ThreadDraftAdapter threadDraftAdapter;
-    LiveData<List<bbsThreadDraft>> listLiveData;
+    LiveData<List<ThreadDraft>> listLiveData;
     ActivityViewThreadDraftBinding binding;
 
     @Override
@@ -77,16 +77,16 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
         listLiveData = bbsThreadDraftDatabase.getInstance(this)
                 .getbbsThreadDraftDao()
                 .getAllThreadDraftByBBSId(bbsInfo.getId());
-        listLiveData.observe(this, new Observer<List<bbsThreadDraft>>() {
+        listLiveData.observe(this, new Observer<List<ThreadDraft>>() {
             @Override
-            public void onChanged(List<bbsThreadDraft> bbsThreadDrafts) {
-                if(bbsThreadDrafts!=null && bbsThreadDrafts.size()!=0){
-                    threadDraftAdapter.setBbsThreadDraftList(bbsThreadDrafts);
+            public void onChanged(List<ThreadDraft> ThreadDrafts) {
+                if(ThreadDrafts !=null && ThreadDrafts.size()!=0){
+                    threadDraftAdapter.setThreadDraftList(ThreadDrafts);
                     binding.bbsShowThreadDraftNoItemFound.setVisibility(View.GONE);
                 }
                 else {
                     binding.bbsShowThreadDraftNoItemFound.setVisibility(View.VISIBLE);
-                    threadDraftAdapter.setBbsThreadDraftList(bbsThreadDrafts);
+                    threadDraftAdapter.setThreadDraftList(ThreadDrafts);
                     threadDraftAdapter.notifyDataSetChanged();
                 }
 
@@ -124,7 +124,7 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
     }
 
     private void showDeleteAllDraftDialog(){
-        if(threadDraftAdapter.getBbsThreadDraftList() == null || threadDraftAdapter.getBbsThreadDraftList().size() == 0){
+        if(threadDraftAdapter.getThreadDraftList() == null || threadDraftAdapter.getThreadDraftList().size() == 0){
             Toasty.info(this,getString(R.string.bbs_thread_draft_empty),Toast.LENGTH_SHORT).show();
         }
         else {
@@ -153,16 +153,16 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
     @Override
     public void onSwiped(int position, int direction) {
         Log.d(TAG,"On swiped "+position + direction);
-        List<bbsThreadDraft> bbsThreadDraftList = threadDraftAdapter.getBbsThreadDraftList();
-        bbsThreadDraft deleteThreadDraft = bbsThreadDraftList.get(position);
+        List<ThreadDraft> threadDraftList = threadDraftAdapter.getThreadDraftList();
+        ThreadDraft deleteThreadDraft = threadDraftList.get(position);
         new deleteThreadDraftTask(this,deleteThreadDraft).execute();
     }
 
     public class addThreadDraftTask extends AsyncTask<Void, Void, Void> {
-        private bbsThreadDraft insertThreadDraft;
+        private ThreadDraft insertThreadDraft;
         private Context context;
         private Boolean saveThenFinish = false;
-        public addThreadDraftTask(Context context,bbsThreadDraft threadDraft ){
+        public addThreadDraftTask(Context context, ThreadDraft threadDraft ){
             this.insertThreadDraft = threadDraft;
             this.context = context;
         }
@@ -206,9 +206,9 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
     }
 
     public class deleteThreadDraftTask extends AsyncTask<Void, Void, Void> {
-        private bbsThreadDraft threadDraft;
+        private ThreadDraft threadDraft;
         private Context context;
-        public deleteThreadDraftTask(Context context,bbsThreadDraft threadDraft ){
+        public deleteThreadDraftTask(Context context, ThreadDraft threadDraft ){
             this.threadDraft = threadDraft;
             this.context = context;
         }
@@ -230,7 +230,7 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
         }
     }
 
-    public void showUndoSnackbar(final bbsThreadDraft threadDraft) {
+    public void showUndoSnackbar(final ThreadDraft threadDraft) {
         View view = findViewById(R.id.bbs_show_thread_draft_coordinatorlayout);
         Snackbar snackbar = Snackbar.make(view, getString(R.string.bbs_delete_draft,threadDraft.subject,bbsInfo.site_name),
                 Snackbar.LENGTH_LONG);
@@ -244,7 +244,7 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
         snackbar.show();
     }
 
-    private void undoDeleteDraft(final bbsThreadDraft threadDraft){
+    private void undoDeleteDraft(final ThreadDraft threadDraft){
         new addThreadDraftTask(this,threadDraft).execute();
 
     }

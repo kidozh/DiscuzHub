@@ -3,7 +3,7 @@ package com.kidozh.discuzhub.results;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.entities.Thread;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class ThreadCommentsResult extends BaseResult {
     public static class CommentsVariables extends VariableResults{
 
         @JsonProperty("data")
-        public List<ThreadInfo> forumThreadList = new ArrayList<>();
+        public List<Thread> forumThreadList = new ArrayList<>();
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("perpage")
         public int perPage;

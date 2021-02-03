@@ -25,8 +25,8 @@ import com.kidozh.discuzhub.activities.InternalWebViewActivity;
 import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.activities.ForumActivity;
-import com.kidozh.discuzhub.entities.ForumInfo;
-import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.entities.Forum;
+import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
@@ -167,7 +167,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                                 fid= 0;
                             }
                             Intent intent = new Intent(context, ForumActivity.class);
-                            ForumInfo clickedForum = new ForumInfo();
+                            Forum clickedForum = new Forum();
                             clickedForum.fid = fid;
 
                             intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,clickedForum);
@@ -201,7 +201,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                         // handle it
                         if(tidStr !=null){
 
-                            ThreadInfo putThreadInfo = new ThreadInfo();
+                            Thread putThread = new Thread();
                             int tid = 0;
                             try{
                                 tid = Integer.parseInt(tidStr);
@@ -210,11 +210,11 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                                 tid = 0;
                             }
 
-                            putThreadInfo.tid = tid;
+                            putThread.tid = tid;
                             Intent intent = new Intent(context, ThreadActivity.class);
                             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                            intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                            intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThread);
                             intent.putExtra("FID","0");
                             intent.putExtra("TID",tid);
                             intent.putExtra("SUBJECT",url);
@@ -296,12 +296,12 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                     }
 
                     Log.d(TAG, "Find the current " + redirectPid + " tid " + redirectTid);
-                    ThreadInfo putThreadInfo = new ThreadInfo();
-                    putThreadInfo.tid = redirectTid;
+                    Thread putThread = new Thread();
+                    putThread.tid = redirectTid;
                     Intent intent = new Intent(context, ThreadActivity.class);
                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThread);
                     intent.putExtra("FID", 0);
                     intent.putExtra("TID", redirectTid);
                     intent.putExtra("SUBJECT", url);
@@ -321,12 +321,12 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                         redirectTid = 0;
                     }
 
-                    ThreadInfo putThreadInfo = new ThreadInfo();
-                    putThreadInfo.tid = redirectTid;
+                    Thread putThread = new Thread();
+                    putThread.tid = redirectTid;
                     Intent intent = new Intent(context, ThreadActivity.class);
                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo);
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThread);
                     intent.putExtra("FID", 0);
                     intent.putExtra("TID", redirectTid);
                     intent.putExtra("SUBJECT", url);
@@ -348,7 +348,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                     }
 
                     Intent intent = new Intent(context, ForumActivity.class);
-                    ForumInfo clickedForum = new ForumInfo();
+                    Forum clickedForum = new Forum();
                     clickedForum.fid = fid;
 
                     intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum);

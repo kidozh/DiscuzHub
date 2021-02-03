@@ -23,7 +23,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ForumActivity;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.ForumInfo;
+import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -39,7 +39,7 @@ import static com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClient;
 public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private String TAG = ForumAdapter.class.getSimpleName();
     private Context mContext;
-    private List<ForumInfo> forumInfoList = new ArrayList<>();
+    private List<Forum> forumList = new ArrayList<>();
     private bbsInformation bbsInfo;
     private forumUserBriefInfo curUser;
 
@@ -49,11 +49,11 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.curUser = curUser;
     }
 
-    public void setForumInfoList(@NonNull List<ForumInfo> forumInfoList) {
-        this.forumInfoList.clear();
-        notifyItemRangeRemoved(0,this.forumInfoList.size());
-        this.forumInfoList.addAll(forumInfoList);
-        notifyItemRangeInserted(0,forumInfoList.size());
+    public void setForumList(@NonNull List<Forum> forumList) {
+        this.forumList.clear();
+        notifyItemRangeRemoved(0,this.forumList.size());
+        this.forumList.addAll(forumList);
+        notifyItemRangeInserted(0, forumList.size());
     }
 
     @NonNull
@@ -79,7 +79,7 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holderRaw, int position) {
 
-        ForumInfo forum = forumInfoList.get(position);
+        Forum forum = forumList.get(position);
         if(holderRaw instanceof ConciseForumViewHolder){
             // support rich text
             ConciseForumViewHolder holder = (ConciseForumViewHolder) holderRaw;
@@ -177,11 +177,11 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        if(forumInfoList == null){
+        if(forumList == null){
             return 0;
         }
         else {
-            return forumInfoList.size();
+            return forumList.size();
         }
 
     }

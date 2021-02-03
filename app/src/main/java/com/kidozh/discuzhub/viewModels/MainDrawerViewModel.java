@@ -1,8 +1,6 @@
 package com.kidozh.discuzhub.viewModels;
 
 import android.app.Application;
-import android.content.Context;
-import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -13,12 +11,9 @@ import androidx.lifecycle.Observer;
 
 import com.kidozh.discuzhub.daos.forumInformationDao;
 import com.kidozh.discuzhub.database.BBSInformationDatabase;
-import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
-import com.kidozh.discuzhub.entities.ForumInfo;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainDrawerViewModel extends AndroidViewModel {

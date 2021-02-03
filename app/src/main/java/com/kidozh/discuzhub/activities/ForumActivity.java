@@ -43,10 +43,10 @@ import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.databinding.ActivityBbsShowForumBinding;
 import com.kidozh.discuzhub.entities.DisplayForumQueryStatus;
 import com.kidozh.discuzhub.entities.FavoriteForum;
-import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.ForumInfo;
+import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ApiMessageActionResult;
 import com.kidozh.discuzhub.results.ForumResult;
@@ -78,7 +78,7 @@ public class ForumActivity extends BaseStatusActivity implements
         bbsLinkMovementMethod.OnLinkClickedListener{
     private static final String TAG = ForumActivity.class.getSimpleName();
 
-    private ForumInfo forum;
+    private Forum forum;
 
 
     private ThreadAdapter adapter;
@@ -126,7 +126,7 @@ public class ForumActivity extends BaseStatusActivity implements
 
     private void configureIntentData(){
         Intent intent = getIntent();
-        forum = (ForumInfo) intent.getSerializableExtra(ConstUtils.PASS_FORUM_THREAD_KEY);
+        forum = (Forum) intent.getSerializableExtra(ConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         URLUtils.setBBS(bbsInfo);
@@ -138,9 +138,9 @@ public class ForumActivity extends BaseStatusActivity implements
 
     private void bindViewModel(){
 
-        forumViewModel.getNewThreadListMutableLiveData().observe(this, new Observer<List<ThreadInfo>>() {
+        forumViewModel.getNewThreadListMutableLiveData().observe(this, new Observer<List<Thread>>() {
             @Override
-            public void onChanged(@NonNull List<ThreadInfo> threadInfos) {
+            public void onChanged(@NonNull List<Thread> threads) {
                 Map<String,String> threadTypeMap = null;
                 if(forumViewModel.displayForumResultMutableLiveData.getValue()!=null &&
                         forumViewModel.displayForumResultMutableLiveData.getValue().forumVariables.threadTypeInfo !=null){
@@ -148,18 +148,18 @@ public class ForumActivity extends BaseStatusActivity implements
 
                 }
                 DisplayForumQueryStatus queryStatus = forumViewModel.forumStatusMutableLiveData.getValue();
-                Log.d(TAG,"forum page "+queryStatus.page+" "+threadInfos.size());
-                if(queryStatus.page == 1 && threadInfos.size() == 0){
+                Log.d(TAG,"forum page "+queryStatus.page+" "+ threads.size());
+                if(queryStatus.page == 1 && threads.size() == 0){
                     adapter.clearList();
                     return;
                 }
-                if((queryStatus.page == 2 || queryStatus.page == 1) && adapter.threadInfoList.size() != 0){
+                if((queryStatus.page == 2 || queryStatus.page == 1) && adapter.threadList.size() != 0){
                     // need to clear the cache
                     adapter.clearList();
 
                 }
 
-                adapter.addThreadInfoList(threadInfos,threadTypeMap);
+                adapter.addThreadInfoList(threads,threadTypeMap);
                 if(queryStatus.page == 2 ){
                     binding.bbsForumThreadRecyclerview.smoothScrollToPosition(0);
                 }
@@ -220,13 +220,13 @@ public class ForumActivity extends BaseStatusActivity implements
                 if(forumResult !=null && forumResult.forumVariables!=null){
                     Log.d(TAG,"GET sublist size "+forumResult.forumVariables.subForumLists.size());
                     subForumAdapter.setSubForumInfoList(forumResult.forumVariables.subForumLists);
-                    if(forumResult.forumVariables.forumInfo !=null){
+                    if(forumResult.forumVariables.forum !=null){
                         
-                        ForumInfo forumInfo = forumResult.forumVariables.forumInfo;
-                        forum = forumInfo;
+                        Forum forum = forumResult.forumVariables.forum;
+                        ForumActivity.this.forum = forum;
                         if(getSupportActionBar()!=null){
-                            getSupportActionBar().setTitle(forumInfo.name);
-                            getSupportActionBar().setSubtitle(forumInfo.description);
+                            getSupportActionBar().setTitle(forum.name);
+                            getSupportActionBar().setSubtitle(forum.description);
                         }
                     }
                 }
@@ -234,17 +234,17 @@ public class ForumActivity extends BaseStatusActivity implements
 
         });
 
-        forumViewModel.forumDetailedInfoMutableLiveData.observe(this, new Observer<ForumInfo>() {
+        forumViewModel.forumDetailedInfoMutableLiveData.observe(this, new Observer<Forum>() {
             @Override
-            public void onChanged(ForumInfo forumInfo) {
+            public void onChanged(Forum forum) {
                 // for rules
                 if(!hasLoadOnce){
-                    recordViewHistory(forumInfo);
+                    recordViewHistory(forum);
                     hasLoadOnce = true;
                 }
 
-                if(! binding.bbsForumRuleTextview.getText().equals(forumInfo.rules)){
-                    String s = forumInfo.rules;
+                if(! binding.bbsForumRuleTextview.getText().equals(forum.rules)){
+                    String s = forum.rules;
                     if(s!=null && s.length() !=0){
                         GlideImageGetter glideImageGetter  = new GlideImageGetter(binding.bbsForumRuleTextview,userBriefInfo);
                         GlideImageGetter.HtmlTagHandler htmlTagHandler = new GlideImageGetter.HtmlTagHandler(getApplicationContext(),binding.bbsForumRuleTextview);
@@ -263,8 +263,8 @@ public class ForumActivity extends BaseStatusActivity implements
 
 
                 // for description
-                if(!binding.bbsForumAlertTextview.getText().equals(forumInfo.description)){
-                    String s = forumInfo.description;
+                if(!binding.bbsForumAlertTextview.getText().equals(forum.description)){
+                    String s = forum.description;
                     if(s!=null && s.length() !=0){
                         GlideImageGetter glideImageGetter  = new GlideImageGetter(binding.bbsForumAlertTextview,userBriefInfo);
                         GlideImageGetter.HtmlTagHandler htmlTagHandler = new GlideImageGetter.HtmlTagHandler(getApplicationContext(),binding.bbsForumRuleTextview);
@@ -325,18 +325,18 @@ public class ForumActivity extends BaseStatusActivity implements
     ForumDisplayOptionFragment forumDisplayOptionFragment = new ForumDisplayOptionFragment();
 
 
-    private void recordViewHistory(ForumInfo forumInfo){
+    private void recordViewHistory(Forum forum){
         SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
         boolean recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history),false);
         if(recordHistory){
 
             new InsertViewHistory(new ViewHistory(
-                    forumInfo.iconUrl,
-                    forumInfo.name,
+                    forum.iconUrl,
+                    forum.name,
                     bbsInfo.getId(),
-                    forumInfo.description,
+                    forum.description,
                     ViewHistory.VIEW_TYPE_FORUM,
-                    forumInfo.fid,
+                    forum.fid,
                     0,
                     new Date()
             )).execute();
@@ -575,12 +575,12 @@ public class ForumActivity extends BaseStatusActivity implements
         }
         else if(id == R.id.bbs_share){
             ForumResult result = forumViewModel.displayForumResultMutableLiveData.getValue();
-            if(result!=null && result.forumVariables!=null && result.forumVariables.forumInfo!=null){
-                ForumInfo forumInfo = result.forumVariables.forumInfo;
+            if(result!=null && result.forumVariables!=null && result.forumVariables.forum !=null){
+                Forum forum = result.forumVariables.forum;
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_template,
-                        forumInfo.name,URLUtils.getForumDisplayUrl(String.valueOf(forum.fid),"1")));
+                        forum.name,URLUtils.getForumDisplayUrl(String.valueOf(this.forum.fid),"1")));
                 sendIntent.setType("text/plain");
 
                 Intent shareIntent = Intent.createChooser(sendIntent, null);
@@ -593,10 +593,10 @@ public class ForumActivity extends BaseStatusActivity implements
         }
         else if(id == R.id.bbs_favorite){
             ForumResult result = forumViewModel.displayForumResultMutableLiveData.getValue();
-            if(result!=null && result.forumVariables!=null && result.forumVariables.forumInfo!=null){
-                ForumInfo forumInfo = result.forumVariables.forumInfo;
+            if(result!=null && result.forumVariables!=null && result.forumVariables.forum !=null){
+                Forum forum = result.forumVariables.forum;
 
-                FavoriteForum favoriteForum = forumInfo.toFavoriteForm(bbsInfo.getId(),
+                FavoriteForum favoriteForum = forum.toFavoriteForm(bbsInfo.getId(),
                         userBriefInfo!=null?userBriefInfo.getUid():0
                 );
                 // save it to the database

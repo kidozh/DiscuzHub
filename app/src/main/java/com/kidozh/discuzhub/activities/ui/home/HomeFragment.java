@@ -22,7 +22,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.LoginActivity;
 import com.kidozh.discuzhub.adapter.ForumCategoryAdapter;
 import com.kidozh.discuzhub.databinding.ActivityBbsForumIndexBinding;
-import com.kidozh.discuzhub.entities.ForumInfo;
+import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
@@ -124,8 +124,8 @@ public class HomeFragment extends Fragment {
             public void onChanged(List<DiscuzIndexResult.ForumCategory> forumCategories) {
                 if(homeViewModel.bbsIndexResultMutableLiveData.getValue() !=null &&
                         homeViewModel.bbsIndexResultMutableLiveData.getValue().forumVariables !=null){
-                    List<ForumInfo> allForumInfo = homeViewModel.bbsIndexResultMutableLiveData.getValue().forumVariables.forumInfoList;
-                    adapter.setForumCategoryList(forumCategories,allForumInfo);
+                    List<Forum> allForum = homeViewModel.bbsIndexResultMutableLiveData.getValue().forumVariables.forumList;
+                    adapter.setForumCategoryList(forumCategories, allForum);
                 }
 
             }

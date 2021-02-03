@@ -28,7 +28,7 @@ class NewThreadsViewModel(application: Application) : AndroidViewModel(applicati
     var isLoadingMutableLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
     var loadAllMutableLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
     var newThreadsResultMutableLiveData: MutableLiveData<NewThreadsResult?> = MutableLiveData(null)
-    var newThreadListMutableLiveData: MutableLiveData<List<ThreadInfo>> = MutableLiveData(ArrayList())
+    var newThreadListMutableLiveData: MutableLiveData<List<Thread>> = MutableLiveData(ArrayList())
     var pageMutableLiveData: MutableLiveData<Int> = MutableLiveData(1)
     lateinit var retrofit: Retrofit
     lateinit var service: DiscuzApiService
@@ -78,7 +78,7 @@ class NewThreadsViewModel(application: Application) : AndroidViewModel(applicati
         if(bbsIndex!=null){
             val page = pageMutableLiveData.value as Int
             val start = page * 20
-            val forums = bbsIndex.forumVariables.forumInfoList
+            val forums = bbsIndex.forumVariables.forumList
             Log.d(TAG, "forum list "+forums)
             if(forums != null && forums.size != 0){
                 var fidsString = ""
@@ -99,7 +99,7 @@ class NewThreadsViewModel(application: Application) : AndroidViewModel(applicati
                                 newThreadListMutableLiveData.postValue(newThreadsResult.forumVariables.forumThreadList)
                             }
                             else{
-                                val originalThreads = newThreadListMutableLiveData.value?.toMutableList() as MutableList<ThreadInfo>
+                                val originalThreads = newThreadListMutableLiveData.value?.toMutableList() as MutableList<Thread>
                                 originalThreads.addAll(newThreadsResult.forumVariables.forumThreadList)
                                 newThreadListMutableLiveData.postValue(originalThreads)
                             }

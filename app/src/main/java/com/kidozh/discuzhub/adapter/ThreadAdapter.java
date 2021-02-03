@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
@@ -35,7 +34,7 @@ import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
-import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
@@ -56,7 +55,7 @@ import java.util.Map;
 
 public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = ThreadAdapter.class.getSimpleName();
-    public List<ThreadInfo> threadInfoList = new ArrayList<>();
+    public List<Thread> threadList = new ArrayList<>();
     public boolean ignoreDigestStyle = false;
     Context mContext;
     public String fid;
@@ -76,31 +75,31 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public long getItemId(int position) {
-        if(threadInfoList !=null){
-            return (long) threadInfoList.get(position).tid;
+        if(threadList !=null){
+            return (long) threadList.get(position).tid;
         }
         return position;
     }
 
     public void clearList(){
-        int oldSize = this.threadInfoList.size();
-        this.threadInfoList.clear();
+        int oldSize = this.threadList.size();
+        this.threadList.clear();
         notifyItemRangeRemoved(0,oldSize);
     }
 
-    public void addThreadInfoList(@NonNull List<ThreadInfo> threadInfoList, Map<String,String> threadType){
+    public void addThreadInfoList(@NonNull List<Thread> threadList, Map<String,String> threadType){
         this.threadType = threadType;
-        int oldSize = this.threadInfoList.size();
-        this.threadInfoList.addAll(threadInfoList);
-        Log.d(TAG,"Insert to thread adapter starting at "+oldSize+" count "+threadInfoList.size());
+        int oldSize = this.threadList.size();
+        this.threadList.addAll(threadList);
+        Log.d(TAG,"Insert to thread adapter starting at "+oldSize+" count "+ threadList.size());
 
-        notifyItemRangeInserted(oldSize,threadInfoList.size());
+        notifyItemRangeInserted(oldSize, threadList.size());
     }
 
     @Override
     public int getItemViewType(int position) {
-        ThreadInfo threadInfo = threadInfoList.get(position);
-        if(threadInfo.displayOrder <= 0){
+        Thread thread = threadList.get(position);
+        if(thread.displayOrder <= 0){
             return R.layout.item_thread;
         }
         else {
@@ -141,20 +140,20 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holderRaw, int position) {
-        ThreadInfo threadInfo = threadInfoList.get(position);
-        if(threadInfo == null ){
+        Thread thread = threadList.get(position);
+        if(thread == null ){
             return;
         }
         if(holderRaw instanceof PinnedViewHolder){
             PinnedViewHolder holder = (PinnedViewHolder) holderRaw;
-            Spanned sp = Html.fromHtml(threadInfo.subject);
+            Spanned sp = Html.fromHtml(thread.subject);
             SpannableString spannableString = new SpannableString(sp);
             holder.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE);
 
             // thread type
-            if(threadInfo.displayOrder !=0){
+            if(thread.displayOrder !=0){
                 int textResource = R.string.bbs_forum_pinned;
-                switch(threadInfo.displayOrder){
+                switch(thread.displayOrder){
                     case 3:
                         textResource = R.string.display_order_3;
                         break;
@@ -190,7 +189,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 else {
                     // provided by label
                     holder.mThreadType.setVisibility(View.VISIBLE);
-                    String type = threadType.get(String.valueOf(threadInfo.typeId));
+                    String type = threadType.get(String.valueOf(thread.typeId));
 
                     if(type !=null){
                         Spanned threadSpanned = Html.fromHtml(type);
@@ -212,10 +211,10 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     Intent intent = new Intent(mContext, ThreadActivity.class);
                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, threadInfo);
-                    intent.putExtra("FID",threadInfo.fid);
-                    intent.putExtra("TID",threadInfo.tid);
-                    intent.putExtra("SUBJECT",threadInfo.subject);
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, thread);
+                    intent.putExtra("FID", thread.fid);
+                    intent.putExtra("TID", thread.tid);
+                    intent.putExtra("SUBJECT", thread.subject);
                     VibrateUtils.vibrateForClick(mContext);
                     ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
                             Pair.create(holder.mTitle, "bbs_thread_subject")
@@ -228,17 +227,17 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
         else if(holderRaw instanceof ThreadViewHolder){
             ThreadViewHolder holder = (ThreadViewHolder) holderRaw;
-            Spanned sp = Html.fromHtml(threadInfo.subject);
+            Spanned sp = Html.fromHtml(thread.subject);
             SpannableString spannableString = new SpannableString(sp);
             holder.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE);
-            holder.mThreadViewNum.setText(numberFormatUtils.getShortNumberText(threadInfo.views));
-            holder.mThreadReplyNum.setText(numberFormatUtils.getShortNumberText(threadInfo.replies));
+            holder.mThreadViewNum.setText(numberFormatUtils.getShortNumberText(thread.views));
+            holder.mThreadReplyNum.setText(numberFormatUtils.getShortNumberText(thread.replies));
 
-            holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext,threadInfo.publishAt));
+            holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext, thread.publishAt));
 
-            if(threadInfo.displayOrder !=0){
+            if(thread.displayOrder !=0){
                 int textResource = R.string.bbs_forum_pinned;
-                switch(threadInfo.displayOrder){
+                switch(thread.displayOrder){
                     case 3:
                         textResource = R.string.display_order_3;
                         break;
@@ -274,7 +273,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 else {
                     // provided by label
                     holder.mThreadType.setVisibility(View.VISIBLE);
-                    String type = threadType.get(String.valueOf(threadInfo.typeId));
+                    String type = threadType.get(String.valueOf(thread.typeId));
 
                     if(type !=null){
                         Spanned threadSpanned = Html.fromHtml(type);
@@ -290,9 +289,9 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 //holder.mThreadType.setBackgroundColor(mContext.getColor(R.color.ThreadTypeBackgroundColor));
             }
 
-            holder.mThreadPublisher.setText(threadInfo.author);
+            holder.mThreadPublisher.setText(thread.author);
 
-            int avatar_num = threadInfo.authorId % 16;
+            int avatar_num = thread.authorId % 16;
             if(avatar_num < 0){
                 avatar_num = -avatar_num;
             }
@@ -301,7 +300,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(mContext));
             Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-            String source = URLUtils.getSmallAvatarUrlByUid(threadInfo.authorId);
+            String source = URLUtils.getSmallAvatarUrlByUid(thread.authorId);
             RequestOptions options = new RequestOptions()
                     .placeholder(mContext.getDrawable(avatarResource))
                     .error(mContext.getDrawable(avatarResource))
@@ -326,9 +325,9 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         .into(holder.mAvatarImageview);
             }
             // set short reply
-            if(threadInfo.recommendNum !=0){
+            if(thread.recommendNum !=0){
                 holder.mRecommendationNumber.setVisibility(View.VISIBLE);
-                holder.mRecommendationNumber.setText(numberFormatUtils.getShortNumberText(threadInfo.recommendNum));
+                holder.mRecommendationNumber.setText(numberFormatUtils.getShortNumberText(thread.recommendNum));
 
             }
             else {
@@ -336,16 +335,16 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             }
 
-            if(threadInfo.readPerm == 0){
+            if(thread.readPerm == 0){
                 holder.mReadPerm.setVisibility(View.GONE);
 
             }
             else {
 
                 holder.mReadPerm.setVisibility(View.VISIBLE);
-                holder.mReadPerm.setText(String.valueOf(threadInfo.readPerm));
+                holder.mReadPerm.setText(String.valueOf(thread.readPerm));
                 //holder.mReadPerm.setText(numberFormatUtils.getShortNumberText(threadInfo.readPerm));
-                int readPermissionVal = threadInfo.readPerm;
+                int readPermissionVal = thread.readPerm;
                 if(userBriefInfo == null || userBriefInfo.readPerm < readPermissionVal){
                     holder.mReadPerm.setTextColor(mContext.getColor(R.color.colorWarn));
                 }
@@ -354,12 +353,12 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
             }
 
-            if(threadInfo.attachment == 0){
+            if(thread.attachment == 0){
                 holder.mAttachmentIcon.setVisibility(View.GONE);
             }
             else {
                 holder.mAttachmentIcon.setVisibility(View.VISIBLE);
-                if(threadInfo.attachment == 1){
+                if(thread.attachment == 1){
                     holder.mAttachmentIcon.setImageDrawable(mContext.getDrawable(R.drawable.ic_thread_attachment_24px));
                 }
                 else {
@@ -367,9 +366,9 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
             }
 
-            if(threadInfo.price !=0 ){
+            if(thread.price !=0 ){
 
-                holder.mPriceNumber.setText(String.valueOf(threadInfo.price));
+                holder.mPriceNumber.setText(String.valueOf(thread.price));
                 holder.mPriceNumber.setVisibility(View.VISIBLE);
             }
             else {
@@ -378,14 +377,14 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
 
 
-            if(threadInfo.shortReplyList!=null && threadInfo.shortReplyList.size()>0){
+            if(thread.shortReplyList!=null && thread.shortReplyList.size()>0){
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
                 holder.mReplyRecyclerview.setFocusable(false);
                 holder.mReplyRecyclerview.setNestedScrollingEnabled(false);
                 holder.mReplyRecyclerview.setLayoutManager(linearLayoutManager);
                 holder.mReplyRecyclerview.setClickable(false);
                 ShortPostAdapter adapter = new ShortPostAdapter();
-                adapter.setShortReplyInfoList(threadInfo.shortReplyList);
+                adapter.setShortReplyInfoList(thread.shortReplyList);
                 holder.mReplyRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(mContext));
                 holder.mReplyRecyclerview.setAdapter(adapter);
                 holder.mReplyRecyclerview.setNestedScrollingEnabled(false);
@@ -401,10 +400,10 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     Intent intent = new Intent(mContext, ThreadActivity.class);
                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, threadInfo);
-                    intent.putExtra("FID",threadInfo.fid);
-                    intent.putExtra("TID",threadInfo.tid);
-                    intent.putExtra("SUBJECT",threadInfo.subject);
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, thread);
+                    intent.putExtra("FID", thread.fid);
+                    intent.putExtra("TID", thread.tid);
+                    intent.putExtra("SUBJECT", thread.subject);
                     VibrateUtils.vibrateForClick(mContext);
                     ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
                             Pair.create(holder.mTitle, "bbs_thread_subject")
@@ -421,7 +420,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     Intent intent = new Intent(mContext, UserProfileActivity.class);
                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                    intent.putExtra("UID",threadInfo.authorId);
+                    intent.putExtra("UID", thread.authorId);
 
                     ActivityOptions options = ActivityOptions
                             .makeSceneTransitionAnimation((Activity) mContext, holder.mAvatarImageview, "user_info_avatar");
@@ -435,18 +434,18 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         else if(holderRaw instanceof ConciseThreadViewHolder){
             ConciseThreadViewHolder holder = (ConciseThreadViewHolder) holderRaw;
 
-            Spanned sp = Html.fromHtml(threadInfo.subject);
+            Spanned sp = Html.fromHtml(thread.subject);
             SpannableString spannableString = new SpannableString(sp);
             holder.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE);
 
-            holder.mThreadReplyNum.setText(numberFormatUtils.getShortNumberText(threadInfo.replies));
+            holder.mThreadReplyNum.setText(numberFormatUtils.getShortNumberText(thread.replies));
 
-            holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext,threadInfo.publishAt));
+            holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext, thread.publishAt));
 
             //holder.mPublishDate.setText(df.format(threadInfo.publishAt));
-            if(threadInfo.displayOrder !=0){
+            if(thread.displayOrder !=0){
                 int textResource = R.string.bbs_forum_pinned;
-                switch(threadInfo.displayOrder){
+                switch(thread.displayOrder){
                     case 3:
                         textResource = R.string.display_order_3;
                         break;
@@ -480,7 +479,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             }
 
-            int avatar_num = threadInfo.authorId % 16;
+            int avatar_num = thread.authorId % 16;
             if(avatar_num < 0){
                 avatar_num = -avatar_num;
             }
@@ -489,7 +488,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(mContext));
             Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-            String source = URLUtils.getDefaultAvatarUrlByUid(threadInfo.authorId);
+            String source = URLUtils.getDefaultAvatarUrlByUid(thread.authorId);
             RequestOptions options = new RequestOptions()
                     .placeholder(mContext.getDrawable(avatarResource))
                     .error(mContext.getDrawable(avatarResource));
@@ -512,7 +511,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
 
 
-            holder.mThreadPublisher.setText(threadInfo.author);
+            holder.mThreadPublisher.setText(thread.author);
             holder.mCardview.setOnClickListener(new View.OnClickListener(){
 
                 @Override
@@ -520,10 +519,10 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     Intent intent = new Intent(mContext, ThreadActivity.class);
                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, threadInfo);
-                    intent.putExtra("FID",threadInfo.fid);
-                    intent.putExtra("TID",threadInfo.tid);
-                    intent.putExtra("SUBJECT",threadInfo.subject);
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, thread);
+                    intent.putExtra("FID", thread.fid);
+                    intent.putExtra("TID", thread.tid);
+                    intent.putExtra("SUBJECT", thread.subject);
                     VibrateUtils.vibrateForClick(mContext);
                     ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext,
                             Pair.create(holder.mTitle, "bbs_thread_subject")
@@ -542,11 +541,11 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        if(threadInfoList == null){
+        if(threadList == null){
             return 0;
         }
         else {
-            return threadInfoList.size();
+            return threadList.size();
         }
 
     }

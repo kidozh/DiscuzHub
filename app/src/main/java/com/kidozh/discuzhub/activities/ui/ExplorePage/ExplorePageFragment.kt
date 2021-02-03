@@ -8,24 +8,19 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.activities.ForumActivity
-import com.kidozh.discuzhub.activities.SearchPostsActivity
 import com.kidozh.discuzhub.activities.ThreadActivity
 import com.kidozh.discuzhub.activities.UserProfileActivity
 import com.kidozh.discuzhub.databinding.FragmentExplorePageBinding
-import com.kidozh.discuzhub.entities.ForumInfo
-import com.kidozh.discuzhub.entities.ThreadInfo
+import com.kidozh.discuzhub.entities.Forum
+import com.kidozh.discuzhub.entities.Thread
 import com.kidozh.discuzhub.entities.bbsInformation
 import com.kidozh.discuzhub.entities.forumUserBriefInfo
 import com.kidozh.discuzhub.utilities.ConstUtils
@@ -237,7 +232,7 @@ class ExplorePageFragment : Fragment() {
                                     0
                                 }
                                 val intent = Intent(context, ForumActivity::class.java)
-                                val clickedForum = ForumInfo()
+                                val clickedForum = Forum()
                                 clickedForum.fid = fid
                                 intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum)
                                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
@@ -266,7 +261,7 @@ class ExplorePageFragment : Fragment() {
                             val pageStr = matcher.group("page")
                             // handle it
                             if (tidStr != null) {
-                                val putThreadInfo = ThreadInfo()
+                                val putThreadInfo = Thread()
                                 var tid = 0
                                 tid = try {
                                     tidStr.toInt()
@@ -336,7 +331,7 @@ class ExplorePageFragment : Fragment() {
                             redirectPid = pidString!!.toInt()
                         } catch (e: Exception) {
                         }
-                        val putThreadInfo = ThreadInfo()
+                        val putThreadInfo = Thread()
                         putThreadInfo.tid = redirectTid
                         val intent = Intent(context, ThreadActivity::class.java)
                         intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
@@ -356,7 +351,7 @@ class ExplorePageFragment : Fragment() {
                         } catch (e: Exception) {
                             0
                         }
-                        val putThreadInfo = ThreadInfo()
+                        val putThreadInfo = Thread()
                         putThreadInfo.tid = redirectTid
                         val intent = Intent(context, ThreadActivity::class.java)
                         intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
@@ -377,7 +372,7 @@ class ExplorePageFragment : Fragment() {
                             0
                         }
                         val intent = Intent(context, ForumActivity::class.java)
-                        val clickedForum = ForumInfo()
+                        val clickedForum = Forum()
                         clickedForum.fid = fid
                         intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum)
                         intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)

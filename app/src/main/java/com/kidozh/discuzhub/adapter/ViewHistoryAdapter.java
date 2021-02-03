@@ -26,8 +26,8 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.activities.ForumActivity;
-import com.kidozh.discuzhub.entities.ForumInfo;
-import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.entities.Forum;
+import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
@@ -99,11 +99,11 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
             holder.cardView.setOnClickListener(v -> {
                 switch (history.type){
                     case ViewHistory.VIEW_TYPE_FORUM:{
-                        ForumInfo forumInfo = new ForumInfo();
-                        forumInfo.fid = history.fid;
-                        forumInfo.description = history.description;
+                        Forum forum = new Forum();
+                        forum.fid = history.fid;
+                        forum.description = history.description;
                         Intent intent = new Intent(context, ForumActivity.class);
-                        intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,forumInfo);
+                        intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, forum);
                         intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                         intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                         intent.putExtra(ConstUtils.PASS_IS_VIEW_HISTORY,true);
@@ -114,17 +114,17 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
                         break;
                     }
                     case ViewHistory.VIEW_TYPE_THREAD:{
-                        ThreadInfo threadInfo = new ThreadInfo();
-                        threadInfo.fid = history.fid;
-                        threadInfo.tid = history.tid;
-                        threadInfo.subject = history.description;
+                        Thread thread = new Thread();
+                        thread.fid = history.fid;
+                        thread.tid = history.tid;
+                        thread.subject = history.description;
                         Intent intent = new Intent(context, ThreadActivity.class);
                         intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                         intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                        intent.putExtra(ConstUtils.PASS_THREAD_KEY, threadInfo);
-                        intent.putExtra("FID",threadInfo.fid);
-                        intent.putExtra("TID",threadInfo.tid);
-                        intent.putExtra("SUBJECT",threadInfo.subject);
+                        intent.putExtra(ConstUtils.PASS_THREAD_KEY, thread);
+                        intent.putExtra("FID", thread.fid);
+                        intent.putExtra("TID", thread.tid);
+                        intent.putExtra("SUBJECT", thread.subject);
                         intent.putExtra(ConstUtils.PASS_IS_VIEW_HISTORY,true);
 
                         ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(

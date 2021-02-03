@@ -14,9 +14,9 @@ import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
 import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.FavoriteForum;
 import com.kidozh.discuzhub.entities.DisplayForumQueryStatus;
-import com.kidozh.discuzhub.entities.ThreadInfo;
+import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.ForumInfo;
+import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
@@ -25,7 +25,6 @@ import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
-import java.lang.invoke.ConstantCallSite;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,15 +42,15 @@ public class ForumViewModel extends AndroidViewModel {
 
     bbsInformation bbsInfo;
     forumUserBriefInfo userBriefInfo;
-    ForumInfo forum;
+    Forum forum;
     public OkHttpClient client;
 
     public MutableLiveData<Integer> networkState = new MutableLiveData<>(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
-    private MutableLiveData<List<ThreadInfo>> threadInfoListMutableLiveData = new MutableLiveData<>(new ArrayList<>()),
+    private MutableLiveData<List<Thread>> threadInfoListMutableLiveData = new MutableLiveData<>(new ArrayList<>()),
             newThreadListMutableLiveData;
 
     public LiveData<Integer> draftNumberLiveData;
-    public MutableLiveData<ForumInfo> forumDetailedInfoMutableLiveData;
+    public MutableLiveData<Forum> forumDetailedInfoMutableLiveData;
     public MutableLiveData<ForumResult> displayForumResultMutableLiveData;
     public LiveData<FavoriteForum> favoriteForumLiveData;
     public MutableLiveData<Boolean> ruleTextCollapse = new MutableLiveData<>(true);
@@ -74,7 +73,7 @@ public class ForumViewModel extends AndroidViewModel {
         ruleTextCollapse.postValue(UserPreferenceUtils.collapseForumRule(application));
     }
 
-    public MutableLiveData<List<ThreadInfo>> getNewThreadListMutableLiveData() {
+    public MutableLiveData<List<Thread>> getNewThreadListMutableLiveData() {
         if(newThreadListMutableLiveData == null){
             newThreadListMutableLiveData = new MutableLiveData<>(new ArrayList<>());
             DisplayForumQueryStatus displayForumQueryStatus = new DisplayForumQueryStatus(forum.fid,1);
@@ -83,7 +82,7 @@ public class ForumViewModel extends AndroidViewModel {
         return newThreadListMutableLiveData;
     }
 
-    public void setBBSInfo(@NonNull bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, ForumInfo forum){
+    public void setBBSInfo(@NonNull bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, Forum forum){
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
         this.forum = forum;
@@ -142,13 +141,13 @@ public class ForumViewModel extends AndroidViewModel {
                     Log.d(TAG, "Get forum Result" + forumResult);
 
                     // for list display
-                    List<ThreadInfo> threadInfoList = forumResult.forumVariables.forumThreadList;
-                    List<ThreadInfo> totalThreadList = threadInfoListMutableLiveData.getValue();
+                    List<Thread> threadList = forumResult.forumVariables.forumThreadList;
+                    List<Thread> totalThreadList = threadInfoListMutableLiveData.getValue();
                     if(totalThreadList == null || displayForumQueryStatus.page == 1){
                         totalThreadList = new ArrayList<>();
                     }
 
-                    if(threadInfoList == null){
+                    if(threadList == null){
 
                         if(displayForumQueryStatus.page != 1){
                             // rollback
@@ -156,7 +155,7 @@ public class ForumViewModel extends AndroidViewModel {
                             forumStatusMutableLiveData.postValue(displayForumQueryStatus);
                         }
                         threadInfoListMutableLiveData.postValue(totalThreadList);
-                        newThreadListMutableLiveData.postValue(threadInfoList);
+                        newThreadListMutableLiveData.postValue(threadList);
                         errorMessageMutableLiveData.postValue(new ErrorMessage(
                                 getApplication().getString(R.string.empty_result),
                                 getApplication().getString(R.string.discuz_network_result_null)
@@ -168,10 +167,10 @@ public class ForumViewModel extends AndroidViewModel {
                         // move to next page
                         displayForumQueryStatus.page += 1;
                         forumStatusMutableLiveData.postValue(displayForumQueryStatus);
-                        totalThreadList.addAll(threadInfoList);
+                        totalThreadList.addAll(threadList);
                         threadInfoListMutableLiveData.postValue(totalThreadList);
-                        newThreadListMutableLiveData.postValue(threadInfoList);
-                        int totalThreadNumber = forumResult.forumVariables.forumInfo.threadCount;
+                        newThreadListMutableLiveData.postValue(threadList);
+                        int totalThreadNumber = forumResult.forumVariables.forum.threadCount;
                         if(totalThreadList.size() >= totalThreadNumber){
                             networkState.postValue(ConstUtils.NETWORK_STATUS_LOADED_ALL);
                             if(displayForumQueryStatus.page != 1){
@@ -186,7 +185,7 @@ public class ForumViewModel extends AndroidViewModel {
 
                         }
                         // initial page
-                        if((displayForumQueryStatus.page == 2||displayForumQueryStatus.page==1) && threadInfoList.size() == 0){
+                        if((displayForumQueryStatus.page == 2||displayForumQueryStatus.page==1) && threadList.size() == 0){
                             errorMessageMutableLiveData.postValue(new ErrorMessage(getApplication().getString(R.string.empty_result),
                                     getApplication().getString(R.string.empty_hot_threads),R.drawable.ic_empty_hot_thread_64px
                             ));
@@ -199,7 +198,7 @@ public class ForumViewModel extends AndroidViewModel {
                         errorMessageMutableLiveData.postValue(forumResult.message.toErrorMessage());
                         networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED);
                     }
-                    forumDetailedInfoMutableLiveData.postValue(forumResult.forumVariables.forumInfo);
+                    forumDetailedInfoMutableLiveData.postValue(forumResult.forumVariables.forum);
                 }
                 else {
                     errorMessageMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),

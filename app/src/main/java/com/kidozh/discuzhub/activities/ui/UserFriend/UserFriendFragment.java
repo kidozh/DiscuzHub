@@ -25,19 +25,15 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter;
 import com.kidozh.discuzhub.adapter.bbsUserFriendAdapter;
 import com.kidozh.discuzhub.databinding.FragmentUserFriendBinding;
-import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.ForumInfo;
+import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.UserFriendResult;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
-import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.util.List;
-
-import okhttp3.OkHttpClient;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -106,7 +102,7 @@ public class UserFriendFragment extends Fragment {
 
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
-    ForumInfo forum;
+    Forum forum;
     bbsUserFriendAdapter adapter;
     private UserFriendViewModel viewModel;
     ConcatAdapter concatAdapter;

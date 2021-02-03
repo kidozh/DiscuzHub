@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ForumActivity;
-import com.kidozh.discuzhub.entities.ForumInfo;
+import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ForumResult;
@@ -77,7 +76,7 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
         URLUtils.setBBS(bbsInfo);
         holder.mBBSForumImage.setImageResource(R.drawable.ic_sub_forum_24px);
         holder.mCardview.setOnClickListener(v -> {
-            ForumInfo putForum = new ForumInfo();
+            Forum putForum = new Forum();
             putForum.fid = forum.fid;
             putForum.name = forum.name;
             putForum.description = forum.name;

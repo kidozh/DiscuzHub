@@ -9,9 +9,9 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.ThreadDraft;
 import com.kidozh.discuzhub.entities.UploadAttachment;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.PostParameterResult;
@@ -41,7 +41,7 @@ public class PostThreadViewModel extends AndroidViewModel {
     public MutableLiveData<PostParameterResult> threadPostParameterResultMutableLiveData;
     public MutableLiveData<PostParameterResult.AllowPermission> allowPermissionMutableLiveData;
     public MutableLiveData<Boolean> error,isUploadingAttachmentLiveData;
-    public MutableLiveData<bbsThreadDraft> bbsThreadDraftMutableLiveData;
+    public MutableLiveData<ThreadDraft> bbsThreadDraftMutableLiveData;
     public MutableLiveData<List<UploadAttachment>> uploadAttachmentListLiveData;
     public MutableLiveData<String> selectedAttachmentSuffixLiveData, uploadAttachmentErrorStringLiveData;
     private MutableLiveData<SecureInfoResult> secureInfoResultMutableLiveData;

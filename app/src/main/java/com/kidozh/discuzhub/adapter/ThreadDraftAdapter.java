@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.PublishActivity;
+import com.kidozh.discuzhub.entities.ThreadDraft;
 import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.entities.bbsThreadDraft;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -28,7 +28,7 @@ import java.util.List;
 
 public class ThreadDraftAdapter extends RecyclerView.Adapter<ThreadDraftAdapter.ViewHolder> {
 
-    List<bbsThreadDraft> bbsThreadDraftList = new ArrayList<>();
+    List<ThreadDraft> threadDraftList = new ArrayList<>();
     Context context;
     private forumUserBriefInfo userBriefInfo;
     bbsInformation bbsInfo;
@@ -38,16 +38,16 @@ public class ThreadDraftAdapter extends RecyclerView.Adapter<ThreadDraftAdapter.
         this.bbsInfo = bbsInfo;
     }
 
-    public void setBbsThreadDraftList(@NonNull List<bbsThreadDraft> bbsThreadDraftList) {
-        int oldSize = this.bbsThreadDraftList.size();
-        this.bbsThreadDraftList.clear();
+    public void setThreadDraftList(@NonNull List<ThreadDraft> threadDraftList) {
+        int oldSize = this.threadDraftList.size();
+        this.threadDraftList.clear();
         notifyItemRangeRemoved(0,oldSize);
-        this.bbsThreadDraftList.addAll(bbsThreadDraftList);
-        notifyItemRangeInserted(0,bbsThreadDraftList.size());
+        this.threadDraftList.addAll(threadDraftList);
+        notifyItemRangeInserted(0, threadDraftList.size());
     }
 
-    public List<bbsThreadDraft> getBbsThreadDraftList() {
-        return bbsThreadDraftList;
+    public List<ThreadDraft> getThreadDraftList() {
+        return threadDraftList;
     }
 
     @NonNull
@@ -64,7 +64,7 @@ public class ThreadDraftAdapter extends RecyclerView.Adapter<ThreadDraftAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        bbsThreadDraft threadDraft = bbsThreadDraftList.get(position);
+        ThreadDraft threadDraft = threadDraftList.get(position);
         if(threadDraft.typeName.isEmpty()){
             holder.bbsThreadDraftType.setVisibility(View.GONE);
         }
@@ -109,11 +109,11 @@ public class ThreadDraftAdapter extends RecyclerView.Adapter<ThreadDraftAdapter.
 
     @Override
     public int getItemCount() {
-        if(bbsThreadDraftList == null){
+        if(threadDraftList == null){
             return 0;
         }
         else {
-            return bbsThreadDraftList.size();
+            return threadDraftList.size();
         }
 
     }

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +18,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.databinding.DialogAttachmentInformationBinding;
-import com.kidozh.discuzhub.databinding.DialogReportBinding;
-import com.kidozh.discuzhub.entities.PostInfo;
+import com.kidozh.discuzhub.entities.Post;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 
@@ -29,13 +27,13 @@ import es.dmoral.toasty.Toasty;
 public class DownloadAttachmentDialogFragment extends DialogFragment {
     private static String TAG = DownloadAttachmentDialogFragment.class.getSimpleName();
     @NonNull
-    PostInfo.Attachment attachment;
+    Post.Attachment attachment;
 
 
     DialogAttachmentInformationBinding binding;
 
 
-    public DownloadAttachmentDialogFragment(@NonNull PostInfo.Attachment attachment){
+    public DownloadAttachmentDialogFragment(@NonNull Post.Attachment attachment){
         this.attachment = attachment;
     }
 
