@@ -20,7 +20,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;
 import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
 import com.kidozh.discuzhub.databinding.FragmentBbsMyThreadBinding;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
@@ -51,17 +51,17 @@ public class UserThreadFragment extends Fragment {
     }
 
     private forumUserBriefInfo userBriefInfo;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     private OkHttpClient client;
     ThreadAdapter adapter;
     private int globalPage = 1;
     FragmentBbsMyThreadBinding binding;
     ContentEmptyInformationBinding emptyBinding;
 
-    public static UserThreadFragment newInstance(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+    public static UserThreadFragment newInstance(Discuz Discuz, forumUserBriefInfo userBriefInfo){
         UserThreadFragment fragment = new UserThreadFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
+        args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY, Discuz);
         args.putSerializable(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
         fragment.setArguments(args);
         return fragment;
@@ -71,7 +71,7 @@ public class UserThreadFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bbsInfo = (bbsInformation) getArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY);
+            bbsInfo = (Discuz) getArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY);
             URLUtils.setBBS(bbsInfo);
             userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
             client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);

@@ -9,8 +9,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.ErrorMessage;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
@@ -31,7 +31,7 @@ public class HotThreadsViewModel extends AndroidViewModel {
     private String TAG = HotThreadsViewModel.class.getSimpleName();
     private MutableLiveData<String> mText;
 
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo userBriefInfo;
     private OkHttpClient client = new OkHttpClient();
     @NonNull
@@ -51,7 +51,7 @@ public class HotThreadsViewModel extends AndroidViewModel {
 
     }
 
-    public void setBBSInfo(@NonNull bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
+    public void setBBSInfo(@NonNull Discuz bbsInfo, forumUserBriefInfo userBriefInfo){
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
         URLUtils.setBBS(bbsInfo);

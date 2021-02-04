@@ -21,7 +21,7 @@ import com.kidozh.discuzhub.activities.UserProfileActivity
 import com.kidozh.discuzhub.databinding.FragmentExplorePageBinding
 import com.kidozh.discuzhub.entities.Forum
 import com.kidozh.discuzhub.entities.Thread
-import com.kidozh.discuzhub.entities.bbsInformation
+import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.forumUserBriefInfo
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.NetworkUtils
@@ -46,7 +46,7 @@ class ExplorePageFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
 
-            bbsInfo = it.getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY) as bbsInformation
+            bbsInfo = it.getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
             userBriefInfo = it.getSerializable(ConstUtils.PASS_BBS_USER_KEY) as forumUserBriefInfo?
             client = NetworkUtils.getPreferredClientWithCookieJarByUser(context, userBriefInfo)
             exploreURL = bbsInfo.base_url+"/forum.php?mod=guide&view=new"
@@ -155,7 +155,7 @@ class ExplorePageFragment : Fragment() {
 
 
     companion object {
-        private lateinit var bbsInfo: bbsInformation
+        private lateinit var bbsInfo: Discuz
         private var userBriefInfo: forumUserBriefInfo? = null
         private lateinit var client: OkHttpClient
         private lateinit var binding: FragmentExplorePageBinding
@@ -171,7 +171,7 @@ class ExplorePageFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(bbsInfo: bbsInformation, userBriefInfo: forumUserBriefInfo?) =
+        fun newInstance(bbsInfo: Discuz, userBriefInfo: forumUserBriefInfo?) =
                 ExplorePageFragment().apply {
                     arguments = Bundle().apply {
                         putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
@@ -181,7 +181,7 @@ class ExplorePageFragment : Fragment() {
                 }
 
         fun parseURLAndOpen(context: Context,
-                            bbsInfo: bbsInformation,
+                            bbsInfo: Discuz,
                             userBriefInfo: forumUserBriefInfo?,
                             url: String): Boolean {
             // simple unescape

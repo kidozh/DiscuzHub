@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.viewModels;
 
-import android.app.Activity;
 import android.app.Application;
 import android.util.Log;
 
@@ -9,8 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.AddIntroActivity;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.results.AddCheckResult;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -32,7 +30,7 @@ public class AddBBSViewModel extends AndroidViewModel {
 
     public MutableLiveData<String> currentURLLiveData, errorTextLiveData;
     public @NonNull MutableLiveData<Boolean>  isLoadingLiveData, autoVerifyURLLiveData;
-    public MutableLiveData<bbsInformation> verifiedBBS = new MutableLiveData<>(null);
+    public MutableLiveData<Discuz> verifiedBBS = new MutableLiveData<>(null);
 
     public AddBBSViewModel(@NonNull Application application) {
         super(application);
@@ -84,7 +82,7 @@ public class AddBBSViewModel extends AndroidViewModel {
                     Log.d(TAG,"check response " +s);
                     AddCheckResult checkResult = bbsParseUtils.parseCheckInfoResult(s);
                     if(checkResult!=null){
-                        bbsInformation bbsInfo = checkResult.toBBSInformation(base_url);
+                        Discuz bbsInfo = checkResult.toBBSInformation(base_url);
                         verifiedBBS.postValue(bbsInfo);
                         //new AddIntroActivity.addNewForumInformationTask(bbsInfo,activity).execute();
                     }

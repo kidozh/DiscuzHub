@@ -18,7 +18,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
+import com.kidozh.discuzhub.database.UserDatabase;
 import com.kidozh.discuzhub.databinding.ActivitySplashScreenBinding;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
@@ -71,7 +71,7 @@ public class SplashScreenActivity extends BaseStatusActivity {
                 .build();
         // update frequency
         // extracting all user...
-        List<forumUserBriefInfo> allUsers = forumUserBriefInfoDatabase
+        List<forumUserBriefInfo> allUsers = UserDatabase
                 .getSyncDatabase(this)
 
                 .getforumUserBriefInfoDao()

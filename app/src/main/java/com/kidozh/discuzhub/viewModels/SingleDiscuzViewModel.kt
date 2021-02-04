@@ -1,18 +1,16 @@
 package com.kidozh.discuzhub.viewModels
 
 import android.app.Application
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.kidozh.discuzhub.activities.DrawerActivity.EmptyViewPagerAdapter
 import com.kidozh.discuzhub.daos.forumUserBriefInfoDao
-import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase
-import com.kidozh.discuzhub.entities.bbsInformation
+import com.kidozh.discuzhub.database.UserDatabase
+import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.forumUserBriefInfo
 
 class SingleDiscuzViewModel(application: Application) : AndroidViewModel(application) {
-    lateinit var currentBBSMutableLiveData : MutableLiveData<bbsInformation>
+    lateinit var currentBBSMutableLiveData : MutableLiveData<Discuz>
     var currentUserMutableLiveData : MutableLiveData<forumUserBriefInfo?>
     lateinit var userDao: forumUserBriefInfoDao
     lateinit var userListLiveData: LiveData<List<forumUserBriefInfo>>
@@ -22,9 +20,9 @@ class SingleDiscuzViewModel(application: Application) : AndroidViewModel(applica
     }
 
 
-    fun setBBSInfo(bbsInfo: bbsInformation){
+    fun setBBSInfo(bbsInfo: Discuz){
         currentBBSMutableLiveData = MutableLiveData(bbsInfo)
-        userDao = forumUserBriefInfoDatabase.getInstance(getApplication()).getforumUserBriefInfoDao()
+        userDao = UserDatabase.getInstance(getApplication()).getforumUserBriefInfoDao()
         userListLiveData = userDao.getAllUserByBBSID(bbsInfo.id)
     }
 

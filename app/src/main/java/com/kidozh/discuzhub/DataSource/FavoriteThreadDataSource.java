@@ -8,8 +8,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.paging.PageKeyedDataSource;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.FavoriteThread;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.FavoriteThreadResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -29,7 +29,7 @@ public class FavoriteThreadDataSource extends PageKeyedDataSource<Integer, Favor
     final static String TAG = FavoriteThreadDataSource.class.getSimpleName();
 
     Context context;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo userBriefInfo;
     public MutableLiveData<Integer> networkStateLiveData = new MutableLiveData<>(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
     public MutableLiveData<String> errorStatusStringLiveData = new MutableLiveData<>("");
@@ -37,7 +37,7 @@ public class FavoriteThreadDataSource extends PageKeyedDataSource<Integer, Favor
 
     OkHttpClient client;
 
-    public FavoriteThreadDataSource(@NonNull Context context, @NonNull bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo) {
+    public FavoriteThreadDataSource(@NonNull Context context, @NonNull Discuz bbsInfo, forumUserBriefInfo userBriefInfo) {
         this.context = context;
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;

@@ -26,7 +26,7 @@ import com.kidozh.discuzhub.activities.ui.bbsNotificationMessagePortalFragment;
 import com.kidozh.discuzhub.activities.ui.privacyProtect.privacyProtectFragment;
 import com.kidozh.discuzhub.activities.ui.userThreads.UserThreadFragment;
 import com.kidozh.discuzhub.databinding.FragmentNotificationsBinding;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 
@@ -40,7 +40,7 @@ public class NotificationsFragment extends Fragment {
     
     private notificationViewPagerAdapter adapter;
 
-    bbsInformation bbsInformation;
+    Discuz Discuz;
     forumUserBriefInfo userBriefInfo;
 
     PopupMenu popupMenu;
@@ -49,8 +49,8 @@ public class NotificationsFragment extends Fragment {
 
     }
 
-    public NotificationsFragment(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
-        this.bbsInformation = bbsInformation;
+    public NotificationsFragment(Discuz Discuz, forumUserBriefInfo userBriefInfo){
+        this.Discuz = Discuz;
         this.userBriefInfo = userBriefInfo;
     }
 
@@ -438,11 +438,11 @@ public class NotificationsFragment extends Fragment {
                     Log.d(TAG,"Position "+position+" message "+message_state);
                     if(message_state.equals(bbsNotificationMessagePortalFragment.FILTER_PRIVATE_MESSAGE)){
                         Log.d(TAG,"GET PRIVATE MESSAGE STATE");
-                        return bbsNotificationMessagePortalFragment.newInstance(bbsNotificationMessagePortalFragment.FILTER_PRIVATE_MESSAGE,bbsInformation,userBriefInfo);
+                        return bbsNotificationMessagePortalFragment.newInstance(bbsNotificationMessagePortalFragment.FILTER_PRIVATE_MESSAGE, Discuz,userBriefInfo);
                     }
                     else {
                         Log.d(TAG,"GET PUBLIC MESSAGE STATE");
-                        return bbsNotificationMessagePortalFragment.newInstance(bbsNotificationMessagePortalFragment.FILTER_PUBLIC_MESSAGE,bbsInformation,userBriefInfo);
+                        return bbsNotificationMessagePortalFragment.newInstance(bbsNotificationMessagePortalFragment.FILTER_PUBLIC_MESSAGE, Discuz,userBriefInfo);
                     }
 
                 }
@@ -450,10 +450,10 @@ public class NotificationsFragment extends Fragment {
 
                 case 1:{
                     if(view == null || type == null){
-                        return UserNotificationFragment.newInstance("mypost","",bbsInformation,userBriefInfo);
+                        return UserNotificationFragment.newInstance("mypost","", Discuz,userBriefInfo);
                     }
                     else {
-                        return UserNotificationFragment.newInstance(view,type,bbsInformation,userBriefInfo);
+                        return UserNotificationFragment.newInstance(view,type, Discuz,userBriefInfo);
                     }
 
                 }
@@ -461,20 +461,20 @@ public class NotificationsFragment extends Fragment {
 
                 case 2:{
                     if(view == null || type == null){
-                        return UserNotificationFragment.newInstance("interactive","",bbsInformation,userBriefInfo);
+                        return UserNotificationFragment.newInstance("interactive","", Discuz,userBriefInfo);
                     }
                     else {
-                        return UserNotificationFragment.newInstance(view,type,bbsInformation,userBriefInfo);
+                        return UserNotificationFragment.newInstance(view,type, Discuz,userBriefInfo);
                     }
 
                 }
                 case 3:{
-                    return UserNotificationFragment.newInstance("system","system",bbsInformation,userBriefInfo);
+                    return UserNotificationFragment.newInstance("system","system", Discuz,userBriefInfo);
 
                 }
 
                 case 4:{
-                    return UserThreadFragment.newInstance(bbsInformation,userBriefInfo);
+                    return UserThreadFragment.newInstance(Discuz,userBriefInfo);
 
                 }
             }

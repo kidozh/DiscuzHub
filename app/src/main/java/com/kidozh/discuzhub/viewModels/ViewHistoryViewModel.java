@@ -1,21 +1,16 @@
 package com.kidozh.discuzhub.viewModels;
 
 import android.app.Application;
-import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
-import androidx.paging.DataSource;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.entities.ViewHistory;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 
 public class ViewHistoryViewModel extends AndroidViewModel {
 
@@ -35,11 +30,11 @@ public class ViewHistoryViewModel extends AndroidViewModel {
 
 
 
-    public void setBBSInfo(bbsInformation bbsInfo){
+    public void setBBSInfo(Discuz bbsInfo){
         pagedListLiveData = new LivePagedListBuilder<>(viewHistoryDao.getViewHistoryPageListByBBSId(bbsInfo.getId()),myPagingConfig).build();
     }
 
-    public void setSearchText(bbsInformation bbsInfo, String text){
+    public void setSearchText(Discuz bbsInfo, String text){
         pagedListLiveData = new LivePagedListBuilder<>(viewHistoryDao.getViewHistoryPageListByBBSIdWithSearchText(bbsInfo.getId(),text),myPagingConfig).build();
     }
 

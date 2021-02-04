@@ -1,19 +1,16 @@
 package com.kidozh.discuzhub.entities;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
-public class bbsInformation implements Serializable {
+public class Discuz implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -50,12 +47,12 @@ public class bbsInformation implements Serializable {
         }
     }
 
-    public bbsInformation(String base_url, String site_name, String discuz_version,
-                          String charset,
-                          String version, String plugin_version, String total_posts,
-                          String total_members, String mysite_id, String default_fid,
-                          String ucenter_url, String register_name, String primaryColor,
-                          Boolean hideRegister, Boolean qqConnect, int position){
+    public Discuz(String base_url, String site_name, String discuz_version,
+                  String charset,
+                  String version, String plugin_version, String total_posts,
+                  String total_members, String mysite_id, String default_fid,
+                  String ucenter_url, String register_name, String primaryColor,
+                  Boolean hideRegister, Boolean qqConnect, int position){
         this.charset = charset;
         this.base_url = base_url;
         this.site_name = site_name;
@@ -76,12 +73,12 @@ public class bbsInformation implements Serializable {
         this.position = position;
     }
     @Ignore
-    public bbsInformation(String base_url, String site_name, String discuz_version,
-                          String charset,
-                          String version, String plugin_version, String total_posts,
-                          String total_members, String mysite_id, String default_fid,
-                          String ucenter_url, String register_name, String primaryColor,
-                          Boolean hideRegister, Boolean qqConnect){
+    public Discuz(String base_url, String site_name, String discuz_version,
+                  String charset,
+                  String version, String plugin_version, String total_posts,
+                  String total_members, String mysite_id, String default_fid,
+                  String ucenter_url, String register_name, String primaryColor,
+                  Boolean hideRegister, Boolean qqConnect){
         this.charset = charset;
         this.base_url = base_url;
         this.site_name = site_name;
@@ -116,8 +113,8 @@ public class bbsInformation implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof bbsInformation)) return false;
-        bbsInformation that = (bbsInformation) o;
+        if (!(o instanceof Discuz)) return false;
+        Discuz that = (Discuz) o;
         return getId() == that.getId() &&
                 position == that.position &&
                 Objects.equals(base_url, that.base_url) &&

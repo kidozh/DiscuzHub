@@ -1,32 +1,21 @@
 package com.kidozh.discuzhub.activities
 
 import androidx.appcompat.app.AppCompatActivity
-import com.kidozh.discuzhub.interact.BaseStatusInteract
-import com.kidozh.discuzhub.entities.bbsInformation
+import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.forumUserBriefInfo
 import okhttp3.OkHttpClient
 import com.kidozh.discuzhub.results.BaseResult
 import com.kidozh.discuzhub.results.VariableResults
 import android.os.Bundle
-import com.kidozh.discuzhub.activities.BaseStatusActivity
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kidozh.discuzhub.R
-import android.content.DialogInterface
-import android.content.Intent
-import com.kidozh.discuzhub.activities.LoginActivity
-import com.kidozh.discuzhub.utilities.ConstUtils
-import android.os.Looper
-import android.content.SharedPreferences
-import android.os.Handler
 import android.preference.PreferenceManager
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import com.kidozh.discuzhub.utilities.ThemeUtils
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils
 
 open class BaseStatusActivity : AppCompatActivity() {
     @JvmField
-    var bbsInfo: bbsInformation? = null
+    var bbsInfo: Discuz? = null
     @JvmField
     var userBriefInfo: forumUserBriefInfo? = null
     @JvmField

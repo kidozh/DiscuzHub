@@ -21,7 +21,7 @@ import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragm
 import com.kidozh.discuzhub.adapter.PublicMessageAdapter;
 import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
 import com.kidozh.discuzhub.databinding.FragmentPublicMessageBinding;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -46,7 +46,7 @@ public class bbsPublicMessageFragment extends Fragment {
     private bbsPrivateMessageFragment.OnNewMessageChangeListener mListener;
 
     private forumUserBriefInfo userBriefInfo;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     private OkHttpClient client = new OkHttpClient();
     PublicMessageAdapter adapter;
     private int globalPage = 1;
@@ -55,14 +55,14 @@ public class bbsPublicMessageFragment extends Fragment {
 
     }
 
-    private bbsPublicMessageFragment(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
+    private bbsPublicMessageFragment(Discuz bbsInfo, forumUserBriefInfo userBriefInfo){
         this.bbsInfo= bbsInfo;
         this.userBriefInfo = userBriefInfo;
     }
 
     private static String ARG_BBS = "ARG_BBS", ARG_USER = "ARG_USER";
 
-    public static bbsPublicMessageFragment newInstance(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo) {
+    public static bbsPublicMessageFragment newInstance(Discuz bbsInfo, forumUserBriefInfo userBriefInfo) {
         bbsPublicMessageFragment fragment = new bbsPublicMessageFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_BBS, bbsInfo);
@@ -75,7 +75,7 @@ public class bbsPublicMessageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bbsInfo = (bbsInformation) getArguments().getSerializable(ARG_BBS);
+            bbsInfo = (Discuz) getArguments().getSerializable(ARG_BBS);
             userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(ARG_USER);
         }
     }

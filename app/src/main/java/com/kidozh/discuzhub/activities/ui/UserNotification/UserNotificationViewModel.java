@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -30,7 +30,7 @@ public class UserNotificationViewModel extends AndroidViewModel {
             hasLoadedAll = new MutableLiveData<>(false),
             isError= new MutableLiveData<>(false);
 
-    private bbsInformation curBBS;
+    private Discuz curBBS;
     private forumUserBriefInfo curUser;
     private OkHttpClient client;
 
@@ -42,7 +42,7 @@ public class UserNotificationViewModel extends AndroidViewModel {
         isError = new MutableLiveData<>(false);
     }
 
-    public void setBBSInfo(bbsInformation curBBS, forumUserBriefInfo curUser){
+    public void setBBSInfo(Discuz curBBS, forumUserBriefInfo curUser){
         this.curBBS = curBBS;
         this.curUser = curUser;
         this.client = NetworkUtils.getPreferredClientWithCookieJarByUser(this.getApplication(),curUser);

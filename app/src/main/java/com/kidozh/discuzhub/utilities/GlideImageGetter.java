@@ -36,7 +36,7 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.FullImageActivity;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
 import org.xml.sax.XMLReader;
@@ -59,7 +59,7 @@ public class GlideImageGetter implements Html.ImageGetter {
     private Context context;
     private static OkHttpClient client = new OkHttpClient();
     @NonNull
-    private static bbsInformation bbsInfo;
+    private static Discuz bbsInfo;
     private forumUserBriefInfo userBriefInfo;
 
 

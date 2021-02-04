@@ -19,9 +19,9 @@ import androidx.work.WorkerParameters;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ThreadActivity;
-import com.kidozh.discuzhub.database.BBSInformationDatabase;
-import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.database.DiscuzDatabase;
+import com.kidozh.discuzhub.database.UserDatabase;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
@@ -44,7 +44,7 @@ public class PushUserNotificationWork extends Worker {
     private static final String TAG = PushUserNotificationWork.class.getSimpleName();
     private Context context;
     private forumUserBriefInfo userBriefInfo;
-    bbsInformation bbsInformation;
+    Discuz Discuz;
     public PushUserNotificationWork(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         this.context = context;
@@ -82,7 +82,7 @@ public class PushUserNotificationWork extends Worker {
             return Result.failure();
         }
 
-        userBriefInfo = forumUserBriefInfoDatabase
+        userBriefInfo = UserDatabase
                 .getInstance(context)
                 .getforumUserBriefInfoDao()
                 .getUserById(fetchInfoUserId);
@@ -91,16 +91,16 @@ public class PushUserNotificationWork extends Worker {
         if(userBriefInfo == null){
             return Result.failure();
         }
-        bbsInformation = BBSInformationDatabase
+        Discuz = DiscuzDatabase
                 .getInstance(context)
                 .getForumInformationDao()
                 .getForumInformationById(userBriefInfo.belongedBBSID);
         // needs to set it
-        if(bbsInformation == null){
+        if(Discuz == null){
             return Result.failure();
         }
-        URLUtils.setBBS(bbsInformation);
-        if(!bbsInformation.isSync){
+        URLUtils.setBBS(Discuz);
+        if(!Discuz.isSync){
             // skip those
             return Result.success();
         }
@@ -119,7 +119,7 @@ public class PushUserNotificationWork extends Worker {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         Set<String> notificationSituation = prefs.getStringSet(context.getString(R.string.preference_key_recv_notification_situation),new HashSet<>());
 
-        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInformation.base_url,client);
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(Discuz.base_url,client);
         DiscuzApiService apiService = retrofit.create(DiscuzApiService.class);
         Call<UserNoteListResult> userNoteListResultCall = apiService.userNotificationListResult(1);
 
@@ -169,7 +169,7 @@ public class PushUserNotificationWork extends Worker {
     private PendingIntent getIntent(){
         Intent intent = new Intent(context, DrawerLayout.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
+        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, Discuz);
         intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
@@ -190,7 +190,7 @@ public class PushUserNotificationWork extends Worker {
         if(notification.notificationExtraInfo != null){
 
             Intent intent = new Intent(context, ThreadActivity.class);
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, Discuz);
             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
             intent.putExtra("TID",notification.notificationExtraInfo.tid);
             intent.putExtra("FID",notification.authorId);
@@ -203,7 +203,7 @@ public class PushUserNotificationWork extends Worker {
         }
         Notification newUpdateNotification = new NotificationCompat.Builder(context, notificationUtils.userUpdateNotificationId)
                 .setSmallIcon(R.drawable.ic_account_box_24px)
-                .setContentTitle(context.getString(R.string.notification_new_message,userBriefInfo.username,bbsInformation.site_name))
+                .setContentTitle(context.getString(R.string.notification_new_message,userBriefInfo.username, Discuz.site_name))
                 .setContentText(notificationContent)
                 //.setLargeIcon()
                 .setGroup(notificationUtils.NOTIFICATION_GROUP_KEY_USER_GROUP_UPDATE)
@@ -223,7 +223,7 @@ public class PushUserNotificationWork extends Worker {
 
         Notification newUpdateNotification = new NotificationCompat.Builder(context, notificationUtils.userUpdateNotificationId)
                 .setSmallIcon(R.drawable.ic_account_box_24px)
-                .setContentTitle(context.getString(R.string.notification_group_new_message_title,userBriefInfo.username,bbsInformation.site_name))
+                .setContentTitle(context.getString(R.string.notification_group_new_message_title,userBriefInfo.username, Discuz.site_name))
                 .setContentText(context.getString(R.string.notification_group_new_message_description,newNum,totalNum))
                 //.setLargeIcon()
                 .setGroup(notificationUtils.NOTIFICATION_GROUP_KEY_USER_GROUP_UPDATE)

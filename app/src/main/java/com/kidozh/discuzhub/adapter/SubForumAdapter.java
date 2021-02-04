@@ -19,8 +19,8 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ForumActivity;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -38,13 +38,13 @@ import static com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClient;
 public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubForumViewHolder> {
     final String TAG = SubForumAdapter.class.getSimpleName();
     Context context;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo userBriefInfo;
 
 
     List<ForumResult.SubForumInfo> subForumInfoList = new ArrayList<>();
 
-    public SubForumAdapter(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo) {
+    public SubForumAdapter(Discuz bbsInfo, forumUserBriefInfo userBriefInfo) {
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
     }

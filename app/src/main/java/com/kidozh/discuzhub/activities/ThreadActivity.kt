@@ -130,7 +130,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     private fun configureIntentData() {
         val intent = intent
         forum = intent.getParcelableExtra(ConstUtils.PASS_FORUM_THREAD_KEY)
-        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as bbsInformation
+        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
         if(bbsInfo == null){
             finishAfterTransition()
             return;
@@ -690,7 +690,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 binding.bbsThreadDetailCommentEditText.clearFocus()
                 // close keyboard
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm?.hideSoftInputFromWindow(binding.bbsThreadDetailCommentEditText.windowToken, 0)
+                imm.hideSoftInputFromWindow(binding.bbsThreadDetailCommentEditText.windowToken, 0)
                 binding.smileyRootLayout.visibility = View.VISIBLE
 
                 // tab layout binding...

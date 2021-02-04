@@ -20,7 +20,7 @@ import retrofit2.Retrofit
 class NewThreadsViewModel(application: Application) : AndroidViewModel(application) {
     // TODO: Implement the ViewModel
     val TAG = NewThreadsViewModel::class.simpleName
-    lateinit var bbsInfo: bbsInformation
+    lateinit var bbsInfo: Discuz
     var userBriefInfo: forumUserBriefInfo? = null
     lateinit var client: OkHttpClient
     var errorMessageMutableLiveData: MutableLiveData<ErrorMessage?> = MutableLiveData(null)
@@ -33,7 +33,7 @@ class NewThreadsViewModel(application: Application) : AndroidViewModel(applicati
     lateinit var retrofit: Retrofit
     lateinit var service: DiscuzApiService
 
-    fun setBBSInfo(bbsInfo: bbsInformation, userBriefInfo: forumUserBriefInfo?) {
+    fun setBBSInfo(bbsInfo: Discuz, userBriefInfo: forumUserBriefInfo?) {
         this.bbsInfo = bbsInfo
         this.userBriefInfo = userBriefInfo
         URLUtils.setBBS(bbsInfo)

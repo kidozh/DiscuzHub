@@ -3,28 +3,25 @@ package com.kidozh.discuzhub.entities
 import androidx.recyclerview.widget.DiffUtil
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.io.Serializable
 import java.util.*
+import kotlin.properties.Delegates
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
-class Smiley : Serializable {
+class Smiley(var code: String, var imageRelativePath: String, var category: Int) : Serializable {
+
 
     @PrimaryKey(autoGenerate = true)
     private val id = 0
 
+    @JsonIgnore
+    private var discuzId = 0
+
     var updateAt = Date()
 
-    lateinit var code: String
-    lateinit var imageRelativePath: String
-    var category: Int
-
-    constructor(code: String, imageRelativePath: String, category: Int){
-        this.code = code
-        this.imageRelativePath = imageRelativePath
-        this.category = category
-    }
 
     companion object{
         var DIFF_CALLBACK: DiffUtil.ItemCallback<Smiley> = object : DiffUtil.ItemCallback<Smiley>() {

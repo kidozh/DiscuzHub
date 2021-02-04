@@ -10,14 +10,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.kidozh.discuzhub.R;
@@ -25,8 +23,8 @@ import com.kidozh.discuzhub.adapter.FavoriteThreadAdapter;
 import com.kidozh.discuzhub.daos.FavoriteThreadDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
 import com.kidozh.discuzhub.databinding.FragmentFavoriteThreadBinding;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.FavoriteThread;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
@@ -46,7 +44,7 @@ public class FavoriteThreadFragment extends Fragment {
     private static final String ARG_USER = "ARG_USER";
     private static final String ARG_IDTYPE = "ARG_IDTYPE";
 
-    private bbsInformation bbsInfo;
+    private Discuz bbsInfo;
     private forumUserBriefInfo userBriefInfo;
     private String idType;
 
@@ -54,7 +52,7 @@ public class FavoriteThreadFragment extends Fragment {
 
     }
 
-    public static FavoriteThreadFragment newInstance(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, String idType) {
+    public static FavoriteThreadFragment newInstance(Discuz bbsInfo, forumUserBriefInfo userBriefInfo, String idType) {
         FavoriteThreadFragment fragment = new FavoriteThreadFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_BBS, bbsInfo);
@@ -68,7 +66,7 @@ public class FavoriteThreadFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bbsInfo = (bbsInformation) getArguments().getSerializable(ARG_BBS);
+            bbsInfo = (Discuz) getArguments().getSerializable(ARG_BBS);
             userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(ARG_USER);
             idType = (String) getArguments().getString(ARG_IDTYPE,"tid");
         }

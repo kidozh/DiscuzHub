@@ -22,7 +22,7 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
@@ -39,10 +39,10 @@ public class bbsPrivateDetailMessageAdapter extends RecyclerView.Adapter<bbsPriv
 
     List<bbsParseUtils.privateDetailMessage> privateDetailMessageList;
     Context context;
-    bbsInformation curBBS;
+    Discuz curBBS;
     forumUserBriefInfo userBriefInfo;
 
-    public bbsPrivateDetailMessageAdapter(bbsInformation curBBS, forumUserBriefInfo userBriefInfo) {
+    public bbsPrivateDetailMessageAdapter(Discuz curBBS, forumUserBriefInfo userBriefInfo) {
         this.curBBS = curBBS;
         this.userBriefInfo = userBriefInfo;
     }

@@ -8,7 +8,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +16,7 @@ import java.util.Set;
 public class UserPreferenceUtils {
     private static final String TAG = UserPreferenceUtils.class.getSimpleName();
 
-    public static String getRewriteRulePreferenceName(@NonNull Context context, @NonNull bbsInformation bbsInfo,@NonNull String rewriteKey){
+    public static String getRewriteRulePreferenceName(@NonNull Context context, @NonNull Discuz bbsInfo, @NonNull String rewriteKey){
         return context.getString(R.string.bbs_rewrite_rule_preference,rewriteKey,bbsInfo.getId());
     }
 
@@ -24,7 +24,7 @@ public class UserPreferenceUtils {
             REWRITE_VIEW_THREAD_KEY = "forum_viewthread",
             REWRITE_HOME_SPACE = "home_space";
 
-    public static void saveRewriteRule(@NonNull Context context, @NonNull bbsInformation bbsInfo,@NonNull String rewriteKey, String rewriteValue){
+    public static void saveRewriteRule(@NonNull Context context, @NonNull Discuz bbsInfo, @NonNull String rewriteKey, String rewriteValue){
         String preferenceName = getRewriteRulePreferenceName(context,bbsInfo,rewriteKey);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
@@ -32,7 +32,7 @@ public class UserPreferenceUtils {
         editor.apply();
     }
 
-    public static String getRewriteRule(@NonNull Context context, @NonNull bbsInformation bbsInfo,@NonNull String rewriteKey){
+    public static String getRewriteRule(@NonNull Context context, @NonNull Discuz bbsInfo, @NonNull String rewriteKey){
         String preferenceName = getRewriteRulePreferenceName(context,bbsInfo,rewriteKey);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         Log.d(TAG,"Get rewrite "+rewriteKey+" -> "+prefs.getString(preferenceName,null));

@@ -30,7 +30,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -56,14 +56,14 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private static final String TAG = NotificationAdapter.class.getSimpleName();
     private Context context;
     private List<UserNoteListResult.UserNotification> notificationDetailInfoList;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo curUser;
 
     public List<UserNoteListResult.UserNotification> getNotificationDetailInfoList() {
         return notificationDetailInfoList;
     }
 
-    public NotificationAdapter(bbsInformation bbsInfo, forumUserBriefInfo curUser){
+    public NotificationAdapter(Discuz bbsInfo, forumUserBriefInfo curUser){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
     }

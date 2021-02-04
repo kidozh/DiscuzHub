@@ -22,7 +22,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ForumActivity;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
@@ -40,12 +40,12 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private String TAG = ForumAdapter.class.getSimpleName();
     private Context mContext;
     private List<Forum> forumList = new ArrayList<>();
-    private bbsInformation bbsInfo;
+    private Discuz bbsInfo;
     private forumUserBriefInfo curUser;
 
-    ForumAdapter(bbsInformation bbsInformation, forumUserBriefInfo curUser){
+    ForumAdapter(Discuz Discuz, forumUserBriefInfo curUser){
 
-        this.bbsInfo = bbsInformation;
+        this.bbsInfo = Discuz;
         this.curUser = curUser;
     }
 

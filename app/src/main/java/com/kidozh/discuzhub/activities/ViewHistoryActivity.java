@@ -12,7 +12,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -35,7 +34,7 @@ import com.kidozh.discuzhub.callback.RecyclerViewItemTouchCallback;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.databinding.ActivityViewHistoryBinding;
 import com.kidozh.discuzhub.entities.ViewHistory;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -73,7 +72,7 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
 
     private void configureIntentData(){
         Intent intent = getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         if(bbsInfo !=null){
             URLUtils.setBBS(bbsInfo);

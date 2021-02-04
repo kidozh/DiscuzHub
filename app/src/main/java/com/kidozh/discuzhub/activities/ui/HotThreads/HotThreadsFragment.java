@@ -21,8 +21,8 @@ import com.kidozh.discuzhub.activities.ui.DashBoard.DashBoardViewModel;
 import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter;
 import com.kidozh.discuzhub.adapter.ThreadAdapter;
 import com.kidozh.discuzhub.databinding.FragmentHotThreadBinding;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.ErrorMessage;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
@@ -44,14 +44,14 @@ public class HotThreadsFragment extends Fragment {
     ThreadAdapter forumThreadAdapter;
     NetworkIndicatorAdapter networkIndicatorAdapter = new NetworkIndicatorAdapter();
     ConcatAdapter concatAdapter;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo userBriefInfo;
 
 
-    public static HotThreadsFragment newInstance(@NonNull bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+    public static HotThreadsFragment newInstance(@NonNull Discuz Discuz, forumUserBriefInfo userBriefInfo){
         HotThreadsFragment fragment = new HotThreadsFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
+        args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY, Discuz);
         args.putSerializable(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
         fragment.setArguments(args);
         return fragment;
@@ -61,7 +61,7 @@ public class HotThreadsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bbsInfo = (bbsInformation) getArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY);
+            bbsInfo = (Discuz) getArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY);
             userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
 
         }

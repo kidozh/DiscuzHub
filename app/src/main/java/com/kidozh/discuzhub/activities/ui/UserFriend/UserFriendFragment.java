@@ -25,7 +25,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter;
 import com.kidozh.discuzhub.adapter.bbsUserFriendAdapter;
 import com.kidozh.discuzhub.databinding.FragmentUserFriendBinding;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
@@ -101,7 +101,7 @@ public class UserFriendFragment extends Fragment {
     }
 
     private forumUserBriefInfo userBriefInfo;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     Forum forum;
     bbsUserFriendAdapter adapter;
     private UserFriendViewModel viewModel;
@@ -122,7 +122,7 @@ public class UserFriendFragment extends Fragment {
     private void configureIntentData(){
         Intent intent = getActivity().getIntent();
         forum = intent.getParcelableExtra(ConstUtils.PASS_FORUM_THREAD_KEY);
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         viewModel = new ViewModelProvider(this).get(UserFriendViewModel.class);
         Log.d(TAG,"Set bbs "+bbsInfo+" user "+userBriefInfo);

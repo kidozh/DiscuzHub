@@ -20,8 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ForumActivity;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.FavoriteForum;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -31,14 +31,14 @@ import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 public class FavoriteForumAdapter extends PagedListAdapter<FavoriteForum, FavoriteForumAdapter.FavoriteForumViewHolder> {
     private static final String TAG = FavoriteForumAdapter.class.getSimpleName();
     Context context;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo curUser;
 
     public FavoriteForumAdapter() {
         super(FavoriteForum.DIFF_CALLBACK);
     }
 
-    public void setInformation(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
+    public void setInformation(Discuz bbsInfo, forumUserBriefInfo userBriefInfo){
         this.bbsInfo = bbsInfo;
         this.curUser = userBriefInfo;
     }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
@@ -45,8 +45,8 @@ public class AddCheckResult {
     @JsonProperty("testcookie")
     public String testCookie;
 
-    public bbsInformation toBBSInformation(String baseUrl){
-        return new bbsInformation(baseUrl,siteName,discuz_version,charset,apiVersion,pluginVersion,
+    public Discuz toBBSInformation(String baseUrl){
+        return new Discuz(baseUrl,siteName,discuz_version,charset,apiVersion,pluginVersion,
                 String.valueOf(totalPosts),String.valueOf(totalMembers),String.valueOf(mySiteId),
                 defaultFid,uCenterURL,registerName,"",wsqHideRegister,qqConnect
                 );

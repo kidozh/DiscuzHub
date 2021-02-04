@@ -2,31 +2,21 @@ package com.kidozh.discuzhub.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.chip.Chip
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.adapter.DiscuzInformationAdapter
 import com.kidozh.discuzhub.databinding.DialogDiscuzDetailBinding
-import com.kidozh.discuzhub.databinding.DialogForumDisplayOptionBinding
-import com.kidozh.discuzhub.entities.bbsInformation
-import com.kidozh.discuzhub.viewModels.ForumViewModel
-import es.dmoral.toasty.Toasty
-import java.util.*
+import com.kidozh.discuzhub.entities.Discuz
 import kotlin.collections.ArrayList
 
-class DiscuzDetailDialogFragment(bbs: bbsInformation) : BottomSheetDialogFragment() {
+class DiscuzDetailDialogFragment(bbs: Discuz) : BottomSheetDialogFragment() {
     val TAG = DiscuzDetailDialogFragment::class.simpleName
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-    val bbs:bbsInformation
+    val bbs: Discuz
     init {
         this.bbs = bbs
     }

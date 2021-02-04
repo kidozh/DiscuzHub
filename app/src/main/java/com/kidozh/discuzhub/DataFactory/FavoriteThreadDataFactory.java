@@ -7,20 +7,20 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.paging.DataSource;
 
 import com.kidozh.discuzhub.DataSource.FavoriteThreadDataSource;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 
 public class FavoriteThreadDataFactory extends DataSource.Factory {
 
     Context context;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo userBriefInfo;
     private MutableLiveData<FavoriteThreadDataSource> favoriteThreadDataSourceMutableLiveData;
     public FavoriteThreadDataSource favoriteThreadDataSource;
     public MutableLiveData<Integer> networkStateLiveData = new MutableLiveData<>(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
 
-    public FavoriteThreadDataFactory(@NonNull Context context,@NonNull bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo) {
+    public FavoriteThreadDataFactory(@NonNull Context context, @NonNull Discuz bbsInfo, forumUserBriefInfo userBriefInfo) {
         this.context = context;
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;

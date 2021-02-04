@@ -8,51 +8,50 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import com.kidozh.discuzhub.entities.ViewHistory;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 
 import java.util.List;
 
 @Dao
 public interface DiscuzDao {
 
-    @Query("SELECT * FROM bbsInformation ORDER BY position,id ASC")
-    LiveData<List<bbsInformation>> getAllForumInformations();
+    @Query("SELECT * FROM Discuz ORDER BY position,id ASC")
+    LiveData<List<Discuz>> getAllForumInformations();
 
-    @Query("SELECT * FROM bbsInformation ORDER BY position,id ASC")
-    DataSource.Factory<Integer, bbsInformation> getBBSPageList();
+    @Query("SELECT * FROM Discuz ORDER BY position,id ASC")
+    DataSource.Factory<Integer, Discuz> getBBSPageList();
 
-    @Query("SELECT * FROM bbsInformation WHERE id=:id")
-    LiveData<bbsInformation> getForumInformationLiveDataById(int id);
+    @Query("SELECT * FROM Discuz WHERE id=:id")
+    LiveData<Discuz> getForumInformationLiveDataById(int id);
 
-    @Query("SELECT * FROM bbsInformation WHERE id=:id")
-    bbsInformation getForumInformationById(int id);
+    @Query("SELECT * FROM Discuz WHERE id=:id")
+    Discuz getForumInformationById(int id);
 
-    @Query("SELECT * FROM bbsInformation WHERE base_url LIKE '%' || :baseURL || '%' ")
-    List<bbsInformation> getBBSInformationsByBaseURL(String baseURL);
+    @Query("SELECT * FROM Discuz WHERE base_url LIKE '%' || :baseURL || '%' ")
+    List<Discuz> getBBSInformationsByBaseURL(String baseURL);
 
-    @Query("SELECT * FROM bbsInformation WHERE base_url LIKE '%' || :baseURL || '%' LIMIT 1")
-    LiveData<bbsInformation> getBBSInformationLiveDataByBaseURL(String baseURL);
+    @Query("SELECT * FROM Discuz WHERE base_url LIKE '%' || :baseURL || '%' LIMIT 1")
+    LiveData<Discuz> getBBSInformationLiveDataByBaseURL(String baseURL);
 
-    @Query("SELECT * FROM bbsInformation WHERE base_url LIKE '%' || :baseURL || '%' LIMIT 1")
-    bbsInformation getBBSInformationByBaseURL(String baseURL);
+    @Query("SELECT * FROM Discuz WHERE base_url LIKE '%' || :baseURL || '%' LIMIT 1")
+    Discuz getBBSInformationByBaseURL(String baseURL);
 
-
-    @Insert
-    void insert(bbsInformation... bbsInformations);
 
     @Insert
-    void insert(bbsInformation bbsInformation);
+    void insert(Discuz... Discuzs);
+
+    @Insert
+    void insert(Discuz Discuz);
 
     @Update
-    void update(bbsInformation... bbsInformations);
+    void update(Discuz... Discuzs);
 
     @Update
-    void update(List<bbsInformation> bbsInformations);
+    void update(List<Discuz> Discuzs);
 
     @Delete
-    void delete(bbsInformation... bbsInformations);
+    void delete(Discuz... Discuzs);
 
-    @Query("DELETE FROM bbsInformation")
+    @Query("DELETE FROM Discuz")
     void deleteAllForumInformation();
 }

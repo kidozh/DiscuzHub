@@ -20,6 +20,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.SmileyAdapter;
 import com.kidozh.discuzhub.databinding.PopupwindowSmileyViewBinding;
+import com.kidozh.discuzhub.entities.Smiley;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,20 +32,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-/**
- * Created by free2 on 16-7-19.
- * smiley picker
- * 表情选择器
- */
 
 public class SmileyPicker extends PopupWindow {
     private static final String TAG = SmileyPicker.class.getSimpleName();
     private Context mContext;
     private OnItemClickListener listener;
     private SmileyAdapter adapter;
-    private List<bbsParseUtils.smileyInfo> allSmileyInfos = new ArrayList<>();
-    private int smileyCateNum = 0;
-
+    private List<Smiley> allSmileyInfos = new ArrayList<>();
+    int smileyCateNum = 0;
 
     private OkHttpClient client;
 
@@ -81,7 +76,7 @@ public class SmileyPicker extends PopupWindow {
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()&& response.body()!=null){
                     String s = response.body().string();
-                    List<bbsParseUtils.smileyInfo> smileyInfoList = bbsParseUtils.parseSmileyInfo(s);
+                    List<Smiley> smileyInfoList = bbsParseUtils.parseSmiley(s);
                     int cateNum = bbsParseUtils.parseSmileyCateNum(s);
                     smileyCateNum = cateNum;
                     mHandler.post(new Runnable() {
@@ -164,10 +159,10 @@ public class SmileyPicker extends PopupWindow {
 
     private void setSmileyinCate(int position){
         int cateNum = position;
-        List<bbsParseUtils.smileyInfo> cateSmileyInfo = new ArrayList<>();
+        List<Smiley> cateSmileyInfo = new ArrayList<>();
         for(int i=0;i<allSmileyInfos.size();i++){
-            bbsParseUtils.smileyInfo smileyInfo = allSmileyInfos.get(i);
-            if(smileyInfo.category == position){
+            Smiley smileyInfo = allSmileyInfos.get(i);
+            if(smileyInfo.getCategory() == position){
                 cateSmileyInfo.add(smileyInfo);
             }
         }
@@ -181,7 +176,7 @@ public class SmileyPicker extends PopupWindow {
         }
 
 
-        String name = adapter.getSmileyInfos().get(position).code;
+        String name = adapter.getSmileyInfos().get(position).getCode();
         Log.d(TAG,"get name "+name);
 
         //String name = smileys.get(position).second;

@@ -24,8 +24,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ThreadActivity;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.FavoriteThread;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -36,14 +36,14 @@ import com.kidozh.discuzhub.utilities.timeDisplayUtils;
 public class FavoriteThreadAdapter extends PagedListAdapter<FavoriteThread, FavoriteThreadAdapter.FavoriteThreadViewHolder> {
     private static final String TAG = FavoriteThreadAdapter.class.getSimpleName();
     Context context;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo curUser;
 
     public FavoriteThreadAdapter() {
         super(FavoriteThread.DIFF_CALLBACK);
     }
 
-    public void setInformation(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
+    public void setInformation(Discuz bbsInfo, forumUserBriefInfo userBriefInfo){
         this.bbsInfo = bbsInfo;
         this.curUser = userBriefInfo;
     }

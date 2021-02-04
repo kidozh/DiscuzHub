@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.kidozh.discuzhub.R
-import com.kidozh.discuzhub.entities.bbsInformation
+import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.forumUserBriefInfo
 import com.kidozh.discuzhub.results.UserFriendResult
 import com.kidozh.discuzhub.results.UserFriendResult.UserFriend
@@ -28,7 +28,7 @@ class UserFriendViewModel(application: Application) : AndroidViewModel(applicati
     var privacyMutableLiveData : MutableLiveData<Boolean>
     var page = 1
     var userBriefInfo : forumUserBriefInfo? = null
-    lateinit var bbsInfo: bbsInformation
+    lateinit var bbsInfo: Discuz
     var client = OkHttpClient()
     var uid = 0
     var friendCounts = 0
@@ -48,7 +48,7 @@ class UserFriendViewModel(application: Application) : AndroidViewModel(applicati
 
 
 
-    fun setInfo(bbsInfo: bbsInformation, userBriefInfo: forumUserBriefInfo?, uid: Int, friendCounts: Int) {
+    fun setInfo(bbsInfo: Discuz, userBriefInfo: forumUserBriefInfo?, uid: Int, friendCounts: Int) {
         this.bbsInfo = bbsInfo
         this.userBriefInfo = userBriefInfo
         this.uid = uid

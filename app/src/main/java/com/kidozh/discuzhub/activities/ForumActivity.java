@@ -41,11 +41,11 @@ import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.FavoriteForumDatabase;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.databinding.ActivityBbsShowForumBinding;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.DisplayForumQueryStatus;
 import com.kidozh.discuzhub.entities.FavoriteForum;
 import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.entities.ViewHistory;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ApiMessageActionResult;
@@ -127,7 +127,7 @@ public class ForumActivity extends BaseStatusActivity implements
     private void configureIntentData(){
         Intent intent = getIntent();
         forum = (Forum) intent.getSerializableExtra(ConstUtils.PASS_FORUM_THREAD_KEY);
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         URLUtils.setBBS(bbsInfo);
         fid = String.valueOf(forum.fid);

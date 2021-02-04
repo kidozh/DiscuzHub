@@ -10,12 +10,12 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.FavoriteForumDatabase;
-import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
+import com.kidozh.discuzhub.database.ThreadDraftDatabase;
 import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.FavoriteForum;
 import com.kidozh.discuzhub.entities.DisplayForumQueryStatus;
 import com.kidozh.discuzhub.entities.Thread;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ForumResult;
@@ -40,7 +40,7 @@ public class ForumViewModel extends AndroidViewModel {
     @NonNull
     public MutableLiveData<DisplayForumQueryStatus> forumStatusMutableLiveData;
 
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo userBriefInfo;
     Forum forum;
     public OkHttpClient client;
@@ -63,7 +63,7 @@ public class ForumViewModel extends AndroidViewModel {
     public ForumViewModel(@NonNull Application application) {
         super(application);
         forumStatusMutableLiveData = new MutableLiveData<DisplayForumQueryStatus>();
-        draftNumberLiveData = bbsThreadDraftDatabase
+        draftNumberLiveData = ThreadDraftDatabase
                 .getInstance(getApplication())
                 .getbbsThreadDraftDao()
                 .getDraftNumber();
@@ -82,7 +82,7 @@ public class ForumViewModel extends AndroidViewModel {
         return newThreadListMutableLiveData;
     }
 
-    public void setBBSInfo(@NonNull bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, Forum forum){
+    public void setBBSInfo(@NonNull Discuz bbsInfo, forumUserBriefInfo userBriefInfo, Forum forum){
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
         this.forum = forum;

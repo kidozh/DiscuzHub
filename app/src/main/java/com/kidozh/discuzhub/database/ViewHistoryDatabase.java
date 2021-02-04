@@ -11,7 +11,7 @@ import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
-@Database(entities = {ViewHistory.class}, version = 2, exportSchema = false)
+@Database(entities = {ViewHistory.class}, version = 2, exportSchema = true)
 @TypeConverters(DateConverter.class)
 public abstract class ViewHistoryDatabase extends RoomDatabase {
     private static final String DB_NAME = "ViewHistory.db";

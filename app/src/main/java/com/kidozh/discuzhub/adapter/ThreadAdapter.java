@@ -35,7 +35,7 @@ import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.entities.Thread;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
@@ -59,12 +59,12 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public boolean ignoreDigestStyle = false;
     Context mContext;
     public String fid;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo userBriefInfo;
     Map<String,String> threadType;
     ViewHistoryDao viewHistoryDao;
 
-    public ThreadAdapter(Map<String,String> threadType, String fid, bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
+    public ThreadAdapter(Map<String,String> threadType, String fid, Discuz bbsInfo, forumUserBriefInfo userBriefInfo){
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
 

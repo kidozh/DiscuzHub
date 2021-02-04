@@ -8,14 +8,14 @@ import androidx.work.WorkerParameters;
 
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
 public class AutoClearHistoriesWork extends Worker {
     private static final String TAG = AutoClearHistoriesWork.class.getSimpleName();
     private Context context;
     private forumUserBriefInfo userBriefInfo;
-    bbsInformation bbsInformation;
+    Discuz Discuz;
     public AutoClearHistoriesWork(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         this.context = context;

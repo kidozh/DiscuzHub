@@ -119,7 +119,7 @@ public class SmileyFragment extends Fragment {
         }
 
 
-        String name = adapter.getSmileyInfos().get(position).code;
+        String name = adapter.getSmileyInfos().get(position).getCode();
         Log.d(TAG,"get name "+name);
         onSmileyPressed(name,d);
 

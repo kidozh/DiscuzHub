@@ -5,45 +5,31 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.UrlSuggestionAdapter;
-import com.kidozh.discuzhub.database.BBSInformationDatabase;
+import com.kidozh.discuzhub.database.DiscuzDatabase;
 import com.kidozh.discuzhub.databinding.ActivityBbsAddIntroBinding;
 import com.kidozh.discuzhub.entities.SuggestURLInfo;
-import com.kidozh.discuzhub.entities.bbsInformation;
-import com.kidozh.discuzhub.results.AddCheckResult;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.viewModels.AddBBSViewModel;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class AddIntroActivity extends BaseStatusActivity
         implements UrlSuggestionAdapter.OnClickSuggestionListener {
@@ -133,7 +119,7 @@ public class AddIntroActivity extends BaseStatusActivity
         viewModel.verifiedBBS.observe(this,bbsInformation -> {
             if(bbsInformation !=null){
                 new Thread(()->{
-                    BBSInformationDatabase
+                    DiscuzDatabase
                             .getInstance(this)
                             .getForumInformationDao().insert(bbsInformation);
                 }).start();

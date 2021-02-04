@@ -53,7 +53,7 @@ import com.kidozh.discuzhub.activities.FullImageActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.entities.Post;
 import com.kidozh.discuzhub.entities.ViewThreadQueryStatus;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -84,7 +84,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
     private Context mContext,context;
     public String subject;
     private OkHttpClient client = new OkHttpClient();
-    private bbsInformation bbsInfo;
+    private Discuz bbsInfo;
     private forumUserBriefInfo curUser;
     private ViewThreadQueryStatus viewThreadQueryStatus;
 
@@ -100,7 +100,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
 
 
-    public PostAdapter(Context context, bbsInformation bbsInfo, forumUserBriefInfo curUser, ViewThreadQueryStatus viewThreadQueryStatus){
+    public PostAdapter(Context context, Discuz bbsInfo, forumUserBriefInfo curUser, ViewThreadQueryStatus viewThreadQueryStatus){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
         this.mContext = context;

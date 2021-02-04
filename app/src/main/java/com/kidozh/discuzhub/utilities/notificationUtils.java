@@ -5,10 +5,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 
-import androidx.annotation.NonNull;
-
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.entities.bbsInformation;
 
 public class notificationUtils {
     public static String updateProgressNotificationId = "updateProgressNotificationId";

@@ -10,14 +10,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.ExplorePage.ExplorePageFragment;
@@ -27,10 +25,8 @@ import com.kidozh.discuzhub.activities.ui.HotForums.HotForumsFragment;
 import com.kidozh.discuzhub.activities.ui.HotThreads.HotThreadsFragment;
 import com.kidozh.discuzhub.activities.ui.NewThreads.NewThreadsFragment;
 import com.kidozh.discuzhub.databinding.FragmentDashboardBinding;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,7 +45,7 @@ public class DashBoardFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private bbsInformation bbsInfo;
+    private Discuz bbsInfo;
     private forumUserBriefInfo userBriefInfo;
 
     DashBoardViewModel viewModel;
@@ -65,7 +61,7 @@ public class DashBoardFragment extends Fragment {
      * @return A new instance of fragment DashBoardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DashBoardFragment newInstance(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo) {
+    public static DashBoardFragment newInstance(Discuz bbsInfo, forumUserBriefInfo userBriefInfo) {
         DashBoardFragment fragment = new DashBoardFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_BBS, bbsInfo);
@@ -78,7 +74,7 @@ public class DashBoardFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bbsInfo = (bbsInformation) getArguments().getSerializable(ARG_BBS);
+            bbsInfo = (Discuz) getArguments().getSerializable(ARG_BBS);
             userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(ARG_USER);
         }
     }

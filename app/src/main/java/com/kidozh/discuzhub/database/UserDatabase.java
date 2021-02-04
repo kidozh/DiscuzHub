@@ -13,12 +13,12 @@ import com.kidozh.discuzhub.daos.forumUserBriefInfoDao;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
-@Database(entities = {forumUserBriefInfo.class},version = 2, exportSchema = false)
+@Database(entities = {forumUserBriefInfo.class},version = 2, exportSchema = true)
 @TypeConverters(DateConverter.class)
-public abstract class forumUserBriefInfoDatabase extends RoomDatabase {
+public abstract class UserDatabase extends RoomDatabase {
     private static final String DB_NAME = "forumUserBriefInfoDatabase.db";
-    private static volatile forumUserBriefInfoDatabase instance;
-    public static synchronized forumUserBriefInfoDatabase getInstance(Context context){
+    private static volatile UserDatabase instance;
+    public static synchronized UserDatabase getInstance(Context context){
         if(instance == null){
             instance = getDatabase(context);
         }
@@ -33,14 +33,14 @@ public abstract class forumUserBriefInfoDatabase extends RoomDatabase {
         }
     };
 
-    private static forumUserBriefInfoDatabase getDatabase(final Context context){
-        return Room.databaseBuilder(context,forumUserBriefInfoDatabase.class,DB_NAME)
+    private static UserDatabase getDatabase(final Context context){
+        return Room.databaseBuilder(context, UserDatabase.class,DB_NAME)
                 .addMigrations(MIGRATION_1_2)
                 .build();
     }
 
-    public static forumUserBriefInfoDatabase getSyncDatabase(final Context context){
-        return Room.databaseBuilder(context,forumUserBriefInfoDatabase.class,DB_NAME)
+    public static UserDatabase getSyncDatabase(final Context context){
+        return Room.databaseBuilder(context, UserDatabase.class,DB_NAME)
                 .allowMainThreadQueries()
                 .addMigrations(MIGRATION_1_2)
                 .build();

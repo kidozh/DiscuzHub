@@ -22,7 +22,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.NotificationAdapter;
 import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
 import com.kidozh.discuzhub.databinding.FragmentBbsNotificationBinding;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.UserNoteListResult;
@@ -51,7 +51,7 @@ public class UserNotificationFragment extends Fragment {
 
 
     private forumUserBriefInfo userBriefInfo;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     
     FragmentBbsNotificationBinding binding;
     ContentEmptyInformationBinding emptyBinding;
@@ -74,12 +74,12 @@ public class UserNotificationFragment extends Fragment {
     public static final String ARG_TYPE = "TYPE";
     public static final String ARG_VIEW = "VIEW", ARG_BBS = "ARG_BBS", ARG_USER= "ARG_USER";
 
-    public static UserNotificationFragment newInstance(String view, String type,bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo) {
+    public static UserNotificationFragment newInstance(String view, String type, Discuz Discuz, forumUserBriefInfo userBriefInfo) {
         UserNotificationFragment fragment = new UserNotificationFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TYPE, type);
         args.putString(ARG_VIEW, view);
-        args.putSerializable(ARG_BBS,bbsInformation);
+        args.putSerializable(ARG_BBS, Discuz);
         args.putSerializable(ARG_USER, userBriefInfo);
 
         fragment.setArguments(args);
@@ -94,7 +94,7 @@ public class UserNotificationFragment extends Fragment {
         if (getArguments() != null) {
             type = getArguments().getString(ARG_TYPE);
             view = getArguments().getString(ARG_VIEW);
-            bbsInfo = (bbsInformation) getArguments().getSerializable(ARG_BBS);
+            bbsInfo = (Discuz) getArguments().getSerializable(ARG_BBS);
             userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(ARG_USER);
         }
 

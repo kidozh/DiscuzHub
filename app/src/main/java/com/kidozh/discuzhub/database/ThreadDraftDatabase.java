@@ -14,15 +14,15 @@ import com.kidozh.discuzhub.entities.ThreadDraft;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
 
-@Database(entities = {ThreadDraft.class},version = 3, exportSchema = false)
+@Database(entities = {ThreadDraft.class},version = 3, exportSchema = true)
 @TypeConverters(DateConverter.class)
-public abstract class bbsThreadDraftDatabase extends RoomDatabase {
+public abstract class ThreadDraftDatabase extends RoomDatabase {
     private static final String DB_NAME = "bbsThreadDraftDatabase.db";
-    private static volatile bbsThreadDraftDatabase instance;
+    private static volatile ThreadDraftDatabase instance;
 
 
 
-    public static synchronized bbsThreadDraftDatabase getInstance(Context context){
+    public static synchronized ThreadDraftDatabase getInstance(Context context){
         if(instance == null){
             instance = getDatabase(context);
         }
@@ -46,8 +46,8 @@ public abstract class bbsThreadDraftDatabase extends RoomDatabase {
         }
     };
 
-    private static bbsThreadDraftDatabase getDatabase(final Context context){
-        return Room.databaseBuilder(context, bbsThreadDraftDatabase.class,DB_NAME)
+    private static ThreadDraftDatabase getDatabase(final Context context){
+        return Room.databaseBuilder(context, ThreadDraftDatabase.class,DB_NAME)
                 .addMigrations(MIGRATION_1_2)
                 .addMigrations(MIGRATION_2_3)
                 .build();

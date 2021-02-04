@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.DiscuzIndexResult;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
@@ -29,7 +29,7 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
     private final static String TAG = ForumCategoryAdapter.class.getSimpleName();
     Context mContext;
     List<DiscuzIndexResult.ForumCategory> forumCategoryList = new ArrayList<>();
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo curUser;
     List<Forum> allForum;
 
@@ -37,9 +37,9 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
         this.mContext = context;
     }
 
-    public ForumCategoryAdapter( bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+    public ForumCategoryAdapter(Discuz Discuz, forumUserBriefInfo userBriefInfo){
 
-        this.bbsInfo = bbsInformation;
+        this.bbsInfo = Discuz;
         this.curUser = userBriefInfo;
     }
 

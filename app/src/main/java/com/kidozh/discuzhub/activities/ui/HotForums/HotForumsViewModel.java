@@ -8,8 +8,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kidozh.discuzhub.R;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.ErrorMessage;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.HotForumsResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
@@ -25,7 +25,7 @@ import retrofit2.Retrofit;
 public class HotForumsViewModel extends AndroidViewModel {
     private final static String TAG = HotForumsViewModel.class.getSimpleName();
 
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo userBriefInfo;
     private OkHttpClient client = new OkHttpClient();
     public MutableLiveData<Boolean> isLoadingMutableLiveData = new MutableLiveData<>(false);
@@ -37,7 +37,7 @@ public class HotForumsViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public void setBBSInfo(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
+    public void setBBSInfo(Discuz bbsInfo, forumUserBriefInfo userBriefInfo){
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
         URLUtils.setBBS(bbsInfo);

@@ -22,8 +22,8 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.LoginActivity;
 import com.kidozh.discuzhub.adapter.ForumCategoryAdapter;
 import com.kidozh.discuzhub.databinding.ActivityBbsForumIndexBinding;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.DiscuzIndexResult;
@@ -41,7 +41,7 @@ public class HomeFragment extends Fragment {
 
 
     ForumCategoryAdapter adapter;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo userBriefInfo;
 
     ActivityBbsForumIndexBinding activityBbsForumIndexBinding;
@@ -67,10 +67,10 @@ public class HomeFragment extends Fragment {
 
     }
 
-    public static HomeFragment newInstance(bbsInformation bbsInformation, forumUserBriefInfo userBriefInfo){
+    public static HomeFragment newInstance(Discuz Discuz, forumUserBriefInfo userBriefInfo){
         HomeFragment homeFragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInformation);
+        args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY, Discuz);
         args.putSerializable(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
         homeFragment.setArguments(args);
         return homeFragment;
@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bbsInfo = (bbsInformation) getArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY);
+            bbsInfo = (Discuz) getArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY);
             userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
 
         }
@@ -93,7 +93,7 @@ public class HomeFragment extends Fragment {
             return;
         }
         Intent intent = getActivity().getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         if(bbsInfo == null){

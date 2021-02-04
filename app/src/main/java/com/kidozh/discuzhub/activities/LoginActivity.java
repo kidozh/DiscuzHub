@@ -1,15 +1,12 @@
 package com.kidozh.discuzhub.activities;
 
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -24,15 +21,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
+import com.kidozh.discuzhub.database.UserDatabase;
 import com.kidozh.discuzhub.databinding.ActivityLoginBbsBinding;
-import com.kidozh.discuzhub.entities.ErrorMessage;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-import com.kidozh.discuzhub.results.LoginResult;
 import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -45,15 +39,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Cookie;
-import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -370,7 +361,7 @@ public class LoginActivity extends BaseStatusActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            insertedId = forumUserBriefInfoDatabase.getInstance(getApplicationContext())
+            insertedId = UserDatabase.getInstance(getApplicationContext())
                     .getforumUserBriefInfoDao().insert(userBriefInfo);
             return null;
         }
@@ -411,7 +402,7 @@ public class LoginActivity extends BaseStatusActivity {
 
     void configureData(){
         Intent intent = getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         client = NetworkUtils.getPreferredClientWithCookieJar(getApplicationContext());
         viewModel.setInfo(bbsInfo,userBriefInfo,client);

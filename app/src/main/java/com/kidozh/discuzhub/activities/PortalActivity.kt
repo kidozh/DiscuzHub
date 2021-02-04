@@ -11,15 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.kidozh.discuzhub.BuildConfig
 import com.kidozh.discuzhub.R
-import com.kidozh.discuzhub.database.BBSInformationDatabase
+import com.kidozh.discuzhub.database.DiscuzDatabase
 import com.kidozh.discuzhub.databinding.ActivityPortalBinding
 import com.kidozh.discuzhub.dialogs.DiscuzDetailDialogFragment
-import com.kidozh.discuzhub.dialogs.ForumDisplayOptionFragment
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.URLUtils
 import com.kidozh.discuzhub.viewModels.PortalViewModel
-import kotlin.concurrent.fixedRateTimer
-import kotlin.concurrent.schedule
 
 class PortalActivity : AppCompatActivity() {
     val TAG = PortalActivity::class.simpleName
@@ -92,7 +89,7 @@ class PortalActivity : AppCompatActivity() {
         val metadata = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA).metaData
         val baseURL = metadata.getString("discuz_base_url")
         if(baseURL != null){
-            val dao = BBSInformationDatabase.getInstance(this).forumInformationDao
+            val dao = DiscuzDatabase.getInstance(this).forumInformationDao
             model.setBaseURL(baseURL)
             // bind them now
             Thread{
@@ -121,7 +118,7 @@ class PortalActivity : AppCompatActivity() {
         val baseURL = metadata.getString("discuz_base_url")
         val discuzTitle = metadata.getString("discuz_title")
 
-        model.bbsInformationInDatabase.observe(this, {bbs->
+        model.discuzInDatabase.observe(this, { bbs->
             if(bbs!=null){
                 val intent = Intent(this, SingleDiscuzActivity::class.java)
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbs)
@@ -200,7 +197,7 @@ class PortalActivity : AppCompatActivity() {
         binding.enterButton.setOnClickListener { v->
             val metadata = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA).metaData
             val baseURL = metadata.getString("discuz_base_url")
-            val dao = BBSInformationDatabase.getInstance(this).forumInformationDao
+            val dao = DiscuzDatabase.getInstance(this).forumInformationDao
 
             val bbsEntity = model.checkResultLiveData.value
             if(bbsEntity!=null) {

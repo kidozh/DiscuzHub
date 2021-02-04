@@ -31,14 +31,12 @@ import com.kidozh.discuzhub.adapter.UserSpinnerAdapter
 import com.kidozh.discuzhub.databinding.ActivitySingleDiscuzBinding
 import com.kidozh.discuzhub.databinding.NavHeaderMainBinding
 import com.kidozh.discuzhub.databinding.SingleDrawerNavigationHeaderBinding
-import com.kidozh.discuzhub.entities.bbsInformation
+import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.forumUserBriefInfo
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.URLUtils
 import com.kidozh.discuzhub.viewModels.SingleDiscuzViewModel
 import es.dmoral.toasty.Toasty
-import java.io.InputStream
-import java.net.URL
 
 class SingleDiscuzActivity : BaseStatusActivity() {
     val TAG = SingleDiscuzViewModel::class.simpleName
@@ -65,7 +63,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
     }
 
     fun getIntentInfo(){
-        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as bbsInformation?
+        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
 
     }
 
@@ -94,7 +92,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
             }
         }
         binding.drawerNavigation.setNavigationItemSelectedListener { menuItem->
-            val bbs: bbsInformation? = viewModel.currentBBSMutableLiveData.value
+            val bbs: Discuz? = viewModel.currentBBSMutableLiveData.value
             when(menuItem.itemId) {
                 R.id.add_a_account -> {
                     val intent = Intent(this, LoginActivity::class.java)
@@ -290,7 +288,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
     inner class AnonymousViewPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
         override fun getItem(position: Int): Fragment {
 
-            val bbsInfo: bbsInformation? = this@SingleDiscuzActivity.viewModel.currentBBSMutableLiveData.value
+            val bbsInfo: Discuz? = this@SingleDiscuzActivity.viewModel.currentBBSMutableLiveData.value
             userBriefInfo = viewModel.currentUserMutableLiveData.value
             when (position) {
                 0 -> {
@@ -309,7 +307,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
 
     inner class UserViewPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
         override fun getItem(position: Int): Fragment {
-            val bbsInfo: bbsInformation? = this@SingleDiscuzActivity.viewModel.currentBBSMutableLiveData.value
+            val bbsInfo: Discuz? = this@SingleDiscuzActivity.viewModel.currentBBSMutableLiveData.value
             val userBriefInfo: forumUserBriefInfo? = this@SingleDiscuzActivity.viewModel.currentUserMutableLiveData.value
             when (position) {
                 0 -> {
@@ -348,7 +346,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                 return true
             }
             R.id.bbs_share -> {
-                val bbsInfo: bbsInformation? = viewModel.currentBBSMutableLiveData.getValue()
+                val bbsInfo: Discuz? = viewModel.currentBBSMutableLiveData.getValue()
                 if (bbsInfo != null) {
                     val sendIntent = Intent()
                     sendIntent.action = Intent.ACTION_SEND

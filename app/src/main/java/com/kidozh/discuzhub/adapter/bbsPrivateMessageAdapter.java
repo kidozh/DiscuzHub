@@ -26,7 +26,7 @@ import com.google.android.material.badge.BadgeUtils;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.activities.PrivateMessageActivity;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -43,10 +43,10 @@ public class bbsPrivateMessageAdapter extends RecyclerView.Adapter<bbsPrivateMes
     private List<bbsParseUtils.privateMessage> privateMessageList;
     private Context context;
 
-    bbsInformation curBBS;
+    Discuz curBBS;
     forumUserBriefInfo userBriefInfo;
 
-    public bbsPrivateMessageAdapter(bbsInformation curBBS, forumUserBriefInfo userBriefInfo){
+    public bbsPrivateMessageAdapter(Discuz curBBS, forumUserBriefInfo userBriefInfo){
         this.curBBS = curBBS;
         this.userBriefInfo = userBriefInfo;
     }

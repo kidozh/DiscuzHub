@@ -5,10 +5,8 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
+import com.kidozh.discuzhub.database.UserDatabase;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 
 import java.util.List;
@@ -30,7 +28,7 @@ public class bbsShowInformationViewModel extends AndroidViewModel {
     }
 
     public void loadUserList(int bbs_id){
-        bbsUserInfoLiveDataList = forumUserBriefInfoDatabase.getInstance(getApplication())
+        bbsUserInfoLiveDataList = UserDatabase.getInstance(getApplication())
                 .getforumUserBriefInfoDao()
                 .getAllUserByBBSID(bbs_id);
 

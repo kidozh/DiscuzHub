@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
@@ -26,7 +26,7 @@ import java.util.List;
 public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.ViewHolder> {
 
     List<forumUserBriefInfo> userList;
-    private bbsInformation bbsInfo;
+    private Discuz bbsInfo;
     Context context;
 
     public List<forumUserBriefInfo> getUserList() {
@@ -37,8 +37,8 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
         return context;
     }
 
-    public forumUsersAdapter(Context context, bbsInformation bbsInformation){
-        this.bbsInfo = bbsInformation;
+    public forumUsersAdapter(Context context, Discuz Discuz){
+        this.bbsInfo = Discuz;
         this.context = context;
     }
 

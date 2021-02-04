@@ -11,7 +11,7 @@ import com.kidozh.discuzhub.daos.FavoriteThreadDao;
 import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
-@Database(entities = {FavoriteThread.class}, version = 3, exportSchema = false)
+@Database(entities = {FavoriteThread.class}, version = 3, exportSchema = true)
 @TypeConverters(DateConverter.class)
 public abstract class FavoriteThreadDatabase extends RoomDatabase {
     private static final String DB_NAME = "FavoriteThread.db";

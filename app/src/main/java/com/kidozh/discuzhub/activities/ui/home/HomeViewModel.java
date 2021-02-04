@@ -9,7 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.ErrorMessage;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.DiscuzIndexResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
@@ -36,7 +36,7 @@ public class HomeViewModel extends AndroidViewModel {
     public MutableLiveData<Boolean> isLoading;
     public MutableLiveData<DiscuzIndexResult> bbsIndexResultMutableLiveData;
 
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo userBriefInfo;
 
 
@@ -50,7 +50,7 @@ public class HomeViewModel extends AndroidViewModel {
 
     }
 
-    public void setBBSInfo(@NonNull bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
+    public void setBBSInfo(@NonNull Discuz bbsInfo, forumUserBriefInfo userBriefInfo){
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
         userBriefInfoMutableLiveData = new MutableLiveData<>(userBriefInfo);

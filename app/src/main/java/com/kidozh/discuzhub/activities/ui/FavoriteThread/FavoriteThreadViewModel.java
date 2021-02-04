@@ -13,8 +13,8 @@ import androidx.paging.PagedList;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.daos.FavoriteThreadDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.FavoriteThread;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.FavoriteThreadResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
@@ -44,7 +44,7 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
     public MutableLiveData<List<FavoriteThread>> newFavoriteThread = new MutableLiveData<>(new ArrayList<>());
     public MutableLiveData<FavoriteThreadResult> resultMutableLiveData = new MutableLiveData<>();
     private OkHttpClient client;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo userBriefInfo;
     String idType;
 
@@ -60,7 +60,7 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
         dao = FavoriteThreadDatabase.getInstance(application).getDao();
     }
 
-    public void setInfo( @NonNull bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo, String idType) {
+    public void setInfo(@NonNull Discuz bbsInfo, forumUserBriefInfo userBriefInfo, String idType) {
 
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;

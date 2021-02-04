@@ -7,36 +7,28 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.paging.PagedList;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.ManageBBSAdapter;
 import com.kidozh.discuzhub.callback.RecyclerViewItemTouchCallback;
-import com.kidozh.discuzhub.database.BBSInformationDatabase;
+import com.kidozh.discuzhub.database.DiscuzDatabase;
 import com.kidozh.discuzhub.databinding.ActivityManageBbsBinding;
 import com.kidozh.discuzhub.dialogs.ManageAdapterHelpDialogFragment;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.viewModels.ManageBBSViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import jp.wasabeef.recyclerview.animators.FadeInAnimator;
-import jp.wasabeef.recyclerview.animators.LandingAnimator;
-import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
 
 
 public class ManageBBSActivity extends BaseStatusActivity
@@ -96,11 +88,11 @@ public class ManageBBSActivity extends BaseStatusActivity
 
     void bindViewModel(){
 
-        viewModel.getPagedListLiveData().observe(this, new Observer<PagedList<bbsInformation>>() {
+        viewModel.getPagedListLiveData().observe(this, new Observer<PagedList<Discuz>>() {
             @Override
-            public void onChanged(PagedList<bbsInformation> bbsInformations) {
-                Log.d(TAG,"Recv list length "+bbsInformations.size()+" adapter "+adapter.getItemCount());
-                if(bbsInformations.size() == 0){
+            public void onChanged(PagedList<Discuz> Discuzs) {
+                Log.d(TAG,"Recv list length "+ Discuzs.size()+" adapter "+adapter.getItemCount());
+                if(Discuzs.size() == 0){
                     binding.emptyUserView.setVisibility(View.VISIBLE);
                 }
                 else {
@@ -118,40 +110,40 @@ public class ManageBBSActivity extends BaseStatusActivity
     @Override
     public void onRecyclerViewSwiped(int position, int direction) {
         // delete bbs
-        List<bbsInformation> bbsInformations= viewModel.getPagedListLiveData().getValue();
-        if(bbsInformations!=null && bbsInformations.size()>position){
-            showUndoSnackbar(bbsInformations.get(position),position);
+        List<Discuz> Discuzs = viewModel.getPagedListLiveData().getValue();
+        if(Discuzs !=null && Discuzs.size()>position){
+            showUndoSnackbar(Discuzs.get(position),position);
         }
 
     }
 
     @Override
     public void onRecyclerViewMoved(int fromPosition, int toPosition) {
-        List<bbsInformation> bbsInformations= viewModel.getPagedListLiveData().getValue();
-        if(bbsInformations !=null){
-            bbsInformations = new ArrayList<>(bbsInformations);
+        List<Discuz> Discuzs = viewModel.getPagedListLiveData().getValue();
+        if(Discuzs !=null){
+            Discuzs = new ArrayList<>(Discuzs);
             // swap the data directly
-            Log.d(TAG,"list "+bbsInformations+" from "+fromPosition+" to "+toPosition);
-            Collections.swap(bbsInformations,fromPosition, toPosition);
-            for(int i=0;i<bbsInformations.size();i++){
-                bbsInformations.get(i).position = i;
+            Log.d(TAG,"list "+ Discuzs +" from "+fromPosition+" to "+toPosition);
+            Collections.swap(Discuzs,fromPosition, toPosition);
+            for(int i = 0; i< Discuzs.size(); i++){
+                Discuzs.get(i).position = i;
             }
 
-            new UpdateBBSTask(bbsInformations).execute();
+            new UpdateBBSTask(Discuzs).execute();
         }
 
 
     }
 
     public class removeBBSTask extends AsyncTask<Void, Void, Void> {
-        private bbsInformation bbsInfo;
-        public removeBBSTask(bbsInformation bbsInfo){
+        private Discuz bbsInfo;
+        public removeBBSTask(Discuz bbsInfo){
             this.bbsInfo = bbsInfo;
 
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            BBSInformationDatabase.getInstance(getApplication()).getForumInformationDao().delete(bbsInfo);
+            DiscuzDatabase.getInstance(getApplication()).getForumInformationDao().delete(bbsInfo);
             return null;
         }
 
@@ -163,14 +155,14 @@ public class ManageBBSActivity extends BaseStatusActivity
     }
 
     public class AddBBSTask extends AsyncTask<Void, Void, Void> {
-        private bbsInformation bbsInfo;
-        public AddBBSTask(bbsInformation bbsInfo){
+        private Discuz bbsInfo;
+        public AddBBSTask(Discuz bbsInfo){
             this.bbsInfo = bbsInfo;
 
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            BBSInformationDatabase.getInstance(getApplication()).getForumInformationDao().insert(bbsInfo);
+            DiscuzDatabase.getInstance(getApplication()).getForumInformationDao().insert(bbsInfo);
             return null;
         }
 
@@ -182,14 +174,14 @@ public class ManageBBSActivity extends BaseStatusActivity
     }
 
     public class UpdateBBSTask extends AsyncTask<Void, Void, Void> {
-        private List<bbsInformation> bbsInfos;
-        public UpdateBBSTask(List<bbsInformation> bbsInfos){
+        private List<Discuz> bbsInfos;
+        public UpdateBBSTask(List<Discuz> bbsInfos){
             this.bbsInfos = bbsInfos;
 
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            BBSInformationDatabase.getInstance(getApplication()).getForumInformationDao().update(bbsInfos);
+            DiscuzDatabase.getInstance(getApplication()).getForumInformationDao().update(bbsInfos);
             return null;
         }
 
@@ -200,7 +192,7 @@ public class ManageBBSActivity extends BaseStatusActivity
         }
     }
 
-    public void showUndoSnackbar(final bbsInformation bbsInfo, final int position) {
+    public void showUndoSnackbar(final Discuz bbsInfo, final int position) {
         Log.d(TAG,"SHOW REMOVED POS "+position);
         new removeBBSTask(bbsInfo).execute();
         Snackbar snackbar = Snackbar.make(binding.manageBbsCoordinatorLayout, getString(R.string.delete_bbs_template,bbsInfo.site_name),
@@ -215,7 +207,7 @@ public class ManageBBSActivity extends BaseStatusActivity
         snackbar.show();
     }
 
-    public void undoDelete(bbsInformation bbsInfo, int position) {
+    public void undoDelete(Discuz bbsInfo, int position) {
         // insert to database
         new AddBBSTask(bbsInfo).execute();
     }

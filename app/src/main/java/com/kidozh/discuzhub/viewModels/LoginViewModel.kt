@@ -6,34 +6,31 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.entities.ErrorMessage
-import com.kidozh.discuzhub.entities.bbsInformation
+import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.forumUserBriefInfo
 import com.kidozh.discuzhub.results.LoginResult
 import com.kidozh.discuzhub.results.SecureInfoResult
 import com.kidozh.discuzhub.services.DiscuzApiService
 import com.kidozh.discuzhub.utilities.NetworkUtils
-import com.kidozh.discuzhub.utilities.URLUtils
-import com.kidozh.discuzhub.utilities.bbsParseUtils
 import okhttp3.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import java.io.IOException
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = LoginViewModel::class.simpleName
     var secureInfoResultMutableLiveData = MutableLiveData<SecureInfoResult?>(null)
     var loginResultMutableLiveData : MutableLiveData<LoginResult?> = MutableLiveData(null)
     var errorMessage: MutableLiveData<ErrorMessage?> = MutableLiveData(null)
-    lateinit var bbsInfo: bbsInformation
+    lateinit var bbsInfo: Discuz
     lateinit var client: OkHttpClient
     var userBriefInfo: forumUserBriefInfo? = null
     lateinit var retrofit:Retrofit
     lateinit var service: DiscuzApiService
 
 
-    public fun setInfo(bbsInfo: bbsInformation, userBriefInfo: forumUserBriefInfo?, client: OkHttpClient){
+    public fun setInfo(bbsInfo: Discuz, userBriefInfo: forumUserBriefInfo?, client: OkHttpClient){
         this.bbsInfo = bbsInfo
         this.userBriefInfo = userBriefInfo
         this.client = client

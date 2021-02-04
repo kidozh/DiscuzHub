@@ -21,7 +21,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.bbsPrivateMessageAdapter;
 import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
 import com.kidozh.discuzhub.databinding.FragmentBbsPrivateMessageBinding;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -69,7 +69,7 @@ public class bbsPrivateMessageFragment extends Fragment {
     // TODO: Rename and change types and number of parameters
     private static String ARG_BBS = "ARG_BBS", ARG_USER = "ARG_USER";
 
-    public static bbsPrivateMessageFragment newInstance(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo) {
+    public static bbsPrivateMessageFragment newInstance(Discuz bbsInfo, forumUserBriefInfo userBriefInfo) {
         bbsPrivateMessageFragment fragment = new bbsPrivateMessageFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_BBS, bbsInfo);
@@ -82,7 +82,7 @@ public class bbsPrivateMessageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bbsInfo = (bbsInformation) getArguments().getSerializable(ARG_BBS);
+            bbsInfo = (Discuz) getArguments().getSerializable(ARG_BBS);
             userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(ARG_USER);
         }
     }
@@ -99,7 +99,7 @@ public class bbsPrivateMessageFragment extends Fragment {
 
 
     private forumUserBriefInfo userBriefInfo;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     Forum forum;
     private OkHttpClient client = new OkHttpClient();
     bbsPrivateMessageAdapter adapter;

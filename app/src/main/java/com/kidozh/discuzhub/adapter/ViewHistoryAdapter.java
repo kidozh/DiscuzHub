@@ -26,10 +26,10 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.activities.ForumActivity;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.entities.ViewHistory;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.GlideImageGetter;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -43,12 +43,12 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
         super(DIFF_CALLBACK);
     }
 
-    public void setInfo(bbsInformation bbsInfo, forumUserBriefInfo forumUserBriefInfo){
+    public void setInfo(Discuz bbsInfo, forumUserBriefInfo forumUserBriefInfo){
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = forumUserBriefInfo;
     }
 
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
     forumUserBriefInfo userBriefInfo;
 
     Context context;

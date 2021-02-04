@@ -10,10 +10,9 @@ import android.view.View
 import com.bumptech.glide.Glide
 import com.kidozh.discuzhub.BuildConfig
 import com.kidozh.discuzhub.R
-import com.kidozh.discuzhub.database.BBSInformationDatabase
+import com.kidozh.discuzhub.database.DiscuzDatabase
 import com.kidozh.discuzhub.databinding.ActivityAboutAppBinding
 import com.kidozh.discuzhub.dialogs.DiscuzDetailDialogFragment
-import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.URLUtils
 
 class AboutAppActivity : BaseStatusActivity() {
@@ -47,7 +46,7 @@ class AboutAppActivity : BaseStatusActivity() {
         binding.aboutOpenSourceLib.visibility = View.GONE
         binding.discuzInfoCardview.visibility = View.VISIBLE
 
-        val dao = BBSInformationDatabase.getMainUIDatabase(this).forumInformationDao
+        val dao = DiscuzDatabase.getMainUIDatabase(this).forumInformationDao
         // looking for thread
         val metadata = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA).metaData
         val baseURL = metadata.getString("discuz_base_url")

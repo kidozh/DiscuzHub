@@ -34,9 +34,9 @@ import com.kidozh.discuzhub.activities.ui.notifications.NotificationsFragment
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment
 import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment
 import com.kidozh.discuzhub.database.ViewHistoryDatabase
-import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase
+import com.kidozh.discuzhub.database.UserDatabase
 import com.kidozh.discuzhub.databinding.ActivityNewMainDrawerBinding
-import com.kidozh.discuzhub.entities.bbsInformation
+import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.forumUserBriefInfo
 import com.kidozh.discuzhub.utilities.*
 import com.kidozh.discuzhub.utilities.bbsParseUtils.noticeNumInfo
@@ -51,12 +51,10 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem
 import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem
 import com.mikepenz.materialdrawer.model.interfaces.IProfile
-import com.mikepenz.materialdrawer.model.interfaces.withBadge
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader
 import com.mikepenz.materialdrawer.util.DrawerImageLoader.Companion.init
 import com.mikepenz.materialdrawer.util.updateBadge
 import com.mikepenz.materialdrawer.util.updateItem
-import com.mikepenz.materialdrawer.util.updateName
 import com.mikepenz.materialdrawer.widget.AccountHeaderView
 import es.dmoral.toasty.Toasty
 import java.io.InputStream
@@ -108,18 +106,18 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
     }
 
     private fun bindViewModel() {
-        viewModel.allBBSInformationMutableLiveData.observe(this, { bbsInformations: List<bbsInformation>? ->
+        viewModel.allBBSInformationMutableLiveData.observe(this, { Discuzs: List<Discuz>? ->
             //binding.materialDrawerSliderView.getItemAdapter().clear();
             headerView.clear()
             //drawerAccountHeader.clear();
-            if (bbsInformations == null || bbsInformations.size == 0) {
+            if (Discuzs == null || Discuzs.size == 0) {
                 // empty
                 // show bbs page
             } else {
                 // bind to headview
                 val accountProfiles: MutableList<IProfile> = ArrayList()
-                for (i in bbsInformations.indices) {
-                    val currentBBSInfo = bbsInformations[i]
+                for (i in Discuzs.indices) {
+                    val currentBBSInfo = Discuzs[i]
                     notificationUtils.createUsersUpdateChannel(applicationContext)
                     //URLUtils.setBBS(currentBBSInfo);
                     Log.d(TAG, "Load url " + URLUtils.getBBSLogoUrl(currentBBSInfo.base_url))
@@ -147,12 +145,12 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                 }
                 headerView.profiles = accountProfiles
                 // drawerAccountHeader.setProfiles(accountProfiles);
-                if (bbsInformations.size > 0) {
+                if (Discuzs.size > 0) {
                     val activeIdentifier = UserPreferenceUtils.getLastSelectedDrawerItemIdentifier(this)
                     if (activeIdentifier >= 0) {
                         headerView.setActiveProfile(activeIdentifier.toLong(), true)
                     } else {
-                        val currentBBSInfo = bbsInformations[0]
+                        val currentBBSInfo = Discuzs[0]
                         headerView.setActiveProfile(currentBBSInfo.id.toLong(), true)
                     }
                 }
@@ -169,7 +167,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
             headerView.addProfiles(addBBSProfile)
             Log.d(TAG, "Add a bbs profile")
             // manage bbs
-            if (bbsInformations != null && bbsInformations.isNotEmpty()) {
+            if (Discuzs != null && Discuzs.isNotEmpty()) {
                 val manageBBSProfile = ProfileSettingDrawerItem().apply {
                     name = StringHolder(getString(R.string.manage_bbs))
                     identifier = FUNC_MANAGE_BBS.toLong()
@@ -336,15 +334,15 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                 }
             }
         })
-        viewModel.currentBBSInformationMutableLiveData.observe(this, { bbsInformation: bbsInformation? ->
-            bbsInfo = bbsInformation
-            if (bbsInformation != null) {
-                binding.toolbarTitle.text = bbsInformation.site_name
+        viewModel.currentBBSInformationMutableLiveData.observe(this, { Discuz: Discuz? ->
+            bbsInfo = Discuz
+            if (Discuz != null) {
+                binding.toolbarTitle.text = Discuz.site_name
                 if (supportActionBar != null) {
-                    supportActionBar!!.title = bbsInformation.site_name
+                    supportActionBar!!.title = Discuz.site_name
                 }
-                val id = bbsInformation.id
-                val allUsersInCurrentBBSLiveData = forumUserBriefInfoDatabase.getInstance(application)
+                val id = Discuz.id
+                val allUsersInCurrentBBSLiveData = UserDatabase.getInstance(application)
                         .getforumUserBriefInfoDao()
                         .getAllUserByBBSID(id)
                 allUsersInCurrentBBSLiveData.observe(this, { forumUserBriefInfos: List<forumUserBriefInfo?> ->

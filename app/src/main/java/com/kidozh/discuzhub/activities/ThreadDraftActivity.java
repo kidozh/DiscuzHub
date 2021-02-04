@@ -22,10 +22,10 @@ import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.ThreadDraftAdapter;
 import com.kidozh.discuzhub.callback.recyclerViewSwipeToDeleteCallback;
-import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
+import com.kidozh.discuzhub.database.ThreadDraftDatabase;
 import com.kidozh.discuzhub.databinding.ActivityViewThreadDraftBinding;
 import com.kidozh.discuzhub.entities.ThreadDraft;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -57,7 +57,7 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
 
     private void configureIntentData(){
         Intent intent = getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
     }
 
@@ -74,7 +74,7 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
         threadDraftAdapter = new ThreadDraftAdapter(bbsInfo,userBriefInfo);
         binding.bbsShowThreadDraftRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         binding.bbsShowThreadDraftRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,threadDraftAdapter));
-        listLiveData = bbsThreadDraftDatabase.getInstance(this)
+        listLiveData = ThreadDraftDatabase.getInstance(this)
                 .getbbsThreadDraftDao()
                 .getAllThreadDraftByBBSId(bbsInfo.getId());
         listLiveData.observe(this, new Observer<List<ThreadDraft>>() {
@@ -168,7 +168,7 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            long inserted = bbsThreadDraftDatabase
+            long inserted = ThreadDraftDatabase
                     .getInstance(context)
                     .getbbsThreadDraftDao().insert(insertThreadDraft);
             insertThreadDraft.setId( (int) inserted);
@@ -190,7 +190,7 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            bbsThreadDraftDatabase
+            ThreadDraftDatabase
                     .getInstance(context)
                     .getbbsThreadDraftDao().deleteAllForumInformation(bbsInfo.getId());
 
@@ -214,7 +214,7 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            bbsThreadDraftDatabase
+            ThreadDraftDatabase
                     .getInstance(context)
                     .getbbsThreadDraftDao().delete(threadDraft);
             Log.d(TAG, "delete forum into database"+threadDraft.subject+threadDraft.getId());

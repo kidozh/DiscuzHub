@@ -35,7 +35,7 @@ import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.databinding.ActivityShowPersonalInfoBinding;
 import com.kidozh.discuzhub.entities.UserProfileItem;
 import com.kidozh.discuzhub.entities.ViewHistory;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.UserProfileResult;
 import com.kidozh.discuzhub.utilities.MyImageGetter;
@@ -144,7 +144,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
     private void getIntentInfo(){
         Intent intent = getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         userId = intent.getIntExtra("UID",0);

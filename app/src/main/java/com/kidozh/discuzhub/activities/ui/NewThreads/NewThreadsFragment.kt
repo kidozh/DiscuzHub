@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter
 import com.kidozh.discuzhub.adapter.ThreadAdapter
 import com.kidozh.discuzhub.databinding.NewThreadsFragmentBinding
-import com.kidozh.discuzhub.entities.bbsInformation
+import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.forumUserBriefInfo
 import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
 import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
@@ -20,16 +20,16 @@ import com.kidozh.discuzhub.utilities.ConstUtils
 
 class NewThreadsFragment : Fragment() {
 
-    lateinit var bbsInfo: bbsInformation
+    lateinit var bbsInfo: Discuz
     var userBriefInfo: forumUserBriefInfo? = null
     lateinit var threadAdapter: ThreadAdapter
     companion object {
         fun newInstance() = NewThreadsFragment()
 
-        fun newInstance(bbsInformation: bbsInformation, userBriefInfo: forumUserBriefInfo?): NewThreadsFragment {
+        fun newInstance(Discuz: Discuz, userBriefInfo: forumUserBriefInfo?): NewThreadsFragment {
             val fragment = NewThreadsFragment()
             val args = Bundle()
-            args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInformation)
+            args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY, Discuz)
             args.putSerializable(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
             fragment.arguments = args
             return fragment
@@ -41,7 +41,7 @@ class NewThreadsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            bbsInfo = (requireArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY) as bbsInformation?)!!
+            bbsInfo = (requireArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?)!!
             userBriefInfo = requireArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY) as forumUserBriefInfo?
             threadAdapter = ThreadAdapter(null, null, bbsInfo, userBriefInfo)
         }

@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.PublishActivity;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.ThreadDraft;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -31,9 +31,9 @@ public class ThreadDraftAdapter extends RecyclerView.Adapter<ThreadDraftAdapter.
     List<ThreadDraft> threadDraftList = new ArrayList<>();
     Context context;
     private forumUserBriefInfo userBriefInfo;
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
 
-    public ThreadDraftAdapter(bbsInformation bbsInfo, forumUserBriefInfo userBriefInfo){
+    public ThreadDraftAdapter(Discuz bbsInfo, forumUserBriefInfo userBriefInfo){
         this.userBriefInfo = userBriefInfo;
         this.bbsInfo = bbsInfo;
     }

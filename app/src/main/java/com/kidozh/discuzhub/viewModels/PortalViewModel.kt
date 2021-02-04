@@ -5,10 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kidozh.discuzhub.R
-import com.kidozh.discuzhub.database.BBSInformationDatabase
+import com.kidozh.discuzhub.database.DiscuzDatabase
 import com.kidozh.discuzhub.entities.ErrorMessage
-import com.kidozh.discuzhub.entities.bbsInformation
-import com.kidozh.discuzhub.entities.forumUserBriefInfo
+import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.results.AddCheckResult
 import com.kidozh.discuzhub.services.DiscuzApiService
 import com.kidozh.discuzhub.utilities.NetworkUtils
@@ -16,15 +15,14 @@ import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 
 class PortalViewModel(application: Application) : AndroidViewModel(application) {
 
-    lateinit var bbsInformationInDatabase: LiveData<bbsInformation>
+    lateinit var discuzInDatabase: LiveData<Discuz>
     var checkResultLiveData: MutableLiveData<AddCheckResult?>
     lateinit var client: OkHttpClient
     lateinit var errorMessageLiveData: MutableLiveData<ErrorMessage?>
-    val dao = BBSInformationDatabase.getInstance(application).forumInformationDao
+    val dao = DiscuzDatabase.getInstance(application).forumInformationDao
 
 
     init {
@@ -35,7 +33,7 @@ class PortalViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun setBaseURL(url:String){
-        bbsInformationInDatabase = dao.getBBSInformationLiveDataByBaseURL(url)
+        discuzInDatabase = dao.getBBSInformationLiveDataByBaseURL(url)
     }
 
 

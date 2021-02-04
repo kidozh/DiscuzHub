@@ -25,7 +25,8 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
 import com.kidozh.discuzhub.adapter.bbsPrivateDetailMessageAdapter;
 import com.kidozh.discuzhub.databinding.ActivityBbsPrivateMessageDetailBinding;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
+import com.kidozh.discuzhub.entities.Smiley;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -51,17 +52,16 @@ public class PrivateMessageActivity extends BaseStatusActivity implements Smiley
 
     private static final String TAG = PrivateMessageActivity.class.getSimpleName();
 
-    bbsInformation bbsInfo;
+    Discuz bbsInfo;
 
     bbsParseUtils.privateMessage privateMessageInfo;
     bbsPrivateDetailMessageAdapter adapter;
     // private OkHttpClient client;
     private int globalPage = -1;
-    private Boolean hasLoadAll=false;
     String formHash;
     String pmid;
-
-    List<bbsParseUtils.smileyInfo> allSmileyInfos;
+    boolean hasLoadAll = false;
+    List<Smiley> allSmileyInfos;
     int smileyCateNum;
 
 
@@ -198,7 +198,7 @@ public class PrivateMessageActivity extends BaseStatusActivity implements Smiley
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.isSuccessful()&& response.body()!=null){
                     String s = response.body().string();
-                    List<bbsParseUtils.smileyInfo> smileyInfoList = bbsParseUtils.parseSmileyInfo(s);
+                    List<Smiley> smileyInfoList = bbsParseUtils.parseSmiley(s);
                     int cateNum = bbsParseUtils.parseSmileyCateNum(s);
                     smileyCateNum = cateNum;
                     mHandler.post(new Runnable() {
@@ -263,10 +263,10 @@ public class PrivateMessageActivity extends BaseStatusActivity implements Smiley
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            List<bbsParseUtils.smileyInfo> cateSmileyInfo = new ArrayList<>();
+            ArrayList<Smiley> cateSmileyInfo = new ArrayList<>();
             for(int i=0;i<allSmileyInfos.size();i++){
-                bbsParseUtils.smileyInfo smileyInfo = allSmileyInfos.get(i);
-                if(smileyInfo.category == position){
+                Smiley smileyInfo = allSmileyInfos.get(i);
+                if(smileyInfo.getCategory() == position){
                     cateSmileyInfo.add(smileyInfo);
                 }
             }
@@ -356,7 +356,7 @@ public class PrivateMessageActivity extends BaseStatusActivity implements Smiley
 
     private void getIntentInfo(){
         Intent intent = getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         privateMessageInfo = (bbsParseUtils.privateMessage) intent.getSerializableExtra(ConstUtils.PASS_PRIVATE_MESSAGE_KEY);

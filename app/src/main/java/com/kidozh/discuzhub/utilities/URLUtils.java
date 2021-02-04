@@ -4,14 +4,14 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Post;
-import com.kidozh.discuzhub.entities.bbsInformation;
 
 public class URLUtils {
     public static String TAG = URLUtils.class.getSimpleName();
     public static String BASE_URL;
     public static String UC_SERVER_URL;
-    public static bbsInformation bbsInfo;
+    public static Discuz bbsInfo;
 
 
 
@@ -25,7 +25,7 @@ public class URLUtils {
     public static String getBaseUrl(){
         return BASE_URL;
     }
-    public static void setBBS(bbsInformation bbs){
+    public static void setBBS(Discuz bbs){
         BASE_URL = bbs.base_url;
         UC_SERVER_URL = bbs.ucenter_url;
         bbsInfo = bbs;
@@ -94,7 +94,7 @@ public class URLUtils {
         return uri.toString();
     }
 
-    public static String getLoginWebURL(@NonNull bbsInformation bbsInfo){
+    public static String getLoginWebURL(@NonNull Discuz bbsInfo){
         return bbsInfo.base_url + "/member.php?mod=logging&action=login";
     }
 

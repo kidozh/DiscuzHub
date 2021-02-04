@@ -23,9 +23,9 @@ import androidx.annotation.NonNull;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.databinding.ActivitySearchPostsBinding;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.Thread;
-import com.kidozh.discuzhub.entities.bbsInformation;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
@@ -68,7 +68,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
 
     private void getIntentInfo(){
         Intent intent = getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
     }
@@ -183,7 +183,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
     }
 
     public static boolean parseURLAndOpen(Context context,
-                                          bbsInformation bbsInfo,
+                                          Discuz bbsInfo,
                                           forumUserBriefInfo userBriefInfo,
                                           String url) {
         // simple unescape

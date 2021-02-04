@@ -23,10 +23,10 @@ import android.widget.Toast;
 
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.database.BBSInformationDatabase;
-import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
+import com.kidozh.discuzhub.database.DiscuzDatabase;
+import com.kidozh.discuzhub.database.UserDatabase;
 import com.kidozh.discuzhub.databinding.ActivityLoginByWebViewBinding;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.LoginResult;
 import com.kidozh.discuzhub.results.MessageResult;
@@ -77,7 +77,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
 
     void configureIntentData(){
         Intent intent = getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         if(bbsInfo != null){
             URLUtils.setBBS(bbsInfo);
             configureWebView();
@@ -385,7 +385,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
         forumUserBriefInfo userBriefInfo;
         OkHttpClient client;
         HttpUrl httpUrl;
-        List<bbsInformation> bbsInformationList = new ArrayList<>();
+        List<Discuz> discuzList = new ArrayList<>();
         List<Long> insertUserIdList = new ArrayList<>();
         String redirectURL;
 
@@ -410,7 +410,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             if(bbsInfo !=null){
-                bbsInformationList.add(bbsInfo);
+                discuzList.add(bbsInfo);
             }
         }
 
@@ -418,21 +418,21 @@ public class WebViewLoginActivity extends BaseStatusActivity {
         protected Void doInBackground(Void... voids) {
             if(bbsInfo == null){
                 // search it
-                bbsInformationList =
-                        BBSInformationDatabase.getInstance(getApplicationContext())
+                discuzList =
+                        DiscuzDatabase.getInstance(getApplicationContext())
                         .getForumInformationDao()
                         .getBBSInformationsByBaseURL(redirectURL);
                 // insert them by bbs
-                for(int i =0 ;i<bbsInformationList.size();i++){
-                    bbsInformation bbsInfo = bbsInformationList.get(i);
+                for(int i = 0; i< discuzList.size(); i++){
+                    Discuz bbsInfo = discuzList.get(i);
                     userBriefInfo.belongedBBSID = bbsInfo.getId();
-                    long insertedId = forumUserBriefInfoDatabase.getInstance(getApplicationContext())
+                    long insertedId = UserDatabase.getInstance(getApplicationContext())
                             .getforumUserBriefInfoDao().insert(userBriefInfo);
                     insertUserIdList.add(insertedId);
                 }
             }
             else {
-                long insertedId = forumUserBriefInfoDatabase.getInstance(getApplicationContext())
+                long insertedId = UserDatabase.getInstance(getApplicationContext())
                         .getforumUserBriefInfoDao().insert(userBriefInfo);
                 insertUserIdList.add(insertedId);
             }
@@ -451,15 +451,15 @@ public class WebViewLoginActivity extends BaseStatusActivity {
                         Toast.LENGTH_SHORT
                 ).show();
             }
-            else if(bbsInformationList.size() >1){
+            else if(discuzList.size() >1){
                 Toasty.success(context,
-                        String.format(context.getString(R.string.bulk_save_user_to_bbs_successfully_template),bbsInformationList.size()),
+                        String.format(context.getString(R.string.bulk_save_user_to_bbs_successfully_template), discuzList.size()),
                         Toast.LENGTH_SHORT
                 ).show();
             }
-            else if(bbsInformationList.size() == 1) {
+            else if(discuzList.size() == 1) {
                 Toasty.success(context,
-                        String.format(context.getString(R.string.save_user_to_bbs_successfully_template),userBriefInfo.username,bbsInformationList.get(0).site_name),
+                        String.format(context.getString(R.string.save_user_to_bbs_successfully_template),userBriefInfo.username, discuzList.get(0).site_name),
                         Toast.LENGTH_SHORT
                 ).show();
             }

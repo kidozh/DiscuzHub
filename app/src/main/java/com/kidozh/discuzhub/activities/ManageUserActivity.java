@@ -23,11 +23,11 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.bbsDetailedInformation.bbsShowInformationViewModel;
 import com.kidozh.discuzhub.adapter.forumUsersAdapter;
 import com.kidozh.discuzhub.callback.RecyclerViewItemTouchCallback;
-import com.kidozh.discuzhub.database.forumUserBriefInfoDatabase;
+import com.kidozh.discuzhub.database.UserDatabase;
 import com.kidozh.discuzhub.databinding.ActivityManageUserBinding;
 import com.kidozh.discuzhub.dialogs.ManageAdapterHelpDialogFragment;
 import com.kidozh.discuzhub.dialogs.ManageUserAdapterHelpDialogFragment;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -68,7 +68,7 @@ public class ManageUserActivity extends BaseStatusActivity
 
     private void configureIntent(){
         Intent intent = getIntent();
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         if(bbsInfo == null){
             finishAfterTransition();
         }
@@ -237,7 +237,7 @@ public class ManageUserActivity extends BaseStatusActivity
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            forumUserBriefInfoDatabase.getInstance(context).getforumUserBriefInfoDao().delete(userBriefInfo);
+            UserDatabase.getInstance(context).getforumUserBriefInfoDao().delete(userBriefInfo);
 
             return null;
         }
@@ -259,7 +259,7 @@ public class ManageUserActivity extends BaseStatusActivity
         @Override
         protected Void doInBackground(Void... voids) {
 
-            forumUserBriefInfoDatabase.getInstance(context).getforumUserBriefInfoDao().update(userBriefInfos);
+            UserDatabase.getInstance(context).getforumUserBriefInfoDao().update(userBriefInfos);
 
             return null;
         }
@@ -302,7 +302,7 @@ public class ManageUserActivity extends BaseStatusActivity
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            forumUserBriefInfoDatabase.getInstance(context).getforumUserBriefInfoDao().insert(userBriefInfo);
+            UserDatabase.getInstance(context).getforumUserBriefInfoDao().insert(userBriefInfo);
 
             return null;
         }

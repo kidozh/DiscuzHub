@@ -25,7 +25,7 @@ import kotlin.collections.ArrayList
 
 class ThreadViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = ThreadViewModel::class.java.simpleName
-    lateinit var bbsInfo: bbsInformation
+    lateinit var bbsInfo: Discuz
     lateinit var client: OkHttpClient
     private var forum: Forum? = null
     private var tid = 0
@@ -51,7 +51,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
     var threadPriceInfoMutableLiveData = MutableLiveData<BuyThreadResult?>(null)
     var buyThreadResultMutableLiveData = MutableLiveData<BuyThreadResult?>(null)
     var dao: FavoriteThreadDao
-    fun setBBSInfo(bbsInfo: bbsInformation, userBriefInfo: forumUserBriefInfo?, forum: Forum?, tid: Int) {
+    fun setBBSInfo(bbsInfo: Discuz, userBriefInfo: forumUserBriefInfo?, forum: Forum?, tid: Int) {
         this.bbsInfo = bbsInfo
         this.userBriefInfo = userBriefInfo
         this.forum = forum

@@ -46,7 +46,7 @@ import com.google.common.io.ByteStreams;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.uploadAttachment.UploadAttachmentDialogFragment;
 import com.kidozh.discuzhub.database.UploadAttachmentDatabase;
-import com.kidozh.discuzhub.database.bbsThreadDraftDatabase;
+import com.kidozh.discuzhub.database.ThreadDraftDatabase;
 import com.kidozh.discuzhub.databinding.ActivityBbsPostThreadBinding;
 import com.kidozh.discuzhub.databinding.ContentBbsPostThreadEditorBarBinding;
 import com.kidozh.discuzhub.dialogs.PostThreadConfirmDialogFragment;
@@ -55,7 +55,7 @@ import com.kidozh.discuzhub.dialogs.PostThreadPasswordDialogFragment;
 import com.kidozh.discuzhub.entities.Post;
 import com.kidozh.discuzhub.entities.ThreadDraft;
 import com.kidozh.discuzhub.entities.UploadAttachment;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.SecureInfoResult;
@@ -172,7 +172,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
     private void configureIntentData(){
         Intent intent = getIntent();
         forum = intent.getParcelableExtra(ConstUtils.PASS_FORUM_THREAD_KEY);
-        bbsInfo = (bbsInformation) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         if(intent.getSerializableExtra(ConstUtils.PASS_THREAD_CATEGORY_KEY) !=null){
             threadCategoryMapper = (Map<String, String>) intent.getSerializableExtra(ConstUtils.PASS_THREAD_CATEGORY_KEY);
@@ -644,7 +644,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            long inserted = bbsThreadDraftDatabase
+            long inserted = ThreadDraftDatabase
                     .getInstance(context)
                     .getbbsThreadDraftDao().insert(insertThreadDraft);
             insertThreadDraft.setId( (int) inserted);

@@ -11,8 +11,8 @@ import com.kidozh.discuzhub.entities.Smiley
 @Dao
 interface SmileyDao {
 
-    @Query("SELECT * FROM Smiley ORDER BY updateAt DESC")
-    fun allSimleys():LiveData<List<Smiley>>;
+    @Query("SELECT * FROM Smiley WHERE discuzId = :discuzId ORDER BY updateAt DESC")
+    fun allSimleys(discuzId : Int):LiveData<List<Smiley>>;
 
     @Insert
     fun insert(smiley: Smiley)

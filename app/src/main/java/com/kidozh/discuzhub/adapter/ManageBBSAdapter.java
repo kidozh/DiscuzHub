@@ -1,14 +1,10 @@
 package com.kidozh.discuzhub.adapter;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.paging.PagedListAdapter;
@@ -21,19 +17,15 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.SingleDiscuzActivity;
 import com.kidozh.discuzhub.databinding.ItemManageBbsBinding;
-import com.kidozh.discuzhub.entities.ViewHistory;
-import com.kidozh.discuzhub.entities.bbsInformation;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
-import com.kidozh.discuzhub.utilities.numberFormatUtils;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 
-public class ManageBBSAdapter extends PagedListAdapter<bbsInformation, ManageBBSAdapter.ManageBBSViewHolder> {
+public class ManageBBSAdapter extends PagedListAdapter<Discuz, ManageBBSAdapter.ManageBBSViewHolder> {
     private static final String TAG = ManageBBSAdapter.class.getSimpleName();
     Context context;
 
@@ -51,7 +43,7 @@ public class ManageBBSAdapter extends PagedListAdapter<bbsInformation, ManageBBS
 
     @Override
     public void onBindViewHolder(@NonNull ManageBBSViewHolder holder, int position) {
-        bbsInformation forumInfo = getItem(position);
+        Discuz forumInfo = getItem(position);
         if(forumInfo == null){
             return;
         }
@@ -105,14 +97,14 @@ public class ManageBBSAdapter extends PagedListAdapter<bbsInformation, ManageBBS
 
     }
 
-    private static DiffUtil.ItemCallback<bbsInformation> DIFF_CALLBACK = new DiffUtil.ItemCallback<bbsInformation>() {
+    private static DiffUtil.ItemCallback<Discuz> DIFF_CALLBACK = new DiffUtil.ItemCallback<Discuz>() {
         @Override
-        public boolean areItemsTheSame(@NonNull bbsInformation oldItem, @NonNull bbsInformation newItem) {
+        public boolean areItemsTheSame(@NonNull Discuz oldItem, @NonNull Discuz newItem) {
             return oldItem.getId() == newItem.getId();
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull bbsInformation oldItem, @NonNull bbsInformation newItem) {
+        public boolean areContentsTheSame(@NonNull Discuz oldItem, @NonNull Discuz newItem) {
             return oldItem.equals(newItem);
         }
     };
