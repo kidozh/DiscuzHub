@@ -33,11 +33,17 @@ public abstract class DiscuzDatabase extends RoomDatabase {
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE 'Discuz' "
                     + " ADD COLUMN 'position' INTEGER NOT NULL DEFAULT(0)");
-
-//            database.execSQL("ALTER TABLE forumInformation "
-//                    + " ADD COLUMN position INT");
         }
     };
+
+    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE 'bbsInformation' "
+                    + " RENAME TO 'Discuz'");
+        }
+    };
+
 
 
 
@@ -53,6 +59,7 @@ public abstract class DiscuzDatabase extends RoomDatabase {
         return Room.databaseBuilder(context, DiscuzDatabase.class,DB_NAME)
                 .addMigrations(MIGRATION_1_2)
                 .addMigrations(MIGRATION_2_3)
+                .addMigrations(MIGRATION_3_4)
                 .fallbackToDestructiveMigration()
                 .build();
     }
