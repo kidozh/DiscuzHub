@@ -1,40 +1,35 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import android.text.TextUtils;
+import android.text.TextUtils
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.kidozh.discuzhub.entities.ErrorMessage
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIgnoreType;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kidozh.discuzhub.entities.ErrorMessage;
-
-
-public class BaseResult {
+open class BaseResult {
     @JsonProperty("Version")
-    public String apiVersion;
+    var apiVersion: Int = 4
+
     @JsonProperty("Charset")
-    public String Charset;
+    lateinit var Charset: String
+
+    @JvmField
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonProperty("Message")
-    public MessageResult message;
+    var message: MessageResult? = null
+
+    @JvmField
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public String error="";
-
-    public boolean isError(){
-        return this.message != null || !TextUtils.isEmpty(error);
+    var error = ""
+    open fun isError(): Boolean {
+        return message != null || !TextUtils.isEmpty(error)
     }
 
-    public ErrorMessage getErrorMessage(){
-        if(this.message!=null){
-            return new ErrorMessage(message.key,message.content);
-
+    val errorMessage: ErrorMessage?
+        get() = if (message != null) {
+            ErrorMessage(message!!.key, message!!.content)
+        } else if (!TextUtils.isEmpty(error)) {
+            ErrorMessage(error, error)
+        } else {
+            null
         }
-        else if(!TextUtils.isEmpty(error)){
-            return new ErrorMessage(error,error);
-        }
-        else {
-            return null;
-        }
-    }
-
 }

@@ -22,7 +22,7 @@ import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.database.DiscuzDatabase;
 import com.kidozh.discuzhub.database.UserDatabase;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
@@ -43,7 +43,7 @@ import retrofit2.Retrofit;
 public class PushUserNotificationWork extends Worker {
     private static final String TAG = PushUserNotificationWork.class.getSimpleName();
     private Context context;
-    private forumUserBriefInfo userBriefInfo;
+    private User userBriefInfo;
     Discuz Discuz;
     public PushUserNotificationWork(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);

@@ -23,7 +23,7 @@ import com.kidozh.discuzhub.adapter.NotificationAdapter;
 import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
 import com.kidozh.discuzhub.databinding.FragmentBbsNotificationBinding;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
@@ -50,7 +50,7 @@ public class UserNotificationFragment extends Fragment {
     }
 
 
-    private forumUserBriefInfo userBriefInfo;
+    private User userBriefInfo;
     Discuz bbsInfo;
     
     FragmentBbsNotificationBinding binding;
@@ -74,7 +74,7 @@ public class UserNotificationFragment extends Fragment {
     public static final String ARG_TYPE = "TYPE";
     public static final String ARG_VIEW = "VIEW", ARG_BBS = "ARG_BBS", ARG_USER= "ARG_USER";
 
-    public static UserNotificationFragment newInstance(String view, String type, Discuz Discuz, forumUserBriefInfo userBriefInfo) {
+    public static UserNotificationFragment newInstance(String view, String type, Discuz Discuz, User userBriefInfo) {
         UserNotificationFragment fragment = new UserNotificationFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TYPE, type);
@@ -95,7 +95,7 @@ public class UserNotificationFragment extends Fragment {
             type = getArguments().getString(ARG_TYPE);
             view = getArguments().getString(ARG_VIEW);
             bbsInfo = (Discuz) getArguments().getSerializable(ARG_BBS);
-            userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(ARG_USER);
+            userBriefInfo = (User) getArguments().getSerializable(ARG_USER);
         }
 
     }

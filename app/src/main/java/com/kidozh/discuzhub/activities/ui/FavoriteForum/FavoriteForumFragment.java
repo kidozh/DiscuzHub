@@ -22,7 +22,7 @@ import com.kidozh.discuzhub.database.FavoriteForumDatabase;
 import com.kidozh.discuzhub.databinding.FragmentFavoriteThreadBinding;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.FavoriteForum;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
@@ -42,13 +42,13 @@ public class FavoriteForumFragment extends Fragment {
     private static final String ARG_IDTYPE = "ARG_IDTYPE";
 
     private Discuz bbsInfo;
-    private forumUserBriefInfo userBriefInfo;
+    private User userBriefInfo;
 
     public FavoriteForumFragment(){
 
     }
 
-    public static FavoriteForumFragment newInstance(Discuz bbsInfo, forumUserBriefInfo userBriefInfo) {
+    public static FavoriteForumFragment newInstance(Discuz bbsInfo, User userBriefInfo) {
         FavoriteForumFragment fragment = new FavoriteForumFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_BBS, bbsInfo);
@@ -62,7 +62,7 @@ public class FavoriteForumFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             bbsInfo = (Discuz) getArguments().getSerializable(ARG_BBS);
-            userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(ARG_USER);
+            userBriefInfo = (User) getArguments().getSerializable(ARG_USER);
         }
     }
 

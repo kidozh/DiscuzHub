@@ -12,7 +12,7 @@ import androidx.lifecycle.Observer;
 import com.kidozh.discuzhub.daos.DiscuzDao;
 import com.kidozh.discuzhub.database.DiscuzDatabase;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 
 import java.util.List;
 
@@ -21,9 +21,9 @@ public class MainDrawerViewModel extends AndroidViewModel {
     public MutableLiveData<Discuz> currentBBSInformationMutableLiveData =
             new MutableLiveData<>(null);
     public LiveData<List<Discuz>> allBBSInformationMutableLiveData;
-    public MutableLiveData<forumUserBriefInfo> currentForumUserBriefInfoMutableLiveData =
+    public MutableLiveData<User> currentForumUserBriefInfoMutableLiveData =
             new MutableLiveData<>(null);
-    public MutableLiveData<List<forumUserBriefInfo>> forumUserListMutableLiveData =
+    public MutableLiveData<List<User>> forumUserListMutableLiveData =
             new MutableLiveData<>(null);
 
     private DiscuzDao DiscuzDao;

@@ -8,22 +8,22 @@ import android.widget.BaseAdapter
 import com.bumptech.glide.Glide
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.databinding.SpinnerItemUserBinding
-import com.kidozh.discuzhub.entities.forumUserBriefInfo
+import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.utilities.URLUtils
 
 class UserSpinnerAdapter : BaseAdapter() {
-    lateinit var userList : List<forumUserBriefInfo>
+    lateinit var userList : List<User>
 
 
 
     var context: Context? = null
 
     init {
-        userList = emptyList<forumUserBriefInfo>()
+        userList = emptyList<User>()
     }
 
     @JvmName("setUserList1")
-    fun setUserList(users : List<forumUserBriefInfo>){
+    fun setUserList(users : List<User>){
         userList = users
         notifyDataSetChanged()
     }

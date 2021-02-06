@@ -20,7 +20,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.UserFriendResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -39,9 +39,9 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     private List<UserFriendResult.UserFriend> userFriendList = new ArrayList<>();
     Context context;
     Discuz bbsInfo;
-    forumUserBriefInfo curUser;
+    User curUser;
 
-    public FriendAdapter(Discuz bbsInfo, forumUserBriefInfo curUser){
+    public FriendAdapter(Discuz bbsInfo, User curUser){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
     }

@@ -26,7 +26,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.FavoriteThread;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -37,13 +37,13 @@ public class FavoriteThreadAdapter extends PagedListAdapter<FavoriteThread, Favo
     private static final String TAG = FavoriteThreadAdapter.class.getSimpleName();
     Context context;
     Discuz bbsInfo;
-    forumUserBriefInfo curUser;
+    User curUser;
 
     public FavoriteThreadAdapter() {
         super(FavoriteThread.DIFF_CALLBACK);
     }
 
-    public void setInformation(Discuz bbsInfo, forumUserBriefInfo userBriefInfo){
+    public void setInformation(Discuz bbsInfo, User userBriefInfo){
         this.bbsInfo = bbsInfo;
         this.curUser = userBriefInfo;
     }

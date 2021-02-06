@@ -32,7 +32,7 @@ import com.kidozh.discuzhub.databinding.ActivitySingleDiscuzBinding
 import com.kidozh.discuzhub.databinding.NavHeaderMainBinding
 import com.kidozh.discuzhub.databinding.SingleDrawerNavigationHeaderBinding
 import com.kidozh.discuzhub.entities.Discuz
-import com.kidozh.discuzhub.entities.forumUserBriefInfo
+import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.URLUtils
 import com.kidozh.discuzhub.viewModels.SingleDiscuzViewModel
@@ -101,7 +101,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                     Log.d(TAG, "ADD A account $bbs")
                     if (bbs != null) {
                         intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbs)
-                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, null as forumUserBriefInfo?)
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, null as User?)
                         val options = ActivityOptions.makeSceneTransitionAnimation(this)
                         val bundle = options.toBundle()
                         startActivity(intent, bundle)
@@ -129,7 +129,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                     true
                 }
                 R.id.view_history -> {
-                    val user: forumUserBriefInfo? = viewModel.currentUserMutableLiveData.value
+                    val user: User? = viewModel.currentUserMutableLiveData.value
                     val intent = Intent(this, ViewHistoryActivity::class.java)
                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbs)
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
@@ -289,15 +289,15 @@ class SingleDiscuzActivity : BaseStatusActivity() {
         override fun getItem(position: Int): Fragment {
 
             val bbsInfo: Discuz? = this@SingleDiscuzActivity.viewModel.currentBBSMutableLiveData.value
-            userBriefInfo = viewModel.currentUserMutableLiveData.value
+            user = viewModel.currentUserMutableLiveData.value
             when (position) {
                 0 -> {
-                    val homeFragment: HomeFragment = HomeFragment.newInstance(bbsInfo, userBriefInfo)
+                    val homeFragment: HomeFragment = HomeFragment.newInstance(bbsInfo, user)
                     return homeFragment
                 }
-                1 -> return DashBoardFragment.newInstance(bbsInfo, userBriefInfo)
+                1 -> return DashBoardFragment.newInstance(bbsInfo, user)
             }
-            return HomeFragment.newInstance(bbsInfo, userBriefInfo)
+            return HomeFragment.newInstance(bbsInfo, user)
         }
 
         override fun getCount(): Int {
@@ -308,19 +308,19 @@ class SingleDiscuzActivity : BaseStatusActivity() {
     inner class UserViewPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
         override fun getItem(position: Int): Fragment {
             val bbsInfo: Discuz? = this@SingleDiscuzActivity.viewModel.currentBBSMutableLiveData.value
-            val userBriefInfo: forumUserBriefInfo? = this@SingleDiscuzActivity.viewModel.currentUserMutableLiveData.value
+            val user: User? = this@SingleDiscuzActivity.viewModel.currentUserMutableLiveData.value
             when (position) {
                 0 -> {
-                    val homeFragment = HomeFragment.newInstance(bbsInfo, userBriefInfo)
+                    val homeFragment = HomeFragment.newInstance(bbsInfo, user)
                     return homeFragment
                 }
-                1 -> return DashBoardFragment.newInstance(bbsInfo, userBriefInfo)
+                1 -> return DashBoardFragment.newInstance(bbsInfo, user)
                 2 -> {
-                    val notificationsFragment = NotificationsFragment(bbsInfo, userBriefInfo)
+                    val notificationsFragment = NotificationsFragment(bbsInfo, user)
                     return notificationsFragment
                 }
             }
-            return HomeFragment.newInstance(bbsInfo, userBriefInfo)
+            return HomeFragment.newInstance(bbsInfo, user)
         }
 
         override fun getCount(): Int {

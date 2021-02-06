@@ -12,7 +12,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.ThreadDraft;
 import com.kidozh.discuzhub.entities.UploadAttachment;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.PostParameterResult;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -34,7 +34,7 @@ public class PostThreadViewModel extends AndroidViewModel {
     private String TAG = PostThreadViewModel.class.getSimpleName();
 
     Discuz curBBS;
-    forumUserBriefInfo curUser;
+    User curUser;
     String fid;
     OkHttpClient client;
 
@@ -58,7 +58,7 @@ public class PostThreadViewModel extends AndroidViewModel {
         isUploadingAttachmentLiveData = new MutableLiveData<>(false);
     }
 
-    public void setBBSInfo(Discuz bbsInfo, forumUserBriefInfo userBriefInfo, String fid){
+    public void setBBSInfo(Discuz bbsInfo, User userBriefInfo, String fid){
         this.curBBS = bbsInfo;
         this.curUser = userBriefInfo;
         this.fid = fid;

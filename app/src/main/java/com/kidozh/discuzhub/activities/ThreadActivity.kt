@@ -133,15 +133,15 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         val intent = intent
         forum = intent.getParcelableExtra(ConstUtils.PASS_FORUM_THREAD_KEY)
         discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
-        userBriefInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY) as forumUserBriefInfo?
+        user = intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY) as User?
         thread = intent.getSerializableExtra(ConstUtils.PASS_THREAD_KEY) as Thread?
         tid = intent.getIntExtra("TID", 0)
         fid = intent.getIntExtra("FID", 0)
         subject = intent.getStringExtra("SUBJECT")
         // hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
         URLUtils.setBBS(discuz)
-        threadDetailViewModel.setBBSInfo(discuz, userBriefInfo, forum, tid)
-        smileyViewModel.configureDiscuz(discuz, userBriefInfo)
+        threadDetailViewModel.setBBSInfo(discuz, user, forum, tid)
+        smileyViewModel.configureDiscuz(discuz, user)
         if (thread != null && thread!!.subject != null) {
             val sp = Html.fromHtml(thread!!.subject)
             val spannableString = SpannableString(sp)
@@ -256,7 +256,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 val fragmentManager = supportFragmentManager
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 fragmentTransaction.replace(R.id.bbs_thread_poll_fragment,
-                        bbsPollFragment.newInstance(bbsPollInfo, userBriefInfo, tid, formHash))
+                        bbsPollFragment.newInstance(bbsPollInfo, user, tid, formHash))
                 fragmentTransaction.commit()
             } else {
                 Log.d(TAG, "get poll is null")
@@ -330,16 +330,16 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 if (result != null) {
                     val userBriefInfo = result.threadPostVariables.userBriefInfo
                 }
-                if (userBriefInfo != null && userBriefInfo!!.readPerm >= detailedThreadInfo.readperm) {
+                if (user != null && user!!.readPerm >= detailedThreadInfo.readperm) {
                     if (!UserPreferenceUtils.conciseRecyclerView(applicationContext)) {
                         // not to display in concise mode
                         binding.threadProperty.addView(
                                 getPropertyChip(R.drawable.ic_verified_user_outlined_24px,
-                                        getString(R.string.thread_readperm, detailedThreadInfo.readperm, userBriefInfo!!.readPerm), getColor(R.color.colorTurquoise))
+                                        getString(R.string.thread_readperm, detailedThreadInfo.readperm, user!!.readPerm), getColor(R.color.colorTurquoise))
                         )
                     }
                 } else {
-                    if (userBriefInfo == null) {
+                    if (user == null) {
                         binding.threadProperty.addView(
                                 getPropertyChip(R.drawable.ic_read_perm_unsatisfied_24px,
                                         getString(R.string.thread_anoymous_readperm, detailedThreadInfo.readperm), getColor(R.color.colorAsbestos))
@@ -347,7 +347,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                     } else {
                         binding.threadProperty.addView(
                                 getPropertyChip(R.drawable.ic_read_perm_unsatisfied_24px,
-                                        getString(R.string.thread_readperm, detailedThreadInfo.readperm, userBriefInfo!!.readPerm), getColor(R.color.colorAlizarin))
+                                        getString(R.string.thread_readperm, detailedThreadInfo.readperm, user!!.readPerm), getColor(R.color.colorAlizarin))
                         )
                     }
                 }
@@ -555,22 +555,24 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         threadDetailViewModel.recommendResultMutableLiveData.observe(this, { apiMessageActionResult: ApiMessageActionResult? ->
             if (apiMessageActionResult != null && apiMessageActionResult.message != null) {
                 val messageResult = apiMessageActionResult.message
-                if (messageResult.key == "recommend_succeed") {
-                    Toasty.success(applicationContext, getString(R.string.discuz_api_message_template, messageResult.key, messageResult.content), Toast.LENGTH_LONG).show()
-                } else {
-                    Toasty.error(applicationContext, getString(R.string.discuz_api_message_template, messageResult.key, messageResult.content), Toast.LENGTH_LONG).show()
+                if (messageResult != null) {
+                    if (messageResult.key == "recommend_succeed") {
+                        Toasty.success(applicationContext, getString(R.string.discuz_api_message_template, messageResult.key, messageResult.content), Toast.LENGTH_LONG).show()
+                    } else {
+                        Toasty.error(applicationContext, getString(R.string.discuz_api_message_template, messageResult.key, messageResult.content), Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         })
         threadDetailViewModel.interactErrorMutableLiveData.observe(this, { errorMessage: ErrorMessage? ->
             if (errorMessage != null) {
-                networkIndicatorAdapter!!.setErrorStatus(errorMessage)
+                networkIndicatorAdapter.setErrorStatus(errorMessage)
                 Toasty.error(applicationContext, getString(R.string.discuz_api_message_template, errorMessage.key, errorMessage.content), Toast.LENGTH_LONG).show()
             }
         })
         val context: Context = this
         threadDetailViewModel.threadPriceInfoMutableLiveData.observe(this, { buyThreadResult: BuyThreadResult? ->
-            if (buyThreadResult != null && buyThreadResult.variableResults != null) {
+            if (buyThreadResult != null) {
                 val variableResult = buyThreadResult.variableResults
                 val builder = AlertDialog.Builder(context)
                         .setTitle(R.string.buy_thread_title)
@@ -587,30 +589,30 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             }
         })
         threadDetailViewModel.buyThreadResultMutableLiveData.observe(this, { buyThreadResult: BuyThreadResult? ->
-            if (buyThreadResult != null && buyThreadResult.message != null) {
-                val key = buyThreadResult.message.key
+            if (buyThreadResult?.message != null) {
+                val key = buyThreadResult.message!!.key
                 if (key == "thread_pay_succeed") {
                     Toasty.success(this, getString(R.string.discuz_api_message_template,
-                            buyThreadResult.message.key,
-                            buyThreadResult.message.content)).show()
+                            buyThreadResult.message!!.key,
+                            buyThreadResult.message!!.content)).show()
                     reloadThePage()
                 } else {
                     Toasty.warning(this, getString(R.string.discuz_api_message_template,
-                            buyThreadResult.message.key,
-                            buyThreadResult.message.content)).show()
+                            buyThreadResult.message!!.key,
+                            buyThreadResult.message!!.content)).show()
                 }
             }
         })
         threadDetailViewModel.reportResultMutableLiveData.observe(this, { apiMessageActionResult: ApiMessageActionResult? ->
             if (apiMessageActionResult != null) {
                 if (apiMessageActionResult.message != null) {
-                    if (apiMessageActionResult.message.key == "report_succeed") {
+                    if (apiMessageActionResult.message!!.key == "report_succeed") {
                         Toasty.success(this,
-                                getString(R.string.discuz_api_message_template, apiMessageActionResult.message.key, apiMessageActionResult.message.content),
+                                getString(R.string.discuz_api_message_template, apiMessageActionResult.message!!.key, apiMessageActionResult.message!!.content),
                                 Toast.LENGTH_LONG).show()
                     } else {
                         Toasty.error(this,
-                                getString(R.string.discuz_api_message_template, apiMessageActionResult.message.key, apiMessageActionResult.message.content),
+                                getString(R.string.discuz_api_message_template, apiMessageActionResult.message!!.key, apiMessageActionResult.message!!.content),
                                 Toast.LENGTH_LONG).show()
                     }
                 } else {
@@ -658,7 +660,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     }
 
     private fun configureClient() {
-        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this, userBriefInfo)
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this, user)
     }
 
     private fun configureCommentBtn() {
@@ -669,7 +671,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             val intent = Intent(context, PublishActivity::class.java)
             intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, forum)
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
             intent.putExtra(ConstUtils.PASS_POST_TYPE, ConstUtils.TYPE_POST_REPLY)
             intent.putExtra(ConstUtils.PASS_POST_MESSAGE, message)
             intent.putExtra(ConstUtils.PASS_REPLY_POST, selectedThreadComment)
@@ -804,7 +806,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                     putThreadInfo.tid = redirectTid
                     val intent = Intent(this, ThreadActivity::class.java)
                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                     intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo)
                     intent.putExtra("FID", fid)
                     intent.putExtra("TID", redirectTid)
@@ -840,7 +842,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 putThreadInfo.tid = redirectTid
                 val intent = Intent(this, ThreadActivity::class.java)
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                 intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo)
                 intent.putExtra("FID", fid)
                 intent.putExtra("TID", redirectTid)
@@ -861,7 +863,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 clickedForum.fid = fid
                 intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum)
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                 Log.d(TAG, "put base url " + discuz.base_url)
                 VibrateUtils.vibrateForClick(this)
                 startActivity(intent)
@@ -876,21 +878,21 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 }
                 val intent = Intent(this, UserProfileActivity::class.java)
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                 intent.putExtra("UID", uid)
                 startActivity(intent)
                 return
             }
             val intent = Intent(this, InternalWebViewActivity::class.java)
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
             intent.putExtra(ConstUtils.PASS_URL_KEY, url)
             Log.d(TAG, "Inputted URL $url")
             startActivity(intent)
         } else {
             val intent = Intent(this, InternalWebViewActivity::class.java)
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
             intent.putExtra(ConstUtils.PASS_URL_KEY, url)
             Log.d(TAG, "Inputted URL $url")
             startActivity(intent)
@@ -958,7 +960,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                                     clickedForum.fid = fid
                                     intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum)
                                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                                     Log.d(TAG, "put base url " + discuz.base_url)
                                     VibrateUtils.vibrateForClick(context)
                                     context.startActivity(intent)
@@ -996,7 +998,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                                     putThreadInfo.tid = tid
                                     val intent = Intent(context, ThreadActivity::class.java)
                                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                                     intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo)
                                     intent.putExtra("FID", fid)
                                     intent.putExtra("TID", tid)
@@ -1037,7 +1039,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                                     }
                                     val intent = Intent(context, UserProfileActivity::class.java)
                                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                                     intent.putExtra("UID", uid)
                                     VibrateUtils.vibrateForClick(context)
                                     val options = ActivityOptions.makeSceneTransitionAnimation(context as Activity)
@@ -1068,7 +1070,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                         .setNeutralButton(R.string.bbs_show_in_internal_browser) { dialog, which ->
                             val intent = Intent(context, InternalWebViewActivity::class.java)
                             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                             intent.putExtra(ConstUtils.PASS_URL_KEY, unescapedURL)
                             Log.d(TAG, "Inputted URL $unescapedURL")
                             startActivity(intent)
@@ -1082,7 +1084,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             } else {
                 val intent = Intent(this, InternalWebViewActivity::class.java)
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                 intent.putExtra(ConstUtils.PASS_URL_KEY, unescapedURL)
                 Log.d(TAG, "Inputted URL $unescapedURL")
                 startActivity(intent)
@@ -1105,7 +1107,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     }
 
     override fun reportPost(post: Post) {
-        if (userBriefInfo == null) {
+        if (user == null) {
             Toasty.warning(this, getString(R.string.report_login_required), Toast.LENGTH_LONG).show()
         } else {
             val fragmentManager = supportFragmentManager
@@ -1136,7 +1138,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         binding.postsRecyclerview.itemAnimator = getRecyclerviewAnimation(this)
         postAdapter = PostAdapter(this,
                 discuz,
-                userBriefInfo,
+                user,
                 threadDetailViewModel.threadStatusMutableLiveData.value)
         postAdapter!!.subject = subject
         concatAdapter = ConcatAdapter(postAdapter, networkIndicatorAdapter)
@@ -1458,8 +1460,8 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         } else if (id == R.id.bbs_forum_nav_personal_center) {
             val intent = Intent(this, UserProfileActivity::class.java)
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
-            intent.putExtra("UID", userBriefInfo!!.uid.toString())
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
+            intent.putExtra("UID", user!!.uid.toString())
             startActivity(intent)
             return true
         } else if (id == R.id.bbs_settings) {
@@ -1469,13 +1471,13 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         } else if (id == R.id.bbs_forum_nav_draft_box) {
             val intent = Intent(this, ThreadDraftActivity::class.java)
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
             startActivity(intent, null)
             return true
         } else if (id == R.id.bbs_forum_nav_show_in_webview) {
             val intent = Intent(this, InternalWebViewActivity::class.java)
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
             intent.putExtra(ConstUtils.PASS_URL_KEY, currentUrl)
             Log.d(TAG, "Inputted URL $currentUrl")
             startActivity(intent)
@@ -1528,7 +1530,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             val result = threadDetailViewModel.threadPostResultMutableLiveData.value
             if (result != null && result.threadPostVariables != null && result.threadPostVariables.detailedThreadInfo != null) {
                 val detailedThreadInfo = result.threadPostVariables.detailedThreadInfo
-                val favoriteThread = detailedThreadInfo.toFavoriteThread(discuz.id, if (userBriefInfo != null) userBriefInfo!!.getUid() else 0)
+                val favoriteThread = detailedThreadInfo.toFavoriteThread(discuz.id, if (user != null) user!!.getUid() else 0)
                 // save it to the database
                 // boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
                 val favoriteThreadInDB = threadDetailViewModel.favoriteThreadLiveData.value
@@ -1550,7 +1552,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         } else if (id == R.id.bbs_search) {
             val intent = Intent(this, SearchPostsActivity::class.java)
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
             startActivity(intent)
             return true
         } else if (id == R.id.bbs_about_app) {
@@ -1566,7 +1568,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         // configureIntentData();
-        if (userBriefInfo == null) {
+        if (user == null) {
             menuInflater.inflate(R.menu.bbs_incognitive_thread_nav_menu, menu)
         } else {
             menuInflater.inflate(R.menu.bbs_thread_nav_menu, menu)

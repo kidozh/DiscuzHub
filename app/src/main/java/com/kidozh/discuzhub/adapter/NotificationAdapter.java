@@ -31,7 +31,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -57,13 +57,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private Context context;
     private List<UserNoteListResult.UserNotification> notificationDetailInfoList;
     Discuz bbsInfo;
-    forumUserBriefInfo curUser;
+    User curUser;
 
     public List<UserNoteListResult.UserNotification> getNotificationDetailInfoList() {
         return notificationDetailInfoList;
     }
 
-    public NotificationAdapter(Discuz bbsInfo, forumUserBriefInfo curUser){
+    public NotificationAdapter(Discuz bbsInfo, User curUser){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
     }

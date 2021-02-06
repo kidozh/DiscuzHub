@@ -21,7 +21,7 @@ class NewThreadsViewModel(application: Application) : AndroidViewModel(applicati
     // TODO: Implement the ViewModel
     val TAG = NewThreadsViewModel::class.simpleName
     lateinit var bbsInfo: Discuz
-    var userBriefInfo: forumUserBriefInfo? = null
+    var user: User? = null
     lateinit var client: OkHttpClient
     var errorMessageMutableLiveData: MutableLiveData<ErrorMessage?> = MutableLiveData(null)
     var discuzIndexMutableLiveData: MutableLiveData<DiscuzIndexResult> = MutableLiveData(null)
@@ -33,11 +33,11 @@ class NewThreadsViewModel(application: Application) : AndroidViewModel(applicati
     lateinit var retrofit: Retrofit
     lateinit var service: DiscuzApiService
 
-    fun setBBSInfo(bbsInfo: Discuz, userBriefInfo: forumUserBriefInfo?) {
+    fun setBBSInfo(bbsInfo: Discuz, user: User?) {
         this.bbsInfo = bbsInfo
-        this.userBriefInfo = userBriefInfo
+        this.user = user
         URLUtils.setBBS(bbsInfo)
-        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication<Application>(), userBriefInfo)
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication<Application>(), user)
         retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url, client)
         service = retrofit.create(DiscuzApiService::class.java)
         // trigger broswing

@@ -22,7 +22,7 @@ import com.kidozh.discuzhub.adapter.PublicMessageAdapter;
 import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
 import com.kidozh.discuzhub.databinding.FragmentPublicMessageBinding;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -45,7 +45,7 @@ public class bbsPublicMessageFragment extends Fragment {
 
     private bbsPrivateMessageFragment.OnNewMessageChangeListener mListener;
 
-    private forumUserBriefInfo userBriefInfo;
+    private User userBriefInfo;
     Discuz bbsInfo;
     private OkHttpClient client = new OkHttpClient();
     PublicMessageAdapter adapter;
@@ -55,14 +55,14 @@ public class bbsPublicMessageFragment extends Fragment {
 
     }
 
-    private bbsPublicMessageFragment(Discuz bbsInfo, forumUserBriefInfo userBriefInfo){
+    private bbsPublicMessageFragment(Discuz bbsInfo, User userBriefInfo){
         this.bbsInfo= bbsInfo;
         this.userBriefInfo = userBriefInfo;
     }
 
     private static String ARG_BBS = "ARG_BBS", ARG_USER = "ARG_USER";
 
-    public static bbsPublicMessageFragment newInstance(Discuz bbsInfo, forumUserBriefInfo userBriefInfo) {
+    public static bbsPublicMessageFragment newInstance(Discuz bbsInfo, User userBriefInfo) {
         bbsPublicMessageFragment fragment = new bbsPublicMessageFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_BBS, bbsInfo);
@@ -76,7 +76,7 @@ public class bbsPublicMessageFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             bbsInfo = (Discuz) getArguments().getSerializable(ARG_BBS);
-            userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(ARG_USER);
+            userBriefInfo = (User) getArguments().getSerializable(ARG_USER);
         }
     }
 

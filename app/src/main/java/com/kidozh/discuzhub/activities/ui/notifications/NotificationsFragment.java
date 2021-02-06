@@ -27,7 +27,7 @@ import com.kidozh.discuzhub.activities.ui.privacyProtect.privacyProtectFragment;
 import com.kidozh.discuzhub.activities.ui.userThreads.UserThreadFragment;
 import com.kidozh.discuzhub.databinding.FragmentNotificationsBinding;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 
 
@@ -41,7 +41,7 @@ public class NotificationsFragment extends Fragment {
     private notificationViewPagerAdapter adapter;
 
     Discuz Discuz;
-    forumUserBriefInfo userBriefInfo;
+    User userBriefInfo;
 
     PopupMenu popupMenu;
 
@@ -49,7 +49,7 @@ public class NotificationsFragment extends Fragment {
 
     }
 
-    public NotificationsFragment(Discuz Discuz, forumUserBriefInfo userBriefInfo){
+    public NotificationsFragment(Discuz Discuz, User userBriefInfo){
         this.Discuz = Discuz;
         this.userBriefInfo = userBriefInfo;
     }

@@ -30,7 +30,7 @@ import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.entities.ViewHistory;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.GlideImageGetter;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -43,13 +43,13 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
         super(DIFF_CALLBACK);
     }
 
-    public void setInfo(Discuz bbsInfo, forumUserBriefInfo forumUserBriefInfo){
+    public void setInfo(Discuz bbsInfo, User User){
         this.bbsInfo = bbsInfo;
-        this.userBriefInfo = forumUserBriefInfo;
+        this.userBriefInfo = User;
     }
 
     Discuz bbsInfo;
-    forumUserBriefInfo userBriefInfo;
+    User userBriefInfo;
 
     Context context;
 

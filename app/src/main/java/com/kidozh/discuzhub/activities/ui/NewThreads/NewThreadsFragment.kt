@@ -13,7 +13,7 @@ import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter
 import com.kidozh.discuzhub.adapter.ThreadAdapter
 import com.kidozh.discuzhub.databinding.NewThreadsFragmentBinding
 import com.kidozh.discuzhub.entities.Discuz
-import com.kidozh.discuzhub.entities.forumUserBriefInfo
+import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
 import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
 import com.kidozh.discuzhub.utilities.ConstUtils
@@ -21,16 +21,16 @@ import com.kidozh.discuzhub.utilities.ConstUtils
 class NewThreadsFragment : Fragment() {
 
     lateinit var bbsInfo: Discuz
-    var userBriefInfo: forumUserBriefInfo? = null
+    var user: User? = null
     lateinit var threadAdapter: ThreadAdapter
     companion object {
         fun newInstance() = NewThreadsFragment()
 
-        fun newInstance(Discuz: Discuz, userBriefInfo: forumUserBriefInfo?): NewThreadsFragment {
+        fun newInstance(Discuz: Discuz, user: User?): NewThreadsFragment {
             val fragment = NewThreadsFragment()
             val args = Bundle()
             args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY, Discuz)
-            args.putSerializable(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+            args.putSerializable(ConstUtils.PASS_BBS_USER_KEY, user)
             fragment.arguments = args
             return fragment
         }
@@ -42,8 +42,8 @@ class NewThreadsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             bbsInfo = (requireArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?)!!
-            userBriefInfo = requireArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY) as forumUserBriefInfo?
-            threadAdapter = ThreadAdapter(null, null, bbsInfo, userBriefInfo)
+            user = requireArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY) as User?
+            threadAdapter = ThreadAdapter(null, null, bbsInfo, user)
         }
     }
 
@@ -61,7 +61,7 @@ class NewThreadsFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(NewThreadsViewModel::class.java)
         // TODO: Use the ViewModel
         bindViewModel()
-        viewModel.setBBSInfo(bbsInfo, userBriefInfo)
+        viewModel.setBBSInfo(bbsInfo, user)
         configureRecyclerview()
 
     }

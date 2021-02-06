@@ -18,8 +18,7 @@ import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragm
 import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment;
 import com.kidozh.discuzhub.databinding.FragmentBbsNotificationMessagePortalBinding;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
-
+import com.kidozh.discuzhub.entities.User;
 
 
 /**
@@ -59,10 +58,10 @@ public class bbsNotificationMessagePortalFragment extends Fragment {
     }
 
     Discuz bbsInfo;
-    forumUserBriefInfo userBriefInfo;
+    User userBriefInfo;
     final static String BBSINFO = "BBSINFO", USERINFO = "USERINFO";
 
-    public static bbsNotificationMessagePortalFragment newInstance(String filterName, Discuz bbsInfo, forumUserBriefInfo userBriefInfo) {
+    public static bbsNotificationMessagePortalFragment newInstance(String filterName, Discuz bbsInfo, User userBriefInfo) {
         bbsNotificationMessagePortalFragment fragment = new bbsNotificationMessagePortalFragment();
         Bundle args = new Bundle();
         args.putString(ARG_FILTER, filterName);
@@ -78,7 +77,7 @@ public class bbsNotificationMessagePortalFragment extends Fragment {
         if (getArguments() != null) {
             filter = getArguments().getString(ARG_FILTER);
             bbsInfo = (Discuz) getArguments().getSerializable(BBSINFO);
-            userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(USERINFO);
+            userBriefInfo = (User) getArguments().getSerializable(USERINFO);
         }
     }
 

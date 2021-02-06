@@ -8,7 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.UserProfileResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -29,7 +29,7 @@ public class UserProfileViewModel extends AndroidViewModel {
     public MutableLiveData<Boolean> isLoading, isError;
 
     private Discuz curBBS;
-    private forumUserBriefInfo curUser;
+    private User curUser;
     private int uid;
     private OkHttpClient client;
 
@@ -39,7 +39,7 @@ public class UserProfileViewModel extends AndroidViewModel {
         isError = new MutableLiveData<>(false);
     }
 
-    public void setBBSInfo(Discuz bbsInfo, forumUserBriefInfo userBriefInfo, int uid){
+    public void setBBSInfo(Discuz bbsInfo, User userBriefInfo, int uid){
         this.curBBS = bbsInfo;
         this.curUser = userBriefInfo;
         this.uid = uid;

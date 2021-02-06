@@ -2,7 +2,7 @@ package com.kidozh.discuzhub.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import com.kidozh.discuzhub.entities.Discuz
-import com.kidozh.discuzhub.entities.forumUserBriefInfo
+import com.kidozh.discuzhub.entities.User
 import okhttp3.OkHttpClient
 import com.kidozh.discuzhub.results.BaseResult
 import com.kidozh.discuzhub.results.VariableResults
@@ -17,7 +17,7 @@ open class BaseStatusActivity : AppCompatActivity() {
     @JvmField
     var bbsInfo: Discuz? = null
     @JvmField
-    var userBriefInfo: forumUserBriefInfo? = null
+    var user: User? = null
     @JvmField
     var client = OkHttpClient()
     var baseVariableResult: BaseResult? = null

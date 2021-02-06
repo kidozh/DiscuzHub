@@ -8,19 +8,19 @@ import androidx.paging.DataSource;
 
 import com.kidozh.discuzhub.DataSource.FavoriteThreadDataSource;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 
 public class FavoriteThreadDataFactory extends DataSource.Factory {
 
     Context context;
     Discuz bbsInfo;
-    forumUserBriefInfo userBriefInfo;
+    User userBriefInfo;
     private MutableLiveData<FavoriteThreadDataSource> favoriteThreadDataSourceMutableLiveData;
     public FavoriteThreadDataSource favoriteThreadDataSource;
     public MutableLiveData<Integer> networkStateLiveData = new MutableLiveData<>(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
 
-    public FavoriteThreadDataFactory(@NonNull Context context, @NonNull Discuz bbsInfo, forumUserBriefInfo userBriefInfo) {
+    public FavoriteThreadDataFactory(@NonNull Context context, @NonNull Discuz bbsInfo, User userBriefInfo) {
         this.context = context;
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;

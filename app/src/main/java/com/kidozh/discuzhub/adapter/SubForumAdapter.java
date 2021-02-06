@@ -21,7 +21,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ForumActivity;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -39,12 +39,12 @@ public class SubForumAdapter extends RecyclerView.Adapter<SubForumAdapter.SubFor
     final String TAG = SubForumAdapter.class.getSimpleName();
     Context context;
     Discuz bbsInfo;
-    forumUserBriefInfo userBriefInfo;
+    User userBriefInfo;
 
 
     List<ForumResult.SubForumInfo> subForumInfoList = new ArrayList<>();
 
-    public SubForumAdapter(Discuz bbsInfo, forumUserBriefInfo userBriefInfo) {
+    public SubForumAdapter(Discuz bbsInfo, User userBriefInfo) {
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
     }

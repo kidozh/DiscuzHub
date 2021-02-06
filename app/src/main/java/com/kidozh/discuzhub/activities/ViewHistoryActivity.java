@@ -33,9 +33,9 @@ import com.kidozh.discuzhub.adapter.ViewHistoryAdapter;
 import com.kidozh.discuzhub.callback.RecyclerViewItemTouchCallback;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.databinding.ActivityViewHistoryBinding;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -73,7 +73,7 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
     private void configureIntentData(){
         Intent intent = getIntent();
         bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         if(bbsInfo !=null){
             URLUtils.setBBS(bbsInfo);
             Log.d(TAG,"Recv bbs info "+bbsInfo);
@@ -95,7 +95,7 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
         binding.viewHistoryRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         binding.viewHistoryRecyclerview.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.HORIZONTAL));
         adapter = new ViewHistoryAdapter();
-        adapter.setInfo(bbsInfo,userBriefInfo);
+        adapter.setInfo(bbsInfo, user);
         viewModel.getPagedListLiveData().observe(this,adapter::submitList);
 
         binding.viewHistoryRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,adapter));

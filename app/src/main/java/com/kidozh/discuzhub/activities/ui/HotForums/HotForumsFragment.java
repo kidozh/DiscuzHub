@@ -19,7 +19,7 @@ import com.kidozh.discuzhub.activities.ui.DashBoard.DashBoardViewModel;
 import com.kidozh.discuzhub.adapter.HotForumAdapter;
 import com.kidozh.discuzhub.databinding.FragmentHotForumBinding;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.HotForumsResult;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
@@ -31,9 +31,9 @@ import java.util.ArrayList;
 public class HotForumsFragment extends Fragment {
     private static final String TAG = HotForumsFragment.class.getSimpleName();
     Discuz bbsInfo;
-    forumUserBriefInfo userBriefInfo;
+    User userBriefInfo;
 
-    public static HotForumsFragment newInstance(Discuz Discuz, forumUserBriefInfo userBriefInfo){
+    public static HotForumsFragment newInstance(Discuz Discuz, User userBriefInfo){
         HotForumsFragment fragment = new HotForumsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY, Discuz);
@@ -48,7 +48,7 @@ public class HotForumsFragment extends Fragment {
         if (getArguments() != null) {
             bbsInfo = (Discuz) getArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY);
             URLUtils.setBBS(bbsInfo);
-            userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
+            userBriefInfo = (User)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
         }
     }
 

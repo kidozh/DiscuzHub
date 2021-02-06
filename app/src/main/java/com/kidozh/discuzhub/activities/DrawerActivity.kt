@@ -37,7 +37,7 @@ import com.kidozh.discuzhub.database.ViewHistoryDatabase
 import com.kidozh.discuzhub.database.UserDatabase
 import com.kidozh.discuzhub.databinding.ActivityNewMainDrawerBinding
 import com.kidozh.discuzhub.entities.Discuz
-import com.kidozh.discuzhub.entities.forumUserBriefInfo
+import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.utilities.*
 import com.kidozh.discuzhub.utilities.bbsParseUtils.noticeNumInfo
 import com.kidozh.discuzhub.viewModels.MainDrawerViewModel
@@ -345,9 +345,9 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                 val allUsersInCurrentBBSLiveData = UserDatabase.getInstance(application)
                         .getforumUserBriefInfoDao()
                         .getAllUserByBBSID(id)
-                allUsersInCurrentBBSLiveData.observe(this, { forumUserBriefInfos: List<forumUserBriefInfo?> ->
-                    Log.d(TAG, "Updating " + id + " users information " + forumUserBriefInfos.size)
-                    viewModel.forumUserListMutableLiveData.postValue(forumUserBriefInfos)
+                allUsersInCurrentBBSLiveData.observe(this, { Users: List<User?> ->
+                    Log.d(TAG, "Updating " + id + " users information " + Users.size)
+                    viewModel.forumUserListMutableLiveData.postValue(Users)
                 })
                 // updating history number
                 Thread{
@@ -385,13 +385,13 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                 binding.toolbarTitle.setText(R.string.no_bbs_found_in_db)
             }
         })
-        viewModel.currentForumUserBriefInfoMutableLiveData.observe(this, { forumUserBriefInfo: forumUserBriefInfo? ->
-            if (forumUserBriefInfo == null) {
+        viewModel.currentForumUserBriefInfoMutableLiveData.observe(this, { User: User? ->
+            if (User == null) {
                 binding.toolbarSubtitle.setText(R.string.bbs_anonymous)
             } else {
-                binding.toolbarSubtitle.text = forumUserBriefInfo.username
+                binding.toolbarSubtitle.text = User.username
             }
-            userBriefInfo = forumUserBriefInfo
+            user = User
             renderViewPageAndBtmView()
         })
     }
@@ -470,7 +470,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                         Log.d(TAG, "ADD A account $forumInfo")
                         if (forumInfo != null) {
                             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, forumInfo)
-                            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, null as forumUserBriefInfo?)
+                            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, null as User?)
                             val options = ActivityOptions.makeSceneTransitionAnimation(activity)
                             val bundle = options.toBundle()
                             activity.startActivity(intent, bundle)
@@ -578,15 +578,15 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
     inner class anonymousViewPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
         override fun getItem(position: Int): Fragment {
             val bbsInfo = viewModel.currentBBSInformationMutableLiveData.value
-            userBriefInfo = viewModel.currentForumUserBriefInfoMutableLiveData.value
+            user = viewModel.currentForumUserBriefInfoMutableLiveData.value
             when (position) {
                 0 -> {
-                    homeFragment = HomeFragment.newInstance(bbsInfo, userBriefInfo)
+                    homeFragment = HomeFragment.newInstance(bbsInfo, user)
                     return (homeFragment as HomeFragment?)!!
                 }
-                1 -> return DashBoardFragment.newInstance(bbsInfo, userBriefInfo)
+                1 -> return DashBoardFragment.newInstance(bbsInfo, user)
             }
-            return HomeFragment.newInstance(bbsInfo, userBriefInfo)
+            return HomeFragment.newInstance(bbsInfo, user)
         }
 
         override fun getCount(): Int {
@@ -648,15 +648,15 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
             binding.bbsPortalNavView.inflateMenu(R.menu.bottom_incognitive_nav_menu)
             return
         }
-        userBriefInfo = viewModel!!.currentForumUserBriefInfoMutableLiveData.value
-        if (userBriefInfo == null) {
-            Log.d(TAG, "Current incognitive user $userBriefInfo")
+        user = viewModel!!.currentForumUserBriefInfoMutableLiveData.value
+        if (user == null) {
+            Log.d(TAG, "Current incognitive user $user")
             binding.bbsPortalNavViewpager.adapter = anonymousViewPagerAdapter(supportFragmentManager, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
             binding.bbsPortalNavView.menu.clear()
             binding.bbsPortalNavView.inflateMenu(R.menu.bottom_incognitive_nav_menu)
         } else {
             // use fragment transaction instead
-            Log.d(TAG, "Current incognitive user " + userBriefInfo!!.username)
+            Log.d(TAG, "Current incognitive user " + user!!.username)
             binding.bbsPortalNavViewpager.adapter = userViewPagerAdapter(supportFragmentManager, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
             binding.bbsPortalNavView.menu.clear()
             binding.bbsPortalNavView.inflateMenu(R.menu.bottom_nav_menu)

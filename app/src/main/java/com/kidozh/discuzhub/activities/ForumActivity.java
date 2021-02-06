@@ -45,9 +45,9 @@ import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.DisplayForumQueryStatus;
 import com.kidozh.discuzhub.entities.FavoriteForum;
 import com.kidozh.discuzhub.entities.Thread;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.Forum;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.ApiMessageActionResult;
 import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.results.MessageResult;
@@ -128,10 +128,10 @@ public class ForumActivity extends BaseStatusActivity implements
         Intent intent = getIntent();
         forum = (Forum) intent.getSerializableExtra(ConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         URLUtils.setBBS(bbsInfo);
         fid = String.valueOf(forum.fid);
-        forumViewModel.setBBSInfo(bbsInfo,userBriefInfo,forum);
+        forumViewModel.setBBSInfo(bbsInfo, user,forum);
         // hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
     }
 
@@ -246,7 +246,7 @@ public class ForumActivity extends BaseStatusActivity implements
                 if(! binding.bbsForumRuleTextview.getText().equals(forum.rules)){
                     String s = forum.rules;
                     if(s!=null && s.length() !=0){
-                        GlideImageGetter glideImageGetter  = new GlideImageGetter(binding.bbsForumRuleTextview,userBriefInfo);
+                        GlideImageGetter glideImageGetter  = new GlideImageGetter(binding.bbsForumRuleTextview, user);
                         GlideImageGetter.HtmlTagHandler htmlTagHandler = new GlideImageGetter.HtmlTagHandler(getApplicationContext(),binding.bbsForumRuleTextview);
                         Spanned sp = Html.fromHtml(s,glideImageGetter,htmlTagHandler);
                         SpannableString spannableString = new SpannableString(sp);
@@ -266,7 +266,7 @@ public class ForumActivity extends BaseStatusActivity implements
                 if(!binding.bbsForumAlertTextview.getText().equals(forum.description)){
                     String s = forum.description;
                     if(s!=null && s.length() !=0){
-                        GlideImageGetter glideImageGetter  = new GlideImageGetter(binding.bbsForumAlertTextview,userBriefInfo);
+                        GlideImageGetter glideImageGetter  = new GlideImageGetter(binding.bbsForumAlertTextview, user);
                         GlideImageGetter.HtmlTagHandler htmlTagHandler = new GlideImageGetter.HtmlTagHandler(getApplicationContext(),binding.bbsForumRuleTextview);
                         Spanned sp = Html.fromHtml(s,glideImageGetter,htmlTagHandler);
                         SpannableString spannableString = new SpannableString(sp);
@@ -364,7 +364,7 @@ public class ForumActivity extends BaseStatusActivity implements
 
     private void configurePostThreadBtn(){
         Context context = this;
-        if(userBriefInfo == null){
+        if(user == null){
             binding.bbsForumFab.setVisibility(View.GONE);
         }
 
@@ -373,14 +373,14 @@ public class ForumActivity extends BaseStatusActivity implements
             public void onClick(View v) {
                 if(forumViewModel.displayForumResultMutableLiveData.getValue() != null
                         && forumViewModel.displayForumResultMutableLiveData.getValue().forumVariables != null){
-                    forumUserBriefInfo forumUserBriefInfo = forumViewModel.displayForumResultMutableLiveData.getValue()
+                    User User = forumViewModel.displayForumResultMutableLiveData.getValue()
                             .forumVariables.getUserBriefInfo();
-                    if(forumUserBriefInfo!=null && forumUserBriefInfo.isValid()){
+                    if(User !=null && User.isValid()){
                         Intent intent = new Intent(context, PublishActivity.class);
                         intent.putExtra("fid",fid);
                         intent.putExtra("fid_name",forum.name);
                         intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user);
                         intent.putExtra(ConstUtils.PASS_POST_TYPE, ConstUtils.TYPE_POST_THREAD);
                         if(forumViewModel.displayForumResultMutableLiveData
                                 .getValue().forumVariables.threadTypeInfo != null){
@@ -397,7 +397,7 @@ public class ForumActivity extends BaseStatusActivity implements
                         Toasty.info(context,context.getString(R.string.bbs_require_login_to_comment), Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(context, LoginActivity.class);
                         intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user);
                         startActivity(intent);
                     }
                 }
@@ -440,7 +440,7 @@ public class ForumActivity extends BaseStatusActivity implements
         binding.bbsForumSublist.setHasFixedSize(true);
         binding.bbsForumSublist.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         binding.bbsForumSublist.setLayoutManager(new GridLayoutManager(this,4));
-        subForumAdapter = new SubForumAdapter(bbsInfo,userBriefInfo);
+        subForumAdapter = new SubForumAdapter(bbsInfo, user);
         binding.bbsForumSublist.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,subForumAdapter));
 
         binding.bbsForumThreadRecyclerview.setHasFixedSize(true);
@@ -450,7 +450,7 @@ public class ForumActivity extends BaseStatusActivity implements
         binding.bbsForumThreadRecyclerview.setLayoutManager(linearLayoutManager);
         //binding.bbsForumThreadRecyclerview.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
 
-        adapter = new ThreadAdapter(null,fid,bbsInfo,userBriefInfo);
+        adapter = new ThreadAdapter(null,fid,bbsInfo, user);
         concatAdapter = new ConcatAdapter(adapter,networkIndicatorAdapter);
         binding.bbsForumThreadRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,concatAdapter));
 
@@ -496,7 +496,7 @@ public class ForumActivity extends BaseStatusActivity implements
 
     @Override
     public boolean onLinkClicked(String url) {
-        return bbsLinkMovementMethod.parseURLAndOpen(this,bbsInfo,userBriefInfo,url);
+        return bbsLinkMovementMethod.parseURLAndOpen(this,bbsInfo, user,url);
     }
 
     @Override
@@ -529,22 +529,22 @@ public class ForumActivity extends BaseStatusActivity implements
         else if(id == R.id.bbs_forum_nav_personal_center){
             Intent intent = new Intent(this, UserProfileActivity.class);
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-            intent.putExtra("UID",String.valueOf(userBriefInfo.uid));
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user);
+            intent.putExtra("UID",String.valueOf(user.uid));
             startActivity(intent);
             return true;
         }
         else if(id == R.id.bbs_forum_nav_draft_box){
             Intent intent = new Intent(this, ThreadDraftActivity.class);
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user);
             startActivity(intent,null);
             return true;
         }
         else if(id == R.id.bbs_forum_nav_show_in_webview){
             Intent intent = new Intent(this, InternalWebViewActivity.class);
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user);
             intent.putExtra(ConstUtils.PASS_URL_KEY,currentUrl);
             Log.d(TAG,"Inputted URL "+currentUrl);
             startActivity(intent);
@@ -553,7 +553,7 @@ public class ForumActivity extends BaseStatusActivity implements
         else if(id == R.id.bbs_search){
             Intent intent = new Intent(this, SearchPostsActivity.class);
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user);
             startActivity(intent);
             return true;
         }
@@ -597,7 +597,7 @@ public class ForumActivity extends BaseStatusActivity implements
                 Forum forum = result.forumVariables.forum;
 
                 FavoriteForum favoriteForum = forum.toFavoriteForm(bbsInfo.getId(),
-                        userBriefInfo!=null?userBriefInfo.getUid():0
+                        user !=null? user.getUid():0
                 );
                 // save it to the database
                 // boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
@@ -666,7 +666,7 @@ public class ForumActivity extends BaseStatusActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         // configureIntentData();
-        if(userBriefInfo == null){
+        if(user == null){
             getMenuInflater().inflate(R.menu.menu_incognitive_forum_nav_menu, menu);
         }
         else {
@@ -805,18 +805,18 @@ public class ForumActivity extends BaseStatusActivity implements
                         messageResult = result.message;
                         String key = result.message.key;
                         if(favorite && key.equals("favorite_do_success")){
-                            dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteForum.idKey);
+                            dao.delete(bbsInfo.getId(), user !=null? user.getUid():0, favoriteForum.idKey);
                             dao.insert(favoriteForum);
                         }
                         if(favorite && key.equals("favorite_repeat")){
-                            dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteForum.idKey);
+                            dao.delete(bbsInfo.getId(), user !=null? user.getUid():0, favoriteForum.idKey);
                             dao.insert(favoriteForum);
                         }
                         else if(!favorite && key.equals("do_success")){
                             if(favoriteForum !=null){
                                 dao.delete(favoriteForum);
                             }
-                            dao.delete(bbsInfo.getId(),userBriefInfo.getUid(), favoriteForum.idKey);
+                            dao.delete(bbsInfo.getId(), user.getUid(), favoriteForum.idKey);
                         }
                         else {
                             error = true;
@@ -829,7 +829,7 @@ public class ForumActivity extends BaseStatusActivity implements
                         messageResult.content = getString(R.string.network_failed);
                         messageResult.key = String.valueOf(response.code());
                         if(favorite){
-                            dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteForum.idKey);
+                            dao.delete(bbsInfo.getId(), user !=null? user.getUid():0, favoriteForum.idKey);
                             dao.insert(favoriteForum);
 
                             return true;
@@ -837,7 +837,7 @@ public class ForumActivity extends BaseStatusActivity implements
                         else {
 
                             // clear potential
-                            dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteForum.idKey);
+                            dao.delete(bbsInfo.getId(), user !=null? user.getUid():0, favoriteForum.idKey);
                             //dao.delete(favoriteThread);
                             Log.d(TAG,"Just remove it from database "+favoriteForum.idKey);
                             return false;
@@ -853,14 +853,14 @@ public class ForumActivity extends BaseStatusActivity implements
                     messageResult.key = e.toString();
                     // insert as local database
                     if(favorite){
-                        dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteForum.idKey);
+                        dao.delete(bbsInfo.getId(), user !=null? user.getUid():0, favoriteForum.idKey);
                         dao.insert(favoriteForum);
 
                         return true;
                     }
                     else {
                         // clear potential
-                        dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteForum.idKey);
+                        dao.delete(bbsInfo.getId(), user !=null? user.getUid():0, favoriteForum.idKey);
                         //dao.delete(favoriteThread);
                         Log.d(TAG,"Just remove it from database "+favoriteForum.idKey);
                         return false;
@@ -871,14 +871,14 @@ public class ForumActivity extends BaseStatusActivity implements
             }
             else {
                 if(favorite){
-                    dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteForum.idKey);
+                    dao.delete(bbsInfo.getId(), user !=null? user.getUid():0, favoriteForum.idKey);
                     dao.insert(favoriteForum);
 
                     return true;
                 }
                 else {
                     // clear potential
-                    dao.delete(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0, favoriteForum.idKey);
+                    dao.delete(bbsInfo.getId(), user !=null? user.getUid():0, favoriteForum.idKey);
                     //dao.delete(favoriteThread);
                     Log.d(TAG,"Just remove it from database "+favoriteForum.idKey);
                     return false;

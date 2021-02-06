@@ -29,13 +29,13 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
     lateinit var client: OkHttpClient
     private var forum: Forum? = null
     private var tid = 0
-    private var userBriefInfo: forumUserBriefInfo? = null
+    private var user: User? = null
     var networkStatus = MutableLiveData(ConstUtils.NETWORK_STATUS_SUCCESSFULLY)
     var notifyLoadAll = MutableLiveData(false)
     var formHash: MutableLiveData<String>
     var errorText: MutableLiveData<String>
     var pollLiveData: MutableLiveData<Poll?>
-    var bbsPersonInfoMutableLiveData: MutableLiveData<forumUserBriefInfo>
+    var bbsPersonInfoMutableLiveData: MutableLiveData<User>
     var totalPostListLiveData: MutableLiveData<MutableList<Post>>
     var newPostList: MutableLiveData<List<Post>> = MutableLiveData(ArrayList())
     lateinit var threadStatusMutableLiveData: MutableLiveData<ViewThreadQueryStatus>
@@ -51,22 +51,22 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
     var threadPriceInfoMutableLiveData = MutableLiveData<BuyThreadResult?>(null)
     var buyThreadResultMutableLiveData = MutableLiveData<BuyThreadResult?>(null)
     var dao: FavoriteThreadDao
-    fun setBBSInfo(bbsInfo: Discuz, userBriefInfo: forumUserBriefInfo?, forum: Forum?, tid: Int) {
+    fun setBBSInfo(bbsInfo: Discuz, user: User?, forum: Forum?, tid: Int) {
         this.bbsInfo = bbsInfo
-        this.userBriefInfo = userBriefInfo
+        this.user = user
         this.forum = forum
         this.tid = tid
         URLUtils.setBBS(bbsInfo)
-        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), userBriefInfo)
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), user)
         val viewThreadQueryStatus = ViewThreadQueryStatus(tid, 1)
         threadStatusMutableLiveData.value = viewThreadQueryStatus
-        isFavoriteThreadMutableLiveData = dao.isFavoriteItem(bbsInfo.id, userBriefInfo?.getUid()
+        isFavoriteThreadMutableLiveData = dao.isFavoriteItem(bbsInfo.id, user?.getUid()
                 ?: 0, tid, "tid")
-        if(userBriefInfo == null){
+        if(user == null){
             favoriteThreadLiveData = dao.getFavoriteItemByTid(bbsInfo.id, 0, tid, "tid")
         }
         else{
-            favoriteThreadLiveData = dao.getFavoriteItemByTid(bbsInfo.id, userBriefInfo.getUid(), tid, "tid")
+            favoriteThreadLiveData = dao.getFavoriteItemByTid(bbsInfo.id, user.getUid(), tid, "tid")
         }
 
 
@@ -169,7 +169,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                             }
                         }
                         if (threadResult.message != null) {
-                            errorMessageMutableLiveData.postValue(threadResult.message.toErrorMessage())
+                            errorMessageMutableLiveData.postValue(threadResult.message!!.toErrorMessage())
                             networkStatus.postValue(ConstUtils.NETWORK_STATUS_FAILED)
                         }
 
@@ -371,7 +371,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                                 dao.insert(favoriteThread)
                             } else if (!favorite && key == "do_success") {
                                 dao.delete(favoriteThread)
-                                dao.delete(bbsInfo.id, if (userBriefInfo != null) userBriefInfo!!.getUid() else 0, favoriteThread.idKey, "tid")
+                                dao.delete(bbsInfo.id, if (user != null) user!!.getUid() else 0, favoriteThread.idKey, "tid")
                             } else {
                                 error = true
                             }
@@ -385,7 +385,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                         }
                         if(favorite){
                             Thread{
-                                dao.delete(bbsInfo.id, if (userBriefInfo != null) userBriefInfo!!.getUid() else 0, favoriteThread!!.idKey, "tid")
+                                dao.delete(bbsInfo.id, if (user != null) user!!.getUid() else 0, favoriteThread!!.idKey, "tid")
                                 dao.insert(favoriteThread)
                             }.start()
 
@@ -393,7 +393,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                         else{
                             // clear potential
                                 Thread{
-                                    dao.delete(bbsInfo!!.id, if (userBriefInfo != null) userBriefInfo!!.getUid() else 0, favoriteThread!!.idKey, "tid")
+                                    dao.delete(bbsInfo!!.id, if (user != null) user!!.getUid() else 0, favoriteThread!!.idKey, "tid")
                                 }.start()
 
                         }

@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.ErrorMessage;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.DiscuzIndexResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
@@ -32,12 +32,12 @@ public class HomeViewModel extends AndroidViewModel {
     private MutableLiveData<String> mText;
     private MutableLiveData<List<DiscuzIndexResult.ForumCategory>> forumCategories;
     public MutableLiveData<ErrorMessage> errorMessageMutableLiveData = new MutableLiveData<>(null);
-    public MutableLiveData<forumUserBriefInfo> userBriefInfoMutableLiveData;
+    public MutableLiveData<User> userBriefInfoMutableLiveData;
     public MutableLiveData<Boolean> isLoading;
     public MutableLiveData<DiscuzIndexResult> bbsIndexResultMutableLiveData;
 
     Discuz bbsInfo;
-    forumUserBriefInfo userBriefInfo;
+    User userBriefInfo;
 
 
     public HomeViewModel(Application application) {
@@ -50,7 +50,7 @@ public class HomeViewModel extends AndroidViewModel {
 
     }
 
-    public void setBBSInfo(@NonNull Discuz bbsInfo, forumUserBriefInfo userBriefInfo){
+    public void setBBSInfo(@NonNull Discuz bbsInfo, User userBriefInfo){
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
         userBriefInfoMutableLiveData = new MutableLiveData<>(userBriefInfo);
@@ -86,7 +86,7 @@ public class HomeViewModel extends AndroidViewModel {
                     DiscuzIndexResult indexResult = response.body();
                     bbsIndexResultMutableLiveData.postValue(indexResult);
                     if(indexResult.forumVariables !=null){
-                        forumUserBriefInfo serverReturnedUser = indexResult.forumVariables.getUserBriefInfo();
+                        User serverReturnedUser = indexResult.forumVariables.getUserBriefInfo();
                         userBriefInfoMutableLiveData.postValue(serverReturnedUser);
                         errorMessageMutableLiveData.postValue(null);
                         // prepare to render index page

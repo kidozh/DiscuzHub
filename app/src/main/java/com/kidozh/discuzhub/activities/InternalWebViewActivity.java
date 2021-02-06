@@ -19,7 +19,7 @@ import android.webkit.WebViewClient;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.databinding.ActivityShowWebPageBinding;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
@@ -54,9 +54,9 @@ public class InternalWebViewActivity extends BaseStatusActivity {
     private void getIntentInfo(){
         Intent intent = getIntent();
         bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         startURL =  intent.getStringExtra(ConstUtils.PASS_URL_KEY);
-        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this, user);
     }
 
     void configureActionBar(){

@@ -33,10 +33,10 @@ import com.kidozh.discuzhub.activities.ui.UserFriend.UserFriendFragment;
 import com.kidozh.discuzhub.daos.ViewHistoryDao;
 import com.kidozh.discuzhub.database.ViewHistoryDatabase;
 import com.kidozh.discuzhub.databinding.ActivityShowPersonalInfoBinding;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.entities.UserProfileItem;
 import com.kidozh.discuzhub.entities.ViewHistory;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
 import com.kidozh.discuzhub.results.UserProfileResult;
 import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
@@ -108,7 +108,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
     }
 
     void renderFollowAndPMBtn(){
-        if(userBriefInfo ==null){
+        if(user ==null){
             binding.showPersonalInfoMessageBtn.setVisibility(View.GONE);
             binding.showPersonalInfoFocusBtn.setVisibility(View.GONE);
         }
@@ -127,7 +127,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
                 );
                 Intent intent = new Intent(getApplicationContext(), PrivateMessageActivity.class);
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user);
                 intent.putExtra(ConstUtils.PASS_PRIVATE_MESSAGE_KEY,privateM);
 
                 startActivity(intent);
@@ -145,8 +145,8 @@ public class UserProfileActivity extends BaseStatusActivity implements
     private void getIntentInfo(){
         Intent intent = getIntent();
         bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         userId = intent.getIntExtra("UID",0);
         if(bbsInfo == null){
             finishAfterTransition();
@@ -154,13 +154,13 @@ public class UserProfileActivity extends BaseStatusActivity implements
         else {
             Log.d(TAG,"get bbs name "+bbsInfo.site_name);
             URLUtils.setBBS(bbsInfo);
-            viewModel.setBBSInfo(bbsInfo,userBriefInfo, userId);
+            viewModel.setBBSInfo(bbsInfo, user, userId);
         }
         if(getSupportActionBar()!=null){
             getSupportActionBar().setTitle(bbsInfo.site_name);
         }
-        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
-        if(userBriefInfo!=null && userId == Integer.parseInt(userBriefInfo.uid)){
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this, user);
+        if(user !=null && userId == user.uid){
             binding.showPersonalInfoFocusBtn.setVisibility(View.GONE);
             binding.showPersonalInfoMessageBtn.setVisibility(View.GONE);
         }
@@ -609,7 +609,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
     @Override
     public boolean onLinkClicked(String url) {
-        bbsLinkMovementMethod.parseURLAndOpen(this,bbsInfo,userBriefInfo,url);
+        bbsLinkMovementMethod.parseURLAndOpen(this,bbsInfo, user,url);
         return true;
     }
 

@@ -3,7 +3,6 @@ package com.kidozh.discuzhub.utilities;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
-import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
@@ -18,7 +17,7 @@ import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.ErrorMessage;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 
 import java.io.IOException;
 import java.util.Map;
@@ -78,7 +77,7 @@ public class NetworkUtils {
         return addUserAgent(context,mBuilder);
     }
 
-    public static OkHttpClient getPreferredClientWithCookieJarByUser(Context context, forumUserBriefInfo briefInfo){
+    public static OkHttpClient getPreferredClientWithCookieJarByUser(Context context, User briefInfo){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context) ;
         Boolean useSafeHttpClient = prefs.getBoolean(preferenceName,true);
         if(briefInfo==null){
@@ -91,7 +90,7 @@ public class NetworkUtils {
 
     }
 
-    public static OkHttpClient getPreferredClientWithCookieJarByUserWithDefaultHeader(Context context, forumUserBriefInfo briefInfo){
+    public static OkHttpClient getPreferredClientWithCookieJarByUserWithDefaultHeader(Context context, User briefInfo){
         if(briefInfo==null){
             return getPreferredClient(context);
         }
@@ -133,7 +132,7 @@ public class NetworkUtils {
         fromSp.edit().clear().apply();
     }
 
-    public static String getSharedPreferenceNameByUser(@NonNull forumUserBriefInfo briefInfo){
+    public static String getSharedPreferenceNameByUser(@NonNull User briefInfo){
         return "CookiePersistence_U"+briefInfo.getId();
     }
 
@@ -234,7 +233,7 @@ public class NetworkUtils {
 
     }
 
-    public static OkHttpClient getSafeOkHttpClientWithCookieJarByUser(Context context, forumUserBriefInfo briefInfo){
+    public static OkHttpClient getSafeOkHttpClientWithCookieJarByUser(Context context, User briefInfo){
         ClearableCookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(),
                         new SharedPrefsCookiePersistor(context.getSharedPreferences(getSharedPreferenceNameByUser(briefInfo),Context.MODE_PRIVATE))
@@ -249,7 +248,7 @@ public class NetworkUtils {
         return addUserAgent(context,mBuilder);
     }
 
-    public static OkHttpClient getUnSafeOkHttpClientWithCookieJarByUser(Context context, forumUserBriefInfo briefInfo){
+    public static OkHttpClient getUnSafeOkHttpClientWithCookieJarByUser(Context context, User briefInfo){
 
 
         ClearableCookieJar cookieJar =
@@ -270,7 +269,7 @@ public class NetworkUtils {
     }
 
     // default header
-    public static OkHttpClient getSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(Context context, forumUserBriefInfo briefInfo){
+    public static OkHttpClient getSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(Context context, User briefInfo){
         ClearableCookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(),
                         new SharedPrefsCookiePersistor(context.getSharedPreferences(getSharedPreferenceNameByUser(briefInfo),Context.MODE_PRIVATE))
@@ -285,7 +284,7 @@ public class NetworkUtils {
         return addUserAgentWithDefaultAndroidHeader(context,mBuilder);
     }
 
-    public static OkHttpClient getUnSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(Context context, forumUserBriefInfo briefInfo){
+    public static OkHttpClient getUnSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(Context context, User briefInfo){
 
 
         ClearableCookieJar cookieJar =
@@ -306,7 +305,7 @@ public class NetworkUtils {
     }
 
     // cleared cookie
-    public static void clearUserCookieInfo(Context context, forumUserBriefInfo briefInfo){
+    public static void clearUserCookieInfo(Context context, User briefInfo){
         ClearableCookieJar cookieJar =
                 new PersistentCookieJar(new SetCookieCache(),
                         new SharedPrefsCookiePersistor(context.getSharedPreferences("CookiePersistence_U"+briefInfo.getId(),Context.MODE_PRIVATE))

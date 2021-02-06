@@ -23,7 +23,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.MyImageGetter;
 import com.kidozh.discuzhub.utilities.MyTagHandler;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -40,9 +40,9 @@ public class PrivateDetailMessageAdapter extends RecyclerView.Adapter<PrivateDet
     List<bbsParseUtils.privateDetailMessage> privateDetailMessageList;
     Context context;
     Discuz curBBS;
-    forumUserBriefInfo userBriefInfo;
+    User userBriefInfo;
 
-    public PrivateDetailMessageAdapter(Discuz curBBS, forumUserBriefInfo userBriefInfo) {
+    public PrivateDetailMessageAdapter(Discuz curBBS, User userBriefInfo) {
         this.curBBS = curBBS;
         this.userBriefInfo = userBriefInfo;
     }

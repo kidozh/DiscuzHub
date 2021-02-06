@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.entities.Discuz
-import com.kidozh.discuzhub.entities.forumUserBriefInfo
+import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.results.UserFriendResult
 import com.kidozh.discuzhub.results.UserFriendResult.UserFriend
 import com.kidozh.discuzhub.utilities.URLUtils
@@ -27,7 +27,7 @@ class UserFriendViewModel(application: Application) : AndroidViewModel(applicati
     var isErrorMutableLiveData : MutableLiveData<Boolean>
     var privacyMutableLiveData : MutableLiveData<Boolean>
     var page = 1
-    var userBriefInfo : forumUserBriefInfo? = null
+    var user : User? = null
     lateinit var bbsInfo: Discuz
     var client = OkHttpClient()
     var uid = 0
@@ -48,13 +48,13 @@ class UserFriendViewModel(application: Application) : AndroidViewModel(applicati
 
 
 
-    fun setInfo(bbsInfo: Discuz, userBriefInfo: forumUserBriefInfo?, uid: Int, friendCounts: Int) {
+    fun setInfo(bbsInfo: Discuz, user: User?, uid: Int, friendCounts: Int) {
         this.bbsInfo = bbsInfo
-        this.userBriefInfo = userBriefInfo
+        this.user = user
         this.uid = uid
         this.friendCounts = friendCounts
 
-        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), userBriefInfo)
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), user)
     }
 
 
@@ -128,9 +128,9 @@ class UserFriendViewModel(application: Application) : AndroidViewModel(applicati
 
                         }
 
-                        if(friendsResult.isError){
+                        if(friendsResult.isError()){
                             isErrorMutableLiveData.postValue(true)
-                            errorTextMutableLiveData.postValue(friendsResult.message.content)
+                            errorTextMutableLiveData.postValue(friendsResult.message?.content)
                         }
 
 

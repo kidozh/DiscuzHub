@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.DiscuzIndexResult;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
@@ -30,14 +30,14 @@ public class ForumCategoryAdapter extends RecyclerView.Adapter<ForumCategoryAdap
     Context mContext;
     List<DiscuzIndexResult.ForumCategory> forumCategoryList = new ArrayList<>();
     Discuz bbsInfo;
-    forumUserBriefInfo curUser;
+    User curUser;
     List<Forum> allForum;
 
     ForumCategoryAdapter(Context context){
         this.mContext = context;
     }
 
-    public ForumCategoryAdapter(Discuz Discuz, forumUserBriefInfo userBriefInfo){
+    public ForumCategoryAdapter(Discuz Discuz, User userBriefInfo){
 
         this.bbsInfo = Discuz;
         this.curUser = userBriefInfo;

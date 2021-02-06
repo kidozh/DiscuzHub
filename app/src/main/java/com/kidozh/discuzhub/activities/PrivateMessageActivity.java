@@ -27,7 +27,7 @@ import com.kidozh.discuzhub.adapter.PrivateDetailMessageAdapter;
 import com.kidozh.discuzhub.databinding.ActivityBbsPrivateMessageDetailBinding;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Smiley;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
@@ -121,7 +121,7 @@ public class PrivateMessageActivity extends BaseStatusActivity implements Smiley
     private void configureRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
         binding.bbsPrivateMessageDetailRecyclerview.setLayoutManager(linearLayoutManager);
-        adapter = new PrivateDetailMessageAdapter(bbsInfo,userBriefInfo);
+        adapter = new PrivateDetailMessageAdapter(bbsInfo, user);
         binding.bbsPrivateMessageDetailRecyclerview.setAdapter(adapter);
     }
 
@@ -316,7 +316,7 @@ public class PrivateMessageActivity extends BaseStatusActivity implements Smiley
                 if(response.isSuccessful()&&response.body()!=null){
                     String s = response.body().string();
 
-                    List<bbsParseUtils.privateDetailMessage> privateDetailMessages =  bbsParseUtils.parsePrivateDetailMessage(s,Integer.parseInt(userBriefInfo.uid));
+                    List<bbsParseUtils.privateDetailMessage> privateDetailMessages =  bbsParseUtils.parsePrivateDetailMessage(s,user.uid);
                     int messagePerPage = bbsParseUtils.parsePrivateDetailMessagePerPage(s);
                     formHash = bbsParseUtils.parseFormHash(s);
                     pmid = bbsParseUtils.parsePrivateDetailMessagePmid(s);
@@ -357,11 +357,11 @@ public class PrivateMessageActivity extends BaseStatusActivity implements Smiley
     private void getIntentInfo(){
         Intent intent = getIntent();
         bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         privateMessageInfo = (bbsParseUtils.privateMessage) intent.getSerializableExtra(ConstUtils.PASS_PRIVATE_MESSAGE_KEY);
         // parse client
-        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this, user);
         if(bbsInfo == null){
             finishAfterTransition();
         }

@@ -16,7 +16,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.PublishActivity;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.ThreadDraft;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
@@ -30,10 +30,10 @@ public class ThreadDraftAdapter extends RecyclerView.Adapter<ThreadDraftAdapter.
 
     List<ThreadDraft> threadDraftList = new ArrayList<>();
     Context context;
-    private forumUserBriefInfo userBriefInfo;
+    private User userBriefInfo;
     Discuz bbsInfo;
 
-    public ThreadDraftAdapter(Discuz bbsInfo, forumUserBriefInfo userBriefInfo){
+    public ThreadDraftAdapter(Discuz bbsInfo, User userBriefInfo){
         this.userBriefInfo = userBriefInfo;
         this.bbsInfo = bbsInfo;
     }

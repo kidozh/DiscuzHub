@@ -23,7 +23,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.PollOptionAdapter;
 import com.kidozh.discuzhub.databinding.FragmentBbsPollBinding;
 import com.kidozh.discuzhub.entities.Poll;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.RecyclerItemClickListener;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -62,7 +62,7 @@ public class bbsPollFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private Poll pollInfo;
     private int tid;
-    private forumUserBriefInfo userBriefInfo;
+    private User userBriefInfo;
     private String formhash;
     private OnFragmentInteractionListener mListener;
 
@@ -78,7 +78,7 @@ public class bbsPollFragment extends Fragment {
      * @return A new instance of fragment bbsPollFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static bbsPollFragment newInstance(Poll pollInfo, forumUserBriefInfo userBriefInfo, int tid, String formhash) {
+    public static bbsPollFragment newInstance(Poll pollInfo, User userBriefInfo, int tid, String formhash) {
         bbsPollFragment fragment = new bbsPollFragment();
         Bundle args = new Bundle();
         args.putSerializable(ConstUtils.PASS_POLL_KEY,pollInfo);
@@ -94,7 +94,7 @@ public class bbsPollFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             pollInfo = (Poll) getArguments().getSerializable(ConstUtils.PASS_POLL_KEY);
-            userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
+            userBriefInfo = (User)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
             tid = getArguments().getInt(ConstUtils.PASS_TID_KEY);
             client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
             formhash = getArguments().getString(ConstUtils.PASS_FORMHASH_KEY);

@@ -23,7 +23,7 @@ import com.kidozh.discuzhub.adapter.ThreadAdapter;
 import com.kidozh.discuzhub.databinding.FragmentHotThreadBinding;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.ErrorMessage;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
@@ -45,10 +45,10 @@ public class HotThreadsFragment extends Fragment {
     NetworkIndicatorAdapter networkIndicatorAdapter = new NetworkIndicatorAdapter();
     ConcatAdapter concatAdapter;
     Discuz bbsInfo;
-    forumUserBriefInfo userBriefInfo;
+    User userBriefInfo;
 
 
-    public static HotThreadsFragment newInstance(@NonNull Discuz Discuz, forumUserBriefInfo userBriefInfo){
+    public static HotThreadsFragment newInstance(@NonNull Discuz Discuz, User userBriefInfo){
         HotThreadsFragment fragment = new HotThreadsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY, Discuz);
@@ -62,7 +62,7 @@ public class HotThreadsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             bbsInfo = (Discuz) getArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY);
-            userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
+            userBriefInfo = (User)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
 
         }
     }

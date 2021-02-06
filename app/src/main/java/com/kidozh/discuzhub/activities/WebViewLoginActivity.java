@@ -27,13 +27,15 @@ import com.kidozh.discuzhub.database.DiscuzDatabase;
 import com.kidozh.discuzhub.database.UserDatabase;
 import com.kidozh.discuzhub.databinding.ActivityLoginByWebViewBinding;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.LoginResult;
 import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -235,7 +237,7 @@ public class WebViewLoginActivity extends BaseStatusActivity {
 
     public void authUserIntergrity(){
         // get cookie from webview first
-        forumUserBriefInfo userBriefInfo = new forumUserBriefInfo("","","","","",50,"");
+        User userBriefInfo = new User("","",0,"","",50,0);
         Log.d(TAG,"Send user id "+userBriefInfo.getId());
         NetworkUtils.clearUserCookieInfo(getApplicationContext(),userBriefInfo);
         OkHttpClient client = NetworkUtils.getPreferredClientWithCookieJar(getApplicationContext());
@@ -245,10 +247,9 @@ public class WebViewLoginActivity extends BaseStatusActivity {
         String[] cookieStringArray = cookieString.split(";");
         List<Cookie> cookieList = new ArrayList<>();
         HttpUrl httpUrl = HttpUrl.parse(currentUrl);
-        for (int i =0; i<cookieStringArray.length;i++){
-            String eachCookieString = cookieStringArray[i];
-            Log.d(TAG,"http url "+httpUrl.toString()+" cookie "+eachCookieString);
-            Cookie cookie = Cookie.parse(httpUrl,eachCookieString);
+        for (String eachCookieString : cookieStringArray) {
+            Log.d(TAG, "http url " + httpUrl.toString() + " cookie " + eachCookieString);
+            Cookie cookie = Cookie.parse(httpUrl, eachCookieString);
             cookieList.add(cookie);
         }
         NetworkUtils.clearUserCookieInfo(getApplicationContext(),userBriefInfo);
@@ -280,11 +281,11 @@ public class WebViewLoginActivity extends BaseStatusActivity {
         retrofit2.Call<LoginResult> loginResultCall = service.getLoginResult();
         loginResultCall.enqueue(new retrofit2.Callback<LoginResult>() {
             @Override
-            public void onResponse(retrofit2.Call<LoginResult> call, retrofit2.Response<LoginResult> response) {
+            public void onResponse(@NotNull retrofit2.Call<LoginResult> call, @NotNull retrofit2.Response<LoginResult> response) {
                 if(response.isSuccessful() && response.body()!=null){
                     LoginResult result = response.body();
                     if(result.variables.getUserBriefInfo()!=null){
-                        forumUserBriefInfo parsedUserInfo = result.variables.getUserBriefInfo();
+                        User parsedUserInfo = result.variables.getUserBriefInfo();
                         Log.d(TAG,"Parse user info "+parsedUserInfo.uid+ " "+parsedUserInfo.getId());
                         // save it to database
                         if(bbsInfo != null){
@@ -382,21 +383,21 @@ public class WebViewLoginActivity extends BaseStatusActivity {
     }
 
     private class saveUserToDatabaseAsyncTask extends AsyncTask<Void,Void,Void> {
-        forumUserBriefInfo userBriefInfo;
+        User userBriefInfo;
         OkHttpClient client;
         HttpUrl httpUrl;
         List<Discuz> discuzList = new ArrayList<>();
         List<Long> insertUserIdList = new ArrayList<>();
         String redirectURL;
 
-        saveUserToDatabaseAsyncTask(forumUserBriefInfo userBriefInfo, OkHttpClient client, HttpUrl httpUrl){
+        saveUserToDatabaseAsyncTask(User userBriefInfo, OkHttpClient client, HttpUrl httpUrl){
             this.userBriefInfo = userBriefInfo;
             this.client = client;
             this.httpUrl = httpUrl;
 
         }
 
-        saveUserToDatabaseAsyncTask(forumUserBriefInfo userBriefInfo,
+        saveUserToDatabaseAsyncTask(User userBriefInfo,
                                     OkHttpClient client,
                                     HttpUrl httpUrl,
                                     String redirectURL){

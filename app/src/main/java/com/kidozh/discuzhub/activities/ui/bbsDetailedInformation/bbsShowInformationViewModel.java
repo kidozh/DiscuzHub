@@ -7,23 +7,23 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.kidozh.discuzhub.database.UserDatabase;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 
 import java.util.List;
 
 public class bbsShowInformationViewModel extends AndroidViewModel {
-    public LiveData<List<forumUserBriefInfo>> bbsUserInfoLiveDataList;
+    public LiveData<List<User>> bbsUserInfoLiveDataList;
 
     public bbsShowInformationViewModel(@NonNull Application application) {
         super(application);
     }
 
-    public LiveData<List<forumUserBriefInfo>> getBbsUserInfoLiveDataList() {
+    public LiveData<List<User>> getBbsUserInfoLiveDataList() {
 
         return bbsUserInfoLiveDataList;
     }
 
-    public void setBbsUserInfoLiveDataList(LiveData<List<forumUserBriefInfo>> bbsUserInfoLiveDataList) {
+    public void setBbsUserInfoLiveDataList(LiveData<List<User>> bbsUserInfoLiveDataList) {
         this.bbsUserInfoLiveDataList = bbsUserInfoLiveDataList;
     }
 

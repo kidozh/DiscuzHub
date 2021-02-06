@@ -26,7 +26,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.database.UserDatabase;
 import com.kidozh.discuzhub.databinding.ActivityLoginBbsBinding;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.MessageResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -79,12 +79,12 @@ public class LoginActivity extends BaseStatusActivity {
 
     void setInformation(){
         binding.loginBbsTitle.setText(bbsInfo.site_name);
-        if(userBriefInfo == null){
+        if(user == null){
             binding.loginBbsUrl.setText(bbsInfo.base_url);
         }
         else {
-            binding.loginBbsUrl.setText(getString(R.string.user_relogin,userBriefInfo.username));
-            binding.loginBbsAccountTextInputEditText.setText(userBriefInfo.username);
+            binding.loginBbsUrl.setText(getString(R.string.user_relogin, user.username));
+            binding.loginBbsAccountTextInputEditText.setText(user.username);
         }
 
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
@@ -252,11 +252,11 @@ public class LoginActivity extends BaseStatusActivity {
                 if(loginMessage !=null){
                     String key = loginMessage.key;
                     if(key.equals("login_succeed")){
-                        forumUserBriefInfo user = loginResult.variables.getUserBriefInfo();
+                        User user = loginResult.variables.getUserBriefInfo();
                         user.belongedBBSID = bbsInfo.getId();
-                        if(userBriefInfo !=null){
+                        if(user !=null){
                             // relogin user
-                            user.setId(userBriefInfo.getId());
+                            user.setId(user.getId());
                         }
                         Toasty.success(this,
                                 getString(R.string.discuz_api_message_template,loginMessage.key,loginMessage.content),
@@ -349,11 +349,11 @@ public class LoginActivity extends BaseStatusActivity {
 
 
     private class saveUserToDatabaseAsyncTask extends AsyncTask<Void,Void,Void>{
-        forumUserBriefInfo userBriefInfo;
+        User userBriefInfo;
         OkHttpClient client;
         long insertedId;
         HttpUrl httpUrl;
-        saveUserToDatabaseAsyncTask(forumUserBriefInfo userBriefInfo, OkHttpClient client, String httpURL){
+        saveUserToDatabaseAsyncTask(User userBriefInfo, OkHttpClient client, String httpURL){
             this.userBriefInfo = userBriefInfo;
             this.client = client;
             this.httpUrl = HttpUrl.parse(httpURL);
@@ -403,9 +403,9 @@ public class LoginActivity extends BaseStatusActivity {
     void configureData(){
         Intent intent = getIntent();
         bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         client = NetworkUtils.getPreferredClientWithCookieJar(getApplicationContext());
-        viewModel.setInfo(bbsInfo,userBriefInfo,client);
+        viewModel.setInfo(bbsInfo, user,client);
 
 
         if(bbsInfo == null){
@@ -417,11 +417,11 @@ public class LoginActivity extends BaseStatusActivity {
             //bbsURLUtils.setBaseUrl(bbsInfo.base_url);
         }
         if(getSupportActionBar()!=null){
-            if(userBriefInfo == null){
+            if(user == null){
                 getSupportActionBar().setTitle(R.string.bbs_login);
             }
             else {
-                getSupportActionBar().setTitle(getString(R.string.user_relogin,userBriefInfo.username));
+                getSupportActionBar().setTitle(getString(R.string.user_relogin, user.username));
             }
 
             getSupportActionBar().setSubtitle(bbsInfo.site_name);

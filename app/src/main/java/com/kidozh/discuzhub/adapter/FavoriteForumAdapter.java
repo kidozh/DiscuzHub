@@ -22,7 +22,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ForumActivity;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.FavoriteForum;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.timeDisplayUtils;
@@ -32,13 +32,13 @@ public class FavoriteForumAdapter extends PagedListAdapter<FavoriteForum, Favori
     private static final String TAG = FavoriteForumAdapter.class.getSimpleName();
     Context context;
     Discuz bbsInfo;
-    forumUserBriefInfo curUser;
+    User curUser;
 
     public FavoriteForumAdapter() {
         super(FavoriteForum.DIFF_CALLBACK);
     }
 
-    public void setInformation(Discuz bbsInfo, forumUserBriefInfo userBriefInfo){
+    public void setInformation(Discuz bbsInfo, User userBriefInfo){
         this.bbsInfo = bbsInfo;
         this.curUser = userBriefInfo;
     }

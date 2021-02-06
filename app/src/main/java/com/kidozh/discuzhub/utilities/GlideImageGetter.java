@@ -37,7 +37,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.FullImageActivity;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 
 import org.xml.sax.XMLReader;
 
@@ -60,10 +60,10 @@ public class GlideImageGetter implements Html.ImageGetter {
     private static OkHttpClient client = new OkHttpClient();
     @NonNull
     private static Discuz bbsInfo;
-    private forumUserBriefInfo userBriefInfo;
+    private User userBriefInfo;
 
 
-    public GlideImageGetter(@NonNull TextView textView, forumUserBriefInfo userBriefInfo){
+    public GlideImageGetter(@NonNull TextView textView, User userBriefInfo){
         context = textView.getContext();
         this.textView = textView;
         this.userBriefInfo = userBriefInfo;

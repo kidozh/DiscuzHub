@@ -9,11 +9,11 @@ import androidx.room.TypeConverters;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.kidozh.discuzhub.daos.forumUserBriefInfoDao;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.daos.UserDao;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
-@Database(entities = {forumUserBriefInfo.class},version = 2, exportSchema = true)
+@Database(entities = {User.class},version = 3, exportSchema = true)
 @TypeConverters(DateConverter.class)
 public abstract class UserDatabase extends RoomDatabase {
     private static final String DB_NAME = "forumUserBriefInfoDatabase.db";
@@ -36,6 +36,7 @@ public abstract class UserDatabase extends RoomDatabase {
     private static UserDatabase getDatabase(final Context context){
         return Room.databaseBuilder(context, UserDatabase.class,DB_NAME)
                 .addMigrations(MIGRATION_1_2)
+                .fallbackToDestructiveMigration()
                 .build();
     }
 
@@ -43,10 +44,11 @@ public abstract class UserDatabase extends RoomDatabase {
         return Room.databaseBuilder(context, UserDatabase.class,DB_NAME)
                 .allowMainThreadQueries()
                 .addMigrations(MIGRATION_1_2)
+                .fallbackToDestructiveMigration()
                 .build();
     }
 
-    public abstract forumUserBriefInfoDao getforumUserBriefInfoDao();
+    public abstract UserDao getforumUserBriefInfoDao();
 
 
 }

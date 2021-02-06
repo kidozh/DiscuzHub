@@ -5,21 +5,25 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
 @Entity
-public class forumUserBriefInfo implements Serializable {
+public class User implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    public String auth,saltkey,uid,username,avatarUrl, groupId;
+    public String auth,saltkey,username,avatarUrl;
+    @JsonProperty("groupid")
+    public int groupId;
+    public int uid;
     public int readPerm;
     public int belongedBBSID;
     @JsonIgnore
     public int position = 0;
 
-    public forumUserBriefInfo(String auth, String saltkey, String uid, String username, String avatarUrl, int readPerm, String groupId){
+    public User(String auth, String saltkey, int uid, String username, String avatarUrl, int readPerm, int groupId){
         this.auth = auth;
         this.saltkey = saltkey;
         this.uid = uid;
@@ -30,19 +34,8 @@ public class forumUserBriefInfo implements Serializable {
     }
 
     public int getUid(){
-        return Integer.parseInt(uid);
+        return uid;
     }
-
-//    public forumUserBriefInfo(String auth, String saltkey, String uid, String username, String avatarUrl, int readPerm, String groupId, int belongedBBSID){
-//        this.auth = auth;
-//        this.saltkey = saltkey;
-//        this.uid = uid;
-//        this.username = username;
-//        this.readPerm = readPerm;
-//        this.avatarUrl = avatarUrl;
-//        this.groupId = groupId;
-//        this.belongedBBSID = belongedBBSID;
-//    }
 
 
     public boolean isValid(){

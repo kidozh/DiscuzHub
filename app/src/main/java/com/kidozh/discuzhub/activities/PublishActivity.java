@@ -57,7 +57,7 @@ import com.kidozh.discuzhub.entities.ThreadDraft;
 import com.kidozh.discuzhub.entities.UploadAttachment;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.PostParameterResult;
 import com.kidozh.discuzhub.utilities.EmotionInputHandler;
@@ -113,7 +113,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
     private String fid,forumName, uploadHash, formHash;
     Map<String,String> threadCategoryMapper = new HashMap<>();
     private ProgressDialog uploadDialog;
-    private forumUserBriefInfo bbsPersonInfo;
+    private User bbsPersonInfo;
 
     Uri curOutputFileUri;
     String curOutputFilePath;
@@ -173,7 +173,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         Intent intent = getIntent();
         forum = intent.getParcelableExtra(ConstUtils.PASS_FORUM_THREAD_KEY);
         bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         if(intent.getSerializableExtra(ConstUtils.PASS_THREAD_CATEGORY_KEY) !=null){
             threadCategoryMapper = (Map<String, String>) intent.getSerializableExtra(ConstUtils.PASS_THREAD_CATEGORY_KEY);
         }
@@ -214,13 +214,13 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
         fid = intent.getStringExtra("fid");
 
-        postThreadViewModel.setBBSInfo(bbsInfo,userBriefInfo,fid);
+        postThreadViewModel.setBBSInfo(bbsInfo, user,fid);
         forumName = intent.getStringExtra("fid_name");
 
     }
 
     private void configureClient(){
-        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this, user);
     }
 
     private void bindViewModel(){
@@ -879,7 +879,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         MultipartBody multipartBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("Filedata",filename,fileBody)
-                .addFormDataPart("uid",bbsPersonInfo.uid)
+                .addFormDataPart("uid",String.valueOf(bbsPersonInfo.uid))
                 .addFormDataPart("hash",uploadHash)
                 .build();
         Log.d(TAG,"Send attachment url "+ URLUtils.getSWFUploadAttachmentUrl(fid));
@@ -985,7 +985,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
             MultipartBody multipartBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("Filedata",String.format("DH_upload_%s.jpg",currentTimeString),fileBody)
-                    .addFormDataPart("uid",bbsPersonInfo.uid)
+                    .addFormDataPart("uid",String.valueOf(bbsPersonInfo.uid))
                     .addFormDataPart("hash",uploadHash)
                     .build();
 

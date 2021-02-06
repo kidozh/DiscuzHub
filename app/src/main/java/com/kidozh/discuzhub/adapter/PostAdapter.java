@@ -54,7 +54,7 @@ import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.entities.Post;
 import com.kidozh.discuzhub.entities.ViewThreadQueryStatus;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -85,7 +85,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
     public String subject;
     private OkHttpClient client = new OkHttpClient();
     private Discuz bbsInfo;
-    private forumUserBriefInfo curUser;
+    private User curUser;
     private ViewThreadQueryStatus viewThreadQueryStatus;
 
     private onFilterChanged mListener;
@@ -100,7 +100,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
 
 
 
-    public PostAdapter(Context context, Discuz bbsInfo, forumUserBriefInfo curUser, ViewThreadQueryStatus viewThreadQueryStatus){
+    public PostAdapter(Context context, Discuz bbsInfo, User curUser, ViewThreadQueryStatus viewThreadQueryStatus){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
         this.mContext = context;

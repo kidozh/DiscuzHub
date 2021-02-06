@@ -24,7 +24,7 @@ import com.kidozh.discuzhub.adapter.ForumCategoryAdapter;
 import com.kidozh.discuzhub.databinding.ActivityBbsForumIndexBinding;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.DiscuzIndexResult;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment {
 
     ForumCategoryAdapter adapter;
     Discuz bbsInfo;
-    forumUserBriefInfo userBriefInfo;
+    User userBriefInfo;
 
     ActivityBbsForumIndexBinding activityBbsForumIndexBinding;
 
@@ -67,7 +67,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    public static HomeFragment newInstance(Discuz Discuz, forumUserBriefInfo userBriefInfo){
+    public static HomeFragment newInstance(Discuz Discuz, User userBriefInfo){
         HomeFragment homeFragment = new HomeFragment();
         Bundle args = new Bundle();
         args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY, Discuz);
@@ -81,7 +81,7 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             bbsInfo = (Discuz) getArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY);
-            userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
+            userBriefInfo = (User)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
 
         }
     }
@@ -94,8 +94,8 @@ public class HomeFragment extends Fragment {
         }
         Intent intent = getActivity().getIntent();
         bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        userBriefInfo = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        userBriefInfo = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         if(bbsInfo == null){
             getActivity().finish();
         }
@@ -144,9 +144,9 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        homeViewModel.userBriefInfoMutableLiveData.observe(getViewLifecycleOwner(), new Observer<forumUserBriefInfo>() {
+        homeViewModel.userBriefInfoMutableLiveData.observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
-            public void onChanged(forumUserBriefInfo userBriefInfo) {
+            public void onChanged(User userBriefInfo) {
                 Log.d(TAG,"changed user to "+userBriefInfo);
                 if(userBriefInfo == null && userBriefInfo!=null){
                     // raise dialog

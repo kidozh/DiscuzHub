@@ -17,7 +17,7 @@ import com.kidozh.discuzhub.entities.DisplayForumQueryStatus;
 import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -41,7 +41,7 @@ public class ForumViewModel extends AndroidViewModel {
     public MutableLiveData<DisplayForumQueryStatus> forumStatusMutableLiveData;
 
     Discuz bbsInfo;
-    forumUserBriefInfo userBriefInfo;
+    User userBriefInfo;
     Forum forum;
     public OkHttpClient client;
 
@@ -82,7 +82,7 @@ public class ForumViewModel extends AndroidViewModel {
         return newThreadListMutableLiveData;
     }
 
-    public void setBBSInfo(@NonNull Discuz bbsInfo, forumUserBriefInfo userBriefInfo, Forum forum){
+    public void setBBSInfo(@NonNull Discuz bbsInfo, User userBriefInfo, Forum forum){
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
         this.forum = forum;

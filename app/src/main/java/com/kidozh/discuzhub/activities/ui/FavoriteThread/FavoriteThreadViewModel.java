@@ -15,7 +15,7 @@ import com.kidozh.discuzhub.daos.FavoriteThreadDao;
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.FavoriteThread;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.FavoriteThreadResult;
 import com.kidozh.discuzhub.services.DiscuzApiService;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -45,7 +45,7 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
     public MutableLiveData<FavoriteThreadResult> resultMutableLiveData = new MutableLiveData<>();
     private OkHttpClient client;
     Discuz bbsInfo;
-    forumUserBriefInfo userBriefInfo;
+    User userBriefInfo;
     String idType;
 
     FavoriteThreadDao dao;
@@ -60,7 +60,7 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
         dao = FavoriteThreadDatabase.getInstance(application).getDao();
     }
 
-    public void setInfo(@NonNull Discuz bbsInfo, forumUserBriefInfo userBriefInfo, String idType) {
+    public void setInfo(@NonNull Discuz bbsInfo, User userBriefInfo, String idType) {
 
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;

@@ -26,7 +26,7 @@ import com.kidozh.discuzhub.databinding.ActivitySearchPostsBinding;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.Thread;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -69,8 +69,8 @@ public class SearchPostsActivity extends BaseStatusActivity {
     private void getIntentInfo(){
         Intent intent = getIntent();
         bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
-        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this,userBriefInfo);
+        user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(this, user);
     }
 
     void configureActionBar(){
@@ -150,7 +150,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             //return false;
-            return parseURLAndOpen(activity,bbsInfo,userBriefInfo,request.getUrl().toString());
+            return parseURLAndOpen(activity,bbsInfo, user,request.getUrl().toString());
             //return super.shouldOverrideUrlLoading(view, request);
         }
     }
@@ -184,7 +184,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
 
     public static boolean parseURLAndOpen(Context context,
                                           Discuz bbsInfo,
-                                          forumUserBriefInfo userBriefInfo,
+                                          User userBriefInfo,
                                           String url) {
         // simple unescape
         url = url

@@ -5,15 +5,13 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.daos.SmileyDao
 import com.kidozh.discuzhub.database.SmileyDatabase
 import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.ErrorMessage
 import com.kidozh.discuzhub.entities.Smiley
-import com.kidozh.discuzhub.entities.forumUserBriefInfo
+import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.results.SmileyResult
 import com.kidozh.discuzhub.services.DiscuzApiService
 import com.kidozh.discuzhub.utilities.NetworkUtils
@@ -39,7 +37,7 @@ class SmileyViewModel(application: Application) : AndroidViewModel(application) 
         dao = SmileyDatabase.getInstance(application).getDao()
     }
 
-    fun configureDiscuz(discuz: Discuz, user: forumUserBriefInfo?){
+    fun configureDiscuz(discuz: Discuz, user: User?){
         this.discuz = discuz
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), user)
         latestSmileyListLiveData = dao.latestSimleys(discuz.id)

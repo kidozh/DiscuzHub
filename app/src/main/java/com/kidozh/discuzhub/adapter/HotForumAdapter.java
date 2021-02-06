@@ -17,7 +17,7 @@ import com.kidozh.discuzhub.activities.ForumActivity;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.HotForum;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 
@@ -31,9 +31,9 @@ public class HotForumAdapter extends RecyclerView.Adapter<HotForumAdapter.HotFor
     Context context;
 
     Discuz bbsInfo;
-    forumUserBriefInfo userBriefInfo;
+    User userBriefInfo;
 
-    public HotForumAdapter(Discuz bbsInfo, forumUserBriefInfo userBriefInfo) {
+    public HotForumAdapter(Discuz bbsInfo, User userBriefInfo) {
         this.bbsInfo = bbsInfo;
         this.userBriefInfo = userBriefInfo;
     }

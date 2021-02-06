@@ -22,7 +22,7 @@ import com.kidozh.discuzhub.databinding.FragmentExplorePageBinding
 import com.kidozh.discuzhub.entities.Forum
 import com.kidozh.discuzhub.entities.Thread
 import com.kidozh.discuzhub.entities.Discuz
-import com.kidozh.discuzhub.entities.forumUserBriefInfo
+import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.NetworkUtils
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils
@@ -47,8 +47,8 @@ class ExplorePageFragment : Fragment() {
         arguments?.let {
 
             bbsInfo = it.getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
-            userBriefInfo = it.getSerializable(ConstUtils.PASS_BBS_USER_KEY) as forumUserBriefInfo?
-            client = NetworkUtils.getPreferredClientWithCookieJarByUser(context, userBriefInfo)
+            user = it.getSerializable(ConstUtils.PASS_BBS_USER_KEY) as User?
+            client = NetworkUtils.getPreferredClientWithCookieJarByUser(context, user)
             exploreURL = bbsInfo.base_url+"/forum.php?mod=guide&view=new"
         }
     }
@@ -85,7 +85,7 @@ class ExplorePageFragment : Fragment() {
                     if (request != null) {
                         Log.d(TAG, "load service worker url "+request.url)
                         runActivity.runOnUiThread {
-                            parseURLAndOpen(runActivity, bbsInfo, userBriefInfo, request.url.toString())
+                            parseURLAndOpen(runActivity, bbsInfo, user, request.url.toString())
                         }
                     }
                     return super.shouldInterceptRequest(request)
@@ -120,7 +120,7 @@ class ExplorePageFragment : Fragment() {
 
             binding.explorePageProgressbar.visibility = View.VISIBLE
             Log.d(TAG,"GET new URL "+url)
-            parseURLAndOpen(runActivity, bbsInfo, userBriefInfo, url)
+            parseURLAndOpen(runActivity, bbsInfo, user, url)
             super.onPageStarted(view, url, favicon)
         }
 
@@ -131,7 +131,7 @@ class ExplorePageFragment : Fragment() {
 
         override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
             Log.d(TAG,"request url "+request.url)
-            return parseURLAndOpen(runActivity, bbsInfo, userBriefInfo, request.url.toString())
+            return parseURLAndOpen(runActivity, bbsInfo, user, request.url.toString())
 
         }
 
@@ -156,7 +156,7 @@ class ExplorePageFragment : Fragment() {
 
     companion object {
         private lateinit var bbsInfo: Discuz
-        private var userBriefInfo: forumUserBriefInfo? = null
+        private var user: User? = null
         private lateinit var client: OkHttpClient
         private lateinit var binding: FragmentExplorePageBinding
         private lateinit var runActivity: Activity
@@ -171,18 +171,18 @@ class ExplorePageFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(bbsInfo: Discuz, userBriefInfo: forumUserBriefInfo?) =
+        fun newInstance(bbsInfo: Discuz, user: User?) =
                 ExplorePageFragment().apply {
                     arguments = Bundle().apply {
                         putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
-                        putSerializable(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                        putSerializable(ConstUtils.PASS_BBS_USER_KEY, user)
 
                     }
                 }
 
         fun parseURLAndOpen(context: Context,
                             bbsInfo: Discuz,
-                            userBriefInfo: forumUserBriefInfo?,
+                            user: User?,
                             url: String): Boolean {
             // simple unescape
             var url = url
@@ -236,7 +236,7 @@ class ExplorePageFragment : Fragment() {
                                 clickedForum.fid = fid
                                 intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum)
                                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
-                                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
 
                                 VibrateUtils.vibrateForClick(context)
                                 context.startActivity(intent)
@@ -271,7 +271,7 @@ class ExplorePageFragment : Fragment() {
                                 putThreadInfo.tid = tid
                                 val intent = Intent(context, ThreadActivity::class.java)
                                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
-                                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                                 intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo)
                                 intent.putExtra("FID", "0")
                                 intent.putExtra("TID", tid)
@@ -309,7 +309,7 @@ class ExplorePageFragment : Fragment() {
                                 }
                                 val intent = Intent(context, UserProfileActivity::class.java)
                                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
-                                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                                 intent.putExtra("UID", uid)
                                 VibrateUtils.vibrateForClick(context)
                                 val options = ActivityOptions.makeSceneTransitionAnimation(context as Activity)
@@ -335,7 +335,7 @@ class ExplorePageFragment : Fragment() {
                         putThreadInfo.tid = redirectTid
                         val intent = Intent(context, ThreadActivity::class.java)
                         intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
-                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                         intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo)
                         intent.putExtra("FID", 0)
                         intent.putExtra("TID", redirectTid)
@@ -355,7 +355,7 @@ class ExplorePageFragment : Fragment() {
                         putThreadInfo.tid = redirectTid
                         val intent = Intent(context, ThreadActivity::class.java)
                         intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
-                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                         intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo)
                         intent.putExtra("FID", 0)
                         intent.putExtra("TID", redirectTid)
@@ -376,7 +376,7 @@ class ExplorePageFragment : Fragment() {
                         clickedForum.fid = fid
                         intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum)
                         intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
-                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                         VibrateUtils.vibrateForClick(context)
                         context.startActivity(intent)
                         return true
@@ -390,7 +390,7 @@ class ExplorePageFragment : Fragment() {
                         }
                         val intent = Intent(context, UserProfileActivity::class.java)
                         intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
-                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                         intent.putExtra("UID", uid)
                         context.startActivity(intent)
                         return true

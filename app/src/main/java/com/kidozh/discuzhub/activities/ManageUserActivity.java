@@ -28,7 +28,7 @@ import com.kidozh.discuzhub.databinding.ActivityManageUserBinding;
 import com.kidozh.discuzhub.dialogs.ManageAdapterHelpDialogFragment;
 import com.kidozh.discuzhub.dialogs.ManageUserAdapterHelpDialogFragment;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -106,11 +106,11 @@ public class ManageUserActivity extends BaseStatusActivity
 
     void fetchUserList(){
         viewModel.loadUserList(bbsInfo.getId());
-        viewModel.bbsUserInfoLiveDataList.observe(this, new Observer<List<forumUserBriefInfo>>() {
+        viewModel.bbsUserInfoLiveDataList.observe(this, new Observer<List<User>>() {
             @Override
-            public void onChanged(List<forumUserBriefInfo> forumUserBriefInfos) {
-                userAdapter.setUserList(forumUserBriefInfos);
-                if(forumUserBriefInfos == null || forumUserBriefInfos.size() == 0){
+            public void onChanged(List<User> Users) {
+                userAdapter.setUserList(Users);
+                if(Users == null || Users.size() == 0){
                     binding.emptyUserView.setVisibility(View.VISIBLE);
                 }
                 else {
@@ -131,7 +131,7 @@ public class ManageUserActivity extends BaseStatusActivity
                 Log.d(TAG,"ADD A account "+bbsInfo);
                 if(bbsInfo !=null){
                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, (User) null);
                     ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity);
 
                     Bundle bundle = options.toBundle();
@@ -163,7 +163,7 @@ public class ManageUserActivity extends BaseStatusActivity
 
             if(bbsInfo !=null){
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, (forumUserBriefInfo) null);
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, (User) null);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
 
                 Bundle bundle = options.toBundle();
@@ -185,9 +185,9 @@ public class ManageUserActivity extends BaseStatusActivity
 
     @Override
     public void onRecyclerViewSwiped(int position, int direction) {
-        List<forumUserBriefInfo> userBriefInfos = userAdapter.getUserList();
+        List<User> userBriefInfos = userAdapter.getUserList();
         if(userBriefInfos!=null){
-            forumUserBriefInfo userBriefInfo = userBriefInfos.get(position);
+            User userBriefInfo = userBriefInfos.get(position);
             Log.d(TAG,"Get direction "+direction);
             if(direction == ItemTouchHelper.START){
                 Intent intent = new Intent(this, LoginActivity.class);
@@ -209,7 +209,7 @@ public class ManageUserActivity extends BaseStatusActivity
 
     @Override
     public void onRecyclerViewMoved(int fromPosition, int toPosition) {
-        List<forumUserBriefInfo> userBriefInfos = userAdapter.getUserList();
+        List<User> userBriefInfos = userAdapter.getUserList();
         if(userBriefInfos!=null){
             if (fromPosition < toPosition) {
                 for (int i = fromPosition; i < toPosition; i++) {
@@ -229,9 +229,9 @@ public class ManageUserActivity extends BaseStatusActivity
     }
 
     public class removeBBSUserTask extends AsyncTask<Void, Void, Void> {
-        private forumUserBriefInfo userBriefInfo;
+        private User userBriefInfo;
         private Context context;
-        public removeBBSUserTask(forumUserBriefInfo userBriefInfo, Context context){
+        public removeBBSUserTask(User userBriefInfo, Context context){
             this.userBriefInfo = userBriefInfo;
             this.context = context;
         }
@@ -250,9 +250,9 @@ public class ManageUserActivity extends BaseStatusActivity
     }
 
     public class UpdateBBSUserTask extends AsyncTask<Void, Void, Void> {
-        private List<forumUserBriefInfo> userBriefInfos;
+        private List<User> userBriefInfos;
         private Context context;
-        public UpdateBBSUserTask(List<forumUserBriefInfo> userBriefInfos){
+        public UpdateBBSUserTask(List<User> userBriefInfos){
             this.userBriefInfos = userBriefInfos;
 
         }
@@ -271,7 +271,7 @@ public class ManageUserActivity extends BaseStatusActivity
         }
     }
 
-    public void showUndoSnackbar(final forumUserBriefInfo userBriefInfo, final int position) {
+    public void showUndoSnackbar(final User userBriefInfo, final int position) {
         Log.d(TAG,"SHOW REMOVED POS "+position);
         new removeBBSUserTask(userBriefInfo,this).execute();
         Snackbar snackbar = Snackbar.make(binding.manageUserCoordinatorLayout, getString(R.string.bbs_delete_user_info_template,userBriefInfo.username,bbsInfo.site_name),
@@ -286,7 +286,7 @@ public class ManageUserActivity extends BaseStatusActivity
         snackbar.show();
     }
 
-    public void undoDelete(forumUserBriefInfo userBriefInfo, int position) {
+    public void undoDelete(User userBriefInfo, int position) {
         // insert to database
         userAdapter.getUserList().add(position,userBriefInfo);
         userAdapter.notifyDataSetChanged();
@@ -294,9 +294,9 @@ public class ManageUserActivity extends BaseStatusActivity
     }
 
     public class addBBSUserTask extends AsyncTask<Void, Void, Void> {
-        private forumUserBriefInfo userBriefInfo;
+        private User userBriefInfo;
         private Context context;
-        public addBBSUserTask(forumUserBriefInfo userBriefInfo, Context context){
+        public addBBSUserTask(User userBriefInfo, Context context){
             this.userBriefInfo = userBriefInfo;
             this.context = context;
         }

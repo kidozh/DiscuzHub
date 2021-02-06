@@ -27,7 +27,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.activities.PrivateMessageActivity;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -44,9 +44,9 @@ public class PrivateMessageAdapter extends RecyclerView.Adapter<PrivateMessageAd
     private Context context;
 
     Discuz curBBS;
-    forumUserBriefInfo userBriefInfo;
+    User userBriefInfo;
 
-    public PrivateMessageAdapter(Discuz curBBS, forumUserBriefInfo userBriefInfo){
+    public PrivateMessageAdapter(Discuz curBBS, User userBriefInfo){
         this.curBBS = curBBS;
         this.userBriefInfo = userBriefInfo;
     }

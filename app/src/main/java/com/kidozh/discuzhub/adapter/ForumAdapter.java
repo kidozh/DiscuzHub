@@ -24,7 +24,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ForumActivity;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
@@ -41,9 +41,9 @@ public class ForumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private Context mContext;
     private List<Forum> forumList = new ArrayList<>();
     private Discuz bbsInfo;
-    private forumUserBriefInfo curUser;
+    private User curUser;
 
-    ForumAdapter(Discuz Discuz, forumUserBriefInfo curUser){
+    ForumAdapter(Discuz Discuz, User curUser){
 
         this.bbsInfo = Discuz;
         this.curUser = curUser;

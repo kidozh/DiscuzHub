@@ -16,7 +16,7 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
 import java.io.InputStream;
@@ -25,11 +25,11 @@ import java.util.List;
 
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> {
 
-    List<forumUserBriefInfo> userList;
+    List<User> userList;
     private Discuz bbsInfo;
     Context context;
 
-    public List<forumUserBriefInfo> getUserList() {
+    public List<User> getUserList() {
         return userList;
     }
 
@@ -42,7 +42,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
         this.context = context;
     }
 
-    public void setUserList(List<forumUserBriefInfo> userList){
+    public void setUserList(List<User> userList){
         this.userList = userList;
         this.notifyDataSetChanged();
     }
@@ -56,7 +56,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        forumUserBriefInfo userInfo = userList.get(position);
+        User userInfo = userList.get(position);
         holder.mUserName.setText(userInfo.username);
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context));
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);

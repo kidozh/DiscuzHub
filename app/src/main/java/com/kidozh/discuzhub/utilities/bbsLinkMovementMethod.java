@@ -28,7 +28,7 @@ import com.kidozh.discuzhub.activities.ForumActivity;
 import com.kidozh.discuzhub.entities.Forum;
 import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -110,7 +110,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
 
     public static boolean parseURLAndOpen(Context context,
                                  Discuz bbsInfo,
-                                 forumUserBriefInfo userBriefInfo,
+                                 User userBriefInfo,
                                  String url) {
         // simple unescape
         url = url

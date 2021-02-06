@@ -1,7 +1,5 @@
 package com.kidozh.discuzhub.utilities;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Log;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -17,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.kidozh.discuzhub.entities.FavoriteThread;
 import com.kidozh.discuzhub.entities.Smiley;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.AddCheckResult;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
 import com.kidozh.discuzhub.results.FavoriteThreadResult;
@@ -86,48 +84,6 @@ public class bbsParseUtils {
         }
     }
 
-    public static forumUserBriefInfo parseBreifUserInfo(String s) {
-        try {
-            JSONObject jsonObject = new JSONObject(s);
-            //Log.d(TAG,"Get ->"+jsonObject.toString());
-            //List<bbsNotification> notifications = new ArrayList<>();
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            Log.d(TAG, "has auth " + variables.has("auth") + " auth " + variables.isNull("auth"));
-            if (variables.has("auth") && (!variables.isNull("auth"))) {
-                return new forumUserBriefInfo(
-                        variables.getString("auth"),
-                        variables.getString("saltkey"),
-                        variables.getString("member_uid"),
-                        variables.getString("member_username"),
-                        variables.getString("member_avatar"),
-                        Integer.parseInt(variables.getString("readaccess")),
-                        variables.getString("groupid")
-                );
-            } else {
-
-                return null;
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static Boolean isLoginSuccessful(JSONObject variables) {
-        try {
-            if (variables.has("Message") && variables.getJSONObject("Message").getString("messageval").equals("login_succeed")) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-
-    }
 
     public static UserProfileResult parseUserProfileResult(String s){
         try {

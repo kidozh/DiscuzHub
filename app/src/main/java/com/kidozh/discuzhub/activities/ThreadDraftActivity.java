@@ -26,7 +26,7 @@ import com.kidozh.discuzhub.database.ThreadDraftDatabase;
 import com.kidozh.discuzhub.databinding.ActivityViewThreadDraftBinding;
 import com.kidozh.discuzhub.entities.ThreadDraft;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.AnimationUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 
@@ -58,7 +58,7 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
     private void configureIntentData(){
         Intent intent = getIntent();
         bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
-        userBriefInfo = (forumUserBriefInfo) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
+        user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
     }
 
     private void configureActionBar(){
@@ -71,7 +71,7 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
 
     private void configureRecyclerview(){
         binding.bbsShowThreadDraftRecyclerview.setLayoutManager(new LinearLayoutManager(this));
-        threadDraftAdapter = new ThreadDraftAdapter(bbsInfo,userBriefInfo);
+        threadDraftAdapter = new ThreadDraftAdapter(bbsInfo, user);
         binding.bbsShowThreadDraftRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         binding.bbsShowThreadDraftRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,threadDraftAdapter));
         listLiveData = ThreadDraftDatabase.getInstance(this)

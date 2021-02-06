@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.entities.ErrorMessage
 import com.kidozh.discuzhub.entities.Discuz
-import com.kidozh.discuzhub.entities.forumUserBriefInfo
+import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.results.LoginResult
 import com.kidozh.discuzhub.results.SecureInfoResult
 import com.kidozh.discuzhub.services.DiscuzApiService
@@ -25,14 +25,14 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     var errorMessage: MutableLiveData<ErrorMessage?> = MutableLiveData(null)
     lateinit var bbsInfo: Discuz
     lateinit var client: OkHttpClient
-    var userBriefInfo: forumUserBriefInfo? = null
+    var user: User? = null
     lateinit var retrofit:Retrofit
     lateinit var service: DiscuzApiService
 
 
-    public fun setInfo(bbsInfo: Discuz, userBriefInfo: forumUserBriefInfo?, client: OkHttpClient){
+    public fun setInfo(bbsInfo: Discuz, user: User?, client: OkHttpClient){
         this.bbsInfo = bbsInfo
-        this.userBriefInfo = userBriefInfo
+        this.user = user
         this.client = client
         retrofit  = NetworkUtils.getRetrofitInstance(bbsInfo.base_url, client)
         service = retrofit.create(DiscuzApiService::class.java)

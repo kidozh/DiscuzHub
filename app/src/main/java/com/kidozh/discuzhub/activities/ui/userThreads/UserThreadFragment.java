@@ -21,7 +21,7 @@ import com.kidozh.discuzhub.adapter.ThreadAdapter;
 import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
 import com.kidozh.discuzhub.databinding.FragmentBbsMyThreadBinding;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.interact.BaseStatusInteract;
 import com.kidozh.discuzhub.results.DisplayThreadsResult;
@@ -50,7 +50,7 @@ public class UserThreadFragment extends Fragment {
         // Required empty public constructor
     }
 
-    private forumUserBriefInfo userBriefInfo;
+    private User userBriefInfo;
     Discuz bbsInfo;
     private OkHttpClient client;
     ThreadAdapter adapter;
@@ -58,7 +58,7 @@ public class UserThreadFragment extends Fragment {
     FragmentBbsMyThreadBinding binding;
     ContentEmptyInformationBinding emptyBinding;
 
-    public static UserThreadFragment newInstance(Discuz Discuz, forumUserBriefInfo userBriefInfo){
+    public static UserThreadFragment newInstance(Discuz Discuz, User userBriefInfo){
         UserThreadFragment fragment = new UserThreadFragment();
         Bundle args = new Bundle();
         args.putSerializable(ConstUtils.PASS_BBS_ENTITY_KEY, Discuz);
@@ -73,7 +73,7 @@ public class UserThreadFragment extends Fragment {
         if (getArguments() != null) {
             bbsInfo = (Discuz) getArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY);
             URLUtils.setBBS(bbsInfo);
-            userBriefInfo = (forumUserBriefInfo)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
+            userBriefInfo = (User)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
             client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
         }
     }

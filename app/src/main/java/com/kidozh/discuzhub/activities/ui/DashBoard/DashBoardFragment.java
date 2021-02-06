@@ -26,7 +26,7 @@ import com.kidozh.discuzhub.activities.ui.HotThreads.HotThreadsFragment;
 import com.kidozh.discuzhub.activities.ui.NewThreads.NewThreadsFragment;
 import com.kidozh.discuzhub.databinding.FragmentDashboardBinding;
 import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.forumUserBriefInfo;
+import com.kidozh.discuzhub.entities.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,7 +46,7 @@ public class DashBoardFragment extends Fragment {
     private String mParam2;
 
     private Discuz bbsInfo;
-    private forumUserBriefInfo userBriefInfo;
+    private User userBriefInfo;
 
     DashBoardViewModel viewModel;
 
@@ -61,7 +61,7 @@ public class DashBoardFragment extends Fragment {
      * @return A new instance of fragment DashBoardFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DashBoardFragment newInstance(Discuz bbsInfo, forumUserBriefInfo userBriefInfo) {
+    public static DashBoardFragment newInstance(Discuz bbsInfo, User userBriefInfo) {
         DashBoardFragment fragment = new DashBoardFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_BBS, bbsInfo);
@@ -75,7 +75,7 @@ public class DashBoardFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             bbsInfo = (Discuz) getArguments().getSerializable(ARG_BBS);
-            userBriefInfo = (forumUserBriefInfo) getArguments().getSerializable(ARG_USER);
+            userBriefInfo = (User) getArguments().getSerializable(ARG_USER);
         }
     }
 
