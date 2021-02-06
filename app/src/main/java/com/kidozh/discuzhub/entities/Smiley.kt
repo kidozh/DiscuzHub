@@ -5,21 +5,45 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.io.Serializable
 import java.util.*
 import kotlin.properties.Delegates
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 @Entity
-class Smiley(var code: String, var imageRelativePath: String, var category: Int) : Serializable {
+data class Smiley(@JsonIgnore @PrimaryKey(autoGenerate = true) var id: Int) : Serializable {
+    constructor(id: Int, code: String, image: String, i: Int) : this(id) {
+        this.code = code;
+        this.imageRelativePath = image
+    }
+
+    constructor(): this(0){
+
+    }
 
 
-    @PrimaryKey(autoGenerate = true)
-    private val id = 0
+    @JsonProperty("id")
+    var smileyId: Int = 0
+
+    lateinit var code: String
+    @JsonProperty("image")
+    lateinit var imageRelativePath: String
+
+
+//    constructor(code: String, imageRelativePath: String) : this(id) {
+//        this.code = code
+//        this.imageRelativePath = imageRelativePath
+//    }
+//
+//    constructor(code: String, image: String) {
+//        this.code = code
+//        this.imageRelativePath = imageRelativePath
+//    }
 
     @JsonIgnore
-    private var discuzId = 0
-
+    var discuzId : Int = 0
+    @JsonIgnore
     var updateAt = Date()
 
 
@@ -45,7 +69,6 @@ class Smiley(var code: String, var imageRelativePath: String, var category: Int)
         if (updateAt != other.updateAt) return false
         if (code != other.code) return false
         if (imageRelativePath != other.imageRelativePath) return false
-        if (category != other.category) return false
 
         return true
     }
@@ -55,7 +78,6 @@ class Smiley(var code: String, var imageRelativePath: String, var category: Int)
         result = 31 * result + updateAt.hashCode()
         result = 31 * result + code.hashCode()
         result = 31 * result + imageRelativePath.hashCode()
-        result = 31 * result + category
         return result
     }
 

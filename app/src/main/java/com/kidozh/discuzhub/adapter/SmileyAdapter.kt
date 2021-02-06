@@ -1,6 +1,7 @@
 package com.kidozh.discuzhub.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.database.SmileyDatabase
+import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.Smiley
 import com.kidozh.discuzhub.utilities.ListItemClickListener
 import com.kidozh.discuzhub.utilities.URLUtils
@@ -18,12 +20,12 @@ import java.util.*
  * Created by free2 on 16-5-1.
  * 表情adapter
  */
-class SmileyAdapter(private val context: Context, private val itemListener: ListItemClickListener) : RecyclerView.Adapter<SmileyAdapter.SmileyViewHolder>() {
-    var smileyInfos: List<Smiley>? = null
-        private set
+class SmileyAdapter(private val context: Context, private val discuz: Discuz, private val itemListener: ListItemClickListener) : RecyclerView.Adapter<SmileyAdapter.SmileyViewHolder>() {
+    val TAG = SmileyAdapter::class.simpleName
+    var smileys: List<Smiley>? = null
 
-    fun setSmileyInfos(smileyInfos: List<Smiley>) {
-        this.smileyInfos = smileyInfos
+    fun setsmileys(smileys: List<Smiley>) {
+        this.smileys = smileys
         notifyDataSetChanged()
     }
 
@@ -32,8 +34,8 @@ class SmileyAdapter(private val context: Context, private val itemListener: List
     }
 
     override fun onBindViewHolder(holder: SmileyViewHolder, position: Int) {
-        val smileyInfo = smileyInfos!![position]
-        Glide.with(context).load(URLUtils.getSmileyImageUrl(smileyInfo.imageRelativePath))
+        val smiley = smileys!![position]
+        Glide.with(context).load(URLUtils.getSmileyImageUrl(smiley.imageRelativePath))
                 .into(holder.image)
         holder.image.setOnClickListener { v: View? ->
             itemListener.onListItemClick(holder.image, position)
@@ -41,15 +43,26 @@ class SmileyAdapter(private val context: Context, private val itemListener: List
             Thread{
                 val database = SmileyDatabase.getInstance(context)
                 val dao = database.getDao()
-                smileyInfo.updateAt = Date()
-                dao.insert(smileyInfo)
+                Log.d(TAG,"GET simley id "+smiley.id+" CODE "+ smiley.code)
+                val savedSmiley = dao.simleybyCode(smiley.code)
+                if(savedSmiley == null){
+                    smiley.updateAt = Date()
+                    smiley.discuzId = discuz.id
+                    val insertedId = dao.insert(smiley)
+                    Log.d(TAG, "GET inserted id $insertedId")
+                }
+                else{
+                    savedSmiley.updateAt = Date()
+                    dao.update(savedSmiley)
+                }
+
             }.start()
         }
     }
 
     override fun getItemCount(): Int {
-        return if (smileyInfos != null) {
-            smileyInfos!!.size
+        return if (smileys != null) {
+            smileys!!.size
         } else {
             0
         }

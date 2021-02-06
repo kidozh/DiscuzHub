@@ -20,6 +20,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.SmileyAdapter;
 import com.kidozh.discuzhub.databinding.PopupwindowSmileyViewBinding;
+import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Smiley;
 
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class SmileyPicker extends PopupWindow {
     private OnItemClickListener listener;
     private SmileyAdapter adapter;
     private List<Smiley> allSmileyInfos = new ArrayList<>();
-    int smileyCateNum = 0;
+    private Discuz discuz;
 
     private OkHttpClient client;
 
@@ -49,55 +50,19 @@ public class SmileyPicker extends PopupWindow {
     PopupwindowSmileyViewBinding binding;
 
 
-    public SmileyPicker(Context context) {
+    public SmileyPicker(Context context, Discuz discuz) {
         super(context);
+        this.discuz = discuz;
         mContext = context;
         configureClient();
         init();
-        getSmileyInfo();
     }
 
     private void configureClient(){
         client = NetworkUtils.getPreferredClientWithCookieJar(mContext);
     }
 
-    private void getSmileyInfo(){
-        Request request = new Request.Builder()
-                .url(URLUtils.getSmileyApiUrl())
-                .build();
-        Handler mHandler = new Handler(Looper.getMainLooper());
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
 
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful()&& response.body()!=null){
-                    String s = response.body().string();
-                    List<Smiley> smileyInfoList = bbsParseUtils.parseSmiley(s);
-                    int cateNum = bbsParseUtils.parseSmileyCateNum(s);
-                    smileyCateNum = cateNum;
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            allSmileyInfos = smileyInfoList;
-                            // update the UI
-                            adapter.setSmileyInfos(smileyInfoList);
-                            // interface with tab
-                            for(int i=0;i<cateNum;i++){
-                                tab.addTab(tab.newTab().setText(String.valueOf(i+1)));
-                            }
-
-                        }
-                    });
-
-
-                }
-            }
-        });
-    }
 
 
     private void init() {
@@ -109,7 +74,7 @@ public class SmileyPicker extends PopupWindow {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 7, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter = new SmileyAdapter(mContext, (v1, position) -> {
+        adapter = new SmileyAdapter(mContext, discuz ,(v1, position) -> {
             ImageView img = (ImageView) v1;
             smileyClick(img.getDrawable(), position);
             dismiss();
@@ -162,21 +127,21 @@ public class SmileyPicker extends PopupWindow {
         List<Smiley> cateSmileyInfo = new ArrayList<>();
         for(int i=0;i<allSmileyInfos.size();i++){
             Smiley smileyInfo = allSmileyInfos.get(i);
-            if(smileyInfo.getCategory() == position){
+            if(i == position){
                 cateSmileyInfo.add(smileyInfo);
             }
         }
-        adapter.setSmileyInfos(cateSmileyInfo);
+        adapter.setSmileys(cateSmileyInfo);
     }
 
     private void smileyClick(Drawable d, int position) {
 
-        if (position > adapter.getSmileyInfos().size()) {
+        if (position > adapter.getSmileys().size()) {
             return;
         }
 
 
-        String name = adapter.getSmileyInfos().get(position).getCode();
+        String name = adapter.getSmileys().get(position).getCode();
         Log.d(TAG,"get name "+name);
 
         //String name = smileys.get(position).second;

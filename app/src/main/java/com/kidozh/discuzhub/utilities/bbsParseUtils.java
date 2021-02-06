@@ -533,7 +533,7 @@ public class bbsParseUtils {
                 JSONArray smileyCates = smileyCateList.getJSONArray(i);
                 for (int j = 0; j < smileyCates.length(); j++) {
                     JSONObject smiley = smileyCates.getJSONObject(j);
-                    SmileyList.add(new Smiley(
+                    SmileyList.add(new Smiley(0,
                             smiley.getString("code"),
                             smiley.getString("image"),
                             i

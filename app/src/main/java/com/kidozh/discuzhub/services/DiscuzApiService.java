@@ -12,6 +12,7 @@ import com.kidozh.discuzhub.results.HotForumsResult;
 import com.kidozh.discuzhub.results.LoginResult;
 import com.kidozh.discuzhub.results.NewThreadsResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
+import com.kidozh.discuzhub.results.SmileyResult;
 import com.kidozh.discuzhub.results.ThreadResult;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 
@@ -155,4 +156,7 @@ public interface DiscuzApiService {
             @Query("fids") String fids,
             @Query("start") int start
     );
+
+    @GET(DISCUZ_API_PATH+"?version=4&module=smiley")
+    Call<SmileyResult> getSmileyResult();
 }

@@ -53,7 +53,6 @@ import android.content.Context
 import android.net.Uri
 import android.os.*
 import com.kidozh.discuzhub.dialogs.ReportPostDialogFragment
-import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.GridLayoutManager
@@ -67,14 +66,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import com.google.android.material.chip.Chip
+import com.kidozh.discuzhub.adapter.SmileyViewPagerAdapter
 import com.kidozh.discuzhub.database.ViewHistoryDatabase
 import com.kidozh.discuzhub.databinding.ActivityViewThreadBinding
 import com.kidozh.discuzhub.entities.*
+import com.kidozh.discuzhub.viewModels.SmileyViewModel
 import okhttp3.*
 import java.io.IOException
 import java.io.InputStream
@@ -95,23 +94,26 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     lateinit var countAdapter: ThreadCountAdapter
     var formHash: String? = null
     var forum: Forum? = null
+    lateinit var discuz: Discuz
     var thread: Thread? = null
     private var hasLoadOnce = false
     private var notifyLoadAll = false
-    var allSmileyInfos: List<Smiley>? = null
-    var smileyCateNum = 0
     var poll: Poll? = null
     private var selectedThreadComment: Post? = null
     private var smileyPicker: SmileyPicker? = null
     private var handler: EmotionInputHandler? = null
     lateinit var threadDetailViewModel: ThreadViewModel
+    lateinit var smileyViewModel: SmileyViewModel
     private var concatAdapter: ConcatAdapter? = null
     val networkIndicatorAdapter = NetworkIndicatorAdapter()
+    lateinit var smileyViewPagerAdapter: SmileyViewPagerAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityViewThreadBinding.inflate(layoutInflater)
         setContentView(binding.root)
         threadDetailViewModel = ViewModelProvider(this).get(ThreadViewModel::class.java)
+        smileyViewModel = ViewModelProvider(this).get(SmileyViewModel::class.java)
         configureIntentData()
         initThreadStatus()
         configureClient()
@@ -130,24 +132,23 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     private fun configureIntentData() {
         val intent = intent
         forum = intent.getParcelableExtra(ConstUtils.PASS_FORUM_THREAD_KEY)
-        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
-        if(bbsInfo == null){
-            finishAfterTransition()
-            return;
-        }
+        discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
         userBriefInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY) as forumUserBriefInfo?
         thread = intent.getSerializableExtra(ConstUtils.PASS_THREAD_KEY) as Thread?
         tid = intent.getIntExtra("TID", 0)
         fid = intent.getIntExtra("FID", 0)
         subject = intent.getStringExtra("SUBJECT")
         // hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
-        URLUtils.setBBS(bbsInfo)
-        threadDetailViewModel.setBBSInfo(bbsInfo!!, userBriefInfo, forum, tid)
+        URLUtils.setBBS(discuz)
+        threadDetailViewModel.setBBSInfo(discuz, userBriefInfo, forum, tid)
+        smileyViewModel.configureDiscuz(discuz, userBriefInfo)
         if (thread != null && thread!!.subject != null) {
             val sp = Html.fromHtml(thread!!.subject)
             val spannableString = SpannableString(sp)
             binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
         }
+        smileyViewPagerAdapter = SmileyViewPagerAdapter(supportFragmentManager,
+                FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,discuz)
     }
 
     private fun initThreadStatus() {
@@ -164,8 +165,11 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
 
     private fun configureSmileyLayout() {
         handler = EmotionInputHandler(binding.bbsThreadDetailCommentEditText) { enable: Boolean, s: String? -> }
-        smileyPicker = SmileyPicker(this)
+        smileyPicker = SmileyPicker(this, discuz)
         smileyPicker!!.setListener { str: String?, a: Drawable? -> handler!!.insertSmiley(str, a) }
+
+        binding.bbsCommentSmileyTabLayout.setupWithViewPager(binding.bbsCommentSmileyViewPager)
+        binding.bbsCommentSmileyViewPager.adapter = smileyViewPagerAdapter
     }
 
     fun configureChipGroup(){
@@ -440,7 +444,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                                 getString(R.string.thread_notify_author), getColor(R.color.colorPrimaryDark))
                 )
             }
-            countAdapter!!.setThreadCountList(threadNotificationList)
+            countAdapter.setThreadCountList(threadNotificationList)
 
             // for normal rendering
             binding.bbsThreadCommentNumber.text = getString(R.string.bbs_thread_reply_number, detailedThreadInfo.replies)
@@ -464,7 +468,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                             insertViewHistory(ViewHistory(
                                     URLUtils.getDefaultAvatarUrlByUid(detailedThreadInfo.authorId),
                                     detailedThreadInfo.author,
-                                    bbsInfo!!.id,
+                                    discuz.id,
                                     detailedThreadInfo.subject,
                                     ViewHistory.VIEW_TYPE_THREAD,
                                     detailedThreadInfo.fid,
@@ -616,11 +620,30 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 }
             }
         })
+
+
+        smileyViewModel.smileyResultLiveData.observe(this, Observer { it->
+            if(it != null){
+                val smileyList = it.variables.smileyList
+                val smileyCategoryCnt = smileyList.size
+                binding.bbsCommentSmileyTabLayout.removeAllTabs()
+                for(i in 0 until smileyCategoryCnt){
+                    binding.bbsCommentSmileyTabLayout.addTab(
+                            binding.bbsCommentSmileyTabLayout.newTab().setText((i + 1).toString())
+                    )
+                }
+
+                smileyViewPagerAdapter.smileyList = smileyList
+
+
+            }
+        })
+
     }
 
     private fun getAndSaveRewriteRule(rewriteRule: Map<String, String>, key: String) {
         if (rewriteRule.containsKey(key)) {
-            UserPreferenceUtils.saveRewriteRule(this, bbsInfo!!, key, rewriteRule[key])
+            UserPreferenceUtils.saveRewriteRule(this, discuz, key, rewriteRule[key])
         }
     }
 
@@ -645,7 +668,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             val message = binding.bbsThreadDetailCommentEditText.text.toString()
             val intent = Intent(context, PublishActivity::class.java)
             intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, forum)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
             intent.putExtra(ConstUtils.PASS_POST_TYPE, ConstUtils.TYPE_POST_REPLY)
             intent.putExtra(ConstUtils.PASS_POST_MESSAGE, message)
@@ -694,7 +717,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 binding.smileyRootLayout.visibility = View.VISIBLE
 
                 // tab layout binding...
-                smileyInfo
+                smileyViewModel.getSmileyList()
             } else {
                 binding.smileyRootLayout.visibility = View.GONE
                 binding.bbsThreadDetailEmoijButton.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp))
@@ -708,51 +731,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         }
     }
 
-    // update the UI
-    // viewpager
-    // interface with tab
-    // bind tablayout and viewpager
-    private val smileyInfo: Unit
-        private get() {
-            val request = Request.Builder()
-                    .url(URLUtils.getSmileyApiUrl())
-                    .build()
-            val mHandler = Handler(Looper.getMainLooper())
-            client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    mHandler.post { Toasty.error(applicationContext, getString(R.string.network_failed), Toast.LENGTH_SHORT).show() }
-                }
 
-                @Throws(IOException::class)
-                override fun onResponse(call: Call, response: Response) {
-                    if (response.isSuccessful && response.body() != null) {
-                        val s = response.body()!!.string()
-                        val smileyInfoList = bbsParseUtils.parseSmiley(s)
-                        val cateNum = bbsParseUtils.parseSmileyCateNum(s)
-                        smileyCateNum = cateNum
-                        mHandler.post {
-                            allSmileyInfos = smileyInfoList
-                            // update the UI
-                            // viewpager
-                            // interface with tab
-                            for (i in 0 until cateNum) {
-                                binding.bbsCommentSmileyTabLayout.removeAllTabs()
-                                binding.bbsCommentSmileyTabLayout.addTab(
-                                        binding.bbsCommentSmileyTabLayout.newTab().setText((i + 1).toString())
-                                )
-                            }
-                            // bind tablayout and viewpager
-                            binding.bbsCommentSmileyTabLayout.setupWithViewPager(binding.bbsCommentSmileyViewPager)
-                            val adapter: SmileyViewPagerAdapter = SmileyViewPagerAdapter(supportFragmentManager,
-                                    FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
-                            adapter.cateNum = cateNum
-                            adapter.notifyDataSetChanged()
-                            binding.bbsCommentSmileyViewPager.adapter = adapter
-                        }
-                    }
-                }
-            })
-        }
 
     override fun onSmileyPress(str: String, a: Drawable) {
         // remove \ and /
@@ -824,7 +803,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                     val putThreadInfo = Thread()
                     putThreadInfo.tid = redirectTid
                     val intent = Intent(this, ThreadActivity::class.java)
-                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
                     intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo)
                     intent.putExtra("FID", fid)
@@ -860,7 +839,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 val putThreadInfo = Thread()
                 putThreadInfo.tid = redirectTid
                 val intent = Intent(this, ThreadActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
                 intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo)
                 intent.putExtra("FID", fid)
@@ -881,9 +860,9 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 val clickedForum = Forum()
                 clickedForum.fid = fid
                 intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
-                Log.d(TAG, "put base url " + bbsInfo!!.base_url)
+                Log.d(TAG, "put base url " + discuz.base_url)
                 VibrateUtils.vibrateForClick(this)
                 startActivity(intent)
                 return
@@ -896,21 +875,21 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                     0
                 }
                 val intent = Intent(this, UserProfileActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
                 intent.putExtra("UID", uid)
                 startActivity(intent)
                 return
             }
             val intent = Intent(this, InternalWebViewActivity::class.java)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
             intent.putExtra(ConstUtils.PASS_URL_KEY, url)
             Log.d(TAG, "Inputted URL $url")
             startActivity(intent)
         } else {
             val intent = Intent(this, InternalWebViewActivity::class.java)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
             intent.putExtra(ConstUtils.PASS_URL_KEY, url)
             Log.d(TAG, "Inputted URL $url")
@@ -950,7 +929,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         if (rewriteRules.containsKey("forum_forumdisplay")) {
                             var rewriteRule = rewriteRules["forum_forumdisplay"]
-                            UserPreferenceUtils.saveRewriteRule(context, bbsInfo!!, UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY, rewriteRule)
+                            UserPreferenceUtils.saveRewriteRule(context, discuz, UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY, rewriteRule)
                             if (rewriteRule == null || clickedURLPath == null) {
                                 parseURLAndOpen(unescapedURL)
                                 return
@@ -978,9 +957,9 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                                     val clickedForum = Forum()
                                     clickedForum.fid = fid
                                     intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum)
-                                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
-                                    Log.d(TAG, "put base url " + bbsInfo!!.base_url)
+                                    Log.d(TAG, "put base url " + discuz.base_url)
                                     VibrateUtils.vibrateForClick(context)
                                     context.startActivity(intent)
                                     return
@@ -990,7 +969,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                         if (rewriteRules.containsKey("forum_viewthread")) {
                             // match template such as t{tid}-{page}-{prevpage}
                             var rewriteRule = rewriteRules["forum_viewthread"]
-                            UserPreferenceUtils.saveRewriteRule(context, bbsInfo!!, UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY, rewriteRule)
+                            UserPreferenceUtils.saveRewriteRule(context, discuz, UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY, rewriteRule)
                             if (rewriteRule == null || clickedURLPath == null) {
                                 parseURLAndOpen(unescapedURL)
                                 return
@@ -1016,7 +995,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                                     }
                                     putThreadInfo.tid = tid
                                     val intent = Intent(context, ThreadActivity::class.java)
-                                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
                                     intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo)
                                     intent.putExtra("FID", fid)
@@ -1034,7 +1013,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                             // match template such as t{tid}-{page}-{prevpage}
                             var rewriteRule = rewriteRules["home_space"]
                             Log.d(TAG, "get home space url $rewriteRule")
-                            UserPreferenceUtils.saveRewriteRule(context, bbsInfo!!, UserPreferenceUtils.REWRITE_HOME_SPACE, rewriteRule)
+                            UserPreferenceUtils.saveRewriteRule(context, discuz, UserPreferenceUtils.REWRITE_HOME_SPACE, rewriteRule)
                             if (rewriteRule == null || clickedURLPath == null) {
                                 parseURLAndOpen(unescapedURL)
                                 return
@@ -1057,7 +1036,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                                         0
                                     }
                                     val intent = Intent(context, UserProfileActivity::class.java)
-                                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
                                     intent.putExtra("UID", uid)
                                     VibrateUtils.vibrateForClick(context)
@@ -1088,7 +1067,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                         .setMessage(getString(R.string.outlink_warn_message, clickedUri.host, baseUri.host))
                         .setNeutralButton(R.string.bbs_show_in_internal_browser) { dialog, which ->
                             val intent = Intent(context, InternalWebViewActivity::class.java)
-                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
                             intent.putExtra(ConstUtils.PASS_URL_KEY, unescapedURL)
                             Log.d(TAG, "Inputted URL $unescapedURL")
@@ -1102,7 +1081,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                         .show()
             } else {
                 val intent = Intent(this, InternalWebViewActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
                 intent.putExtra(ConstUtils.PASS_URL_KEY, unescapedURL)
                 Log.d(TAG, "Inputted URL $unescapedURL")
@@ -1147,30 +1126,6 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         }
     }
 
-    inner class SmileyViewPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
-        var cateNum = 0
-        
-        
-
-        override fun getPageTitle(position: Int): CharSequence? {
-            return (position + 1).toString()
-        }
-
-        override fun getItem(position: Int): Fragment {
-            val cateSmileyInfo: ArrayList<Smiley> = ArrayList()
-            for (i in allSmileyInfos!!.indices) {
-                val smileyInfo = allSmileyInfos!![i]
-                if (smileyInfo.category == position) {
-                    cateSmileyInfo.add(smileyInfo)
-                }
-            }
-            return SmileyFragment.newInstance(cateSmileyInfo)
-        }
-
-        override fun getCount(): Int {
-            return cateNum
-        }
-    }
 
     private fun configureRecyclerview() {
 
@@ -1180,7 +1135,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         binding.postsRecyclerview.layoutManager = linearLayoutManager
         binding.postsRecyclerview.itemAnimator = getRecyclerviewAnimation(this)
         postAdapter = PostAdapter(this,
-                bbsInfo,
+                discuz,
                 userBriefInfo,
                 threadDetailViewModel.threadStatusMutableLiveData.value)
         postAdapter!!.subject = subject
@@ -1502,7 +1457,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             return true
         } else if (id == R.id.bbs_forum_nav_personal_center) {
             val intent = Intent(this, UserProfileActivity::class.java)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
             intent.putExtra("UID", userBriefInfo!!.uid.toString())
             startActivity(intent)
@@ -1513,13 +1468,13 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             return true
         } else if (id == R.id.bbs_forum_nav_draft_box) {
             val intent = Intent(this, ThreadDraftActivity::class.java)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
             startActivity(intent, null)
             return true
         } else if (id == R.id.bbs_forum_nav_show_in_webview) {
             val intent = Intent(this, InternalWebViewActivity::class.java)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
             intent.putExtra(ConstUtils.PASS_URL_KEY, currentUrl)
             Log.d(TAG, "Inputted URL $currentUrl")
@@ -1573,7 +1528,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             val result = threadDetailViewModel.threadPostResultMutableLiveData.value
             if (result != null && result.threadPostVariables != null && result.threadPostVariables.detailedThreadInfo != null) {
                 val detailedThreadInfo = result.threadPostVariables.detailedThreadInfo
-                val favoriteThread = detailedThreadInfo.toFavoriteThread(bbsInfo!!.id, if (userBriefInfo != null) userBriefInfo!!.getUid() else 0)
+                val favoriteThread = detailedThreadInfo.toFavoriteThread(discuz.id, if (userBriefInfo != null) userBriefInfo!!.getUid() else 0)
                 // save it to the database
                 // boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
                 val favoriteThreadInDB = threadDetailViewModel.favoriteThreadLiveData.value
@@ -1594,7 +1549,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             }
         } else if (id == R.id.bbs_search) {
             val intent = Intent(this, SearchPostsActivity::class.java)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
             startActivity(intent)
             return true
@@ -1674,5 +1629,6 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     companion object {
         private val TAG = ThreadActivity::class.java.simpleName
     }
+
 }
 

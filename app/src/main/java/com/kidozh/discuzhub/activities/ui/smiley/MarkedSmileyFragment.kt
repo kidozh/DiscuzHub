@@ -17,7 +17,9 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.kidozh.discuzhub.databinding.FragmentSmileyBinding
+import com.kidozh.discuzhub.viewModels.SmileyViewModel
 import java.lang.RuntimeException
 import java.util.ArrayList
 
@@ -26,18 +28,18 @@ import java.util.ArrayList
  * Activities that contain this fragment must implement the
  * interface
  * to handle interaction events.
- * Use the [SmileyFragment.newInstance] factory method to
+ * Use the [MarkedSmileyFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class SmileyFragment : Fragment() {
-    var adapter: SmileyAdapter? = null
-    private var curSmileyInfos: ArrayList<Smiley>? = ArrayList()
-    private var mListener: OnSmileyPressedInteraction? = null
+class MarkedSmileyFragment : Fragment() {
+    lateinit var adapter: SmileyAdapter
+    private var mListener: SmileyFragment.OnSmileyPressedInteraction? = null
     private lateinit var discuz: Discuz
+    private lateinit var model : SmileyViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            curSmileyInfos = requireArguments().getSerializable(SMILEY_PARAM) as ArrayList<Smiley>
             discuz = requireArguments().getSerializable(DISCUZ_PARAM) as Discuz
         }
     }
@@ -52,6 +54,8 @@ class SmileyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        model = ViewModelProvider(requireActivity()).get(SmileyViewModel::class.java)
+        model.configureDiscuz(discuz,null)
         configureRecyclerView()
     }
 
@@ -64,29 +68,27 @@ class SmileyFragment : Fragment() {
                     val img = v1 as ImageView
                     smileyClick(img.drawable, position)
                 }))
-        adapter!!.smileys = curSmileyInfos
-        binding!!.smileyRecyclerview.adapter = getAnimatedAdapter(requireContext(), adapter!!)
+        binding!!.smileyRecyclerview.adapter = getAnimatedAdapter(requireContext(), adapter)
+        model.latestSmileyListLiveData.observe(viewLifecycleOwner,{
+            Log.d(TAG,"GET latest smiley "+it)
+            adapter.setsmileys(it)
+
+        })
+
     }
 
     private fun smileyClick(d: Drawable, position: Int) {
-        if (position > adapter!!.smileys!!.size) {
+        if (position > adapter.smileys!!.size) {
             return
         }
-        val name = adapter!!.smileys!![position].code
+        val name = adapter.smileys!![position].code
         Log.d(TAG, "get name $name")
-        onSmileyPressed(name, d)
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onSmileyPressed(str: String, a: Drawable) {
-        if (mListener != null) {
-            mListener!!.onSmileyPress(str, a)
-        }
+        mListener?.onSmileyPress(name,d)
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        mListener = if (context is OnSmileyPressedInteraction) {
+        mListener = if (context is SmileyFragment.OnSmileyPressedInteraction) {
             context
         } else {
             throw RuntimeException(context.toString()
@@ -114,11 +116,10 @@ class SmileyFragment : Fragment() {
     }
 
     companion object {
-        private val TAG = SmileyFragment::class.java.simpleName
+        private val TAG = MarkedSmileyFragment::class.java.simpleName
 
         // TODO: Rename parameter arguments, choose names that match
         // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-        private const val SMILEY_PARAM = "SMILEY"
         private const val DISCUZ_PARAM = "DISCUZ"
 
         /**
@@ -129,10 +130,9 @@ class SmileyFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(discuz: Discuz, allSmileyInfos: ArrayList<Smiley>): SmileyFragment {
-            val fragment = SmileyFragment()
+        fun newInstance(discuz: Discuz): MarkedSmileyFragment {
+            val fragment = MarkedSmileyFragment()
             val args = Bundle()
-            args.putSerializable(SMILEY_PARAM, allSmileyInfos)
             args.putSerializable(DISCUZ_PARAM, discuz)
             fragment.arguments = args
             return fragment

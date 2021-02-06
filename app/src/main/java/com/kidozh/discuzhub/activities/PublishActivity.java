@@ -672,7 +672,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
     private void configureEditTools(){
         myColorPicker = new bbsColorPicker(this);
-        smileyPicker = new SmileyPicker(this);
+        smileyPicker = new SmileyPicker(this, bbsInfo);
         smileyPicker.setListener((str,a)->{
             String decodeStr = str.replace("/","")
                     .replace("\\","");

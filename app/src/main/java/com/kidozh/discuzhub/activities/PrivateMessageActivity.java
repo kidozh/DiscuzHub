@@ -90,7 +90,7 @@ public class PrivateMessageActivity extends BaseStatusActivity implements Smiley
 
         });
 
-        smileyPicker = new SmileyPicker(this);
+        smileyPicker = new SmileyPicker(this,bbsInfo);
         smileyPicker.setListener((str,a)->{
             handler.insertSmiley(str,a);
         });
@@ -266,12 +266,12 @@ public class PrivateMessageActivity extends BaseStatusActivity implements Smiley
             ArrayList<Smiley> cateSmileyInfo = new ArrayList<>();
             for(int i=0;i<allSmileyInfos.size();i++){
                 Smiley smileyInfo = allSmileyInfos.get(i);
-                if(smileyInfo.getCategory() == position){
+                if(i == position){
                     cateSmileyInfo.add(smileyInfo);
                 }
             }
 
-            return SmileyFragment.newInstance(cateSmileyInfo);
+            return SmileyFragment.newInstance(bbsInfo,cateSmileyInfo);
 
         }
 
