@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment;
-import com.kidozh.discuzhub.adapter.bbsPrivateDetailMessageAdapter;
+import com.kidozh.discuzhub.adapter.PrivateDetailMessageAdapter;
 import com.kidozh.discuzhub.databinding.ActivityBbsPrivateMessageDetailBinding;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Smiley;
@@ -55,7 +55,7 @@ public class PrivateMessageActivity extends BaseStatusActivity implements Smiley
     Discuz bbsInfo;
 
     bbsParseUtils.privateMessage privateMessageInfo;
-    bbsPrivateDetailMessageAdapter adapter;
+    PrivateDetailMessageAdapter adapter;
     // private OkHttpClient client;
     private int globalPage = -1;
     String formHash;
@@ -121,7 +121,7 @@ public class PrivateMessageActivity extends BaseStatusActivity implements Smiley
     private void configureRecyclerview(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
         binding.bbsPrivateMessageDetailRecyclerview.setLayoutManager(linearLayoutManager);
-        adapter = new bbsPrivateDetailMessageAdapter(bbsInfo,userBriefInfo);
+        adapter = new PrivateDetailMessageAdapter(bbsInfo,userBriefInfo);
         binding.bbsPrivateMessageDetailRecyclerview.setAdapter(adapter);
     }
 

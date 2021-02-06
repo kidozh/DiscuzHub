@@ -12,17 +12,17 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.forumUsersAdapter;
+import com.kidozh.discuzhub.adapter.UsersAdapter;
 
 public class forumSwipeToDeleteUserCallback extends ItemTouchHelper.SimpleCallback {
     private String TAG = forumSwipeToDeleteUserCallback.class.getSimpleName();
-    private forumUsersAdapter forumInfoAdapter;
+    private UsersAdapter forumInfoAdapter;
     private Drawable icon;
     private final ColorDrawable background;
 
     private onSwipedInteraction listener;
 
-    public forumSwipeToDeleteUserCallback(forumUsersAdapter forumInfoAdapter){
+    public forumSwipeToDeleteUserCallback(UsersAdapter forumInfoAdapter){
         super(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         this.forumInfoAdapter = forumInfoAdapter;
         icon = ContextCompat.getDrawable(forumInfoAdapter.getContext(), R.drawable.ic_trashbin_24dp);

@@ -21,7 +21,7 @@ import android.view.View;
 import com.google.android.material.snackbar.Snackbar;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ui.bbsDetailedInformation.bbsShowInformationViewModel;
-import com.kidozh.discuzhub.adapter.forumUsersAdapter;
+import com.kidozh.discuzhub.adapter.UsersAdapter;
 import com.kidozh.discuzhub.callback.RecyclerViewItemTouchCallback;
 import com.kidozh.discuzhub.database.UserDatabase;
 import com.kidozh.discuzhub.databinding.ActivityManageUserBinding;
@@ -46,7 +46,7 @@ public class ManageUserActivity extends BaseStatusActivity
     bbsShowInformationViewModel viewModel;
 
 
-    forumUsersAdapter userAdapter;
+    UsersAdapter userAdapter;
     ActivityManageUserBinding binding;
 
 
@@ -91,7 +91,7 @@ public class ManageUserActivity extends BaseStatusActivity
     void configureRecyclerView(){
         binding.bbsUserRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         binding.bbsUserRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
-        userAdapter = new forumUsersAdapter(this, bbsInfo);
+        userAdapter = new UsersAdapter(this, bbsInfo);
         binding.bbsUserRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,userAdapter));
         // swipe to delete
         // swipe to delete support

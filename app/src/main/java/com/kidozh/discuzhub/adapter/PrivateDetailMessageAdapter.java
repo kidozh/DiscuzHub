@@ -35,14 +35,14 @@ import java.io.InputStream;
 import java.util.List;
 
 
-public class bbsPrivateDetailMessageAdapter extends RecyclerView.Adapter<bbsPrivateDetailMessageAdapter.ViewHolder> {
+public class PrivateDetailMessageAdapter extends RecyclerView.Adapter<PrivateDetailMessageAdapter.ViewHolder> {
 
     List<bbsParseUtils.privateDetailMessage> privateDetailMessageList;
     Context context;
     Discuz curBBS;
     forumUserBriefInfo userBriefInfo;
 
-    public bbsPrivateDetailMessageAdapter(Discuz curBBS, forumUserBriefInfo userBriefInfo) {
+    public PrivateDetailMessageAdapter(Discuz curBBS, forumUserBriefInfo userBriefInfo) {
         this.curBBS = curBBS;
         this.userBriefInfo = userBriefInfo;
     }

@@ -33,15 +33,15 @@ import java.util.List;
 
 import static com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClient;
 
-public class bbsUserFriendAdapter extends RecyclerView.Adapter<bbsUserFriendAdapter.ViewHolder> {
-    private final static String TAG = bbsUserFriendAdapter.class.getSimpleName();
+public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder> {
+    private final static String TAG = FriendAdapter.class.getSimpleName();
     @NonNull
     private List<UserFriendResult.UserFriend> userFriendList = new ArrayList<>();
     Context context;
     Discuz bbsInfo;
     forumUserBriefInfo curUser;
 
-    public bbsUserFriendAdapter(Discuz bbsInfo, forumUserBriefInfo curUser){
+    public FriendAdapter(Discuz bbsInfo, forumUserBriefInfo curUser){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
     }

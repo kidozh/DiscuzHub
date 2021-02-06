@@ -38,15 +38,15 @@ import java.util.List;
 
 
 
-public class bbsPrivateMessageAdapter extends RecyclerView.Adapter<bbsPrivateMessageAdapter.ViewHolder> {
-    private static final String TAG = bbsPrivateMessageAdapter.class.getSimpleName();
+public class PrivateMessageAdapter extends RecyclerView.Adapter<PrivateMessageAdapter.ViewHolder> {
+    private static final String TAG = PrivateMessageAdapter.class.getSimpleName();
     private List<bbsParseUtils.privateMessage> privateMessageList;
     private Context context;
 
     Discuz curBBS;
     forumUserBriefInfo userBriefInfo;
 
-    public bbsPrivateMessageAdapter(Discuz curBBS, forumUserBriefInfo userBriefInfo){
+    public PrivateMessageAdapter(Discuz curBBS, forumUserBriefInfo userBriefInfo){
         this.curBBS = curBBS;
         this.userBriefInfo = userBriefInfo;
     }

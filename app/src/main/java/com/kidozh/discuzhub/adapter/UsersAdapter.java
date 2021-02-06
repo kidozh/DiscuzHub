@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.util.List;
 
 
-public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.ViewHolder> {
+public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.ViewHolder> {
 
     List<forumUserBriefInfo> userList;
     private Discuz bbsInfo;
@@ -37,7 +37,7 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
         return context;
     }
 
-    public forumUsersAdapter(Context context, Discuz Discuz){
+    public UsersAdapter(Context context, Discuz Discuz){
         this.bbsInfo = Discuz;
         this.context = context;
     }
@@ -50,7 +50,7 @@ public class forumUsersAdapter extends RecyclerView.Adapter<forumUsersAdapter.Vi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new forumUsersAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_forum_user,parent,false));
+        return new UsersAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_forum_user,parent,false));
     }
 
     @Override

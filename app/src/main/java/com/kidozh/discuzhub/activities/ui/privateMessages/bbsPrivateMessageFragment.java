@@ -18,7 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.bbsPrivateMessageAdapter;
+import com.kidozh.discuzhub.adapter.PrivateMessageAdapter;
 import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding;
 import com.kidozh.discuzhub.databinding.FragmentBbsPrivateMessageBinding;
 import com.kidozh.discuzhub.entities.Discuz;
@@ -102,7 +102,7 @@ public class bbsPrivateMessageFragment extends Fragment {
     Discuz bbsInfo;
     Forum forum;
     private OkHttpClient client = new OkHttpClient();
-    bbsPrivateMessageAdapter adapter;
+    PrivateMessageAdapter adapter;
     private int globalPage = 1;
 
     private int newMessageNum = 0;
@@ -131,7 +131,7 @@ public class bbsPrivateMessageFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 linearLayoutManager.getOrientation());
         binding.recyclerview.addItemDecoration(dividerItemDecoration);
-        adapter = new bbsPrivateMessageAdapter(bbsInfo,userBriefInfo);
+        adapter = new PrivateMessageAdapter(bbsInfo,userBriefInfo);
         binding.recyclerview.setAdapter(adapter);
 
     }

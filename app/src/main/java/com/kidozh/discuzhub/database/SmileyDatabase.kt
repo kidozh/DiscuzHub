@@ -36,7 +36,7 @@ abstract class SmileyDatabase : RoomDatabase() {
 
     }
 
-    public abstract fun getDao() : SmileyDao
+    abstract fun getDao() : SmileyDao
 
 
 }

@@ -23,7 +23,7 @@ import android.view.ViewGroup;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter;
-import com.kidozh.discuzhub.adapter.bbsUserFriendAdapter;
+import com.kidozh.discuzhub.adapter.FriendAdapter;
 import com.kidozh.discuzhub.databinding.FragmentUserFriendBinding;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.Forum;
@@ -103,7 +103,7 @@ public class UserFriendFragment extends Fragment {
     private forumUserBriefInfo userBriefInfo;
     Discuz bbsInfo;
     Forum forum;
-    bbsUserFriendAdapter adapter;
+    FriendAdapter adapter;
     private UserFriendViewModel viewModel;
     ConcatAdapter concatAdapter;
     NetworkIndicatorAdapter networkIndicatorAdapter = new NetworkIndicatorAdapter();
@@ -136,7 +136,7 @@ public class UserFriendFragment extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 linearLayoutManager.getOrientation());
         binding.userFriendRecyclerview.addItemDecoration(dividerItemDecoration);
-        adapter = new bbsUserFriendAdapter(bbsInfo,userBriefInfo);
+        adapter = new FriendAdapter(bbsInfo,userBriefInfo);
         concatAdapter = new ConcatAdapter(adapter,networkIndicatorAdapter);
         binding.userFriendRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),concatAdapter));
 
