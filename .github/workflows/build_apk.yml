@@ -1,7 +1,8 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Android CI
-  on:
+name: Android Debug APK build
+
+on:
     push:
       branches: [ master ]
     pull_request:
