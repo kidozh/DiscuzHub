@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.kidozh.discuzhub.entities.ErrorMessage
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 open class BaseResult {
     @JsonProperty("Version")
     var apiVersion: Int = 4

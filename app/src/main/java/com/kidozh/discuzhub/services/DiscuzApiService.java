@@ -11,6 +11,7 @@ import com.kidozh.discuzhub.results.ForumResult;
 import com.kidozh.discuzhub.results.HotForumsResult;
 import com.kidozh.discuzhub.results.LoginResult;
 import com.kidozh.discuzhub.results.NewThreadsResult;
+import com.kidozh.discuzhub.results.PrivateMessageResult;
 import com.kidozh.discuzhub.results.SecureInfoResult;
 import com.kidozh.discuzhub.results.SmileyResult;
 import com.kidozh.discuzhub.results.ThreadResult;
@@ -159,4 +160,21 @@ public interface DiscuzApiService {
 
     @GET(DISCUZ_API_PATH+"?version=4&module=smiley")
     Call<SmileyResult> getSmileyResult();
+
+    @GET(DISCUZ_API_PATH+"?version=4&module=mypm&subop=view")
+    Call<PrivateMessageResult> getPrivateMessageListResult(
+            @Query("touid") int toUid,
+            @Query("page") String pageString
+    );
+
+    @FormUrlEncoded
+    @POST(DISCUZ_API_PATH+"?version=4&ac=pm&op=send&daterange=0&module=sendpm&pmsubmit=yes")
+    Call<ApiMessageActionResult> sendPrivateMessage(
+            @Query("plid") int plid,
+            @Query("pmid") int pmid,
+            @Field("formhash") String formHash,
+            @Field("message") String message
+    );
+
+
 }

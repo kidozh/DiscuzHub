@@ -33,8 +33,8 @@ import okhttp3.Response;
 public class PostThreadViewModel extends AndroidViewModel {
     private String TAG = PostThreadViewModel.class.getSimpleName();
 
-    Discuz curBBS;
-    User curUser;
+    Discuz discuz;
+    User user;
     String fid;
     OkHttpClient client;
 
@@ -59,8 +59,8 @@ public class PostThreadViewModel extends AndroidViewModel {
     }
 
     public void setBBSInfo(Discuz bbsInfo, User userBriefInfo, String fid){
-        this.curBBS = bbsInfo;
-        this.curUser = userBriefInfo;
+        this.discuz = bbsInfo;
+        this.user = userBriefInfo;
         this.fid = fid;
         URLUtils.setBBS(bbsInfo);
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);

@@ -28,6 +28,7 @@ import com.kidozh.discuzhub.entities.Smiley
 import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.utilities.*
 import com.kidozh.discuzhub.utilities.bbsParseUtils.privateMessage
+import com.kidozh.discuzhub.viewModels.PrivateMessageViewModel
 import com.kidozh.discuzhub.viewModels.SmileyViewModel
 import es.dmoral.toasty.Toasty
 import okhttp3.*
@@ -43,20 +44,19 @@ class PrivateMessageActivity : BaseStatusActivity(), SmileyFragment.OnSmileyPres
     // private OkHttpClient client;
     private var globalPage = -1
     var formHash: String? = null
-    var pmid: String? = null
     var hasLoadAll = false
-    var allSmileyInfos: List<Smiley>? = null
-    var smileyCateNum = 0
     private var smileyPicker: SmileyPicker? = null
     private var handler: EmotionInputHandler? = null
     lateinit var binding: ActivityBbsPrivateMessageDetailBinding
     lateinit var model : SmileyViewModel
     lateinit var smileyViewPagerAdapter : SmileyViewPagerAdapter
+    lateinit var privateMessageViewModel: PrivateMessageViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBbsPrivateMessageDetailBinding.inflate(layoutInflater)
         model = ViewModelProvider(this).get(SmileyViewModel::class.java)
+        privateMessageViewModel = ViewModelProvider(this).get(PrivateMessageViewModel::class.java)
         setContentView(binding.root)
         configureIntent()
         bindViewModel()
@@ -64,7 +64,6 @@ class PrivateMessageActivity : BaseStatusActivity(), SmileyFragment.OnSmileyPres
         configureSmileyLayout()
         configureRecyclerview()
         configureSwipeLayout()
-        getPageInfo(globalPage)
         configureSendBtn()
     }
 
@@ -77,28 +76,45 @@ class PrivateMessageActivity : BaseStatusActivity(), SmileyFragment.OnSmileyPres
     }
 
     private fun configureSwipeLayout() {
-        val mHandler = Handler(Looper.getMainLooper())
         binding.bbsPrivateMessageDetailSwipeRefreshLayout.setOnRefreshListener {
-            if (globalPage != 0) {
-                mHandler.post { getPageInfo(globalPage) }
-            } else {
+            if(privateMessageViewModel.networkState.value == ConstUtils.NETWORK_STATUS_LOADED_ALL||
+                    privateMessageViewModel.networkState.value == ConstUtils.NETWORK_STATUS_LOADING){
                 binding.bbsPrivateMessageDetailSwipeRefreshLayout.isRefreshing = false
             }
+            else{
+                privateMessageViewModel.queryPrivateMessage()
+            }
+
+
         }
     }
 
     private fun configureRecyclerview() {
-        val linearLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        val linearLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true)
         binding.bbsPrivateMessageDetailRecyclerview.layoutManager = linearLayoutManager
-        adapter = PrivateDetailMessageAdapter(bbsInfo, user)
+        adapter = PrivateDetailMessageAdapter(bbsInfo!!, user)
         binding.bbsPrivateMessageDetailRecyclerview.adapter = adapter
+        privateMessageViewModel.queryPrivateMessage()
     }
 
     private fun configureSendBtn() {
         binding.bbsPrivateMessageCommentButton.setOnClickListener {
             val sendMessage = binding.bbsPrivateMessageCommentEditText.text.toString()
             if (sendMessage.length != 0) {
-                sendPrivateMessage()
+                var message = binding.bbsPrivateMessageCommentEditText.text.toString()
+                when(charsetType){
+                    CHARSET_GBK ->{
+                        message = URLEncoder.encode(message,"GBK")
+                    }
+                    CHARSET_BIG5 ->{
+                        message = URLEncoder.encode(message,"BIG5")
+                    }
+                    else->{
+                    }
+                }
+
+                privateMessageViewModel.sendPrivateMessage(privateMessageInfo.plid, privateMessageInfo.pmid,message)
+
             } else {
                 Toasty.warning(application, getString(R.string.bbs_pm_is_required), Toast.LENGTH_SHORT).show()
             }
@@ -134,17 +150,55 @@ class PrivateMessageActivity : BaseStatusActivity(), SmileyFragment.OnSmileyPres
                 val smileyList = it.variables.smileyList
                 smileyViewPagerAdapter.smileyList = smileyList
                 binding.bbsPrivateMessageCommentSmileyTabLayout.getTabAt(0)?.icon = ContextCompat.getDrawable(this,R.drawable.ic_baseline_history_24)
+            }
+        })
 
+        privateMessageViewModel.totalPrivateMessageListMutableLiveData.observe(this, {
+            adapter.privateDetailMessageList = it
+        })
 
+        privateMessageViewModel.networkState.observe(this,{
+            when(it){
+                ConstUtils.NETWORK_STATUS_LOADING ->{
+                    binding.bbsPrivateMessageDetailSwipeRefreshLayout.isRefreshing = true
+                }
+                ConstUtils.NETWORK_STATUS_LOADED_ALL ->{
+                    binding.bbsPrivateMessageDetailSwipeRefreshLayout.isRefreshing = false
+                    binding.bbsPrivateMessageDetailSwipeRefreshLayout.isRefreshing = false
+                }
+                else->{
+                    binding.bbsPrivateMessageDetailSwipeRefreshLayout.isRefreshing = false
+                }
+            }
+        })
+
+        privateMessageViewModel.sendNetworkState.observe(this,{
+            when(it){
+                ConstUtils.NETWORK_STATUS_LOADING->binding.bbsPrivateMessageCommentButton.isEnabled = false
+                ConstUtils.NETWORK_STATUS_SUCCESSFULLY -> {
+                    binding.bbsPrivateMessageCommentButton.isEnabled = true
+                    binding.bbsPrivateMessageCommentEditText.text.clear()
+                    val message = privateMessageViewModel.errorMessageMutableLiveData.value
+                    if(message != null){
+                        Toasty.success(this,getString(R.string.discuz_api_message_template,message.key,message.content)).show()
+                    }
+
+                }
+                ConstUtils.NETWORK_STATUS_FAILED -> {
+                    binding.bbsPrivateMessageCommentButton.isEnabled = true
+                    val message = privateMessageViewModel.errorMessageMutableLiveData.value
+                    if(message != null){
+                        Toasty.error(this,getString(R.string.discuz_api_message_template,message.key,message.content)).show()
+                    }
+
+                }
+                else->{
+                    binding.bbsPrivateMessageCommentButton.isEnabled = true
+                }
             }
         })
     }
 
-    // update the UI
-    // viewpager
-    //adapter.setSmileyInfos(smileyInfoList);
-    // interface with tab
-    // bind tablayout and viewpager
     private fun querySmileyInfo(){
         model.getSmileyList()
     }
@@ -157,146 +211,27 @@ class PrivateMessageActivity : BaseStatusActivity(), SmileyFragment.OnSmileyPres
         Log.d(TAG, "Press string $decodeStr")
     }
 
-    private fun getPageInfo(page: Int) {
-        binding.bbsPrivateMessageDetailSwipeRefreshLayout.isRefreshing = true
-        val apiStr = URLUtils.getPrivatePMDetailApiUrlByTouid(privateMessageInfo!!.toUid, page)
-        val request = Request.Builder()
-                .url(apiStr)
-                .build()
-        Log.d(TAG, "get public message in page $page $apiStr")
-        val mHandler = Handler(Looper.getMainLooper())
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                hasLoadAll = true
-                mHandler.post { binding.bbsPrivateMessageDetailSwipeRefreshLayout.isRefreshing = false }
-            }
-
-            @Throws(IOException::class)
-            override fun onResponse(call: Call, response: Response) {
-                mHandler.post { binding.bbsPrivateMessageDetailSwipeRefreshLayout.isRefreshing = false }
-                if (response.isSuccessful && response.body() != null) {
-                    val s = response.body()!!.string()
-                    val privateDetailMessages = bbsParseUtils.parsePrivateDetailMessage(s, user!!.uid)
-                    val messagePerPage = bbsParseUtils.parsePrivateDetailMessagePerPage(s)
-                    formHash = bbsParseUtils.parseFormHash(s)
-                    pmid = bbsParseUtils.parsePrivateDetailMessagePmid(s)
-                    globalPage = bbsParseUtils.parsePrivateDetailMessagePage(s)
-                    globalPage -= 1
-                    if (privateDetailMessages != null) {
-                        Log.d(TAG, "get PM " + privateDetailMessages.size)
-                        mHandler.post {
-                            if (page == -1) {
-                                adapter.setPrivateDetailMessageList(privateDetailMessages)
-                                //binding.bbsPrivateMessageDetailRecyclerview.scrollToPosition(privateDetailMessages.size()-1);
-                            } else {
-                                adapter.addPrivateDetailMessageList(privateDetailMessages)
-                                //binding.bbsPrivateMessageDetailRecyclerview.scrollToPosition(privateDetailMessages.size()-1);
-                            }
-                        }
-                    } else {
-                        hasLoadAll = true
-                    }
-                } else {
-                    hasLoadAll = false
-                }
-            }
-        })
-    }
-
     // parse client
     fun configureIntent(){
         val intent = intent
-        val bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
-        this.bbsInfo = bbsInfo
+        val discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
+        this.bbsInfo = discuz
         user = intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY) as User?
-        model.configureDiscuz(bbsInfo,user)
+        model.configureDiscuz(discuz,user)
         smileyViewPagerAdapter = SmileyViewPagerAdapter(supportFragmentManager,
-                FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,bbsInfo,this)
+                FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,discuz,this)
         privateMessageInfo = intent.getSerializableExtra(ConstUtils.PASS_PRIVATE_MESSAGE_KEY) as privateMessage
         // parse client
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(this, user)
-        URLUtils.setBBS(bbsInfo)
+        privateMessageViewModel.configure(discuz,user, privateMessageInfo.toUid)
+        URLUtils.setBBS(discuz)
         if (supportActionBar != null) {
             supportActionBar!!.setTitle(R.string.bbs_notification_my_pm)
-            supportActionBar!!.subtitle = privateMessageInfo!!.toUsername
+            supportActionBar!!.subtitle = privateMessageInfo.toUsername
         }
+
     }
 
-
-    private fun sendPrivateMessage() {
-        val builder = FormBody.Builder()
-                .add("formhash", formHash)
-                .add("topmuid", privateMessageInfo!!.toUid.toString())
-        when (charsetType) {
-            CHARSET_GBK -> {
-                try {
-                    builder.addEncoded("message", URLEncoder.encode(binding.bbsPrivateMessageCommentEditText.text.toString(), "GBK"))
-
-                } catch (e: UnsupportedEncodingException) {
-                    e.printStackTrace()
-                    builder.add("message", binding.bbsPrivateMessageCommentEditText.text.toString())
-                }
-            }
-            CHARSET_BIG5 -> {
-                try {
-                    builder.addEncoded("message", URLEncoder.encode(binding.bbsPrivateMessageCommentEditText.text.toString(), "BIG5"))
-
-                } catch (e: UnsupportedEncodingException) {
-                    e.printStackTrace()
-                    builder.add("message", binding.bbsPrivateMessageCommentEditText.text.toString())
-                }
-            }
-            else -> {
-                builder.add("message", binding.bbsPrivateMessageCommentEditText.text.toString())
-            }
-        }
-        val formBody = builder.build()
-        val apiStr = URLUtils.getSendPMApiUrl(privateMessageInfo!!.plid, pmid!!.toInt())
-        Log.d(TAG, "Send PM " + apiStr + " topmuid " + privateMessageInfo!!.toUid + " formhash " + formHash)
-        val request = Request.Builder()
-                .url(apiStr)
-                .post(formBody)
-                .build()
-        binding.bbsPrivateMessageCommentButton.isEnabled = false
-        val mHandler = Handler(Looper.getMainLooper())
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                mHandler.post {
-                    binding.bbsPrivateMessageCommentEditText.setText("")
-                    Toasty.error(applicationContext,
-                            getString(R.string.network_failed),
-                            Toast.LENGTH_SHORT
-                    ).show()
-                    binding.bbsPrivateMessageCommentButton.isEnabled = true
-                }
-            }
-
-            @Throws(IOException::class)
-            override fun onResponse(call: Call, response: Response) {
-                mHandler.post {
-                    binding.bbsPrivateMessageCommentEditText.setText("")
-                    binding.bbsPrivateMessageCommentButton.isEnabled = true
-                }
-                if (response.isSuccessful && response.body() != null) {
-                    val s = response.body()!!.string()
-                    Log.d(TAG, "Recv PM $s")
-                    globalPage = -1
-                    // need to post a delay to get information
-                    mHandler.postDelayed({
-                        hasLoadAll = false
-                        getPageInfo(globalPage)
-                    }, 500)
-                } else {
-                    mHandler.post {
-                        Toasty.error(applicationContext,
-                                getString(R.string.network_failed),
-                                Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
-        })
-    }
 
     private fun configureActionBar() {
         setSupportActionBar(binding.toolbar)

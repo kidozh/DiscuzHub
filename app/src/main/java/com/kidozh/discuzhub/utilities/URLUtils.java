@@ -209,28 +209,10 @@ public class URLUtils {
         return BASE_URL+"/api/mobile/index.php?version=4&module=mypm&page="+page ;
     }
 
-    public static String getPrivatePMDetailApiUrlByTouid(int toUid,int page){
-        if(page==-1){
-            return BASE_URL + "/api/mobile/index.php?version=4&module=mypm&subop=view&touid="+toUid;
-        }
-        else {
-            return BASE_URL + "/api/mobile/index.php?version=4&module=mypm&subop=view&touid="+toUid+"&page="+page;
-        }
-
-    }
-
-    public static String getSendPMApiUrl(int plid,int pmid){
-        return BASE_URL+"/api/mobile/index.php?version=4&ac=pm&op=send&daterange=0&module=sendpm&plid="+plid+"&pmid="+pmid+"&handlekey=pmsend&pmsubmit=yes&inajax=1";
-    }
-
     public static String getFriendApiUrlByUid(int uid,int page){
         return BASE_URL+"/api/mobile/index.php?version=4&module=friend&uid="+uid+"&page="+page;
     }
 
-
-    public static String getSmileyApiUrl() {
-        return BASE_URL + "/api/mobile/index.php?version=4&module=smiley";
-    }
 
     public static String getSmileyImageUrl(String path) {
         return BASE_URL + "/static/image/smiley/"+path;
