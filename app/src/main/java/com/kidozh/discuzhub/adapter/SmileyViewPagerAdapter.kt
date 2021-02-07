@@ -1,14 +1,22 @@
 package com.kidozh.discuzhub.adapter
 
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ImageSpan
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.activities.ui.smiley.MarkedSmileyFragment
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment
 import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.Smiley
 
-class SmileyViewPagerAdapter(fm: FragmentManager, behavior: Int, val discuz: Discuz) : FragmentStatePagerAdapter(fm, behavior) {
+
+class SmileyViewPagerAdapter(val fm: FragmentManager, behavior: Int, val discuz: Discuz, val context: Context) : FragmentStatePagerAdapter(fm, behavior) {
     var smileyList: List<List<Smiley>> = ArrayList()
         set(value) {
             field = value
@@ -16,15 +24,13 @@ class SmileyViewPagerAdapter(fm: FragmentManager, behavior: Int, val discuz: Dis
 
         }
 
-    var latestSmileyList : List<Smiley> = ArrayList()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
+
 
     override fun getPageTitle(position: Int): CharSequence {
         if(position == 0){
-            return "HISTRO"
+
+            return ""
+
         }
         else{
             return position.toString()
@@ -37,9 +43,9 @@ class SmileyViewPagerAdapter(fm: FragmentManager, behavior: Int, val discuz: Dis
             return MarkedSmileyFragment.newInstance(discuz)
         }
         else{
-            val cateSmileyInfo = smileyList[position-1] as ArrayList<Smiley>
+            val cateSmileyInfo = smileyList[position - 1] as ArrayList<Smiley>
 
-            return SmileyFragment.newInstance(discuz,cateSmileyInfo)
+            return SmileyFragment.newInstance(discuz, cateSmileyInfo)
         }
 
     }

@@ -148,7 +148,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
         }
         smileyViewPagerAdapter = SmileyViewPagerAdapter(supportFragmentManager,
-                FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,discuz)
+                FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,discuz,this)
     }
 
     private fun initThreadStatus() {
@@ -636,7 +636,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 }
 
                 smileyViewPagerAdapter.smileyList = smileyList
-
+                binding.bbsCommentSmileyTabLayout.getTabAt(0)?.icon = ContextCompat.getDrawable(this,R.drawable.ic_baseline_history_24)
 
             }
         })
