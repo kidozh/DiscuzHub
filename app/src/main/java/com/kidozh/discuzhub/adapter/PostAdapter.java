@@ -355,7 +355,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
         });
 
         // advance option
-        if(bbsInfo.getAPIVersion() > 4){
+        if(bbsInfo.getApiVersion() > 4){
             holder.mPostAdvanceOptionImageView.setVisibility(View.VISIBLE);
             // bind option
             holder.mPostAdvanceOptionImageView.setOnClickListener(v -> {

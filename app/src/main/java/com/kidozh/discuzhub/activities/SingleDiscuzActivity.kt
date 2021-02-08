@@ -113,8 +113,8 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                         AlertDialog.Builder(this)
                                 .setTitle(getString(R.string.bbs_register_an_account, bbs.site_name))
                                 .setMessage(R.string.bbs_register_account_notification)
-                                .setPositiveButton(android.R.string.ok) { dialog, which ->
-                                    val uri = Uri.parse(bbs.getRegisterURL())
+                                .setPositiveButton(android.R.string.ok) { _, _ ->
+                                    val uri = Uri.parse(bbs.registerURL)
                                     val intent = Intent(Intent.ACTION_VIEW, uri)
                                     startActivity(intent)
                                 }
@@ -358,7 +358,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                 } else {
                     Toasty.info(this, getString(R.string.no_bbs_found_in_db), Toast.LENGTH_SHORT).show()
                 }
-                true
+                return true
             }
             R.id.bbs_settings -> {
                 val intent = Intent(this, SettingsActivity::class.java)

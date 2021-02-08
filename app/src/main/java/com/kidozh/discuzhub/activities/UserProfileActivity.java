@@ -89,7 +89,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
         // making it circle
 
 
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(this,bbsInfo.useSafeClient));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(this));
         Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
         int avatar_num = userId % 16;
@@ -186,7 +186,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
 
                     // for avatar rendering
-                    OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(getApplication(),bbsInfo.useSafeClient));
+                    OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(getApplication()));
                     Glide.get(getApplicationContext()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
                     int uid = userProfileResult.userProfileVariableResult.space.uid;
                     int avatar_num = uid % 16;

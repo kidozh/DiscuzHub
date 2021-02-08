@@ -60,8 +60,8 @@
     </string-array>
 
     <string name="preference_title_display_mode">Display mode</string>
-    <string name="preference_key_display_mode">preference_key_display_mode</string>
-    <string name="preference_default_display_mode">MODE_NIGHT_FOLLOW_SYSTEM</string>
+    <string name="preference_key_display_mode" translatable="false">preference_key_display_mode</string>
+    <string name="preference_default_display_mode" translatable="false">MODE_NIGHT_FOLLOW_SYSTEM</string>
     <string name="add_a_forum_help_text">Base URL means the basic url where one forum may serve.</string>
     <string name="protocol_http_setting">Set HTTP protocol and it\'s not safe.</string>
     <string name="protocol_https_setting">Set safer HTTPS protocol.</string>
@@ -973,6 +973,8 @@
     <string name="dashboard_explore_fragment">Web Page</string>
     <string name="explore_in_page_warn_description">We know that some discuz! forums enable PWA approach and it may stop webview from loading url. If the page can\'t navigate to proper inner page, please use PC versioned page!</string>
     <string name="explore_in_page_warn_title">The page may not navigate automatically</string>
+    <string name="check_result_incorrect_key" translatable="false">check_result_incorrect</string>
+    <string name="check_result_incorrect_description">Get an unexpected result, the api may not work properly.</string>
 
 
 </resources>

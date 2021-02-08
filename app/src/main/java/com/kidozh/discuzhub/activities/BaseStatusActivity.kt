@@ -8,7 +8,7 @@ import com.kidozh.discuzhub.results.BaseResult
 import com.kidozh.discuzhub.results.VariableResults
 import android.os.Bundle
 import com.kidozh.discuzhub.R
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatDelegate
 import com.kidozh.discuzhub.utilities.ThemeUtils
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils
@@ -46,7 +46,7 @@ open class BaseStatusActivity : AppCompatActivity() {
     // follow UTF8 default
     val charsetType: Int
         get() {
-            if (baseVariableResult != null && baseVariableResult!!.Charset != null) {
+            if (baseVariableResult != null) {
                 if (baseVariableResult!!.Charset == "GBK") {
                     return CHARSET_GBK
                 } else if (baseVariableResult!!.Charset == "BIG5") {

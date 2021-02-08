@@ -14,7 +14,7 @@ import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
 
-@Database(entities = {Discuz.class},version = 4, exportSchema = true)
+@Database(entities = {Discuz.class},version = 5, exportSchema = true)
 @TypeConverters(DateConverter.class)
 public abstract class DiscuzDatabase extends RoomDatabase {
     private static final String DB_NAME = "bbsInformation.db";

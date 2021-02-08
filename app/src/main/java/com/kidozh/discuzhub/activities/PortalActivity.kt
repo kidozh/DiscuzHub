@@ -168,9 +168,12 @@ class PortalActivity : AppCompatActivity() {
                 // activate click
                 binding.loadingCardview.isClickable = true
                 binding.loadingCardview.setOnClickListener { v->
-                    val bbs = checkResult.toBBSInformation(baseURL)
-                    val fragment = DiscuzDetailDialogFragment(bbs)
-                    fragment.show(supportFragmentManager,DiscuzDetailDialogFragment::class.simpleName)
+                    if(baseURL != null){
+                        val bbs = checkResult.toBBSInformation(baseURL)
+                        val fragment = DiscuzDetailDialogFragment(bbs)
+                        fragment.show(supportFragmentManager,DiscuzDetailDialogFragment::class.simpleName)
+                    }
+
                 }
 
             } else {
@@ -200,7 +203,7 @@ class PortalActivity : AppCompatActivity() {
             val dao = DiscuzDatabase.getInstance(this).forumInformationDao
 
             val bbsEntity = model.checkResultLiveData.value
-            if(bbsEntity!=null) {
+            if(bbsEntity!=null && baseURL != null) {
                 // add them to database
                 Thread {
                     dao.insert(bbsEntity.toBBSInformation(baseURL))

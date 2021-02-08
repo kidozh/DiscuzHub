@@ -36,8 +36,6 @@ public class UrlSuggestionAdapter extends RecyclerView.Adapter<UrlSuggestionAdap
     private List<SuggestURLInfo> suggestURLInfoList = new ArrayList<>();
     private Context context;
 
-    private boolean useSafeClient = true;
-
     private OnClickSuggestionListener mListener;
 
     public interface OnClickSuggestionListener{
@@ -51,11 +49,6 @@ public class UrlSuggestionAdapter extends RecyclerView.Adapter<UrlSuggestionAdap
         notifyItemRangeRemoved(0,oldSize);
         this.suggestURLInfoList.addAll(suggestURLInfoList);
         notifyItemRangeInserted(0,suggestURLInfoList.size());
-    }
-
-    public void setUseSafeClient(boolean useSafeClient) {
-        this.useSafeClient = useSafeClient;
-        notifyDataSetChanged();
     }
 
     @NonNull
@@ -88,7 +81,7 @@ public class UrlSuggestionAdapter extends RecyclerView.Adapter<UrlSuggestionAdap
         if(!suggestURLInfo.valid){
             holder.checkProgressbar.setVisibility(View.VISIBLE);
             holder.suggestionOKIcon.setVisibility(View.GONE);
-            queryBBSInfo(suggestURLInfo.url,useSafeClient, holder);
+            queryBBSInfo(suggestURLInfo.url, holder);
         }
         else {
             holder.checkProgressbar.setVisibility(View.GONE);
@@ -110,13 +103,13 @@ public class UrlSuggestionAdapter extends RecyclerView.Adapter<UrlSuggestionAdap
 
     }
 
-    private void queryBBSInfo(String base_url, Boolean useSafeClient, IntroSuggestionViewHolder holder){
+    private void queryBBSInfo(String base_url, IntroSuggestionViewHolder holder){
         holder.checkProgressbar.setVisibility(View.VISIBLE);
         holder.suggestionOKIcon.setVisibility(View.GONE);
         URLUtils.setBaseUrl(base_url);
         String query_url = URLUtils.getBBSForumInformationUrl();
         // judge the url
-        OkHttpClient client = NetworkUtils.getPreferredClient(context,useSafeClient);
+        OkHttpClient client = NetworkUtils.getPreferredClient(context);
         Request request;
         try{
             URL url = new URL(query_url);
@@ -157,7 +150,7 @@ public class UrlSuggestionAdapter extends RecyclerView.Adapter<UrlSuggestionAdap
                     s = response.body().string();
                     Log.d(TAG,"check response " +s);
                     AddCheckResult checkResult = bbsParseUtils.parseCheckInfoResult(s);
-                    if(checkResult != null && checkResult.siteName!=null){
+                    if(checkResult != null && !checkResult.getSiteName().equals("")){
                         holder.checkProgressbar.post(new Runnable() {
                             @Override
                             public void run() {

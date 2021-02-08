@@ -56,7 +56,7 @@ public class ManageBBSAdapter extends PagedListAdapter<Discuz, ManageBBSAdapter.
             holder.binding.itemBbsHttps.setVisibility(View.GONE);
         }
 
-        if(forumInfo.getAPIVersion() > 4){
+        if(forumInfo.getApiVersion() > 4){
             holder.binding.itemBbsApiVersion.setVisibility(View.VISIBLE);
         }
         else {
