@@ -37,7 +37,7 @@ class SmileyAdapter(private val context: Context, private val discuz: Discuz, pr
         val smiley = smileys!![position]
         Glide.with(context).load(URLUtils.getSmileyImageUrl(smiley.imageRelativePath))
                 .into(holder.image)
-        holder.image.setOnClickListener { v: View? ->
+        holder.image.setOnClickListener {
             itemListener.onListItemClick(holder.image, position)
             // insert smiley into database
             Thread{

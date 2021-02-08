@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
@@ -43,14 +44,15 @@ class PrivateDetailMessageAdapter(var curBBS: Discuz, var user: User?) : Recycle
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val curPrivateDetailMessage = privateDetailMessageList[position]
-        val sp = Html.fromHtml(curPrivateDetailMessage.message,
+
+        val sp = HtmlCompat.fromHtml(curPrivateDetailMessage.message,HtmlCompat.FROM_HTML_MODE_LEGACY,
                 MyImageGetter(context, holder.privateMessageDetailMessage, holder.privateMessageDetailMessage, true),
                 null)
 
         val spannableString = SpannableString(sp)
         holder.privateMessageDetailMessage.setText(spannableString, TextView.BufferType.SPANNABLE)
         holder.privateMessageDetailMessage.movementMethod = LinkMovementMethod.getInstance()
-        val timeSp = Html.fromHtml(curPrivateDetailMessage.dateString)
+        val timeSp = HtmlCompat.fromHtml(curPrivateDetailMessage.dateString,HtmlCompat.FROM_HTML_MODE_LEGACY)
         holder.privateMessageDetailTime.text = SpannableString(timeSp)
         val factory = OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context))
         Glide.get(context).registry.replace(GlideUrl::class.java, InputStream::class.java, factory)

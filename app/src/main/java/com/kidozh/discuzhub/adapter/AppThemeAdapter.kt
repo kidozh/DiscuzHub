@@ -58,7 +58,7 @@ class AppThemeAdapter: RecyclerView.Adapter<AppThemeAdapter.AppThemeViewHolder>(
         holder.binding.themeName.setText(appTheme.nameResource)
 
         if(listener != null){
-            holder.binding.themeGradientCard.setOnClickListener { v->
+            holder.binding.themeGradientCard.setOnClickListener {
                 listener!!.onThemeCardSelected(position)
             }
         }

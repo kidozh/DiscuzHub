@@ -11,7 +11,7 @@ import com.kidozh.discuzhub.daos.FavoriteForumDao;
 import com.kidozh.discuzhub.entities.FavoriteForum;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
-@Database(entities = {FavoriteForum.class}, version = 1, exportSchema = true)
+@Database(entities = {FavoriteForum.class}, version = 2, exportSchema = true)
 @TypeConverters(DateConverter.class)
 public abstract class FavoriteForumDatabase extends RoomDatabase {
     private static final String DB_NAME = "FavoriteForum.db";

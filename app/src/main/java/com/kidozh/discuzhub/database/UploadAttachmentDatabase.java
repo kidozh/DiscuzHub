@@ -11,7 +11,7 @@ import com.kidozh.discuzhub.daos.ThreadDraftDao;
 import com.kidozh.discuzhub.entities.UploadAttachment;
 import com.kidozh.discuzhub.entities.ThreadDraft;
 
-@Database(entities = {UploadAttachment.class, ThreadDraft.class}, version = 1, exportSchema = true)
+@Database(entities = {UploadAttachment.class, ThreadDraft.class}, version = 2, exportSchema = true)
 public abstract class UploadAttachmentDatabase extends RoomDatabase {
     private static final String DB_NAME = "UploadAttachment.db";
     private static volatile UploadAttachmentDatabase instance;
@@ -28,7 +28,9 @@ public abstract class UploadAttachmentDatabase extends RoomDatabase {
                 context,
                 UploadAttachmentDatabase.class,
                 DB_NAME
-        ).build();
+        )
+                .fallbackToDestructiveMigration()
+                .build();
     }
 
     public abstract UploadAttachmentDao getUploadAttachmentDao();

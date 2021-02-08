@@ -33,7 +33,7 @@ class AboutAppActivity : BaseStatusActivity() {
         val buildType = BuildConfig.BUILD_TYPE
         Log.d(TAG,"Build type "+buildType)
 
-        if(buildType.contentEquals("release")){
+        if(buildType.contentEquals("release") || buildType.contentEquals("debug")){
             return
         }
 
@@ -62,7 +62,7 @@ class AboutAppActivity : BaseStatusActivity() {
                 .into(binding.aboutAppLogo)
         binding.aboutFootNote.setText(R.string.discuz_single_copyright)
         binding.checkLoadingText.setText(getString(R.string.check_discuz_successfully, bbs.site_name))
-        binding.discuzInfoCardview.setOnClickListener { v->
+        binding.discuzInfoCardview.setOnClickListener {
             val fragment = DiscuzDetailDialogFragment(bbs)
             fragment.show(supportFragmentManager, DiscuzDetailDialogFragment::class.simpleName)
         }

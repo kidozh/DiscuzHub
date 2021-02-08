@@ -56,7 +56,7 @@ class ExplorePageFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
-        runActivity = requireActivity() as Activity
+        runActivity = requireActivity()
         binding = FragmentExplorePageBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -225,8 +225,7 @@ class ExplorePageFragment : Fragment() {
                             val pageStr = matcher.group("page")
                             // handle it
                             if (fidStr != null) {
-                                var fid = 0
-                                fid = try {
+                                val fid =  try {
                                     fidStr.toInt()
                                 } catch (e: Exception) {
                                     0
@@ -262,8 +261,7 @@ class ExplorePageFragment : Fragment() {
                             // handle it
                             if (tidStr != null) {
                                 val putThreadInfo = Thread()
-                                var tid = 0
-                                tid = try {
+                                val tid = try {
                                     tidStr.toInt()
                                 } catch (e: Exception) {
                                     0
@@ -325,10 +323,8 @@ class ExplorePageFragment : Fragment() {
                         val pidString = uri.getQueryParameter("pid")
                         val tidString = uri.getQueryParameter("ptid")
                         var redirectTid = 0
-                        var redirectPid = 0
                         try {
                             redirectTid = tidString!!.toInt()
-                            redirectPid = pidString!!.toInt()
                         } catch (e: Exception) {
                         }
                         val putThreadInfo = Thread()
@@ -365,8 +361,7 @@ class ExplorePageFragment : Fragment() {
                         return true
                     } else if (uri.getQueryParameter("mod") != null && uri.getQueryParameter("mod") == "forumdisplay" && uri.getQueryParameter("fid") != null) {
                         val fidString = uri.getQueryParameter("fid")
-                        var fid = 0
-                        fid = try {
+                        val fid: Int = try {
                             fidString!!.toInt()
                         } catch (e: Exception) {
                             0
@@ -382,8 +377,7 @@ class ExplorePageFragment : Fragment() {
                         return true
                     } else if (uri.getQueryParameter("mod") != null && uri.getQueryParameter("mod") == "space" && uri.getQueryParameter("uid") != null) {
                         val uidStr = uri.getQueryParameter("uid")
-                        var uid = 0
-                        uid = try {
+                        val uid: Int = try {
                             uidStr!!.toInt()
                         } catch (e: Exception) {
                             0

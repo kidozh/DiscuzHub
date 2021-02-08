@@ -1163,7 +1163,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                                 notifyLoadAll = true
                                 threadDetailViewModel.notifyLoadAll.postValue(true)
                                 Toasty.success(application,
-                                        getString(R.string.all_posts_loaded_template, postAdapter!!.itemCount),
+                                        getString(R.string.all_posts_loaded_template, postAdapter.itemCount),
                                         Toast.LENGTH_LONG).show()
                             }
                         } else {
@@ -1180,16 +1180,12 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             binding.bbsThreadInteractiveRecyclerview.setHasFixedSize(true)
             binding.bbsThreadInteractiveRecyclerview.itemAnimator = getRecyclerviewAnimation(this)
             binding.bbsThreadInteractiveRecyclerview.layoutManager = GridLayoutManager(this, 5)
-            binding.bbsThreadInteractiveRecyclerview.adapter = getAnimatedAdapter(this, countAdapter!!)
+            binding.bbsThreadInteractiveRecyclerview.adapter = getAnimatedAdapter(this, countAdapter)
         }
     }
 
     private fun needCaptcha(): Boolean {
-        return if (threadDetailViewModel == null || threadDetailViewModel.secureInfoResultMutableLiveData.value == null || threadDetailViewModel.secureInfoResultMutableLiveData.value!!.secureVariables == null) {
-            false
-        } else {
-            true
-        }
+        return !(threadDetailViewModel.secureInfoResultMutableLiveData.value == null || threadDetailViewModel.secureInfoResultMutableLiveData.value!!.secureVariables == null)
     }
 
     private fun postCommentToThread(message: String) {
@@ -1437,7 +1433,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 LinearLayout.LayoutParams.MATCH_PARENT)
         input.layoutParams = lp
         favoriteDialog.setView(input)
-        favoriteDialog.setPositiveButton(android.R.string.ok) { dialog, which ->
+        favoriteDialog.setPositiveButton(android.R.string.ok) { _, _ ->
             var description: String? = input.text.toString()
             description = if (TextUtils.isEmpty(description)) "" else description
             threadDetailViewModel.favoriteThread(favoriteThread,true,description)
@@ -1447,7 +1443,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         var viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value
-        var currentUrl = ""
+        val currentUrl: String
         currentUrl = if (viewThreadQueryStatus == null) {
             URLUtils.getViewThreadUrl(tid, "1")
         } else {
@@ -1492,22 +1488,20 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value
             Log.d(TAG, "You press sort btn " + viewThreadQueryStatus!!.datelineAscend)
             // bbsThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
-            if (viewThreadQueryStatus != null) {
-                viewThreadQueryStatus.datelineAscend = !viewThreadQueryStatus.datelineAscend
-                Log.d(TAG, "Changed Ascend mode " + viewThreadQueryStatus.datelineAscend)
-                Log.d(TAG, "Apply Ascend mode " + threadDetailViewModel.threadStatusMutableLiveData.value!!.datelineAscend)
-                reloadThePage(viewThreadQueryStatus)
-                Log.d(TAG, "After reload Ascend mode " + threadDetailViewModel.threadStatusMutableLiveData.value!!.datelineAscend)
-                if (viewThreadQueryStatus.datelineAscend) {
-                    Toasty.success(context, getString(R.string.bbs_thread_status_ascend), Toast.LENGTH_SHORT).show()
-                } else {
-                    Toasty.success(context, getString(R.string.bbs_thread_status_descend), Toast.LENGTH_SHORT).show()
-                }
-                // reload the parameters
-                Log.d(TAG, "dateline ascend " + viewThreadQueryStatus.datelineAscend)
-                threadDetailViewModel.getThreadDetail(viewThreadQueryStatus)
-                invalidateOptionsMenu()
+            viewThreadQueryStatus.datelineAscend = !viewThreadQueryStatus.datelineAscend
+            Log.d(TAG, "Changed Ascend mode " + viewThreadQueryStatus.datelineAscend)
+            Log.d(TAG, "Apply Ascend mode " + threadDetailViewModel.threadStatusMutableLiveData.value!!.datelineAscend)
+            reloadThePage(viewThreadQueryStatus)
+            Log.d(TAG, "After reload Ascend mode " + threadDetailViewModel.threadStatusMutableLiveData.value!!.datelineAscend)
+            if (viewThreadQueryStatus.datelineAscend) {
+                Toasty.success(context, getString(R.string.bbs_thread_status_ascend), Toast.LENGTH_SHORT).show()
+            } else {
+                Toasty.success(context, getString(R.string.bbs_thread_status_descend), Toast.LENGTH_SHORT).show()
             }
+            // reload the parameters
+            Log.d(TAG, "dateline ascend " + viewThreadQueryStatus.datelineAscend)
+            threadDetailViewModel.getThreadDetail(viewThreadQueryStatus)
+            invalidateOptionsMenu()
             return true
         } else if (id == R.id.bbs_share) {
             val result = threadDetailViewModel.threadPostResultMutableLiveData.value

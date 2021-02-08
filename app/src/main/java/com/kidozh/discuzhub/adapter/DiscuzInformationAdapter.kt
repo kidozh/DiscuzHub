@@ -35,7 +35,7 @@ class DiscuzInformationAdapter(private val bbsInformationList: List<DiscuzInfoIt
     }
 
     override fun getItemCount(): Int {
-        return bbsInformationList.size ?: 0
+        return bbsInformationList.size
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

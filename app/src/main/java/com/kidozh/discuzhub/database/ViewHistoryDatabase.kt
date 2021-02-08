@@ -9,7 +9,7 @@ import com.kidozh.discuzhub.daos.ViewHistoryDao
 import com.kidozh.discuzhub.entities.ViewHistory
 import com.kidozh.discuzhub.utilities.DateConverter
 
-@Database(entities = [ViewHistory::class], version = 2, exportSchema = true)
+@Database(entities = [ViewHistory::class], version = 3, exportSchema = true)
 @TypeConverters(DateConverter::class)
 abstract class ViewHistoryDatabase : RoomDatabase() {
     abstract val dao: ViewHistoryDao

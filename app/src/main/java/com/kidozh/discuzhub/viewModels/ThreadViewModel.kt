@@ -346,7 +346,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                 && favoriteThread.userId != 0
                 && UserPreferenceUtils.syncInformation(getApplication())) {
             if (favorite) {
-                favoriteThreadActionResultCall = service.favoriteThreadActionResult(result.threadPostVariables.formHash, favoriteThread!!.idKey, description)
+                favoriteThreadActionResultCall = service.favoriteThreadActionResult(result.threadPostVariables.formHash, favoriteThread.idKey, description)
             } else {
                 if (favoriteThread.favid == 0) {
                     // just remove it from database
@@ -354,7 +354,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                     favoriteThreadActionResultCall = service.unfavoriteThreadActionResult(
                             result.threadPostVariables.formHash,
                             "true",
-                            "a_delete_" + favoriteThread!!.favid,
+                            "a_delete_" + favoriteThread.favid,
                             favoriteThread.favid)
                 }
             }
@@ -385,7 +385,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                         }
                         if(favorite){
                             Thread{
-                                dao.delete(bbsInfo.id, if (user != null) user!!.getUid() else 0, favoriteThread!!.idKey, "tid")
+                                dao.delete(bbsInfo.id, if (user != null) user!!.getUid() else 0, favoriteThread.idKey, "tid")
                                 dao.insert(favoriteThread)
                             }.start()
 
@@ -393,7 +393,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                         else{
                             // clear potential
                                 Thread{
-                                    dao.delete(bbsInfo!!.id, if (user != null) user!!.getUid() else 0, favoriteThread!!.idKey, "tid")
+                                    dao.delete(bbsInfo!!.id, if (user != null) user!!.getUid() else 0, favoriteThread.idKey, "tid")
                                 }.start()
 
                         }

@@ -12,7 +12,7 @@ import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.utilities.URLUtils
 
 class UserSpinnerAdapter : BaseAdapter() {
-    lateinit var userList : List<User>
+    var userList : List<User>
 
 
 

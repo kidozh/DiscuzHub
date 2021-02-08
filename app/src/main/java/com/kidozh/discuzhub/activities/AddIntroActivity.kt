@@ -125,7 +125,7 @@ class AddIntroActivity : BaseStatusActivity(), OnClickSuggestionListener {
         } else {
             // add url
             try {
-                val url = URL(urlString)
+                URL(urlString)
                 val splitString = urlString.split("/").toTypedArray()
                 if (splitString.size >= 3) {
                     var pathPrefix = splitString[0] + "/" + splitString[1] + "/" + splitString[2]

@@ -9,6 +9,7 @@ import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.adapter.DiscuzInformationAdapter
 import com.kidozh.discuzhub.databinding.DialogDiscuzDetailBinding
 import com.kidozh.discuzhub.entities.Discuz
+import java.util.*
 import kotlin.collections.ArrayList
 
 class DiscuzDetailDialogFragment(bbs: Discuz) : BottomSheetDialogFragment() {
@@ -73,8 +74,8 @@ class DiscuzDetailDialogFragment(bbs: Discuz) : BottomSheetDialogFragment() {
                 getString(R.string.discuz_plugin_version_title,bbs.plugin_version),
                 getString(R.string.discuz_plugin_version_description),
         ))
-        var charsetDescription = ""
-        when (bbs.charset.toLowerCase()){
+        val charsetDescription : String
+        when (bbs.charset.toLowerCase(Locale.ROOT)){
             "utf-8" -> charsetDescription = getString(R.string.discuz_charset_description_utf8)
             "gbk" -> charsetDescription = getString(R.string.discuz_charset_description_gbk)
             "big-5" -> charsetDescription = getString(R.string.discuz_charset_description_big5)

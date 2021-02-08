@@ -19,7 +19,7 @@ import kotlin.math.max
 class UserFriendViewModel(application: Application) : AndroidViewModel(application) {
     val TAG : String = "UserFriendViewModel"
     var userFriendListMutableData: MutableLiveData<MutableList<UserFriend>?>
-    lateinit var newFriendListMutableLiveData : MutableLiveData<MutableList<UserFriend>>
+    var newFriendListMutableLiveData : MutableLiveData<MutableList<UserFriend>>
     var userFriendResultMutableLiveData: MutableLiveData<UserFriendResult?>
     var isLoadingMutableLiveData : MutableLiveData<Boolean>
     var loadAllMutableLiveData : MutableLiveData<Boolean>

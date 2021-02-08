@@ -14,7 +14,7 @@ import com.kidozh.discuzhub.entities.ThreadDraft;
 import com.kidozh.discuzhub.utilities.DateConverter;
 
 
-@Database(entities = {ThreadDraft.class},version = 3, exportSchema = true)
+@Database(entities = {ThreadDraft.class},version = 4, exportSchema = true)
 @TypeConverters(DateConverter.class)
 public abstract class ThreadDraftDatabase extends RoomDatabase {
     private static final String DB_NAME = "bbsThreadDraftDatabase.db";
@@ -50,6 +50,7 @@ public abstract class ThreadDraftDatabase extends RoomDatabase {
         return Room.databaseBuilder(context, ThreadDraftDatabase.class,DB_NAME)
                 .addMigrations(MIGRATION_1_2)
                 .addMigrations(MIGRATION_2_3)
+                .fallbackToDestructiveMigration()
                 .build();
     }
 

@@ -180,7 +180,7 @@ class ForumDisplayOptionFragment : BottomSheetDialogFragment() {
             }
         }
 
-        binding.statusGroup.setOnCheckedChangeListener { group, checkedId ->
+        binding.statusGroup.setOnCheckedChangeListener { _, checkedId ->
             var status = model.forumStatusMutableLiveData.value
             if(status != null){
                 when(checkedId){
@@ -194,7 +194,7 @@ class ForumDisplayOptionFragment : BottomSheetDialogFragment() {
 
         }
 
-        binding.timeFilterGroup.setOnCheckedChangeListener { group, checkedId ->
+        binding.timeFilterGroup.setOnCheckedChangeListener { _, checkedId ->
             var status = model.forumStatusMutableLiveData.value
             if(status != null){
                 when(checkedId){
@@ -214,7 +214,7 @@ class ForumDisplayOptionFragment : BottomSheetDialogFragment() {
     }
 
     fun configureButton(){
-        binding.okButton.setOnClickListener { v->
+        binding.okButton.setOnClickListener {
             var status = model.forumStatusMutableLiveData.value
             if(status != null){
                 status.hasLoadAll = false
@@ -224,7 +224,7 @@ class ForumDisplayOptionFragment : BottomSheetDialogFragment() {
                 dismiss()
             }
         }
-        binding.resetButton.setOnClickListener { v->
+        binding.resetButton.setOnClickListener {
             binding.categoryGroup.clearCheck()
             binding.sortKeyGroup.clearCheck()
             binding.typeGroup.clearCheck()
