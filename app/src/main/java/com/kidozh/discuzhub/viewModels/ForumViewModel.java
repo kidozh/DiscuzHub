@@ -25,6 +25,8 @@ import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +42,8 @@ public class ForumViewModel extends AndroidViewModel {
     @NonNull
     public MutableLiveData<DisplayForumQueryStatus> forumStatusMutableLiveData;
 
-    Discuz bbsInfo;
-    User userBriefInfo;
+    Discuz discuz;
+    User user;
     Forum forum;
     public OkHttpClient client;
 
@@ -62,7 +64,7 @@ public class ForumViewModel extends AndroidViewModel {
 
     public ForumViewModel(@NonNull Application application) {
         super(application);
-        forumStatusMutableLiveData = new MutableLiveData<DisplayForumQueryStatus>();
+        forumStatusMutableLiveData = new MutableLiveData<>();
         draftNumberLiveData = ThreadDraftDatabase
                 .getInstance(getApplication())
                 .getbbsThreadDraftDao()
@@ -82,17 +84,17 @@ public class ForumViewModel extends AndroidViewModel {
         return newThreadListMutableLiveData;
     }
 
-    public void setBBSInfo(@NonNull Discuz bbsInfo, User userBriefInfo, Forum forum){
-        this.bbsInfo = bbsInfo;
-        this.userBriefInfo = userBriefInfo;
+    public void setBBSInfo(@NonNull Discuz discuz, User user, Forum forum){
+        this.discuz = discuz;
+        this.user = user;
         this.forum = forum;
-        URLUtils.setBBS(bbsInfo);
-        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
+        URLUtils.setBBS(discuz);
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(),user);
         favoriteForumLiveData = FavoriteForumDatabase.getInstance(getApplication())
                 .getDao()
-                .getFavoriteItemByfid(bbsInfo.getId(),userBriefInfo!=null? userBriefInfo.getUid():0,forum.fid);
-        int uid = userBriefInfo!=null? userBriefInfo.getUid():0;
-        Log.d(TAG,"Get favorite form info "+userBriefInfo+" fid "+forum.fid+" uid "+uid);
+                .getFavoriteItemByfid(discuz.getId(),user!=null? user.getUid():0,forum.fid);
+        int uid = user!=null? user.getUid():0;
+        Log.d(TAG,"Get favorite form info "+user+" fid "+forum.fid+" uid "+uid);
     }
 
     public void toggleRuleCollapseStatus(){
@@ -126,22 +128,23 @@ public class ForumViewModel extends AndroidViewModel {
         }
 
         networkState.postValue(ConstUtils.NETWORK_STATUS_LOADING);
-        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
+        Retrofit retrofit = NetworkUtils.getRetrofitInstance(discuz.base_url,client);
         DiscuzApiService service = retrofit.create(DiscuzApiService.class);
         Call<ForumResult> forumResultCall = service.forumDisplayResult(displayForumQueryStatus.generateQueryHashMap());
         Log.d(TAG,"Browse page "+displayForumQueryStatus.page+" url "+forumResultCall.request().url().toString());
         forumResultCall.enqueue(new Callback<ForumResult>() {
             @Override
-            public void onResponse(Call<ForumResult> call, Response<ForumResult> response) {
+            public void onResponse(@NotNull Call<ForumResult> call, @NotNull Response<ForumResult> response) {
                 // clear status if page == 1
 
                 if(response.isSuccessful() && response.body()!=null){
                     ForumResult forumResult = response.body();
                     displayForumResultMutableLiveData.postValue(forumResult);
-                    Log.d(TAG, "Get forum Result" + forumResult);
+                    Log.d(TAG, "Get forum thread size " + forumResult.forumVariables.forumThreadList.size());
 
                     // for list display
                     List<Thread> threadList = forumResult.forumVariables.forumThreadList;
+
                     List<Thread> totalThreadList = threadInfoListMutableLiveData.getValue();
                     if(totalThreadList == null || displayForumQueryStatus.page == 1){
                         totalThreadList = new ArrayList<>();
