@@ -24,17 +24,25 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
 
-      - uses: thomastvedt/sign-android-release@v2.2
+      - uses: Tlaster/android-sign@v1.2.2
         name: Sign app APK
         # ID used to access action output
         id: sign_app
         with:
-          releaseDirectory: app/release
+          releaseDirectory: |
+            app/build/outputs/apk/release
+            app/build/outputs/bundle/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+          output: build/release/signed
       
       # Example use of `signedReleaseFile` output -- not needed
       - uses: actions/upload-artifact@v2
