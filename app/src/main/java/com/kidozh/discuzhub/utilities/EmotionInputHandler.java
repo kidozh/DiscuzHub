@@ -172,11 +172,7 @@ public class EmotionInputHandler implements TextWatcher {
         colorTextSpansToRemove.clear();
         imageSpansToRemove.clear();
 
-        if (!TextUtils.isEmpty(mEditor.getText().toString())) {
-            listener.onTextChange(true, mEditor.getText().toString());
-        } else {
-            listener.onTextChange(false, mEditor.getText().toString());
-        }
+        listener.onTextChange(!TextUtils.isEmpty(mEditor.getText().toString()), mEditor.getText().toString());
     }
 
     @Override
