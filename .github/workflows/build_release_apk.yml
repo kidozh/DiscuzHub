@@ -37,16 +37,19 @@ jobs:
         with:
           releaseDirectory: |
             app/build/outputs/apk/release
+            app/build/outputs/bundle/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
-          # output: build/release/signed
+          output: build/release/signed
+        env:
+          BUILD_TOOLS_VERSION: "30.0.2"
       
       # Example use of `signedReleaseFile` output -- not needed
       - uses: actions/upload-artifact@v2
         with:
           name: Upload signed app bundle
-          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+          path: ${{steps.sign_app.output}}
         
         
