@@ -30,19 +30,16 @@ jobs:
       - name: Build Release APK
         run: ./gradlew assembleRelease
 
-      - uses: Tlaster/android-sign@v1.2.2
+      - uses: r0adkll/sign-android-release@v1.0.4
         name: Sign app APK
         # ID used to access action output
         id: sign_app
         with:
-          releaseDirectory: |
-            app/build/outputs/apk/release
-            app/build/outputs/bundle/release
+          releaseDirectory: app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.SIGNING_KEY }}
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
-          output: build/release/signed
         env:
           BUILD_TOOLS_VERSION: "30.0.2"
       
@@ -50,6 +47,6 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: Upload signed app bundle
-          path: ${{steps.sign_app.output}}
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
         
         
