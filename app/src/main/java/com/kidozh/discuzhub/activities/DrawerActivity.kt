@@ -102,7 +102,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
             supportActionBar!!.setHomeButtonEnabled(true)
         }
-        binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_menu_24px)
+        binding.toolbar.navigationIcon = ContextCompat.getDrawable(this,R.drawable.ic_menu_24px)
     }
 
     private fun bindViewModel() {
@@ -111,10 +111,15 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
             headerView.clear()
             //drawerAccountHeader.clear();
             if (Discuzs == null || Discuzs.size == 0) {
-                // empty
+                // hide the navIcon
                 // show bbs page
+                binding.toolbar.navigationIcon = null
+                binding.toolbar.title = getString(R.string.app_name)
+
             } else {
                 // bind to headview
+                    // show navbar
+                binding.toolbar.navigationIcon = ContextCompat.getDrawable(this,R.drawable.ic_menu_24px)
                 val accountProfiles: MutableList<IProfile> = ArrayList()
                 for (i in Discuzs.indices) {
                     val currentBBSInfo = Discuzs[i]

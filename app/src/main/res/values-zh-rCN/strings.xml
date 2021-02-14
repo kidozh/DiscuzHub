@@ -746,5 +746,6 @@
     <string name="explore_in_page_warn_description">我们认知到部分论坛开启了PWA技术，这样使得我们无法正常的读取当前访问链接，也无法跳转到正确的内置页面。当你的论坛的链接始终无法跳转到正确的界面时，请选择使用电脑端的界面，其能正常跳转。</string>
     <string name="explore_in_page_warn_title">可能链接无法正常跳转到页面里</string>
     <string name="check_result_incorrect_description">API可能工作不正常。</string>
+    <string name="load_next_description">向下滑动浏览更多。</string>
 
 </resources>

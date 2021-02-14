@@ -16,7 +16,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/load_successfully_text"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_suggestion_check_circle_outline_24px" />
+            app:srcCompat="@drawable/ic_baseline_arrow_downward_24"
+            app:tint="@color/colorGreensea" />
 
         <TextView
             android:id="@+id/load_successfully_text"
@@ -26,7 +27,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/all_items_have_been_loaded"
+            android:text="@string/load_next_description"
             android:textColor="@color/colorGreensea"
             android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="parent"

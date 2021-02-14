@@ -625,7 +625,7 @@
     <string name="bbs">BBS</string>
     <string name="management">Management</string>
     <string name="user_anonymous_description">You are browsing the bbs without a user account.</string>
-    <string name="user_id_description">UID: %1$s</string>
+    <string name="user_id_description">UID: %1$d</string>
     <string name="add_a_bbs">Add a BBS</string>
     <string name="manage_bbs">Manage bbs</string>
     <string name="manage_bbs_description">Sort, delete and manage current bbs collection.</string>
@@ -975,6 +975,7 @@
     <string name="explore_in_page_warn_title">The page may not navigate automatically</string>
     <string name="check_result_incorrect_key" translatable="false">check_result_incorrect</string>
     <string name="check_result_incorrect_description">Get an unexpected result, the api may not work properly.</string>
+    <string name="load_next_description">Swipe down to get the next page.</string>
 
 
 </resources>

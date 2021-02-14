@@ -1572,9 +1572,9 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             if (ViewThreadQueryStatus != null) {
                 Log.d(TAG, "ON CREATE GET ascend mode in menu " + ViewThreadQueryStatus.datelineAscend)
                 if (ViewThreadQueryStatus.datelineAscend) {
-                    menu.findItem(R.id.bbs_forum_nav_dateline_sort).icon = ContextCompat.getDrawable(application, R.drawable.vector_drawable_arrow_upward_24px)
+                    menu.findItem(R.id.bbs_forum_nav_dateline_sort).icon = ContextCompat.getDrawable(application, R.drawable.ic_baseline_arrow_upward_24)
                 } else {
-                    menu.findItem(R.id.bbs_forum_nav_dateline_sort).icon = ContextCompat.getDrawable(application, R.drawable.vector_drawable_arrow_downward_24px)
+                    menu.findItem(R.id.bbs_forum_nav_dateline_sort).icon = ContextCompat.getDrawable(application, R.drawable.ic_baseline_arrow_downward_24)
                 }
             }
         }
@@ -1586,9 +1586,9 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         if (ViewThreadQueryStatus != null) {
             Log.d(TAG, "ON PREPARE GET ascend mode in menu " + ViewThreadQueryStatus.datelineAscend)
             if (ViewThreadQueryStatus.datelineAscend) {
-                menu.findItem(R.id.bbs_forum_nav_dateline_sort).icon = getDrawable(R.drawable.vector_drawable_arrow_upward_24px)
+                menu.findItem(R.id.bbs_forum_nav_dateline_sort).icon = ContextCompat.getDrawable(this,R.drawable.ic_baseline_arrow_upward_24)
             } else {
-                menu.findItem(R.id.bbs_forum_nav_dateline_sort).icon = getDrawable(R.drawable.vector_drawable_arrow_downward_24px)
+                menu.findItem(R.id.bbs_forum_nav_dateline_sort).icon = ContextCompat.getDrawable(this,R.drawable.ic_baseline_arrow_downward_24)
             }
         }
         //boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();

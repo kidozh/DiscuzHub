@@ -749,5 +749,6 @@
     <string name="explore_in_page_warn_description">我們認知到部分論壇開啟了PWA技術，這樣使得我們無法正常的讀取當前訪問鏈接，也無法跳轉到正確的內置頁面。當你的論壇的鏈接始終無法跳轉到正確的界面時，請選擇使用電腦端的界面，其能正常跳轉。</string>
     <string name="explore_in_page_warn_title">可能鏈接無法正常跳轉到頁面裡</string>
     <string name="check_result_incorrect_description">API可能工作不正常。</string>
+    <string name="load_next_description">向下滑動以獲得更多。</string>
 
 </resources>

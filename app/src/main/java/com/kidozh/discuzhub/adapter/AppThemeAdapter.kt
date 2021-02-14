@@ -63,6 +63,7 @@ class AppThemeAdapter: RecyclerView.Adapter<AppThemeAdapter.AppThemeViewHolder>(
             }
         }
 
+
         if(position == selectedPosition){
             holder.binding.checkLabel.visibility = View.VISIBLE
         }
