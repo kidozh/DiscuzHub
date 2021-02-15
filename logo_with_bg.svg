@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="300.00003pt"
+   height="300.00003pt"
+   viewBox="0 0 105.83333 105.83333"
+   version="1.1"
+   id="svg8"
+   sodipodi:docname="logo_with_bg.svg"
+   inkscape:export-filename="E:\AndroidProjects\DiscuzHub\app\src\main\res\mipmap-xxxhdpi\logo.png"
+   inkscape:export-xdpi="199.91998"
+   inkscape:export-ydpi="199.91998"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="175.54295"
+     inkscape:cy="178.20935"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:snap-bbox="true"
+     inkscape:snap-bbox-midpoints="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     units="pt"
+     inkscape:pagecheckerboard="true"
+     inkscape:bbox-nodes="true"
+     inkscape:bbox-paths="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:snap-center="true"
+     inkscape:window-width="1366"
+     inkscape:window-height="705"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="rectangle_background"
+     transform="translate(-7.7588444,-7.7588444)">
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.38905144;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect837"
+       width="105.83334"
+       height="105.83334"
+       x="7.7588444"
+       y="7.7588444"
+       rx="22.577778"
+       ry="22.577778"
+       inkscape:export-filename="E:\AndroidProjects\DiscuzHub\app\src\main\res\mipmap-xxxhdpi\logo.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+  </g>
+  <g
+     inkscape:label="logo_layer"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-8.0207789,-54.856506)"
+     style="display:inline">
+    <path
+       style="fill:#e8e288;fill-opacity:1;stroke:#2c3e50;stroke-width:11.28888889;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+       id="path819"
+       d="M 82.104115,144.43492 A 42.333332,42.333332 0 0 1 27.352159,133.54408 42.333332,42.333332 0 0 1 31.003265,77.838991 42.333332,42.333332 0 0 1 86.708351,74.187888 42.333332,42.333332 0 0 1 97.599191,128.93984"
+       sodipodi:type="arc"
+       sodipodi:start="1.0471976"
+       sodipodi:end="0.52359878"
+       sodipodi:ry="42.333332"
+       sodipodi:rx="42.333332"
+       sodipodi:cy="107.77318"
+       sodipodi:cx="60.93745"
+       sodipodi:open="true" />
+    <circle
+       style="fill:#e85c43;fill-opacity:1;stroke:none;stroke-width:11.28888893;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+       id="path821"
+       cx="90.860397"
+       cy="137.71855"
+       r="15.875" />
+  </g>
+</svg>

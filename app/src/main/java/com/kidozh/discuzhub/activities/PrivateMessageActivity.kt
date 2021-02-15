@@ -40,11 +40,7 @@ import java.util.*
 class PrivateMessageActivity : BaseStatusActivity(), SmileyFragment.OnSmileyPressedInteraction {
     lateinit var privateMessageInfo: privateMessage
     lateinit var adapter: PrivateDetailMessageAdapter
-
-    // private OkHttpClient client;
-    private var globalPage = -1
-    var formHash: String? = null
-    var hasLoadAll = false
+    
     private var smileyPicker: SmileyPicker? = null
     private var handler: EmotionInputHandler? = null
     lateinit var binding: ActivityBbsPrivateMessageDetailBinding
