@@ -28,7 +28,7 @@ jobs:
       - name: Make Gradle executable
         run: chmod +x ./gradlew
       - name: Build Release APK
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleSingle
 
       - uses: r0adkll/sign-android-release@v1.0.4
         name: Sign app APK
