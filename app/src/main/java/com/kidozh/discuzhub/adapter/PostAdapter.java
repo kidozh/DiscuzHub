@@ -287,10 +287,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.bbsForumThread
             }
         }));
 
+        // some discuz may return a null dbdateline fields
+        if(post.publishAt !=null){
+            holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext, post.publishAt));
+        }
+        else{
+            holder.mPublishDate.setText(post.dateline);
+        }
 
-        //DateFormat df = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
-        //holder.mPublishDate.setText(df.format(postInfo.publishAt));
-        holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext, post.publishAt));
 
         holder.mThreadType.setText(context.getString(R.string.post_index_number, post.position));
 
