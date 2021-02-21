@@ -22,6 +22,7 @@ import android.text.Spanned;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.text.style.StrikethroughSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -256,7 +257,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.mPostQuoteContent.setVisibility(View.GONE);
         }
         decodeString = quoteMatcherInVer4.replaceAll("");
-
+        // handle jammer contents
+        Log.d(TAG,"is removed contents "+UserPreferenceUtils.isJammerContentsRemoved(mContext));
+        if(UserPreferenceUtils.isJammerContentsRemoved(mContext)){
+            decodeString= decodeString.replaceAll("<font class=\"jammer\">.+</font>","");
+            decodeString= decodeString.replaceAll("<span style=\"display:none\">.+</span>","");
+            Log.d(TAG,"GET removed contents "+decodeString);
+        }
 
 
         HtmlTagHandler HtmlTagHandler = new HtmlTagHandler(mContext,holder.mContent);

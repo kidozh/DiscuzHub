@@ -25,18 +25,17 @@
 
     <!-- Messages Preferences -->
     <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->
     <string name="sync_title">Sync bbs information periodically</string>
-    <string name="preference_key_sync_information">preference_key_sync_information</string>
+    <string name="preference_key_sync_information" translatable="false">preference_key_sync_information</string>
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming messages.</string>
     <string name="attachment_summary_off">Only download attachments when manually requested.</string>
     <string name="bbs_qq_connect_ok">Support QQ connect</string>
     <string name="preference_title_display">Display</string>
     <string name="preference_title_use_safer_client">Use safer HTTPS client</string>
-    <string name="preference_key_use_safer_client">preference_key_use_safer_client</string>
+    <string name="preference_key_use_safer_client" translatable="false">preference_key_use_safer_client</string>
     <string name="preference_summary_on_use_safer_client">A safe HTTPS client will protect your privacy and data\'s integrity.</string>
     <string name="preference_summary_off_use_safer_client">The client will not authorize the integrity of networking and your data may leak in transition.</string>
 
@@ -48,7 +47,7 @@
     </string-array>
 
     <string name="preference_title_use_browser_client">Client\'s user agent</string>
-    <string name="preference_key_use_browser_client">preference_key_use_browser_client</string>
+    <string name="preference_key_use_browser_client" translatable="false">preference_key_use_browser_client</string>
 
     <string-array name="preference_entries_use_browser_client">
         <item>NONE</item>
@@ -88,7 +87,7 @@
     <string name="bbs_require_comment">No comment found.</string>
     <string name="bbs_comment_failed">Failed to comment.</string>
     <string name="bbs_comment_successfully">Comment successfully.</string>
-    <string name="bbs_commentting">Commentting...</string>
+    <string name="bbs_commentting">Commentting…</string>
     <string name="bbs_require_login_to_comment">Login required.</string>
     <string name="bbs_forum_member">Member</string>
     <string name="bbs_allow_register">Allow register</string>
@@ -97,7 +96,7 @@
     <string name="data_cancel_task">Cancel the task.</string>
     <string name="data_put_in_background">Background</string>
     <string name="task_is_cancelled">Task is cancelled and no change is made.</string>
-    <string name="data_is_processing">Data is processing...</string>
+    <string name="data_is_processing">Data is processing…</string>
     <string name="updated_bbs_template">Update %s successfully.</string>
     <string name="failed_to_update_bbs_template">Failed to update %s.</string>
     <string name="display_order_4">Pinned on all</string>
@@ -112,9 +111,7 @@
     <string name="date_minutes_before">%s minutes before</string>
     <string name="date_hours_before">%s hours before</string>
 
-    <string name="title_activity_show_image_fullscreen">showImageFullscreenActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_show_image_fullscreen" translatable="false">showImageFullscreenActivity</string>
     <string name="save_images_text">Save</string>
     <string name="show_picture">Show picture</string>
     <string name="save_file_successfully_template">Save file: %s successfully.</string>
@@ -134,15 +131,7 @@
     <string name="bbs_user_id">Account</string>
     <string name="bbs_read_access">Read access</string>
     <string name="add_a_account">New user</string>
-    <string name="title_activity_login_bbs">Sign in</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
     <string name="login_bbs_title">Login %s</string>
     <string name="bbs_password">Password</string>
 
@@ -206,96 +195,7 @@
     <string name="bbs_no_item_found">No item is found.</string>
     <string name="bbs_send_pm">Send</string>
     <string name="bbs_pm_is_required">Please at least say something.</string>
-    <string name="title_activity_show_personal_info">showPersonalInfoActivity</string>
-    <string name="large_text">
-        "Material is the metaphor.\n\n"
-
-        "A material metaphor is the unifying theory of a rationalized space and a system of motion."
-        "The material is grounded in tactile reality, inspired by the study of paper and ink, yet "
-        "technologically advanced and open to imagination and magic.\n"
-        "Surfaces and edges of the material provide visual cues that are grounded in reality. The "
-        "use of familiar tactile attributes helps users quickly understand affordances. Yet the "
-        "flexibility of the material creates new affordances that supercede those in the physical "
-        "world, without breaking the rules of physics.\n"
-        "The fundamentals of light, surface, and movement are key to conveying how objects move, "
-        "interact, and exist in space and in relation to each other. Realistic lighting shows "
-        "seams, divides space, and indicates moving parts.\n\n"
-
-        "Bold, graphic, intentional.\n\n"
-
-        "The foundational elements of print based design typography, grids, space, scale, color, "
-        "and use of imagery guide visual treatments. These elements do far more than please the "
-        "eye. They create hierarchy, meaning, and focus. Deliberate color choices, edge to edge "
-        "imagery, large scale typography, and intentional white space create a bold and graphic "
-        "interface that immerse the user in the experience.\n"
-        "An emphasis on user actions makes core functionality immediately apparent and provides "
-        "waypoints for the user.\n\n"
-
-        "Motion provides meaning.\n\n"
-
-        "Motion respects and reinforces the user as the prime mover. Primary user actions are "
-        "inflection points that initiate motion, transforming the whole design.\n"
-        "All action takes place in a single environment. Objects are presented to the user without "
-        "breaking the continuity of experience even as they transform and reorganize.\n"
-        "Motion is meaningful and appropriate, serving to focus attention and maintain continuity. "
-        "Feedback is subtle yet clear. Transitions are efﬁcient yet coherent.\n\n"
-
-        "3D world.\n\n"
-
-        "The material environment is a 3D space, which means all objects have x, y, and z "
-        "dimensions. The z-axis is perpendicularly aligned to the plane of the display, with the "
-        "positive z-axis extending towards the viewer. Every sheet of material occupies a single "
-        "position along the z-axis and has a standard 1dp thickness.\n"
-        "On the web, the z-axis is used for layering and not for perspective. The 3D world is "
-        "emulated by manipulating the y-axis.\n\n"
-
-        "Light and shadow.\n\n"
-
-        "Within the material environment, virtual lights illuminate the scene. Key lights create "
-        "directional shadows, while ambient light creates soft shadows from all angles.\n"
-        "Shadows in the material environment are cast by these two light sources. In Android "
-        "development, shadows occur when light sources are blocked by sheets of material at "
-        "various positions along the z-axis. On the web, shadows are depicted by manipulating the "
-        "y-axis only. The following example shows the card with a height of 6dp.\n\n"
-
-        "Resting elevation.\n\n"
-
-        "All material objects, regardless of size, have a resting elevation, or default elevation "
-        "that does not change. If an object changes elevation, it should return to its resting "
-        "elevation as soon as possible.\n\n"
-
-        "Component elevations.\n\n"
-
-        "The resting elevation for a component type is consistent across apps (e.g., FAB elevation "
-        "does not vary from 6dp in one app to 16dp in another app).\n"
-        "Components may have different resting elevations across platforms, depending on the depth "
-        "of the environment (e.g., TV has a greater depth than mobile or desktop).\n\n"
-
-        "Responsive elevation and dynamic elevation offsets.\n\n"
-
-        "Some component types have responsive elevation, meaning they change elevation in response "
-        "to user input (e.g., normal, focused, and pressed) or system events. These elevation "
-        "changes are consistently implemented using dynamic elevation offsets.\n"
-        "Dynamic elevation offsets are the goal elevation that a component moves towards, relative "
-        "to the component’s resting state. They ensure that elevation changes are consistent "
-        "across actions and component types. For example, all components that lift on press have "
-        "the same elevation change relative to their resting elevation.\n"
-        "Once the input event is completed or cancelled, the component will return to its resting "
-        "elevation.\n\n"
-
-        "Avoiding elevation interference.\n\n"
-
-        "Components with responsive elevations may encounter other components as they move between "
-        "their resting elevations and dynamic elevation offsets. Because material cannot pass "
-        "through other material, components avoid interfering with one another any number of ways, "
-        "whether on a per component basis or using the entire app layout.\n"
-        "On a component level, components can move or be removed before they cause interference. "
-        "For example, a floating action button (FAB) can disappear or move off screen before a "
-        "user picks up a card, or it can move if a snackbar appears.\n"
-        "On the layout level, design your app layout to minimize opportunities for interference. "
-        "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
-        "when a user tries to pick up one of cards.\n\n"
-    </string>
+    
     <string name="bbs_follow_user">Follow</string>
     <string name="bbs_bio_not_set">Bio is not set</string>
     <string name="bbs_user_friend">Friends</string>
@@ -308,7 +208,7 @@
     <string name="app_about_fork_on_github">Fork on Github</string>
 
     <string name="preference_title_sync_time">Sync time</string>
-    <string name="preference_key_sync_time">preference_key_sync_time</string>
+    <string name="preference_key_sync_time" translatable="false">preference_key_sync_time</string>
 
     <string-array name="preference_entries_sync_time">
         <item>15 min</item>
@@ -326,7 +226,7 @@
     </string-array>
 
     <string name="preference_title_sync_at_night">Don\'t disturb at night</string>
-    <string name="preference_key_dont_distrub_at_night">preference_key_dont_distrub_at_night</string>
+    <string name="preference_key_dont_distrub_at_night" translatable="false">preference_key_dont_distrub_at_night</string>
     <string name="preference_summary_on_sync_at_night">The app will not sync information with server from 11.00 PM to 08.00 AM.</string>
     <string name="preference_summary_off_sync_at_night">The app will sync with server at night and may disturb you.</string>
     <string name="bbs_user_list_recyclerview_header">User List</string>
@@ -339,12 +239,12 @@
     <string name="bbs_post_reply">Reply</string>
 
     <string name="preference_title_send_post_backup">Post backup</string>
-    <string name="preference_key_send_post_backup">preference_key_send_post_backup</string>
+    <string name="preference_key_send_post_backup" translatable="false">preference_key_send_post_backup</string>
     <string name="preference_summary_on_send_post_backup">The app will backup your post in local draft box while posting a thread.</string>
     <string name="preference_summary_off_send_post_backup">Your post will not backup while posting a thread.</string>
 
     <string name="preference_title_auto_post_backup">Auto backup</string>
-    <string name="preference_key_auto_post_backup">preference_key_auto_post_backup</string>
+    <string name="preference_key_auto_post_backup" translatable="false">preference_key_auto_post_backup</string>
     <string name="preference_summary_on_auto_post_backup">The app will automatically backup your thread.</string>
     <string name="preference_summary_off_auto_post_backup">You need to press draft icon to save your thread.</string>
     <string name="bbs_draft_box">Draft box</string>
@@ -369,9 +269,9 @@
     <string name="bbs_updating_information">Sync bbs\'s information</string>
     <string name="bbs_updating_bbs_information_description">Updating</string>
     <string name="bbs_updating_complete">Updating bbs completed</string>
-    <string name="action_register_notification_channel">Register notification channel...</string>
+    <string name="action_register_notification_channel">Register notification channel…</string>
     <string name="action_configure_dark_mode">Configure dark mode</string>
-    <string name="action_init">App is initiliazing...</string>
+    <string name="action_init">App is initiliazing…</string>
     <string name="action_ready_to_enter_main">Ready to enter main page.</string>
 
     <string name="notification_name_user_group_update">BBS\'s user updates</string>
@@ -396,9 +296,9 @@
         <item quantity="other">%d post updats</item>
     </plurals>
     <string name="bbs_updates_templates">Updates in %1$s.</string>
-    <string name="bbs_update_none_template">No %2$s\'s update in %1$s...</string>
+    <string name="bbs_update_none_template">No %2$s\'s update in %1$s…</string>
     <string name="action_register_work_template">Register %1$s work</string>
-    <string name="action_register_work">register work...</string>
+    <string name="action_register_work">register work…</string>
     <string name="bbs_notification_failed_to_parse_api">Failed to fetch the %2$s\'s information in %1$s</string>
     <string name="bbs_notification_failed">Failed to update %1$s.</string>
 
@@ -440,7 +340,7 @@
     <string name="bbs_post_copy_clipboard_manager_null">Can not get clipboard manager services.</string>
     <string name="bbs_downloading_attachment">Download attachment and you can see it in notification bar.</string>
     <string name="bbs_downloading_attachment_failed">Can not download the attachment due to the null of download manager services.</string>
-    <string name="bbs_downloading_file_template">Downloading %1$s...</string>
+    <string name="bbs_downloading_file_template">Downloading %1$s…</string>
     <string name="bbs_post_only_see_him">Focus</string>
     <string name="bbs_post_see_all">See all</string>
     <string name="bbs_thread_status_only_post_listed">Only show $1%s\'s posts.</string>
@@ -600,7 +500,7 @@
     <string name="user_profile_edu_job">Education and Job</string>
     <string name="user_profile_medal">Honors</string>
     <string name="profile_no_medal">Contribute to bbs to get a medal.</string>
-    <string name="profile_list_not_prepared">We are preparing the profile details...</string>
+    <string name="profile_list_not_prepared">We are preparing the profile details…</string>
     <string name="profile_user_group_empty">Your group has not been assembled yet. Try later?</string>
     <string name="bbs_base_url_invalid">The URL is invalid.</string>
     <string name="captcha_required">Captcha required.</string>
@@ -755,7 +655,7 @@
     <string name="all_posts_loaded_template">All %1$d posts are loaded.</string>
     <string name="search">Search</string>
     <string name="bbs_api_advance">AD+</string>
-    <string name="buy_thread_loading">Looking for the price...</string>
+    <string name="buy_thread_loading">Looking for the price…</string>
     <string name="buy_thread_title">Buy the thread</string>
     <string name="buy_thread_dialog_message">Are you sure to buy the thread from%1$s in *%2$s* %3$s. Your remain balance will be %4$s  %3$s?</string>
     <string name="buy_thread_send">Sending the purchase process.</string>
@@ -787,7 +687,7 @@
     <string name="file_payed">You have payed for the file.</string>
     <string name="file_remote_warn">You will download the file from a remote server, please take care!</string>
     <string name="download_file">Download a file</string>
-    <string name="network_loading_status">Loading contents from server...</string>
+    <string name="network_loading_status">Loading contents from server…</string>
     <string name="all_items_have_been_loaded">All items have been loaded.</string>
     <string name="retry_content">Retry</string>
     <string name="load_content_successfully">Those items have been successfully loaded.</string>
@@ -933,7 +833,7 @@
     <string name="discuz_post_members">This site has %1$s members and %2$s posts.</string>
     <string name="discuz_single_copyright">Powered by Discuz Hub.</string>
     <string name="login_parameter_not_ready">Login parameters is not ready, please wait and try later.</string>
-    <string name="login_user">Signing in the user %1$s ...</string>
+    <string name="login_user">Signing in the user %1$s …</string>
     <string name="bbs_anonymous_mode_title">Anonymous user</string>
     <string name="bbs_anonymous_mode_description">You are browsing the %1$s without registing an account. Some functionality will be disabled until you sign in.</string>
     <string name="preference_key_theme" translatable="false">preference_key_theme</string>
@@ -976,6 +876,11 @@
     <string name="check_result_incorrect_key" translatable="false">check_result_incorrect</string>
     <string name="check_result_incorrect_description">Get an unexpected result, the api may not work properly.</string>
     <string name="load_next_description">Swipe down to get the next page.</string>
+
+    <string name="preference_key_remove_jammer_contents" translatable="false">preference_key_remove_jammer_contents</string>
+    <string name="preference_title_remove_jammer_contents">Remove jammer contents</string>
+    <string name="preference_summary_on_remove_jammer_contents">App will automatically remove jammer contents in a post.</string>
+    <string name="preference_summary_off_remove_jammer_contents">When you see the jammer characters, you can try to open it.</string>
 
 
 </resources>

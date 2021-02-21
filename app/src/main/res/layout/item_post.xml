@@ -161,6 +161,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
+                        app:tint="@color/colorPrimary"
                         app:srcCompat="@drawable/ic_post_status_edited_24px" />
 
                     <TextView

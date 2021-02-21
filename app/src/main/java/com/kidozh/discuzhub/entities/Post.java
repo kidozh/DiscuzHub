@@ -27,14 +27,12 @@ import java.util.Map;
 public class Post implements Serializable {
     private static final String TAG = Post.class.getSimpleName();
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @NonNull
-    public int pid, tid;
+    public int pid = 0, tid = 0;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
+    public boolean first = false, anonymous = false;
     @NonNull
-    public boolean first, anonymous;
-    @NonNull
-    public String author, dateline, message, username;
+    public String author = "", dateline = "", message="", username="";
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonProperty("authorid")
     public int authorId;
@@ -44,7 +42,7 @@ public class Post implements Serializable {
     public long position;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonProperty("adminid")
-    public int adminId;
+    public int adminId = 0;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonProperty("groupid")
     public int groupId;

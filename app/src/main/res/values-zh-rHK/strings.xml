@@ -750,5 +750,8 @@
     <string name="explore_in_page_warn_title">可能鏈接無法正常跳轉到頁面裡</string>
     <string name="check_result_incorrect_description">API可能工作不正常。</string>
     <string name="load_next_description">向下滑動以獲得更多。</string>
+    <string name="preference_title_remove_jammer_contents">移除乾擾碼</string>
+    <string name="preference_summary_on_remove_jammer_contents">應用將會自動移除乾擾內容的干擾碼。</string>
+    <string name="preference_summary_off_remove_jammer_contents">當帖子內容出現亂碼的字符時，你可以開啟此選項以移除乾擾碼內容。</string>
 
 </resources>

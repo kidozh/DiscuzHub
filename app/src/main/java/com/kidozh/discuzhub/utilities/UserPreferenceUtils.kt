@@ -143,4 +143,13 @@ object UserPreferenceUtils {
         editor.putInt(preferenceName, index)
         editor.apply()
     }
+
+    @JvmStatic
+    fun isJammerContentsRemoved(context: Context): Boolean {
+        val preferenceName = context.getString(R.string.preference_key_remove_jammer_contents)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(preferenceName, true)
+    }
+
+
 }

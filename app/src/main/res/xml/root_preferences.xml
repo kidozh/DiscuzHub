@@ -172,6 +172,18 @@
             app:title="@string/preference_title_auto_post_backup"
             app:useSimpleSummaryProvider="true" />
 
+        <androidx.preference.SwitchPreference
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/ic_baseline_blur_on_24"
+            android:key="@string/preference_key_remove_jammer_contents"
+            android:summaryOff="@string/preference_summary_off_remove_jammer_contents"
+            android:summaryOn="@string/preference_summary_on_remove_jammer_contents"
+            app:defaultValue="true"
+            app:title="@string/preference_title_remove_jammer_contents"
+            app:useSimpleSummaryProvider="true" />
+
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory app:title="@string/sync_header">
