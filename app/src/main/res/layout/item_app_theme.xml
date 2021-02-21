@@ -34,6 +34,7 @@
             android:foreground="?attr/selectableItemBackground"
             android:rotation="0"
             android:rotationY="0"
+            app:cardBackgroundColor="@color/MaterialColorAmber"
             app:cardCornerRadius="8dp"
             app:cardPreventCornerOverlap="true"
             app:cardUseCompatPadding="true"
@@ -45,19 +46,17 @@
                 android:id="@+id/filled_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"></LinearLayout>
-        </androidx.cardview.widget.CardView>
+                android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/check_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/theme_gradient_card"
-            app:layout_constraintEnd_toEndOf="@+id/theme_gradient_card"
-            app:layout_constraintStart_toStartOf="@+id/theme_gradient_card"
-            app:layout_constraintTop_toTopOf="@+id/theme_gradient_card"
-            app:srcCompat="@drawable/ic_baseline_check_circle_24"
-            app:tint="@color/colorPureWhite" />
+                <ImageView
+                    android:id="@+id/check_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    app:srcCompat="@drawable/ic_baseline_check_circle_24"
+                    app:tint="@color/colorPureWhite" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

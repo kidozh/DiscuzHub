@@ -17,11 +17,7 @@ class AppThemeAdapter: RecyclerView.Adapter<AppThemeAdapter.AppThemeViewHolder>(
     var selectedPosition = 0
     lateinit var context: Context
     var listener: OnThemeCardClicked? = null
-    class AppThemeViewHolder : RecyclerView.ViewHolder {
-        var binding : ItemAppThemeBinding
-        constructor(binding: ItemAppThemeBinding) : super(binding.root) {
-            this.binding = binding
-        }
+    class AppThemeViewHolder(var binding: ItemAppThemeBinding) : RecyclerView.ViewHolder(binding.root) {
 
     }
 
