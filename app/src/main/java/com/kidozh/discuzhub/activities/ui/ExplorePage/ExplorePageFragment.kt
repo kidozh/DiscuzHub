@@ -191,7 +191,6 @@ class ExplorePageFragment : Fragment() {
                     .replace("&lt;", "<")
                     .replace("&gt;", ">")
                     .replace("&nbsp;", " ")
-            val finalURL = url
             Log.d(TAG,"Parse URL "+url)
             val uri = Uri.parse(url)
             val baseUri = Uri.parse(bbsInfo.base_url)
@@ -213,6 +212,9 @@ class ExplorePageFragment : Fragment() {
                                             UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY))) {
                         var rewriteRule = UserPreferenceUtils.getRewriteRule(context, bbsInfo, UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY)
                         UserPreferenceUtils.saveRewriteRule(context, bbsInfo, UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY, rewriteRule)
+                        if(rewriteRule == null){
+                            return false
+                        }
 
                         // match template such as f{fid}-{page}
                         // crate reverse copy
@@ -247,7 +249,9 @@ class ExplorePageFragment : Fragment() {
                         // match template such as t{tid}-{page}-{prevpage}
                         var rewriteRule = UserPreferenceUtils.getRewriteRule(context, bbsInfo, UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY)
                         UserPreferenceUtils.saveRewriteRule(context, bbsInfo, UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY, rewriteRule)
-
+                        if(rewriteRule == null){
+                            return false
+                        }
                         // match template such as f{fid}-{page}
                         // crate reverse copy
                         rewriteRule = rewriteRule.replace("{tid}", "(?<tid>\\d+)")
@@ -286,7 +290,9 @@ class ExplorePageFragment : Fragment() {
                         // match template such as s{user}-{name}
                         var rewriteRule = UserPreferenceUtils.getRewriteRule(context, bbsInfo, UserPreferenceUtils.REWRITE_HOME_SPACE)
                         //UserPreferenceUtils.saveRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_HOME_SPACE,rewriteRule);
-
+                        if(rewriteRule == null){
+                            return false
+                        }
 
                         // match template such as f{fid}-{page}
                         // crate reverse copy

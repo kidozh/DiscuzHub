@@ -20,7 +20,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.databinding.DialogAttachmentInformationBinding;
 import com.kidozh.discuzhub.entities.Post;
 import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.timeDisplayUtils;
+import com.kidozh.discuzhub.utilities.TimeDisplayUtils;
 
 import es.dmoral.toasty.Toasty;
 
@@ -81,7 +81,7 @@ public class DownloadAttachmentDialogFragment extends DialogFragment {
     private void renderDialog(){
         binding.filename.setText(attachment.filename);
         binding.fileSize.setText(attachment.attachSize);
-        binding.fileUploadTime.setText(timeDisplayUtils.getLocalePastTimeString(getContext(),attachment.updateAt));
+        binding.fileUploadTime.setText(TimeDisplayUtils.getLocalePastTimeString(getContext(),attachment.updateAt));
         binding.fileDownloadTimes.setText(getString(R.string.attachment_download_time,attachment.downloads));
         if(attachment.price != 0){
             binding.filePriceTag.setVisibility(View.VISIBLE);

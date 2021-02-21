@@ -406,7 +406,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
 
         // account header
         headerView = AccountHeaderView(activity)
-        headerView.onAccountHeaderListener = label@{ view: View?, iProfile: IProfile, aBoolean: Boolean? ->
+        headerView.onAccountHeaderListener = label@{ _ : View?, iProfile: IProfile, _ : Boolean? ->
             val bbsId = iProfile.identifier
             Log.d(TAG, "profile changed " + bbsId + " name " + iProfile.name)
             if (bbsId > 0) {
@@ -441,7 +441,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
             false
         }
         headerView.attachToSliderView(binding.materialDrawerSliderView)
-        binding.materialDrawerSliderView.onDrawerItemClickListener = label@{ view: View?, iDrawerItem: IDrawerItem<*>, integer: Int? ->
+        binding.materialDrawerSliderView.onDrawerItemClickListener = label@{ _: View?, iDrawerItem: IDrawerItem<*>, _ : Int? ->
             val id = iDrawerItem.identifier
             Log.d(TAG, "Drawer id $id")
             if (id > 0) {
@@ -489,12 +489,12 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                                 AlertDialog.Builder(activity)
                                         .setTitle(getString(R.string.bbs_register_an_account, forumInfo.site_name))
                                         .setMessage(R.string.bbs_register_account_notification)
-                                        .setPositiveButton(android.R.string.ok) { dialog, which ->
+                                        .setPositiveButton(android.R.string.ok) { _ , _ ->
                                             val uri = Uri.parse(forumInfo.registerURL)
                                             val intent = Intent(Intent.ACTION_VIEW, uri)
                                             activity.startActivity(intent)
                                         }
-                                        .setNegativeButton(android.R.string.cancel) { dialog, which -> }
+                                        .setNegativeButton(android.R.string.cancel) { _, _ -> }
                                         .show()
                                 return@label true
                             }

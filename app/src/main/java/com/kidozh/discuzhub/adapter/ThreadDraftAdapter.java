@@ -19,7 +19,7 @@ import com.kidozh.discuzhub.entities.ThreadDraft;
 import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
-import com.kidozh.discuzhub.utilities.timeDisplayUtils;
+import com.kidozh.discuzhub.utilities.TimeDisplayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +82,7 @@ public class ThreadDraftAdapter extends RecyclerView.Adapter<ThreadDraftAdapter.
         }
 
         holder.bbsThreadDraftForum.setText(threadDraft.forumName);
-        holder.bbsThreadDraftUpdateTime.setText(timeDisplayUtils.getLocalePastTimeString(context,threadDraft.lastUpdateAt));
+        holder.bbsThreadDraftUpdateTime.setText(TimeDisplayUtils.getLocalePastTimeString(context,threadDraft.lastUpdateAt));
         holder.bbsThreadCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

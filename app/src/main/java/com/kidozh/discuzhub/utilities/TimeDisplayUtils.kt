@@ -6,9 +6,9 @@ import com.kidozh.discuzhub.R
 import java.text.DateFormat
 import java.util.*
 
-class timeDisplayUtils(private val mContext: Context) {
+class TimeDisplayUtils(private val mContext: Context) {
     companion object {
-        private val TAG = timeDisplayUtils::class.java.simpleName
+        private val TAG = TimeDisplayUtils::class.java.simpleName
         fun dateToCalendar(date: Date?): Calendar {
             val calendar = Calendar.getInstance()
             calendar.time = date

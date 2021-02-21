@@ -1,136 +1,146 @@
-package com.kidozh.discuzhub.utilities;
+package com.kidozh.discuzhub.utilities
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.util.Log;
+import android.content.Context
+import androidx.preference.PreferenceManager
+import android.util.Log
+import com.kidozh.discuzhub.R
+import com.kidozh.discuzhub.entities.Discuz
+import java.util.*
+import kotlin.collections.HashSet
 
-import androidx.annotation.NonNull;
-
-import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.entities.Discuz;
-
-import java.util.HashSet;
-import java.util.Set;
-
-public class UserPreferenceUtils {
-    private static final String TAG = UserPreferenceUtils.class.getSimpleName();
-
-    public static String getRewriteRulePreferenceName(@NonNull Context context, @NonNull Discuz bbsInfo, @NonNull String rewriteKey){
-        return context.getString(R.string.bbs_rewrite_rule_preference,rewriteKey,bbsInfo.getId());
+object UserPreferenceUtils {
+    private val TAG = UserPreferenceUtils::class.java.simpleName
+    fun getRewriteRulePreferenceName(context: Context, bbsInfo: Discuz, rewriteKey: String): String {
+        return context.getString(R.string.bbs_rewrite_rule_preference, rewriteKey, bbsInfo.id)
     }
 
-    public static String REWRITE_FORM_DISPLAY_KEY = "forum_forumdisplay",
-            REWRITE_VIEW_THREAD_KEY = "forum_viewthread",
-            REWRITE_HOME_SPACE = "home_space";
-
-    public static void saveRewriteRule(@NonNull Context context, @NonNull Discuz bbsInfo, @NonNull String rewriteKey, String rewriteValue){
-        String preferenceName = getRewriteRulePreferenceName(context,bbsInfo,rewriteKey);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(preferenceName,rewriteValue);
-        editor.apply();
+    @JvmField
+    var REWRITE_FORM_DISPLAY_KEY = "forum_forumdisplay"
+    @JvmField
+    var REWRITE_VIEW_THREAD_KEY = "forum_viewthread"
+    @JvmField
+    var REWRITE_HOME_SPACE = "home_space"
+    @JvmStatic
+    fun saveRewriteRule(context: Context, bbsInfo: Discuz, rewriteKey: String, rewriteValue: String?) {
+        val preferenceName = getRewriteRulePreferenceName(context, bbsInfo, rewriteKey)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = prefs.edit()
+        editor.putString(preferenceName, rewriteValue)
+        editor.apply()
     }
 
-    public static String getRewriteRule(@NonNull Context context, @NonNull Discuz bbsInfo, @NonNull String rewriteKey){
-        String preferenceName = getRewriteRulePreferenceName(context,bbsInfo,rewriteKey);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        Log.d(TAG,"Get rewrite "+rewriteKey+" -> "+prefs.getString(preferenceName,null));
-        return prefs.getString(preferenceName,null);
+    @JvmStatic
+    fun getRewriteRule(context: Context, bbsInfo: Discuz, rewriteKey: String): String? {
+        val preferenceName = getRewriteRulePreferenceName(context, bbsInfo, rewriteKey)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        Log.d(TAG, "Get rewrite " + rewriteKey + " -> " + prefs.getString(preferenceName, null))
+        return prefs.getString(preferenceName, null)
     }
 
-    public static boolean syncFavorite(@NonNull Context context){
-        String preferenceName = context.getString(R.string.preference_key_sync_information);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String syncFavoriteName = context.getString(R.string.preference_key_sync_favorite);
-        return prefs.getBoolean(preferenceName,true) && prefs.getBoolean(syncFavoriteName,true);
+    @JvmStatic
+    fun syncFavorite(context: Context): Boolean {
+        val preferenceName = context.getString(R.string.preference_key_sync_information)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val syncFavoriteName = context.getString(R.string.preference_key_sync_favorite)
+        return prefs.getBoolean(preferenceName, true) && prefs.getBoolean(syncFavoriteName, true)
     }
 
-    public static boolean syncInformation(@NonNull Context context){
-        String preferenceName = context.getString(R.string.preference_key_sync_information);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(preferenceName,true);
+    @JvmStatic
+    fun syncInformation(context: Context): Boolean {
+        val preferenceName = context.getString(R.string.preference_key_sync_information)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(preferenceName, true)
     }
 
-    public static boolean dontDisturbAtNight(@NonNull Context context){
-        String preferenceName = context.getString(R.string.preference_key_dont_distrub_at_night);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(preferenceName,true);
+    @JvmStatic
+    fun dontDisturbAtNight(context: Context): Boolean {
+        val preferenceName = context.getString(R.string.preference_key_dont_distrub_at_night)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(preferenceName, true)
     }
 
-    public static boolean conciseRecyclerView(@NonNull Context context){
-        String preferenceName = context.getString(R.string.preference_key_concise_recyclerview);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(preferenceName,false);
+    @JvmStatic
+    fun conciseRecyclerView(context: Context): Boolean {
+        val preferenceName = context.getString(R.string.preference_key_concise_recyclerview)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(preferenceName, false)
     }
 
-    public static boolean vibrateWhenLoadingAll(@NonNull Context context){
-        String preferenceName = context.getString(R.string.preference_key_vibrate_when_load_all);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(preferenceName,true);
+    fun vibrateWhenLoadingAll(context: Context): Boolean {
+        val preferenceName = context.getString(R.string.preference_key_vibrate_when_load_all)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(preferenceName, true)
     }
 
-    public static boolean collapseForumRule(@NonNull Context context){
-        String preferenceName = context.getString(R.string.preference_key_collapse_forum_rule);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(preferenceName,true);
+    @JvmStatic
+    fun collapseForumRule(context: Context): Boolean {
+        val preferenceName = context.getString(R.string.preference_key_collapse_forum_rule)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(preferenceName, true)
     }
 
-    public static boolean autoClearViewHistories(@NonNull Context context){
-        String preferenceName = context.getString(R.string.preference_key_clear_history_periodically);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(preferenceName,true);
+    @JvmStatic
+    fun autoClearViewHistories(context: Context): Boolean {
+        val preferenceName = context.getString(R.string.preference_key_clear_history_periodically)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(preferenceName, true)
     }
 
-    public static boolean dataSaveMode(@NonNull Context context){
-        String preferenceName = context.getString(R.string.preference_key_data_save_mode);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(preferenceName,true);
+    fun dataSaveMode(context: Context): Boolean {
+        val preferenceName = context.getString(R.string.preference_key_data_save_mode)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(preferenceName, true)
     }
 
-    public static int getLastSelectedDrawerItemIdentifier(@NonNull Context context){
-        String preferenceName = context.getString(R.string.preference_key_last_selected_bbs_identifier);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getInt(preferenceName,-1);
+    fun getLastSelectedDrawerItemIdentifier(context: Context): Int {
+        val preferenceName = context.getString(R.string.preference_key_last_selected_bbs_identifier)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getInt(preferenceName, -1)
     }
 
-    public static void saveLastSelectedDrawerItemIdentifier(@NonNull Context context, int indentifier){
-        String preferenceName = context.getString(R.string.preference_key_last_selected_bbs_identifier);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(preferenceName,indentifier);
-        editor.apply();
+    fun saveLastSelectedDrawerItemIdentifier(context: Context, indentifier: Int) {
+        val preferenceName = context.getString(R.string.preference_key_last_selected_bbs_identifier)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = prefs.edit()
+        editor.putInt(preferenceName, indentifier)
+        editor.apply()
     }
 
-    public static boolean getEnableRecyclerviewAnimate(@NonNull Context context){
-        String preferenceName = context.getString(R.string.preference_key_recyclerview_animation);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean(preferenceName,false);
+    fun getEnableRecyclerviewAnimate(context: Context): Boolean {
+        val preferenceName = context.getString(R.string.preference_key_recyclerview_animation)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(preferenceName, false)
     }
 
-    public static String getRecyclerviewAnimateType(@NonNull Context context){
-        String preferenceName = context.getString(R.string.preference_key_recyclerview_animation_list);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString(preferenceName,"LandingAnimator");
+    fun getRecyclerviewAnimateType(context: Context): String? {
+        val preferenceName = context.getString(R.string.preference_key_recyclerview_animation_list)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getString(preferenceName, "LandingAnimator")
     }
 
-    public static Set<String> getAdapterAnimateType(@NonNull Context context){
-        String preferenceName = context.getString(R.string.preference_key_adapter_animation);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getStringSet(preferenceName,new HashSet<>());
+    fun getAdapterAnimateType(context: Context): Set<String> {
+        val preferenceName = context.getString(R.string.preference_key_adapter_animation)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        if(prefs.getStringSet(preferenceName, HashSet()) == null){
+            return HashSet()
+        }
+        else{
+            return prefs.getStringSet(preferenceName, HashSet())  as Set<String>
+        }
+
     }
 
-    public static Integer getThemeIndex(@NonNull Context context){
-        String preferenceName = context.getString(R.string.preference_key_theme_index);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getInt(preferenceName,0);
+    fun getThemeIndex(context: Context): Int {
+        val preferenceName = context.getString(R.string.preference_key_theme_index)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getInt(preferenceName, 0)
     }
 
-    public static void setThemeIndex(@NonNull Context context, int index){
-        String preferenceName = context.getString(R.string.preference_key_theme_index);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(preferenceName,index);
-        editor.apply();
+    fun setThemeIndex(context: Context, index: Int) {
+        val preferenceName = context.getString(R.string.preference_key_theme_index)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = prefs.edit()
+        editor.putInt(preferenceName, index)
+        editor.apply()
     }
 }

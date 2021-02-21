@@ -68,7 +68,7 @@ import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.SmileyPicker;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
-import com.kidozh.discuzhub.utilities.timeDisplayUtils;
+import com.kidozh.discuzhub.utilities.TimeDisplayUtils;
 import com.kidozh.discuzhub.viewModels.PostThreadViewModel;
 
 import java.io.ByteArrayOutputStream;
@@ -980,7 +980,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
             // generate file
             RequestBody fileBody = RequestBody.create(MediaType.parse("image/jpg"), bytes);
 
-            String currentTimeString = timeDisplayUtils.getLocalePastTimeString(context, new Date());
+            String currentTimeString = TimeDisplayUtils.getLocalePastTimeString(context, new Date());
 
             MultipartBody multipartBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)

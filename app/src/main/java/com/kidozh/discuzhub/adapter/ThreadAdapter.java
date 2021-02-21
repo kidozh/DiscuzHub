@@ -44,7 +44,7 @@ import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
 import com.kidozh.discuzhub.utilities.numberFormatUtils;
-import com.kidozh.discuzhub.utilities.timeDisplayUtils;
+import com.kidozh.discuzhub.utilities.TimeDisplayUtils;
 
 
 import java.io.InputStream;
@@ -233,7 +233,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             holder.mThreadViewNum.setText(numberFormatUtils.getShortNumberText(thread.views));
             holder.mThreadReplyNum.setText(numberFormatUtils.getShortNumberText(thread.replies));
 
-            holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext, thread.publishAt));
+            holder.mPublishDate.setText(TimeDisplayUtils.getLocalePastTimeString(mContext, thread.publishAt));
 
             if(thread.displayOrder !=0){
                 int textResource = R.string.bbs_forum_pinned;
@@ -440,7 +440,7 @@ public class ThreadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             holder.mThreadReplyNum.setText(numberFormatUtils.getShortNumberText(thread.replies));
 
-            holder.mPublishDate.setText(timeDisplayUtils.getLocalePastTimeString(mContext, thread.publishAt));
+            holder.mPublishDate.setText(TimeDisplayUtils.getLocalePastTimeString(mContext, thread.publishAt));
 
             //holder.mPublishDate.setText(df.format(threadInfo.publishAt));
             if(thread.displayOrder !=0){

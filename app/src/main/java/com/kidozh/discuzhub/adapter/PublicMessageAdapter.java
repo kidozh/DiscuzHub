@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.timeDisplayUtils;
+import com.kidozh.discuzhub.utilities.TimeDisplayUtils;
 
 import java.util.List;
 
@@ -59,7 +59,7 @@ public class PublicMessageAdapter extends RecyclerView.Adapter<PublicMessageAdap
 
         holder.publicMessageContent.setText(spannableString, TextView.BufferType.SPANNABLE);
         holder.publicMessageUsername.setText(R.string.bbs_notification_public_pm);
-        holder.publicMessageRecvTime.setText(timeDisplayUtils.getLocalePastTimeString(context,curPublicMessage.publishAt));
+        holder.publicMessageRecvTime.setText(TimeDisplayUtils.getLocalePastTimeString(context,curPublicMessage.publishAt));
         holder.publicMessageAvatar.setImageDrawable(context.getDrawable(R.drawable.vector_drawable_info_24px_outline));
     }
 

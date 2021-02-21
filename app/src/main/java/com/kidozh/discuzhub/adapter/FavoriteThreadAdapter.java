@@ -30,7 +30,7 @@ import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
-import com.kidozh.discuzhub.utilities.timeDisplayUtils;
+import com.kidozh.discuzhub.utilities.TimeDisplayUtils;
 
 
 public class FavoriteThreadAdapter extends PagedListAdapter<FavoriteThread, FavoriteThreadAdapter.FavoriteThreadViewHolder> {
@@ -70,7 +70,7 @@ public class FavoriteThreadAdapter extends PagedListAdapter<FavoriteThread, Favo
                 holder.description.setVisibility(View.VISIBLE);
                 holder.description.setText(favoriteThread.description);
             }
-            holder.publishAt.setText(timeDisplayUtils.getLocalePastTimeString(context, favoriteThread.date));
+            holder.publishAt.setText(TimeDisplayUtils.getLocalePastTimeString(context, favoriteThread.date));
             Log.d(TAG,"get publish date "+ favoriteThread.date);
             holder.replyNumber.setText(context.getString(R.string.bbs_thread_reply_number, favoriteThread.replies));
             if(favoriteThread.favid == 0){

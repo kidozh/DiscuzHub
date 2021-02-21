@@ -30,7 +30,7 @@ import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.bbsParseUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.NetworkUtils;
-import com.kidozh.discuzhub.utilities.timeDisplayUtils;
+import com.kidozh.discuzhub.utilities.TimeDisplayUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -133,7 +133,7 @@ public class bbsPollFragment extends Fragment {
 
         binding.bbsPollExpireTime.setText(
                 getString(R.string.poll_expire_at,
-                            timeDisplayUtils.getLocalePastTimeString(context,pollInfo.expirations)
+                            TimeDisplayUtils.getLocalePastTimeString(context,pollInfo.expirations)
                 ));
         Resources res = getResources();
         String votersNumberString = res.getQuantityString(R.plurals.poll_voter_number, pollInfo.votersCount, pollInfo.votersCount);

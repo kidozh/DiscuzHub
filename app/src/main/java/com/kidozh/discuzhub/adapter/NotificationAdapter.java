@@ -37,7 +37,7 @@ import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
 import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod;
-import com.kidozh.discuzhub.utilities.timeDisplayUtils;
+import com.kidozh.discuzhub.utilities.TimeDisplayUtils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -187,7 +187,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             });
         }
 
-        holder.bbsNotificationPublishTime.setText(timeDisplayUtils.getLocalePastTimeString(context,notificationDetailInfo.date));
+        holder.bbsNotificationPublishTime.setText(TimeDisplayUtils.getLocalePastTimeString(context,notificationDetailInfo.date));
         Spanned sp = Html.fromHtml(notificationDetailInfo.note);
         SpannableString spannableString = new SpannableString(sp);
         holder.bbsNotificationNote.setText(spannableString, TextView.BufferType.SPANNABLE);

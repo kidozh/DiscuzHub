@@ -34,7 +34,7 @@ import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.GlideImageGetter;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
-import com.kidozh.discuzhub.utilities.timeDisplayUtils;
+import com.kidozh.discuzhub.utilities.TimeDisplayUtils;
 
 
 public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistoryAdapter.ViewHistoryViewHolder> {
@@ -71,7 +71,7 @@ public class ViewHistoryAdapter extends PagedListAdapter<ViewHistory, ViewHistor
             SpannableString spannableString = new SpannableString(sp);
             holder.description.setText(spannableString, TextView.BufferType.SPANNABLE);
 
-            holder.time.setText(timeDisplayUtils.getLocalePastTimeString(context,history.recordAt));
+            holder.time.setText(TimeDisplayUtils.getLocalePastTimeString(context,history.recordAt));
 
 
             if(history.type == ViewHistory.VIEW_TYPE_FORUM){

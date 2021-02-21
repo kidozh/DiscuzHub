@@ -25,7 +25,7 @@ import com.kidozh.discuzhub.entities.FavoriteForum;
 import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
-import com.kidozh.discuzhub.utilities.timeDisplayUtils;
+import com.kidozh.discuzhub.utilities.TimeDisplayUtils;
 
 
 public class FavoriteForumAdapter extends PagedListAdapter<FavoriteForum, FavoriteForumAdapter.FavoriteForumViewHolder> {
@@ -65,7 +65,7 @@ public class FavoriteForumAdapter extends PagedListAdapter<FavoriteForum, Favori
                 holder.description.setVisibility(View.VISIBLE);
                 holder.description.setText(FavoriteForum.description);
             }
-            holder.publishAt.setText(timeDisplayUtils.getLocalePastTimeString(context, FavoriteForum.date));
+            holder.publishAt.setText(TimeDisplayUtils.getLocalePastTimeString(context, FavoriteForum.date));
             Log.d(TAG,"get publish date "+ FavoriteForum.date);
             holder.todayPosts.setText(context.getString(R.string.forum_today_post, FavoriteForum.todayposts));
             if(FavoriteForum.favid == 0){
