@@ -45,8 +45,7 @@
         <activity android:name=".activities.InternalWebViewActivity" />
         <activity android:name=".activities.ThreadDraftActivity" />
         <activity
-            android:name=".activities.UserProfileActivity"
-            android:label="@string/title_activity_show_personal_info" />
+            android:name=".activities.UserProfileActivity" />
         <activity android:name=".activities.PrivateMessageActivity" />
         <activity
             android:name=".activities.WebViewLoginActivity"
