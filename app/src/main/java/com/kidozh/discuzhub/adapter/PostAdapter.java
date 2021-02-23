@@ -82,11 +82,12 @@ import okhttp3.OkHttpClient;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private final static String TAG = PostAdapter.class.getSimpleName();
     private List<Post> postList = new ArrayList<>();
-    private Context mContext,context;
+    private final Context mContext;
+    private Context context;
     public String subject;
     private OkHttpClient client = new OkHttpClient();
-    private Discuz bbsInfo;
-    private User curUser;
+    private final Discuz bbsInfo;
+    private final User curUser;
     private ViewThreadQueryStatus viewThreadQueryStatus;
 
     private onFilterChanged mListener;
@@ -121,7 +122,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Iterator<Post> iterator = postList.iterator();
         while (iterator.hasNext()){
             Post post = iterator.next();
-            if(post.message == null){
+            // remove nullable message
+            if(post.message.equals("")){
                 iterator.remove();
             }
         }
@@ -161,7 +163,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     @Override
     public void onBindViewHolder(@NonNull PostAdapter.PostViewHolder holder, int position) {
         Post post = postList.get(position);
-        if(post.author == null){
+        if(post.author.equals("")){
             return;
         }
         holder.mThreadPublisher.setText(post.author);
@@ -468,7 +470,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     }
 
-    public class PostViewHolder extends RecyclerView.ViewHolder{
+    public static class PostViewHolder extends RecyclerView.ViewHolder{
         TextView mThreadPublisher;
         TextView mPublishDate;
         TextView mContent;

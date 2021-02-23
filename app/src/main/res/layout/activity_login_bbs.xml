@@ -101,6 +101,7 @@
                     android:id="@+id/login_bbs_account_textInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="username"
                     android:fontFamily="@font/pt_sans" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -121,6 +122,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/pt_sans"
+                    android:autofillHints="password"
                     android:hint="@string/bbs_password"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
