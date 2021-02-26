@@ -66,6 +66,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.RequiresApi
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import com.google.android.material.chip.Chip
@@ -192,6 +194,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun bindViewModel() {
         // for personal info
         threadDetailViewModel.bbsPersonInfoMutableLiveData.observe(this, { userBriefInfo ->
@@ -453,12 +456,16 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         threadDetailViewModel.threadPostResultMutableLiveData.observe(this, { threadResult ->
             if (threadResult != null) {
                 if (threadResult.threadPostVariables != null && threadResult.threadPostVariables.detailedThreadInfo != null && threadResult.threadPostVariables.detailedThreadInfo.subject != null) {
-                    val sp = Html.fromHtml(threadResult.threadPostVariables.detailedThreadInfo.subject)
+                    val sp = Html.fromHtml(threadResult.threadPostVariables.detailedThreadInfo.subject,HtmlCompat.FROM_HTML_MODE_COMPACT)
                     val spannableString = SpannableString(sp)
                     binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
                     if (supportActionBar != null) {
                         supportActionBar!!.setTitle(threadResult.threadPostVariables.detailedThreadInfo.subject)
                     }
+                    // check with comments
+                    Log.d(TAG,"get comments "+threadResult.threadPostVariables.commentList.keys.size+" "+threadResult.threadPostVariables.commentList)
+                    postAdapter.mergeCommentMap(threadResult.threadPostVariables.commentList)
+
                     val detailedThreadInfo = threadResult.threadPostVariables.detailedThreadInfo
                     if (detailedThreadInfo != null && hasLoadOnce == false) {
                         hasLoadOnce = true
@@ -1140,7 +1147,6 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 discuz,
                 user,
                 threadDetailViewModel.threadStatusMutableLiveData.value)
-        postAdapter!!.subject = subject
         concatAdapter = ConcatAdapter(postAdapter, networkIndicatorAdapter)
         binding.postsRecyclerview.adapter = getAnimatedAdapter(this, concatAdapter!!)
         binding.postsRecyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {

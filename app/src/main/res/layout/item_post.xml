@@ -249,6 +249,17 @@
                     android:nestedScrollingEnabled="false"
                     tools:itemCount="1"
                     tools:listitem="@layout/item_bbs_attachment_info" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/comment_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:itemCount="2"
+                    android:descendantFocusability="blocksDescendants"
+                    android:focusable="false"
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_post_comment" />
+
             </LinearLayout>
 
             <Button

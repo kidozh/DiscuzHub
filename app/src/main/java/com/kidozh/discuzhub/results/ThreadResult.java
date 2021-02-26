@@ -37,18 +37,19 @@ public class ThreadResult extends BaseResult {
         public List<Post> postList;
         @JsonProperty("allowpostcomment")
         public List<String> allowPostCommentList;
-        @JsonIgnore
+
+
         @JsonProperty("comments")
         @JsonDeserialize(using = CommentListJsonDeserializer.class)
-        public Map<String, List<Comment>> commentList;
+        public Map<String, List<Comment>> commentList = new HashMap<>();
         @JsonIgnore
         @JsonProperty("commentcount")
         @JsonDeserialize(using = CommentCountJsonDeserializer.class)
-        public Map<String, String> commentCount;
+        public Map<String, String> commentCount = new HashMap<>();
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         public int ppp;
         @JsonProperty("setting_rewriterule")
-        public Map<String, String> rewriteRule;
+        public Map<String, String> rewriteRule = new HashMap<>();
         @JsonProperty("setting_rewritestatus")
         @JsonDeserialize(using = SettingRewriteStatusJsonDeserializer.class)
         public List<String> rewriteList;

@@ -83,6 +83,7 @@ public class ShortPostAdapter extends RecyclerView.Adapter<ShortPostAdapter.View
                     .into(holder.mReplyerAvatar);
         }
 
+
     }
 
     @Override

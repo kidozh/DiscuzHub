@@ -34,7 +34,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.graphics.drawable.DrawableWrapper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -56,6 +58,7 @@ import com.kidozh.discuzhub.entities.Post;
 import com.kidozh.discuzhub.entities.ViewThreadQueryStatus;
 import com.kidozh.discuzhub.entities.Discuz;
 import com.kidozh.discuzhub.entities.User;
+import com.kidozh.discuzhub.results.ThreadResult;
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.utilities.ConstUtils;
 import com.kidozh.discuzhub.utilities.URLUtils;
@@ -82,9 +85,9 @@ import okhttp3.OkHttpClient;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private final static String TAG = PostAdapter.class.getSimpleName();
     private List<Post> postList = new ArrayList<>();
-    private final Context mContext;
+    private Map<String, List<ThreadResult.Comment>> postCommentList = new HashMap<>();
     private Context context;
-    public String subject;
+    
     private OkHttpClient client = new OkHttpClient();
     private final Discuz bbsInfo;
     private final User curUser;
@@ -97,15 +100,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private OnLinkClicked onLinkClickedListener;
     private OnAdvanceOptionClicked onAdvanceOptionClickedListener;
     private int authorId = 0;
-
-
-
-
-
+    
+    
+    
     public PostAdapter(Context context, Discuz bbsInfo, User curUser, ViewThreadQueryStatus viewThreadQueryStatus){
         this.bbsInfo = bbsInfo;
         this.curUser = curUser;
-        this.mContext = context;
+        this.context = context;
         client = NetworkUtils.getPreferredClient(context);
         this.viewThreadQueryStatus = viewThreadQueryStatus;
         setHasStableIds(true);
@@ -228,7 +229,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             String quoteString = quoteMatcherInVer4.group(1);
             holder.mPostQuoteContent.setVisibility(View.VISIBLE);
             // set html
-            HtmlTagHandler HtmlTagHandler = new HtmlTagHandler(mContext,holder.mPostQuoteContent);
+            HtmlTagHandler HtmlTagHandler = new HtmlTagHandler(context,holder.mPostQuoteContent);
             Spanned sp = Html.fromHtml(quoteString,new MyImageGetter(holder.mPostQuoteContent),HtmlTagHandler);
             SpannableString spannableString = new SpannableString(sp);
 
@@ -260,15 +261,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
         decodeString = quoteMatcherInVer4.replaceAll("");
         // handle jammer contents
-        Log.d(TAG,"is removed contents "+UserPreferenceUtils.isJammerContentsRemoved(mContext));
-        if(UserPreferenceUtils.isJammerContentsRemoved(mContext)){
+        Log.d(TAG,"is removed contents "+UserPreferenceUtils.isJammerContentsRemoved(context));
+        if(UserPreferenceUtils.isJammerContentsRemoved(context)){
             decodeString= decodeString.replaceAll("<font class=\"jammer\">.+</font>","");
             decodeString= decodeString.replaceAll("<span style=\"display:none\">.+</span>","");
             Log.d(TAG,"GET removed contents "+decodeString);
         }
 
 
-        HtmlTagHandler HtmlTagHandler = new HtmlTagHandler(mContext,holder.mContent);
+        HtmlTagHandler HtmlTagHandler = new HtmlTagHandler(context,holder.mContent);
         Spanned sp = Html.fromHtml(decodeString,new MyImageGetter(holder.mContent),HtmlTagHandler);
         SpannableString spannableString = new SpannableString(sp);
 
@@ -298,7 +299,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         // some discuz may return a null dbdateline fields
         if(post.publishAt !=null){
-            holder.mPublishDate.setText(TimeDisplayUtils.getLocalePastTimeString(mContext, post.publishAt));
+            holder.mPublishDate.setText(TimeDisplayUtils.getLocalePastTimeString(context, post.publishAt));
         }
         else{
             holder.mPublishDate.setText(post.dateline);
@@ -313,14 +314,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             avatar_num = -avatar_num;
         }
 
-        int avatarResource = mContext.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",mContext.getPackageName());
+        int avatarResource = context.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",context.getPackageName());
 
         OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
-        Glide.get(mContext).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+        Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
         String source = URLUtils.getSmallAvatarUrlByUid(post.authorId);
         RequestOptions options = new RequestOptions()
-                .placeholder(mContext.getDrawable(avatarResource))
-                .error(mContext.getDrawable(avatarResource))
+                .placeholder(context.getDrawable(avatarResource))
+                .error(context.getDrawable(avatarResource))
                 //.diskCacheStrategy(DiskCacheStrategy.ALL)
                 ;
 
@@ -328,13 +329,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
                 );
         if(NetworkUtils.canDownloadImageOrFile(context)){
-            Glide.with(mContext)
+            Glide.with(context)
                     .load(glideUrl)
                     .apply(options)
                     .into(holder.mAvatarImageview);
         }
         else {
-            Glide.with(mContext)
+            Glide.with(context)
                     .load(glideUrl)
                     .apply(options)
                     .onlyRetrieveFromCache(true)
@@ -346,17 +347,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.mAvatarImageview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, UserProfileActivity.class);
+                Intent intent = new Intent(context, UserProfileActivity.class);
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,curUser);
 
                 intent.putExtra("UID", post.authorId);
                 ActivityOptions options = ActivityOptions
-                        .makeSceneTransitionAnimation((Activity) mContext, holder.mAvatarImageview, "user_info_avatar");
+                        .makeSceneTransitionAnimation((Activity) context, holder.mAvatarImageview, "user_info_avatar");
 
                 Bundle bundle = options.toBundle();
 
-                mContext.startActivity(intent,bundle);
+                context.startActivity(intent,bundle);
             }
         });
 
@@ -398,7 +399,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         registerListener();
         if(viewThreadQueryStatus.authorId == -1){
             // no author is filtered
-            holder.mFilterByAuthorIdBtn.setText(mContext.getString(R.string.bbs_post_only_see_him));
+            holder.mFilterByAuthorIdBtn.setText(context.getString(R.string.bbs_post_only_see_him));
             holder.mFilterByAuthorIdBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -407,7 +408,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             });
         }
         else {
-            holder.mFilterByAuthorIdBtn.setText(mContext.getString(R.string.bbs_post_see_all));
+            holder.mFilterByAuthorIdBtn.setText(context.getString(R.string.bbs_post_see_all));
             holder.mFilterByAuthorIdBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -417,9 +418,52 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             });
         }
 
+        // check with tid
+        String pidString = String.valueOf(post.pid);
+        if(postCommentList.containsKey(pidString)){
+            holder.commentRecyclerview.setVisibility(View.VISIBLE);
+            holder.commentRecyclerview.setLayoutManager(new LinearLayoutManager(context));
+            CommentAdapter commentAdapter = new CommentAdapter();
+            List<ThreadResult.Comment> comments = postCommentList.getOrDefault(pidString,new ArrayList<>());
+            if(comments != null){
+                commentAdapter.setCommentList(comments);
+                Log.d(TAG,"Get comments size "+comments.size());
+            }
+            holder.mRecyclerview.setNestedScrollingEnabled(false);
+            holder.commentRecyclerview.setAdapter(commentAdapter);
+        }
+        else {
+            holder.commentRecyclerview.setVisibility(View.GONE);
+        }
 
 
 
+
+    }
+
+    public void mergeCommentMap(Map<String, List<ThreadResult.Comment>> commentList){
+
+        if(commentList != null){
+            this.postCommentList.putAll(commentList);
+
+            commentList.forEach(
+                    (key,value) -> {
+                        Log.d(TAG,"get comment key "+key+" value "+value);
+                        int pid = Integer.parseInt(key);
+                        // this.postCommentList.put(key,value);
+                        // find adapter and change it
+                        for(int i=0;i<postList.size();i++){
+                            Post post = postList.get(i);
+                            if(post.pid == pid){
+                                notifyItemChanged(i);
+                                break;
+                            }
+                        }
+                    }
+            );
+
+
+        }
     }
 
     public void showPopupMenu(View view, Post post){
@@ -486,6 +530,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         TextView isAuthorLabel;
         TextView mPostQuoteContent;
         ImageView mPostAdvanceOptionImageView;
+        RecyclerView commentRecyclerview;
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             mThreadPublisher = itemView.findViewById(R.id.bbs_post_publisher);
@@ -503,6 +548,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             isAuthorLabel = itemView.findViewById(R.id.bbs_post_is_author);
             mPostQuoteContent = itemView.findViewById(R.id.bbs_thread_quote_content);
             mPostAdvanceOptionImageView = itemView.findViewById(R.id.bbs_post_advance_option);
+            commentRecyclerview = itemView.findViewById(R.id.comment_recyclerview);
         }
     }
 
@@ -547,9 +593,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             Drawable drawable = context.getDrawable(R.drawable.vector_drawable_image_wider_placeholder_stroke);
             myDrawable = new MyDrawableWrapper(drawable);
             // myDrawable.setDrawable(drawable);
-            client = NetworkUtils.getPreferredClient(mContext);
+            client = NetworkUtils.getPreferredClient(context);
             OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
-            Glide.get(mContext)
+            Glide.get(context)
                     .getRegistry()
                     .replace(GlideUrl.class,InputStream.class,factory);
             drawableTarget currentDrawable = new drawableTarget(myDrawable,textView);
@@ -563,11 +609,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 targetList.add(currentDrawable);
                 urlDrawableMapper.put(source, targetList);
             }
-            if(NetworkUtils.canDownloadImageOrFile(mContext)){
+            if(NetworkUtils.canDownloadImageOrFile(context)){
                 GlideUrl glideUrl = new GlideUrl(source,
                         new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
                 );
-                Glide.with(mContext)
+                Glide.with(context)
                         .load(glideUrl)
                         .error(R.drawable.vector_drawable_image_crash)
                         .placeholder(R.drawable.ic_loading_picture)
@@ -577,7 +623,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 GlideUrl glideUrl = new GlideUrl(source,
                         new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
                 );
-                Glide.with(mContext)
+                Glide.with(context)
                         .load(glideUrl)
                         .error(R.drawable.vector_drawable_image_wider_placeholder)
                         .placeholder(R.drawable.ic_loading_picture)
@@ -605,7 +651,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             super.onLoadFailed(errorDrawable);
 
             TextView tv = textView;
-            //errorDrawable = mContext.getDrawable(R.drawable.vector_drawable_image_crash);
+            //errorDrawable = context.getDrawable(R.drawable.vector_drawable_image_crash);
             int width=errorDrawable.getIntrinsicWidth() ;
             int height=errorDrawable.getIntrinsicHeight();
             myDrawable.setBounds(0,0,width,height);
@@ -698,11 +744,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     // make image clickable
     public class HtmlTagHandler implements Html.TagHandler {
 
-        private Context mContext;
+        private Context context;
         TextView textView;
 
         public HtmlTagHandler(Context context, TextView textView) {
-            mContext = context.getApplicationContext();
+            context = context.getApplicationContext();
             this.textView = textView;
         }
 
@@ -718,7 +764,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 String imgURL = images[0].getSource();
 
                 // 使图片可点击并监听点击事件
-                output.setSpan(new ClickableImage(mContext, imgURL), len - 1, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                output.setSpan(new ClickableImage(context, imgURL), len - 1, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             else if (tag.equalsIgnoreCase("del")){
                 int startTag = 0, endTag = 0;
@@ -751,12 +797,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     return;
                 }
                 isLoading = true;
-                client = NetworkUtils.getPreferredClient(mContext);
+                client = NetworkUtils.getPreferredClient(context);
                 OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
-                Drawable drawable = mContext.getDrawable(R.drawable.vector_drawable_loading_image);
+                Drawable drawable = context.getDrawable(R.drawable.vector_drawable_loading_image);
                 //myDrawable = new MyDrawableWrapper(drawable);
                 myDrawable.setDrawable(drawable);
-                Glide.get(mContext)
+                Glide.get(context)
                         .getRegistry()
                         .replace(GlideUrl.class,InputStream.class,factory);
                 // need to judge whether the image is cached or not
@@ -767,7 +813,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     GlideUrl glideUrl = new GlideUrl(url,
                             new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
                     );
-                    Glide.with(mContext)
+                    Glide.with(context)
                             .load(glideUrl)
                             .error(R.drawable.vector_drawable_image_failed)
                             .placeholder(R.drawable.vector_drawable_loading_image)
@@ -785,7 +831,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                                 GlideUrl glideUrl = new GlideUrl(url,
                                                         new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
                                                 );
-                                                Glide.with(mContext)
+                                                Glide.with(context)
                                                         .load(glideUrl)
                                                         .error(R.drawable.vector_drawable_image_failed)
                                                         .placeholder(R.drawable.vector_drawable_loading_image)
@@ -803,11 +849,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                 @Override
                                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                     isLoading = false;
-                                    Intent intent = new Intent(mContext, FullImageActivity.class);
+                                    Intent intent = new Intent(context, FullImageActivity.class);
                                     intent.putExtra("URL",url);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                                    mContext.startActivity(intent);
+                                    context.startActivity(intent);
                                     return false;
                                 }
                             })
@@ -821,7 +867,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     GlideUrl glideUrl = new GlideUrl(url,
                             new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
                     );
-                    Glide.with(mContext)
+                    Glide.with(context)
                             .load(glideUrl)
                             .error(R.drawable.vector_drawable_image_failed)
                             .placeholder(R.drawable.vector_drawable_loading_image)
@@ -834,7 +880,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                     GlideUrl glideUrl = new GlideUrl(url,
                                             new LazyHeaders.Builder().addHeader("referer",bbsInfo.base_url).build()
                                     );
-                                    Glide.with(mContext)
+                                    Glide.with(context)
                                             .load(glideUrl)
                                             .error(R.drawable.vector_drawable_image_failed)
                                             .placeholder(R.drawable.vector_drawable_loading_image)
@@ -856,11 +902,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                 @Override
                                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                     isLoading = false;
-                                    Intent intent = new Intent(mContext, FullImageActivity.class);
+                                    Intent intent = new Intent(context, FullImageActivity.class);
                                     intent.putExtra("URL",url);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                                    mContext.startActivity(intent);
+                                    context.startActivity(intent);
                                     //textView.invalidateDrawable(resource);
                                     textView.invalidate();
 
