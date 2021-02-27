@@ -77,9 +77,6 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                 Layout layout = widget.getLayout();
                 int line = layout.getLineForVertical(y2);
                 int off = layout.getOffsetForHorizontal(line, x2);
-                /**
-                 * get you interest span
-                 */
                 URLSpan[] spans = buffer.getSpans(off, off, URLSpan.class);
                 if (spans.length != 0) {
                     String url = spans[0].getURL();
