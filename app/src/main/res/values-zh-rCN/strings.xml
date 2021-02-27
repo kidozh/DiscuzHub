@@ -750,5 +750,6 @@
     <string name="preference_title_remove_jammer_contents">移除干扰码</string>
     <string name="preference_summary_on_remove_jammer_contents">应用将会自动移除干扰内容的干扰码，有小概率会影响正常内容的显示。</string>
     <string name="preference_summary_off_remove_jammer_contents">当帖子内容出现乱码的字符时，你可以开启此选项以移除干扰码内容。</string>
+    <string name="no_mark_smiley_found">你还没有使用一个表情呢。</string>
 
 </resources>

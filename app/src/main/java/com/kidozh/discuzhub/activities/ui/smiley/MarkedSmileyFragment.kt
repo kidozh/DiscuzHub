@@ -44,12 +44,12 @@ class MarkedSmileyFragment : Fragment() {
         }
     }
 
-    var binding: FragmentSmileyBinding? = null
+    lateinit var binding: FragmentSmileyBinding
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         binding = FragmentSmileyBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,17 +61,23 @@ class MarkedSmileyFragment : Fragment() {
 
     fun configureRecyclerView() {
         val layoutManager: RecyclerView.LayoutManager = GridLayoutManager(context, 6, LinearLayoutManager.VERTICAL, false)
-        binding!!.smileyRecyclerview.layoutManager = layoutManager
-        binding!!.smileyRecyclerview.itemAnimator = getRecyclerviewAnimation(requireContext())
+        binding.smileyRecyclerview.layoutManager = layoutManager
+        binding.smileyRecyclerview.itemAnimator = getRecyclerviewAnimation(requireContext())
         adapter = SmileyAdapter(requireContext(),discuz,
                 ({ v1, position ->
                     val img = v1 as ImageView
                     smileyClick(img.drawable, position)
                 }))
-        binding!!.smileyRecyclerview.adapter = getAnimatedAdapter(requireContext(), adapter)
+        binding.smileyRecyclerview.adapter = getAnimatedAdapter(requireContext(), adapter)
         model.latestSmileyListLiveData.observe(viewLifecycleOwner,{
             Log.d(TAG,"GET latest smiley "+it)
             adapter.setsmileys(it)
+            if(it.isEmpty()){
+                binding.emptyPage.visibility = View.VISIBLE
+            }
+            else{
+                binding.emptyPage.visibility = View.GONE
+            }
 
         })
 

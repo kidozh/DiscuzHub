@@ -881,6 +881,7 @@
     <string name="preference_title_remove_jammer_contents">Remove jammer contents</string>
     <string name="preference_summary_on_remove_jammer_contents">App will automatically remove jammer contents in a post.</string>
     <string name="preference_summary_off_remove_jammer_contents">When you see the jammer characters, you can try to open it.</string>
+    <string name="no_mark_smiley_found">No smiley is recently used.</string>
 
 
 </resources>
