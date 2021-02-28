@@ -7,10 +7,10 @@ android {
     buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.kidozh.discuzhub"
-        minSdkVersion 24
+        minSdkVersion 23
         targetSdkVersion 30
-        versionCode 37
-        versionName "4.7"
+        versionCode 38
+        versionName "4.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [
                 discuz_title: "NOT_IMPLEMENTED",
