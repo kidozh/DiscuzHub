@@ -42,6 +42,8 @@ class AppThemeAdapter: RecyclerView.Adapter<AppThemeAdapter.AppThemeViewHolder>(
         return AppThemeViewHolder(ItemAppThemeBinding.inflate(inflater,parent,false))
     }
 
+
+
     override fun onBindViewHolder(holder: AppThemeViewHolder, position: Int) {
         val appTheme = appThemeList[position]
         Log.d(TAG,"GET theme position "+position)

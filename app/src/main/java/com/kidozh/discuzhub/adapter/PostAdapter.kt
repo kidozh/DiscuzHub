@@ -86,11 +86,18 @@ class PostAdapter(private val bbsInfo: Discuz, private val curUser: User?, viewT
     private var onAdvanceOptionClickedListener: OnAdvanceOptionClicked? = null
     private var authorId = 0
     private lateinit var context : Context
+
+    init {
+        setHasStableIds(false)
+    }
+
     fun clearList() {
         val oldSize = postList.size
         postList.clear()
         notifyItemRangeRemoved(0, oldSize)
     }
+
+
 
     fun addThreadInfoList(postList: MutableList<Post>, viewThreadQueryStatus: ViewThreadQueryStatus, authorId: Int) {
         val oldSize = this.postList.size
@@ -118,6 +125,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val curUser: User?, viewT
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         context = parent.context
+
         client = NetworkUtils.getPreferredClient(context)
         val layoutIdForListItem = R.layout.item_post
         val inflater = LayoutInflater.from(context)

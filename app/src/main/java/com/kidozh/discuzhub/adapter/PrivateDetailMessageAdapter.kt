@@ -31,6 +31,11 @@ class PrivateDetailMessageAdapter(var curBBS: Discuz, var user: User?) : Recycle
         field = value
         notifyDataSetChanged()
     }
+
+    init {
+        setHasStableIds(false)
+    }
+
     lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -40,6 +45,10 @@ class PrivateDetailMessageAdapter(var curBBS: Discuz, var user: User?) : Recycle
         val shouldAttachToParentImmediately = false
         val view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately)
         return ViewHolder(view)
+    }
+
+    override fun getItemId(position: Int): Long {
+        return privateDetailMessageList[position].pmId.toLong()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
