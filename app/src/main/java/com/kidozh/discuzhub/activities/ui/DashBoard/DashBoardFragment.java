@@ -119,19 +119,20 @@ public class DashBoardFragment extends Fragment {
                     tab.setIcon(R.drawable.ic_baseline_forum_24);
                     break;
                 }
+
                 case 3:{
-                    tab.setText(R.string.dashboard_explore_fragment);
-                    tab.setIcon(R.drawable.ic_baseline_explore_24);
-                    break;
-                }
-                case 4:{
                     tab.setText(R.string.marked_thread);
                     tab.setIcon(R.drawable.ic_baseline_marked_thread_24);
                     break;
                 }
-                case 5:{
+                case 4:{
                     tab.setText(R.string.marked_forum);
                     tab.setIcon(R.drawable.ic_baseline_bookmarks_24);
+                    break;
+                }
+                case 5:{
+                    tab.setText(R.string.dashboard_explore_fragment);
+                    tab.setIcon(R.drawable.ic_baseline_explore_24);
                     break;
                 }
 
@@ -169,13 +170,13 @@ public class DashBoardFragment extends Fragment {
                     return HotForumsFragment.newInstance(bbsInfo,userBriefInfo);
                 }
                 case 3:{
-                    return ExplorePageFragment.Companion.newInstance(bbsInfo,userBriefInfo);
-                }
-                case 4:{
                     return FavoriteThreadFragment.newInstance(bbsInfo,userBriefInfo,"tid");
                 }
-                case 5:{
+                case 4:{
                     return FavoriteForumFragment.newInstance(bbsInfo,userBriefInfo);
+                }
+                case 5:{
+                    return ExplorePageFragment.Companion.newInstance(bbsInfo,userBriefInfo);
                 }
             }
             return HotThreadsFragment.newInstance(bbsInfo,userBriefInfo);
