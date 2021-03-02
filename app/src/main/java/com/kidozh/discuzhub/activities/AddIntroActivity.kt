@@ -158,14 +158,14 @@ class AddIntroActivity : BaseStatusActivity(), OnClickSuggestionListener {
 
             override fun afterTextChanged(s: Editable) {}
         })
-        binding!!.autoAddBbs.setOnCheckedChangeListener { buttonView: CompoundButton?, isChecked: Boolean -> viewModel.autoVerifyURLLiveData.postValue(isChecked) }
+        binding!!.autoAddBbs.setOnCheckedChangeListener { _, isChecked: Boolean -> viewModel.autoVerifyURLLiveData.postValue(isChecked) }
     }
 
     private fun configureContinueBtn() {
         binding!!.bbsAddIntroContinueButton.setOnClickListener {
             val urlString = binding!!.bbsAddIntroUrlEdittext.text.toString()
             try {
-                val url = URL(urlString)
+
                 viewModel.verifyURL()
             } catch (e: MalformedURLException) {
                 Toasty.warning(application, getString(R.string.add_bbs_url_failed, urlString), Toast.LENGTH_LONG).show()

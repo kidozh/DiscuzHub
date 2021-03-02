@@ -17,6 +17,7 @@ public class DisplayThreadsResult extends BaseResult {
     public static class ForumVariables extends VariableResults{
 
         @JsonProperty("data")
+
         public List<Thread> forumThreadList = new ArrayList<>();
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("perpage")

@@ -176,5 +176,10 @@ public interface DiscuzApiService {
             @Field("message") String message
     );
 
+    @GET(DISCUZ_API_PATH+"?version=4&module=mythread")
+    Call<DisplayThreadsResult> myThreadResult(
+            @Query("page") int page
+    );
+
 
 }

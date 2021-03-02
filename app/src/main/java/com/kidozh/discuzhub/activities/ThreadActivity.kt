@@ -105,9 +105,9 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     private var smileyPicker: SmileyPicker? = null
     private var handler: EmotionInputHandler? = null
     lateinit var threadDetailViewModel: ThreadViewModel
-    lateinit var smileyViewModel: SmileyViewModel
+    private lateinit var smileyViewModel: SmileyViewModel
     private lateinit var concatAdapter: ConcatAdapter
-    val networkIndicatorAdapter = NetworkIndicatorAdapter()
+    private val networkIndicatorAdapter = NetworkIndicatorAdapter()
     lateinit var smileyViewPagerAdapter: SmileyViewPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -166,7 +166,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
 
 
     private fun configureSmileyLayout() {
-        handler = EmotionInputHandler(binding.bbsThreadDetailCommentEditText) { enable: Boolean, s: String? -> }
+        handler = EmotionInputHandler(binding.bbsThreadDetailCommentEditText) { _: Boolean, _: String? -> }
         smileyPicker = SmileyPicker(this, discuz)
         smileyPicker!!.setListener { str: String?, a: Drawable? -> handler!!.insertSmiley(str, a) }
 
@@ -174,9 +174,9 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         binding.bbsCommentSmileyViewPager.adapter = smileyViewPagerAdapter
     }
 
-    fun configureChipGroup(){
+    private fun configureChipGroup(){
         binding.threadProperty.setOnCheckedChangeListener { _, checkedId ->
-            Log.d(TAG,"GET clicked id "+checkedId)
+            Log.d(TAG, "GET clicked id $checkedId")
             if(checkedId == R.drawable.ic_price_outlined_24px){
                 Toasty.info(this, getString(R.string.buy_thread_loading), Toast.LENGTH_SHORT).show()
                 threadDetailViewModel.getThreadPriceInfo(tid)
@@ -184,7 +184,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         }
     }
 
-    fun getPropertyChip(res: Int, string: String, iconColor: Int ): Chip{
+    private fun getPropertyChip(res: Int, string: String, iconColor: Int ): Chip{
 
         return Chip(this).apply {
             text = string
@@ -194,39 +194,40 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+
     private fun bindViewModel() {
         // for personal info
         threadDetailViewModel.bbsPersonInfoMutableLiveData.observe(this, { userBriefInfo ->
-            Log.d(TAG, "User info $userBriefInfo")
-            if (userBriefInfo == null || userBriefInfo.auth == null) {
+            if (userBriefInfo?.auth == null) {
                 binding.bbsCommentConstraintLayout.visibility = View.GONE
             } else {
                 binding.bbsCommentConstraintLayout.visibility = View.VISIBLE
             }
         })
-        threadDetailViewModel.newPostList.observe(this, { posts: List<Post> ->
+
+        threadDetailViewModel.totalPostListLiveData.observe(this,{
+            Log.d(TAG, "Update list "+postAdapter.itemCount+" new list "+it.size+" is equal "+(postAdapter.getPosts() == it).toString())
             var authorid = 0
             val threadResult = threadDetailViewModel.threadPostResultMutableLiveData.value
-            val viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value
+            val viewThreadQueryStatus : ViewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value as ViewThreadQueryStatus
             if (threadResult?.threadPostVariables != null && threadResult.threadPostVariables.detailedThreadInfo != null) {
                 authorid = threadResult.threadPostVariables.detailedThreadInfo.authorId
             }
-            Log.d(TAG, "queried page " + viewThreadQueryStatus!!.page)
-            if (viewThreadQueryStatus.page == 1) {
-                postAdapter.clearList()
-                threadDetailViewModel.threadStatusMutableLiveData.value?.let { postAdapter.addThreadInfoList(posts as MutableList<Post>, it, authorid) }
+            // update list
+            postAdapter.setPosts(it as MutableList<Post>,viewThreadQueryStatus,authorid)
+
+            if(viewThreadQueryStatus.page == 1){
                 binding.postsRecyclerview.scrollToPosition(0)
-            } else {
-                threadDetailViewModel.threadStatusMutableLiveData.value?.let { postAdapter.addThreadInfoList(posts as MutableList<Post>, it, authorid) }
             }
         })
+
+
         threadDetailViewModel.networkStatus.observe(this, { integer: Int ->
             Log.d(TAG, "network changed $integer")
             when (integer) {
                 ConstUtils.NETWORK_STATUS_LOADING -> {
                     binding.bbsThreadDetailSwipeRefreshLayout.isRefreshing = true
-                    networkIndicatorAdapter!!.setLoadingStatus()
+                    networkIndicatorAdapter.setLoadingStatus()
                 }
                 ConstUtils.NETWORK_STATUS_LOADED_ALL -> {
                     binding.bbsThreadDetailSwipeRefreshLayout.isRefreshing = false
@@ -453,6 +454,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             binding.bbsThreadCommentNumber.text = getString(R.string.bbs_thread_reply_number, detailedThreadInfo.replies)
             binding.bbsThreadViewNumber.text = detailedThreadInfo.views.toString()
         })
+
         threadDetailViewModel.threadPostResultMutableLiveData.observe(this, { threadResult ->
             if (threadResult != null) {
                 if (threadResult.threadPostVariables != null && threadResult.threadPostVariables.detailedThreadInfo != null && threadResult.threadPostVariables.detailedThreadInfo.subject != null) {
@@ -467,7 +469,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                     postAdapter.mergeCommentMap(threadResult.threadPostVariables.commentList)
 
                     val detailedThreadInfo = threadResult.threadPostVariables.detailedThreadInfo
-                    if (detailedThreadInfo != null && hasLoadOnce == false) {
+                    if (detailedThreadInfo != null && !hasLoadOnce) {
                         hasLoadOnce = true
                         val prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
                         val recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history), false)
@@ -503,7 +505,8 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                     // don't need a code
                     binding.bbsPostCaptchaEditText.visibility = View.GONE
                     binding.bbsPostCaptchaImageview.visibility = View.GONE
-                } else {
+                }
+                else {
                     binding.bbsPostCaptchaEditText.visibility = View.VISIBLE
                     binding.bbsPostCaptchaImageview.visibility = View.VISIBLE
                     binding.bbsPostCaptchaImageview.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_captcha_placeholder_24px))
@@ -718,7 +721,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         binding.bbsThreadDetailEmoijButton.setOnClickListener {
             if (binding.smileyRootLayout.visibility == View.GONE) {
                 // smiley picker not visible
-                binding.bbsThreadDetailEmoijButton.setImageDrawable(getDrawable(R.drawable.vector_drawable_keyboard_24px))
+                binding.bbsThreadDetailEmoijButton.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.vector_drawable_keyboard_24px))
                 binding.bbsThreadDetailCommentEditText.clearFocus()
                 // close keyboard
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -729,13 +732,13 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 smileyViewModel.getSmileyList()
             } else {
                 binding.smileyRootLayout.visibility = View.GONE
-                binding.bbsThreadDetailEmoijButton.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp))
+                binding.bbsThreadDetailEmoijButton.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_edit_emoticon_24dp))
             }
         }
         binding.bbsThreadDetailCommentEditText.onFocusChangeListener = OnFocusChangeListener { v, hasFocus ->
             if (hasFocus && binding.smileyRootLayout.visibility == View.VISIBLE) {
                 binding.smileyRootLayout.visibility = View.GONE
-                binding.bbsThreadDetailEmoijButton.setImageDrawable(getDrawable(R.drawable.ic_edit_emoticon_24dp))
+                binding.bbsThreadDetailEmoijButton.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.ic_edit_emoticon_24dp))
             }
         }
     }
@@ -751,7 +754,8 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     }
 
     override fun replyToSomeOne(position: Int) {
-        val threadCommentInfo = postAdapter.threadInfoList.get(position)
+
+        val threadCommentInfo = postAdapter.getPosts()[position]
         selectedThreadComment = threadCommentInfo
         binding.bbsThreadDetailReplyChip.text = threadCommentInfo.author
         binding.bbsThreadDetailReplyChip.visibility = View.VISIBLE
@@ -764,7 +768,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         val quotePatternInVer4 = Pattern.compile(quoteRegexInVer4, Pattern.DOTALL)
         val quoteMatcherInVer4 = quotePatternInVer4.matcher(decodeString)
         decodeString = quoteMatcherInVer4.replaceAll("")
-        val sp = Html.fromHtml(decodeString)
+        val sp = Html.fromHtml(decodeString,HtmlCompat.FROM_HTML_MODE_LEGACY)
         binding.bbsThreadDetailReplyContent.setText(sp, TextView.BufferType.SPANNABLE)
         binding.bbsThreadDetailReplyContent.visibility = View.VISIBLE
         binding.bbsThreadDetailReplyChip.setOnCloseIconClickListener {
@@ -785,8 +789,8 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     }
 
     override fun setAuthorId(authorId: Int) {
-        val viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value
-        viewThreadQueryStatus?.setInitAuthorId(authorId)
+        val viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value as ViewThreadQueryStatus
+        viewThreadQueryStatus.setInitAuthorId(authorId)
         reloadThePage(viewThreadQueryStatus)
 
         // refresh it
@@ -823,20 +827,18 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                     return
                 } else {
                     // scroll it
-                    val postInfos = postAdapter!!.threadInfoList
-                    if (postInfos != null) {
-                        for (i in postInfos.indices) {
-                            val curPost = postInfos[i]
-                            if (curPost.pid == redirectPid) {
-                                binding.postsRecyclerview.smoothScrollToPosition(i)
-                                VibrateUtils.vibrateForClick(this)
-                                val postPostion = postInfos[i].position
-                                Toasty.success(this, getString(R.string.scroll_to_pid_successfully, postPostion), Toast.LENGTH_SHORT).show()
-                                return
-                            }
+                    val postInfos = postAdapter.getPosts()
+                    for (i in postInfos.indices) {
+                        val curPost = postInfos[i]
+                        if (curPost.pid == redirectPid) {
+                            binding.postsRecyclerview.smoothScrollToPosition(i)
+                            VibrateUtils.vibrateForClick(this)
+                            val postPostion = postInfos[i].position
+                            Toasty.success(this, getString(R.string.scroll_to_pid_successfully, postPostion), Toast.LENGTH_SHORT).show()
+                            return
                         }
-                        Toasty.info(this, getString(R.string.scroll_to_pid_failed, pidString), Toast.LENGTH_SHORT).show()
                     }
+                    Toasty.info(this, getString(R.string.scroll_to_pid_failed, pidString), Toast.LENGTH_SHORT).show()
                 }
             } else if (uri.getQueryParameter("mod") != null && uri.getQueryParameter("mod") == "viewthread" && uri.getQueryParameter("tid") != null) {
                 val tidString = uri.getQueryParameter("tid")
@@ -1137,20 +1139,17 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
 
 
     private fun configureRecyclerview() {
-
-
         //binding.postsRecyclerview.setHasFixedSize(true);
         val linearLayoutManager = LinearLayoutManager(this)
         binding.postsRecyclerview.layoutManager = linearLayoutManager
         binding.postsRecyclerview.itemAnimator = getRecyclerviewAnimation(this)
-        postAdapter = threadDetailViewModel.threadStatusMutableLiveData.value?.let {
-            PostAdapter(
-                    discuz,
-                    user,
-                    it)
-        }!!
+        val status = threadDetailViewModel.threadStatusMutableLiveData.value as ViewThreadQueryStatus
+
+        postAdapter = PostAdapter(discuz,user,status)
+
         concatAdapter = ConcatAdapter(postAdapter, networkIndicatorAdapter)
-        binding.postsRecyclerview.adapter = getAnimatedAdapter(this, concatAdapter!!)
+        binding.postsRecyclerview.adapter = getAnimatedAdapter(this, concatAdapter)
+
         binding.postsRecyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -1292,20 +1291,22 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     }
 
     private fun reloadThePage() {
-        val viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value
-        viewThreadQueryStatus?.setInitPage(1)
+        val viewThreadQueryStatus : ViewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value as ViewThreadQueryStatus
+        viewThreadQueryStatus.setInitPage(1)
         Log.d(TAG, "Set status when reload page")
-        threadDetailViewModel.threadStatusMutableLiveData.value = viewThreadQueryStatus
+        threadDetailViewModel.threadStatusMutableLiveData.postValue(viewThreadQueryStatus)
         threadDetailViewModel.notifyLoadAll.value = false
         notifyLoadAll = false
+        postAdapter.clearList()
     }
 
-    private fun reloadThePage(viewThreadQueryStatus: ViewThreadQueryStatus?) {
-        viewThreadQueryStatus?.setInitPage(1)
+    private fun reloadThePage(viewThreadQueryStatus: ViewThreadQueryStatus) {
+        viewThreadQueryStatus.setInitPage(1)
         Log.d(TAG, "Set status when init data $viewThreadQueryStatus")
         threadDetailViewModel.threadStatusMutableLiveData.value = viewThreadQueryStatus
         threadDetailViewModel.notifyLoadAll.value = false
         notifyLoadAll = false
+        postAdapter.clearList()
     }
 
     private fun postReplyToSomeoneInThread(replyPid: Int, message: String, noticeAuthorMsg: String) {

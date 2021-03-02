@@ -43,7 +43,7 @@ class NewThreadsFragment : Fragment() {
         if (arguments != null) {
             bbsInfo = (requireArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?)!!
             user = requireArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY) as User?
-            threadAdapter = ThreadAdapter(null, null, bbsInfo, user)
+            threadAdapter = ThreadAdapter(null,  bbsInfo, user)
         }
     }
 
@@ -129,10 +129,15 @@ class NewThreadsFragment : Fragment() {
 
         })
 
-        viewModel.newThreadListMutableLiveData.observe(viewLifecycleOwner, { threadList ->
+
+
+        viewModel.totalNewThreadListMutableLiveData.observe(viewLifecycleOwner, { threadList ->
             viewModel.pageMutableLiveData.value
-            threadAdapter.threadList = threadList
-            threadAdapter.notifyDataSetChanged()
+            threadAdapter.updateList(threadList)
+
+            if(viewModel.pageMutableLiveData.value == 1){
+                binding.newThreadsRecyclerview.smoothScrollToPosition(0)
+            }
 
         })
     }

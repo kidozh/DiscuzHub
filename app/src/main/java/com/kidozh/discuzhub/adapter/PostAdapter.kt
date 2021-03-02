@@ -27,6 +27,7 @@ import android.widget.*
 import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -47,6 +48,7 @@ import com.kidozh.discuzhub.activities.UserProfileActivity
 import com.kidozh.discuzhub.adapter.PostAdapter.PostViewHolder
 import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.Post
+import com.kidozh.discuzhub.entities.Thread
 import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.entities.ViewThreadQueryStatus
 import com.kidozh.discuzhub.results.ThreadResult
@@ -74,8 +76,17 @@ val POST_WARNED = 2
 val POST_REVISED = 4
 val POST_MOBILE = 8
 
-class PostAdapter(private val bbsInfo: Discuz, private val curUser: User?, viewThreadQueryStatus: ViewThreadQueryStatus) : RecyclerView.Adapter<PostViewHolder>() {
-    private val postList: MutableList<Post> = ArrayList()
+class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThreadQueryStatus: ViewThreadQueryStatus) : RecyclerView.Adapter<PostViewHolder>() {
+    private var postList: List<Post> = ArrayList()
+    set(value) {
+        Log.d(TAG,"Value new size "+value.size+" old size "+field.size)
+        field = value
+        val result = DiffUtil.calculateDiff(Post.Companion.DiffCallback(field, value))
+        result.dispatchUpdatesTo(this)
+    }
+//    get() {
+//        return field
+//    }
     private val postCommentList: MutableMap<String, List<ThreadResult.Comment>> = HashMap()
     private var client = OkHttpClient()
     private var viewThreadQueryStatus: ViewThreadQueryStatus
@@ -85,6 +96,11 @@ class PostAdapter(private val bbsInfo: Discuz, private val curUser: User?, viewT
     private var onLinkClickedListener: OnLinkClicked? = null
     private var onAdvanceOptionClickedListener: OnAdvanceOptionClicked? = null
     private var authorId = 0
+//    set(value) {
+//        // all changed
+//        notifyItemRangeChanged(0,postList.size)
+//        field = value
+//    }
     private lateinit var context : Context
 
     init {
@@ -92,16 +108,33 @@ class PostAdapter(private val bbsInfo: Discuz, private val curUser: User?, viewT
     }
 
     fun clearList() {
-        val oldSize = postList.size
-        postList.clear()
-        notifyItemRangeRemoved(0, oldSize)
+        updateList(ArrayList())
+
+    }
+
+    fun getPosts(): List<Post>{
+        return postList
+    }
+
+    init {
+        setHasStableIds(true)
+    }
+
+    private fun updateList(newList: List<Post>?) {
+        if(newList == null){
+            return
+        }
+        Log.d(TAG,"Recv post list "+this.postList.size+" new list "+newList.size)
+        val result = DiffUtil.calculateDiff(Post.Companion.DiffCallback(postList, newList))
+        this.postList = newList
+        result.dispatchUpdatesTo(this)
+        notifyDataSetChanged()
     }
 
 
 
-    fun addThreadInfoList(postList: MutableList<Post>, viewThreadQueryStatus: ViewThreadQueryStatus, authorId: Int) {
-        val oldSize = this.postList.size
-        val iterator = postList.iterator()
+    fun setPosts(newList: MutableList<Post>, viewThreadQueryStatus: ViewThreadQueryStatus, authorId: Int){
+        val iterator = newList.iterator()
         while (iterator.hasNext()) {
             val post = iterator.next()
             // remove nullable message
@@ -109,14 +142,14 @@ class PostAdapter(private val bbsInfo: Discuz, private val curUser: User?, viewT
                 iterator.remove()
             }
         }
-        this.postList.addAll(postList)
+        Log.d(TAG,"set post list "+this.postList.size+" new list "+newList.size)
         this.viewThreadQueryStatus = viewThreadQueryStatus
         this.authorId = authorId
-        notifyItemRangeInserted(oldSize, postList.size)
+        updateList(newList)
     }
+    
+    
 
-    val threadInfoList: List<Post>
-        get() = postList
 
     override fun getItemId(position: Int): Long {
         val post = postList[position]
@@ -221,7 +254,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val curUser: User?, viewT
         if (isJammerContentsRemoved(context)) {
             decodeString = decodeString.replace("<font class=\"jammer\">.+</font>".toRegex(), "")
             decodeString = decodeString.replace("<span style=\"display:none\">.+</span>".toRegex(), "")
-            Log.d(TAG, "GET removed contents $decodeString")
+
         }
         val htmlTagHandler: HtmlTagHandler = HtmlTagHandler(context, holder.mContent)
         val sp = Html.fromHtml(decodeString, HtmlCompat.FROM_HTML_MODE_LEGACY, PostImageGetter(holder.mContent), htmlTagHandler)
@@ -246,11 +279,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val curUser: User?, viewT
         })
 
         // some discuz may return a null dbdateline fields
-        if (post.publishAt != null) {
-            holder.mPublishDate.text = getLocalePastTimeString(context, post.publishAt)
-        } else {
-            holder.mPublishDate.text = post.dateline
-        }
+        holder.mPublishDate.text = getLocalePastTimeString(context, post.publishAt)
         holder.mThreadType.text = context.getString(R.string.post_index_number, post.position)
         var avatar_num = post.authorId % 16
         if (avatar_num < 0) {
@@ -281,7 +310,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val curUser: User?, viewT
         holder.mAvatarImageview.setOnClickListener {
             val intent = Intent(context, UserProfileActivity::class.java)
             intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, curUser)
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
             intent.putExtra("UID", post.authorId)
             val options = ActivityOptions
                     .makeSceneTransitionAnimation(context as Activity, holder.mAvatarImageview, "user_info_avatar")
@@ -298,7 +327,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val curUser: User?, viewT
         } else {
             holder.mPostAdvanceOptionImageView.visibility = View.GONE
         }
-        if (post.allAttachments != null) {
+        if (!post.allAttachments.isEmpty()) {
             val attachmentAdapter = AttachmentAdapter()
             attachmentAdapter.setAttachmentInfoList(post.allAttachments)
             holder.mRecyclerview.isNestedScrollingEnabled = false

@@ -220,7 +220,7 @@ class ForumDisplayOptionFragment : BottomSheetDialogFragment() {
                 status.hasLoadAll = false
                 status.page = 1
                 model.forumStatusMutableLiveData.postValue(status)
-                model.setForumStatusAndFetchThread(model.forumStatusMutableLiveData.getValue())
+                model.setForumStatusAndFetchThread(status)
                 dismiss()
             }
         }

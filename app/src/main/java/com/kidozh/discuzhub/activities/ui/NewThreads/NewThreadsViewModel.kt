@@ -28,7 +28,7 @@ class NewThreadsViewModel(application: Application) : AndroidViewModel(applicati
     var isLoadingMutableLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
     var loadAllMutableLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
     var newThreadsResultMutableLiveData: MutableLiveData<NewThreadsResult?> = MutableLiveData(null)
-    var newThreadListMutableLiveData: MutableLiveData<List<Thread>> = MutableLiveData(ArrayList())
+    var totalNewThreadListMutableLiveData: MutableLiveData<List<Thread>> = MutableLiveData(ArrayList())
     var pageMutableLiveData: MutableLiveData<Int> = MutableLiveData(1)
     lateinit var retrofit: Retrofit
     lateinit var service: DiscuzApiService
@@ -96,12 +96,12 @@ class NewThreadsViewModel(application: Application) : AndroidViewModel(applicati
                             val newThreadsResult = response.body() as NewThreadsResult
                             newThreadsResultMutableLiveData.postValue(newThreadsResult)
                             if(page == 1){
-                                newThreadListMutableLiveData.postValue(newThreadsResult.forumVariables.forumThreadList)
+                                totalNewThreadListMutableLiveData.postValue(newThreadsResult.forumVariables.forumThreadList)
                             }
                             else{
-                                val originalThreads = newThreadListMutableLiveData.value?.toMutableList() as MutableList<Thread>
+                                val originalThreads = totalNewThreadListMutableLiveData.value?.toMutableList() as MutableList<Thread>
                                 originalThreads.addAll(newThreadsResult.forumVariables.forumThreadList)
-                                newThreadListMutableLiveData.postValue(originalThreads)
+                                totalNewThreadListMutableLiveData.postValue(originalThreads)
                             }
                             pageMutableLiveData.postValue(page + 1)
                             if(newThreadsResult.forumVariables.forumThreadList.size < 20){
