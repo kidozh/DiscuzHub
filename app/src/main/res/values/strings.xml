@@ -887,6 +887,7 @@
     <string name="jump_to_position">Jump to position</string>
     <string name="jump_not_ready">Content is not loaded, please wait until you could see it.</string>
     <string name="jump_pos_over">You just input a over-sized number(max:%1$d).</string>
+    <string name="invalid_position">Invalid value is given.</string>
 
 
 </resources>

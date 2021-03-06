@@ -756,5 +756,6 @@
     <string name="jump_to_position">跳转到楼层</string>
     <string name="jump_not_ready">还未加载完毕，请等待就绪。</string>
     <string name="jump_pos_over">请键入一个比%1$d要小的楼层。</string>
+    <string name="invalid_position">此输入楼层为错误值。</string>
 
 </resources>

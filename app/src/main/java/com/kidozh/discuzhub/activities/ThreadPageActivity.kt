@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.text.Html
 import android.text.InputType
 import android.text.SpannableString
+import android.text.method.DigitsKeyListener
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -694,14 +695,24 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
         val builder = AlertDialog.Builder(this)
                 .setTitle(R.string.jump_to_position)
         val input = EditText(this)
-        input.inputType = InputType.TYPE_NUMBER_FLAG_SIGNED
+        input.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
+        input.keyListener = DigitsKeyListener.getInstance("0123456789");
         builder.setView(input)
         // configure view
         builder.setPositiveButton(android.R.string.ok) { _, _ ->
             val result = threadViewModel.threadPostResultMutableLiveData.value
             if(result!= null){
                 val allReplies = result.threadPostVariables.detailedThreadInfo.replies
-                val position = input.text.toString().toInt()
+                var position = 0
+                try{
+                    position = input.text.toString().toInt()
+                }
+                catch (e:Exception){
+                    Toasty.error(this,getString(R.string.invalid_position)).show()
+                    return@setPositiveButton
+                }
+
+
                 if(position> allReplies){
                     Toasty.error(this,getString(R.string.jump_pos_over,allReplies)).show()
                 }
