@@ -25,6 +25,9 @@
         android:title="@string/share"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/paging_view"
+        android:title="@string/paging_view" />
+    <item
         android:id="@+id/bbs_forum_nav_show_in_webview"
         android:title="@string/bbs_show_in_internal_browser"
         android:icon="@drawable/ic_open_internal_in_new_24px"

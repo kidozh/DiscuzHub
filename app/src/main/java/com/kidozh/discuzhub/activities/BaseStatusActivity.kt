@@ -17,7 +17,7 @@ open class BaseStatusActivity : AppCompatActivity() {
     @JvmField
     var bbsInfo: Discuz? = null
     @JvmField
-    var user: User? = null
+    public var user: User? = null
     @JvmField
     var client = OkHttpClient()
     var baseVariableResult: BaseResult? = null
@@ -96,6 +96,8 @@ open class BaseStatusActivity : AppCompatActivity() {
 
         }
     }
+
+
 
     companion object {
         private val TAG = BaseStatusActivity::class.java.simpleName

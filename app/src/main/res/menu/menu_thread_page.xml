@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/jump_to_position"
+        android:icon="@drawable/ic_baseline_elevator_24"
+        android:title="@string/jump_to_position"
+        app:showAsAction="ifRoom" />
+</menu>

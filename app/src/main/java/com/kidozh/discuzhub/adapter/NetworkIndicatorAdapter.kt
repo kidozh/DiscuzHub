@@ -18,6 +18,7 @@ class NetworkIndicatorAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     private var context: Context? = null
     private var errorMessage: ErrorMessage? = null
     private var mListener: OnRefreshBtnListener? = null
+    public var successPageShown = true
     override fun getItemId(position: Int): Long {
         return networkStatus.toLong()
     }
@@ -93,6 +94,12 @@ class NetworkIndicatorAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
             }
             ConstUtils.NETWORK_STATUS_SUCCESSFULLY -> {
                 val binding = ItemNetworkIndicatorLoadSuccessfullyBinding.inflate(layoutInflater, parent, false)
+                if(!successPageShown){
+                    binding.loadAllLayout.visibility = View.GONE
+                }
+                else{
+                    binding.loadAllLayout.visibility = View.VISIBLE
+                }
                 return NetworkIndicatorLoadSuccessfullyViewHolder(binding)
             }
             ConstUtils.NETWORK_STATUS_FAILED -> {

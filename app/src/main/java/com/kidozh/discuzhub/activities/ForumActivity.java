@@ -85,6 +85,7 @@ public class ForumActivity extends BaseStatusActivity implements
 
     private ThreadAdapter adapter;
     private SubForumAdapter subForumAdapter;
+    private User user;
 
     String fid;
 

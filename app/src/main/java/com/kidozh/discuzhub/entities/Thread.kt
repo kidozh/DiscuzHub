@@ -92,7 +92,7 @@ class Thread : Serializable {
     @JvmField
     var author: String? = null
     @JvmField
-    var subject: String? = null
+    var subject: String = ""
     var dateline: String? = null
 
     @JvmField

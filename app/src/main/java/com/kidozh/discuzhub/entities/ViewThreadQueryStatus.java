@@ -3,7 +3,7 @@ package com.kidozh.discuzhub.entities;
 import java.util.HashMap;
 
 public class ViewThreadQueryStatus {
-    public int tid,page=1,perPage=15;
+    public int tid = 0,page=1,perPage=15;
     public int authorId = -1;
     public boolean hasLoadAll = false;
     // ordertype:1 -> descend 2:-? ascend

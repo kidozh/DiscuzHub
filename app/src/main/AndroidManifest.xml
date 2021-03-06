@@ -78,6 +78,7 @@
             android:label="@string/title_activity_global_settings" />
         <activity android:name=".activities.ForumActivity" />
         <activity android:name=".activities.ThreadActivity" />
+        <activity android:name=".activities.ThreadPageActivity" />
         <activity android:name=".activities.SplashScreenActivity" />
         <activity android:name=".activities.PublishActivity" />
         <activity android:name=".activities.ManageUserActivity" />

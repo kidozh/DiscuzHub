@@ -882,6 +882,11 @@
     <string name="preference_summary_on_remove_jammer_contents">App will automatically remove jammer contents in a post.</string>
     <string name="preference_summary_off_remove_jammer_contents">When you see the jammer characters, you can try to open it.</string>
     <string name="no_mark_smiley_found">No smiley is recently used.</string>
+    <string name="per_page">Page # %1$d</string>
+    <string name="paging_view">Paging view</string>
+    <string name="jump_to_position">Jump to position</string>
+    <string name="jump_not_ready">Content is not loaded, please wait until you could see it.</string>
+    <string name="jump_pos_over">You just input a over-sized number(max:%1$d).</string>
 
 
 </resources>

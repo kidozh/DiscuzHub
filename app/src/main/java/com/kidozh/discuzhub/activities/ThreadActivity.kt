@@ -144,8 +144,8 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         URLUtils.setBBS(discuz)
         threadDetailViewModel.setBBSInfo(discuz, user, forum, tid)
         smileyViewModel.configureDiscuz(discuz, user)
-        if (thread != null && thread!!.subject != null) {
-            val sp = Html.fromHtml(thread!!.subject)
+        if (thread != null) {
+            val sp = Html.fromHtml(thread!!.subject, HtmlCompat.FROM_HTML_MODE_LEGACY)
             val spannableString = SpannableString(sp)
             binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
         }
@@ -457,7 +457,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
 
         threadDetailViewModel.threadPostResultMutableLiveData.observe(this, { threadResult ->
             if (threadResult != null) {
-                if (threadResult.threadPostVariables != null && threadResult.threadPostVariables.detailedThreadInfo != null && threadResult.threadPostVariables.detailedThreadInfo.subject != null) {
+                if (threadResult.threadPostVariables.detailedThreadInfo.subject != null) {
                     val sp = Html.fromHtml(threadResult.threadPostVariables.detailedThreadInfo.subject,HtmlCompat.FROM_HTML_MODE_COMPACT)
                     val spannableString = SpannableString(sp)
                     binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
@@ -465,11 +465,11 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                         supportActionBar!!.setTitle(threadResult.threadPostVariables.detailedThreadInfo.subject)
                     }
                     // check with comments
-                    Log.d(TAG,"get comments "+threadResult.threadPostVariables.commentList.keys.size+" "+threadResult.threadPostVariables.commentList)
+
                     postAdapter.mergeCommentMap(threadResult.threadPostVariables.commentList)
 
                     val detailedThreadInfo = threadResult.threadPostVariables.detailedThreadInfo
-                    if (detailedThreadInfo != null && !hasLoadOnce) {
+                    if (!hasLoadOnce) {
                         hasLoadOnce = true
                         val prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
                         val recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history), false)
@@ -490,11 +490,9 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
 
                 //Log.d(TAG,"Thread post result error "+ threadResult.isError()+" "+ threadResult.threadPostVariables.message);
                 val rewriteRule = threadResult.threadPostVariables.rewriteRule
-                if (rewriteRule != null) {
-                    getAndSaveRewriteRule(rewriteRule, UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY)
-                    getAndSaveRewriteRule(rewriteRule, UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY)
-                    getAndSaveRewriteRule(rewriteRule, UserPreferenceUtils.REWRITE_HOME_SPACE)
-                }
+                getAndSaveRewriteRule(rewriteRule, UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY)
+                getAndSaveRewriteRule(rewriteRule, UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY)
+                getAndSaveRewriteRule(rewriteRule, UserPreferenceUtils.REWRITE_HOME_SPACE)
             }
         })
 
@@ -922,146 +920,142 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         if (clickedUri.host == null || clickedUri.host == baseUri.host) {
             // internal link
             val result = threadDetailViewModel.threadPostResultMutableLiveData.value
-            if (result != null && result.threadPostVariables != null) {
-                if (result.threadPostVariables.rewriteRule != null) {
-                    val rewriteRules = result.threadPostVariables.rewriteRule
-                    var clickedURLPath = clickedUri.path
-                    if (clickedURLPath == null) {
-                        parseURLAndOpen(unescapedURL)
+            if (result != null) {
+                val rewriteRules = result.threadPostVariables.rewriteRule
+                var clickedURLPath = clickedUri.path
+                if (clickedURLPath == null) {
+                    parseURLAndOpen(unescapedURL)
+                }
+                val basedURLPath = baseUri.path
+                if (clickedURLPath != null && basedURLPath != null) {
+                    if (clickedURLPath.matches(Regex("^$basedURLPath.*"))) {
+                        clickedURLPath = clickedURLPath.substring(basedURLPath.length)
                     }
-                    val basedURLPath = baseUri.path
-                    if (clickedURLPath != null && basedURLPath != null) {
-                        if (clickedURLPath.matches(Regex("^$basedURLPath.*"))) {
-                            clickedURLPath = clickedURLPath.substring(basedURLPath.length)
+                }
+                // only catch two type : forum_forumdisplay & forum_viewthread
+                // only 8.0+ support reverse copy
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (rewriteRules.containsKey("forum_forumdisplay")) {
+                        var rewriteRule = rewriteRules["forum_forumdisplay"]
+                        UserPreferenceUtils.saveRewriteRule(context, discuz, UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY, rewriteRule)
+                        if (rewriteRule == null || clickedURLPath == null) {
+                            parseURLAndOpen(unescapedURL)
+                            return
                         }
-                    }
-                    // only catch two type : forum_forumdisplay & forum_viewthread
-                    // only 8.0+ support reverse copy
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        if (rewriteRules.containsKey("forum_forumdisplay")) {
-                            var rewriteRule = rewriteRules["forum_forumdisplay"]
-                            UserPreferenceUtils.saveRewriteRule(context, discuz, UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY, rewriteRule)
-                            if (rewriteRule == null || clickedURLPath == null) {
-                                parseURLAndOpen(unescapedURL)
-                                return
-                            }
-                            // match template such as f{fid}-{page}
-                            // crate reverse copy
-                            rewriteRule = rewriteRule.replace("{fid}", "(?<fid>\\d+)")
-                            rewriteRule = rewriteRule.replace("{page}", "(?<page>\\d+)")
-                            val pattern = Pattern.compile(rewriteRule)
-                            val matcher = pattern.matcher(clickedURLPath)
-                            if (matcher.find()) {
-                                val fidStr = matcher.group("fid")
-                                val pageStr = matcher.group("page")
-                                // handle it
-                                if (fidStr != null) {
-                                    var fid = 0
-                                    fid = try {
-                                        fidStr.toInt()
-                                    } catch (e: Exception) {
-                                        0
-                                    }
+                        // match template such as f{fid}-{page}
+                        // crate reverse copy
+                        rewriteRule = rewriteRule.replace("{fid}", "(?<fid>\\d+)")
+                        rewriteRule = rewriteRule.replace("{page}", "(?<page>\\d+)")
+                        val pattern = Pattern.compile(rewriteRule)
+                        val matcher = pattern.matcher(clickedURLPath)
+                        if (matcher.find()) {
+                            val fidStr = matcher.group("fid")
+                            val pageStr = matcher.group("page")
+                            // handle it
+                            if (fidStr != null) {
+                                var fid = 0
+                                fid = try {
+                                    fidStr.toInt()
+                                } catch (e: Exception) {
+                                    0
+                                }
 
 //                                    int page = Integer.parseInt(pageStr);
-                                    val intent = Intent(context, ForumActivity::class.java)
-                                    val clickedForum = Forum()
-                                    clickedForum.fid = fid
-                                    intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum)
-                                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
-                                    Log.d(TAG, "put base url " + discuz.base_url)
-                                    VibrateUtils.vibrateForClick(context)
-                                    context.startActivity(intent)
-                                    return
-                                }
-                            }
-                        }
-                        if (rewriteRules.containsKey("forum_viewthread")) {
-                            // match template such as t{tid}-{page}-{prevpage}
-                            var rewriteRule = rewriteRules["forum_viewthread"]
-                            UserPreferenceUtils.saveRewriteRule(context, discuz, UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY, rewriteRule)
-                            if (rewriteRule == null || clickedURLPath == null) {
-                                parseURLAndOpen(unescapedURL)
+                                val intent = Intent(context, ForumActivity::class.java)
+                                val clickedForum = Forum()
+                                clickedForum.fid = fid
+                                intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum)
+                                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
+                                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
+                                Log.d(TAG, "put base url " + discuz.base_url)
+                                VibrateUtils.vibrateForClick(context)
+                                context.startActivity(intent)
                                 return
                             }
-                            // match template such as f{fid}-{page}
-                            // crate reverse copy
-                            rewriteRule = rewriteRule.replace("{tid}", "(?<tid>\\d+)")
-                            rewriteRule = rewriteRule.replace("{page}", "(?<page>\\d+)")
-                            rewriteRule = rewriteRule.replace("{prevpage}", "(?<prevpage>\\d+)")
-                            val pattern = Pattern.compile(rewriteRule)
-                            val matcher = pattern.matcher(clickedURLPath)
-                            if (matcher.find()) {
-                                val tidStr = matcher.group("tid")
-                                val pageStr = matcher.group("page")
-                                // handle it
-                                if (tidStr != null) {
-                                    val putThreadInfo = Thread()
-                                    var tid = 0
-                                    tid = try {
-                                        tidStr.toInt()
-                                    } catch (e: Exception) {
-                                        0
-                                    }
-                                    putThreadInfo.tid = tid
-                                    val intent = Intent(context, ThreadActivity::class.java)
-                                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
-                                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo)
-                                    intent.putExtra("FID", fid)
-                                    intent.putExtra("TID", tid)
-                                    intent.putExtra("SUBJECT", url)
-                                    VibrateUtils.vibrateForClick(context)
-                                    val options = ActivityOptions.makeSceneTransitionAnimation(context as Activity)
-                                    val bundle = options.toBundle()
-                                    context.startActivity(intent, bundle)
-                                    return
-                                }
-                            }
                         }
-                        if (rewriteRules.containsKey("home_space")) {
-                            // match template such as t{tid}-{page}-{prevpage}
-                            var rewriteRule = rewriteRules["home_space"]
-                            Log.d(TAG, "get home space url $rewriteRule")
-                            UserPreferenceUtils.saveRewriteRule(context, discuz, UserPreferenceUtils.REWRITE_HOME_SPACE, rewriteRule)
-                            if (rewriteRule == null || clickedURLPath == null) {
-                                parseURLAndOpen(unescapedURL)
-                                return
-                            }
-                            // match template such as f{fid}-{page}
-                            // crate reverse copy
-                            rewriteRule = rewriteRule.replace("{user}", "(?<user>\\d+)")
-                            rewriteRule = rewriteRule.replace("{value}", "(?<value>\\d+)")
-                            val pattern = Pattern.compile(rewriteRule)
-                            val matcher = pattern.matcher(clickedURLPath)
-                            if (matcher.find()) {
-                                val userString = matcher.group("user")
-                                val uidString = matcher.group("value")
-                                // handle it
-                                if (uidString != null) {
-                                    var uid = 0
-                                    uid = try {
-                                        uidString.toInt()
-                                    } catch (e: Exception) {
-                                        0
-                                    }
-                                    val intent = Intent(context, UserProfileActivity::class.java)
-                                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
-                                    intent.putExtra("UID", uid)
-                                    VibrateUtils.vibrateForClick(context)
-                                    val options = ActivityOptions.makeSceneTransitionAnimation(context as Activity)
-                                    val bundle = options.toBundle()
-                                    context.startActivity(intent, bundle)
-                                    return
-                                }
-                            }
-                        }
-                        parseURLAndOpen(unescapedURL)
-                    } else {
-                        parseURLAndOpen(unescapedURL)
                     }
+                    if (rewriteRules.containsKey("forum_viewthread")) {
+                        // match template such as t{tid}-{page}-{prevpage}
+                        var rewriteRule = rewriteRules["forum_viewthread"]
+                        UserPreferenceUtils.saveRewriteRule(context, discuz, UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY, rewriteRule)
+                        if (rewriteRule == null || clickedURLPath == null) {
+                            parseURLAndOpen(unescapedURL)
+                            return
+                        }
+                        // match template such as f{fid}-{page}
+                        // crate reverse copy
+                        rewriteRule = rewriteRule.replace("{tid}", "(?<tid>\\d+)")
+                        rewriteRule = rewriteRule.replace("{page}", "(?<page>\\d+)")
+                        rewriteRule = rewriteRule.replace("{prevpage}", "(?<prevpage>\\d+)")
+                        val pattern = Pattern.compile(rewriteRule)
+                        val matcher = pattern.matcher(clickedURLPath)
+                        if (matcher.find()) {
+                            val tidStr = matcher.group("tid")
+                            val pageStr = matcher.group("page")
+                            // handle it
+                            if (tidStr != null) {
+                                val putThreadInfo = Thread()
+                                var tid = 0
+                                tid = try {
+                                    tidStr.toInt()
+                                } catch (e: Exception) {
+                                    0
+                                }
+                                putThreadInfo.tid = tid
+                                val intent = Intent(context, ThreadActivity::class.java)
+                                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
+                                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
+                                intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo)
+                                intent.putExtra("FID", fid)
+                                intent.putExtra("TID", tid)
+                                intent.putExtra("SUBJECT", url)
+                                VibrateUtils.vibrateForClick(context)
+                                val options = ActivityOptions.makeSceneTransitionAnimation(context as Activity)
+                                val bundle = options.toBundle()
+                                context.startActivity(intent, bundle)
+                                return
+                            }
+                        }
+                    }
+                    if (rewriteRules.containsKey("home_space")) {
+                        // match template such as t{tid}-{page}-{prevpage}
+                        var rewriteRule = rewriteRules["home_space"]
+                        Log.d(TAG, "get home space url $rewriteRule")
+                        UserPreferenceUtils.saveRewriteRule(context, discuz, UserPreferenceUtils.REWRITE_HOME_SPACE, rewriteRule)
+                        if (rewriteRule == null || clickedURLPath == null) {
+                            parseURLAndOpen(unescapedURL)
+                            return
+                        }
+                        // match template such as f{fid}-{page}
+                        // crate reverse copy
+                        rewriteRule = rewriteRule.replace("{user}", "(?<user>\\d+)")
+                        rewriteRule = rewriteRule.replace("{value}", "(?<value>\\d+)")
+                        val pattern = Pattern.compile(rewriteRule)
+                        val matcher = pattern.matcher(clickedURLPath)
+                        if (matcher.find()) {
+                            val userString = matcher.group("user")
+                            val uidString = matcher.group("value")
+                            // handle it
+                            if (uidString != null) {
+                                var uid = 0
+                                uid = try {
+                                    uidString.toInt()
+                                } catch (e: Exception) {
+                                    0
+                                }
+                                val intent = Intent(context, UserProfileActivity::class.java)
+                                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
+                                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
+                                intent.putExtra("UID", uid)
+                                VibrateUtils.vibrateForClick(context)
+                                val options = ActivityOptions.makeSceneTransitionAnimation(context as Activity)
+                                val bundle = options.toBundle()
+                                context.startActivity(intent, bundle)
+                                return
+                            }
+                        }
+                    }
+                    parseURLAndOpen(unescapedURL)
                 } else {
                     parseURLAndOpen(unescapedURL)
                 }
@@ -1452,118 +1446,137 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         var viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value
-        val currentUrl: String
-        currentUrl = if (viewThreadQueryStatus == null) {
+        val currentUrl: String = if (viewThreadQueryStatus == null) {
             URLUtils.getViewThreadUrl(tid, "1")
         } else {
             URLUtils.getViewThreadUrl(tid, viewThreadQueryStatus.page.toString())
         }
         val id = item.itemId
-        if (id == android.R.id.home) {
-            finishAfterTransition()
-            return true
-        } else if (id == R.id.bbs_forum_nav_personal_center) {
-            val intent = Intent(this, UserProfileActivity::class.java)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
-            intent.putExtra("UID", user!!.uid.toString())
-            startActivity(intent)
-            return true
-        } else if (id == R.id.bbs_settings) {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-            return true
-        } else if (id == R.id.bbs_forum_nav_draft_box) {
-            val intent = Intent(this, ThreadDraftActivity::class.java)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
-            startActivity(intent, null)
-            return true
-        } else if (id == R.id.bbs_forum_nav_show_in_webview) {
-            val intent = Intent(this, InternalWebViewActivity::class.java)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
-            intent.putExtra(ConstUtils.PASS_URL_KEY, currentUrl)
-            Log.d(TAG, "Inputted URL $currentUrl")
-            startActivity(intent)
-            return true
-        } else if (id == R.id.bbs_forum_nav_show_in_external_browser) {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(currentUrl))
-            Log.d(TAG, "Inputted URL $currentUrl")
-            startActivity(intent)
-            return true
-        } else if (id == R.id.bbs_forum_nav_dateline_sort) {
-            val context: Context = this
-            viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value
-            Log.d(TAG, "You press sort btn " + viewThreadQueryStatus!!.datelineAscend)
-            // bbsThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
-            viewThreadQueryStatus.datelineAscend = !viewThreadQueryStatus.datelineAscend
-            Log.d(TAG, "Changed Ascend mode " + viewThreadQueryStatus.datelineAscend)
-            Log.d(TAG, "Apply Ascend mode " + threadDetailViewModel.threadStatusMutableLiveData.value!!.datelineAscend)
-            reloadThePage(viewThreadQueryStatus)
-            Log.d(TAG, "After reload Ascend mode " + threadDetailViewModel.threadStatusMutableLiveData.value!!.datelineAscend)
-            if (viewThreadQueryStatus.datelineAscend) {
-                Toasty.success(context, getString(R.string.bbs_thread_status_ascend), Toast.LENGTH_SHORT).show()
-            } else {
-                Toasty.success(context, getString(R.string.bbs_thread_status_descend), Toast.LENGTH_SHORT).show()
-            }
-            // reload the parameters
-            Log.d(TAG, "dateline ascend " + viewThreadQueryStatus.datelineAscend)
-            threadDetailViewModel.getThreadDetail(viewThreadQueryStatus)
-            invalidateOptionsMenu()
-            return true
-        } else if (id == R.id.bbs_share) {
-            val result = threadDetailViewModel.threadPostResultMutableLiveData.value
-            if (result != null && result.threadPostVariables != null && result.threadPostVariables.detailedThreadInfo != null) {
-                val detailedThreadInfo = result.threadPostVariables.detailedThreadInfo
-                val sendIntent = Intent()
-                sendIntent.action = Intent.ACTION_SEND
-                sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_template,
-                        detailedThreadInfo.subject, currentUrl))
-                sendIntent.type = "text/plain"
-                val shareIntent = Intent.createChooser(sendIntent, null)
-                startActivity(shareIntent)
+        when (id) {
+            android.R.id.home -> {
+                finishAfterTransition()
                 return true
-            } else {
-                Toasty.info(this, getString(R.string.share_not_prepared), Toast.LENGTH_SHORT).show()
             }
-            return true
-        }
-        if (id == R.id.bbs_favorite) {
-            val result = threadDetailViewModel.threadPostResultMutableLiveData.value
-            if (result != null && result.threadPostVariables != null && result.threadPostVariables.detailedThreadInfo != null) {
-                val detailedThreadInfo = result.threadPostVariables.detailedThreadInfo
-                val favoriteThread = detailedThreadInfo.toFavoriteThread(discuz.id, if (user != null) user!!.getUid() else 0)
-                // save it to the database
-                // boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
-                val favoriteThreadInDB = threadDetailViewModel.favoriteThreadLiveData.value
-                val isFavorite = favoriteThreadInDB != null
-                if (isFavorite) {
-                    Log.d(TAG, "Get Favroite thread$favoriteThreadInDB")
-                    if (favoriteThreadInDB != null) {
-                        threadDetailViewModel.favoriteThread(favoriteThreadInDB, false,"")
+            R.id.bbs_forum_nav_personal_center -> {
+                val intent = Intent(this, UserProfileActivity::class.java)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
+                intent.putExtra("UID", user!!.uid.toString())
+                startActivity(intent)
+                return true
+            }
+            R.id.bbs_settings -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+                return true
+            }
+            R.id.bbs_forum_nav_draft_box -> {
+                val intent = Intent(this, ThreadDraftActivity::class.java)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
+                startActivity(intent, null)
+                return true
+            }
+            R.id.bbs_forum_nav_show_in_webview -> {
+                val intent = Intent(this, InternalWebViewActivity::class.java)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
+                intent.putExtra(ConstUtils.PASS_URL_KEY, currentUrl)
+                Log.d(TAG, "Inputted URL $currentUrl")
+                startActivity(intent)
+                return true
+            }
+            R.id.bbs_forum_nav_show_in_external_browser -> {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(currentUrl))
+                Log.d(TAG, "Inputted URL $currentUrl")
+                startActivity(intent)
+                return true
+            }
+            R.id.bbs_forum_nav_dateline_sort -> {
+                val context: Context = this
+                viewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value
+                Log.d(TAG, "You press sort btn " + viewThreadQueryStatus!!.datelineAscend)
+                // bbsThreadStatus threadStatus = threadDetailViewModel.threadStatusMutableLiveData.getValue();
+                viewThreadQueryStatus.datelineAscend = !viewThreadQueryStatus.datelineAscend
+                Log.d(TAG, "Changed Ascend mode " + viewThreadQueryStatus.datelineAscend)
+                reloadThePage(viewThreadQueryStatus)
+                Log.d(TAG, "After reload Ascend mode " + threadDetailViewModel.threadStatusMutableLiveData.value!!.datelineAscend)
+                if (viewThreadQueryStatus.datelineAscend) {
+                    Toasty.success(context, getString(R.string.bbs_thread_status_ascend), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toasty.success(context, getString(R.string.bbs_thread_status_descend), Toast.LENGTH_SHORT).show()
+                }
+                // reload the parameters
+                Log.d(TAG, "dateline ascend " + viewThreadQueryStatus.datelineAscend)
+                threadDetailViewModel.getThreadDetail(viewThreadQueryStatus)
+                invalidateOptionsMenu()
+                return true
+            }
+            R.id.bbs_share -> {
+                val result = threadDetailViewModel.threadPostResultMutableLiveData.value
+                if (result != null) {
+                    val detailedThreadInfo = result.threadPostVariables.detailedThreadInfo
+                    val sendIntent = Intent()
+                    sendIntent.action = Intent.ACTION_SEND
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_template,
+                            detailedThreadInfo.subject, currentUrl))
+                    sendIntent.type = "text/plain"
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    startActivity(shareIntent)
+                    return true
+                } else {
+                    Toasty.info(this, getString(R.string.share_not_prepared), Toast.LENGTH_SHORT).show()
+                }
+                return true
+            }
+            R.id.bbs_favorite -> {
+                val result = threadDetailViewModel.threadPostResultMutableLiveData.value
+                if (result != null) {
+                    val detailedThreadInfo = result.threadPostVariables.detailedThreadInfo
+                    val favoriteThread = detailedThreadInfo.toFavoriteThread(discuz.id, if (user != null) user!!.getUid() else 0)
+                    // save it to the database
+                    // boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
+                    val favoriteThreadInDB = threadDetailViewModel.favoriteThreadLiveData.value
+                    val isFavorite = favoriteThreadInDB != null
+                    if (isFavorite) {
+                        Log.d(TAG, "Get Favroite thread$favoriteThreadInDB")
+                        if (favoriteThreadInDB != null) {
+                            threadDetailViewModel.favoriteThread(favoriteThreadInDB, false,"")
+                        }
+                    } else {
+                        Log.d(TAG, "is Favorite $isFavorite")
+                        // open up a dialog
+                        launchFavoriteThreadDialog(favoriteThread)
+                        //new FavoritingThreadAsyncTask(favoriteThread,true).execute();
                     }
                 } else {
-                    Log.d(TAG, "is Favorite $isFavorite")
-                    // open up a dialog
-                    launchFavoriteThreadDialog(favoriteThread)
-                    //new FavoritingThreadAsyncTask(favoriteThread,true).execute();
+                    Toasty.info(this, getString(R.string.favorite_thread_not_prepared), Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toasty.info(this, getString(R.string.favorite_thread_not_prepared), Toast.LENGTH_SHORT).show()
             }
-        } else if (id == R.id.bbs_search) {
-            val intent = Intent(this, SearchPostsActivity::class.java)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
-            startActivity(intent)
-            return true
-        } else if (id == R.id.bbs_about_app) {
-            val intent = Intent(this, AboutAppActivity::class.java)
-            startActivity(intent)
-            return true
-        } else {
-            return super.onOptionsItemSelected(item)
+            R.id.bbs_search -> {
+                val intent = Intent(this, SearchPostsActivity::class.java)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
+                startActivity(intent)
+                return true
+            }
+            R.id.bbs_about_app -> {
+                val intent = Intent(this, AboutAppActivity::class.java)
+                startActivity(intent)
+                return true
+            }
+            R.id.paging_view ->{
+                val intent = Intent(this,ThreadPageActivity::class.java)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
+                intent.putExtra(ConstUtils.PASS_THREAD_KEY,thread)
+                intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,forum)
+                intent.putExtra(ConstUtils.PASS_PAGE_KEY,1)
+                startActivity(intent)
+            }
+            else -> {
+                return super.onOptionsItemSelected(item)
+            }
         }
         return false
     }

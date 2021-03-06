@@ -101,6 +101,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
         }
         networkStatus.postValue(ConstUtils.NETWORK_STATUS_LOADING)
         // bbsThreadStatus threadStatus = threadStatusMutableLiveData.getValue();
+        Log.d(TAG,"GET thread detail by status "+viewThreadQueryStatus.tid+" PAGE "+viewThreadQueryStatus.page)
         threadStatusMutableLiveData.postValue(viewThreadQueryStatus)
         if (viewThreadQueryStatus.page == 1) {
             // clear it first
@@ -113,74 +114,62 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
             override fun onResponse(call: Call<ThreadResult?>, response: Response<ThreadResult?>) {
                 if (response.isSuccessful && response.body() != null) {
                     var totalThreadSize = 0
-                    val threadResult = response.body()
+                    val threadResult = response.body() as ThreadResult
                     var detailedThreadInfo: DetailedThreadInfo? = null
                     threadPostResultMutableLiveData.postValue(threadResult)
-                    if (threadResult!!.threadPostVariables != null) {
-                        // update formhash first
-                        if (threadResult.threadPostVariables.formHash != null) {
+                    // update formhash first
+                    if (threadResult.threadPostVariables.formHash != null) {
                             formHash.postValue(threadResult.threadPostVariables.formHash)
                         }
-                        // update user
-                        if (threadResult.threadPostVariables != null) {
-                            bbsPersonInfoMutableLiveData.postValue(threadResult.threadPostVariables.userBriefInfo)
-                            // parse detailed info
-                            detailedThreadInfo = threadResult.threadPostVariables.detailedThreadInfo
-                            detailedThreadInfoMutableLiveData.postValue(threadResult.threadPostVariables.detailedThreadInfo)
-                            val pollInfo = threadResult.threadPostVariables.pollInfo
-                            if (pollLiveData.value == null && pollInfo != null) {
-                                pollLiveData.postValue(pollInfo)
-                            }
-                            val postInfoList = threadResult.threadPostVariables.postList
-                            // remove null object
-                            if (postInfoList.size != 0) {
-                                val totalPosts = totalPostListLiveData.value as MutableList<Post>
-                                Log.d(TAG,"GET posts "+postInfoList.size+" total posts "+totalPosts.size)
-                                totalPosts.addAll(postInfoList)
-                                // totalPostListLiveData.postValue(postInfoList)
-                                totalPostListLiveData.postValue(totalPosts.toList())
-                                totalThreadSize = totalPosts.size
+                    // update user
+                    bbsPersonInfoMutableLiveData.postValue(threadResult.threadPostVariables.userBriefInfo)
+                    // parse detailed info
+                    detailedThreadInfo = threadResult.threadPostVariables.detailedThreadInfo
+                    detailedThreadInfoMutableLiveData.postValue(threadResult.threadPostVariables.detailedThreadInfo)
+                    val pollInfo = threadResult.threadPostVariables.pollInfo
+                    if (pollLiveData.value == null && pollInfo != null) {
+                        pollLiveData.postValue(pollInfo)
+                    }
+                    val postInfoList = threadResult.threadPostVariables.postList
+                    // remove null object
+                    if (postInfoList.isNotEmpty()) {
+                        val totalPosts = totalPostListLiveData.value as MutableList<Post>
+                        Log.d(TAG,"GET posts "+postInfoList.size+" total posts "+totalPosts.size)
+                        totalPosts.addAll(postInfoList.toList())
+                        // totalPostListLiveData.postValue(postInfoList)
+                        totalPostListLiveData.postValue(totalPosts.toList())
+                        totalThreadSize = totalPosts.size
 
-                            } else {
-                                if (viewThreadQueryStatus.page == 1 && threadResult.message != null) {
-                                    errorText.postValue(getApplication<Application>().getString(R.string.parse_failed))
-                                }
-                                networkStatus.postValue(ConstUtils.NETWORK_STATUS_LOADED_ALL)
-                                // rollback
-                                if (viewThreadQueryStatus.page != 1) {
-                                    viewThreadQueryStatus.page -= 1
-                                    Log.d(TAG, "Roll back page when page to " + viewThreadQueryStatus.page)
-                                    threadStatusMutableLiveData.postValue(viewThreadQueryStatus)
-                                }
-                            }
-                        }
-                        if (threadResult.message != null) {
-                            errorMessageMutableLiveData.postValue(threadResult.message!!.toErrorMessage())
-                            networkStatus.postValue(ConstUtils.NETWORK_STATUS_FAILED)
-                        }
-
-                        // load all?
-                        if (detailedThreadInfo != null) {
-                            val maxThreadNumber = detailedThreadInfo.replies
-                            val currentThreadList: List<Post> = totalPostListLiveData.value as List<Post>
-                            val totalThreadCommentsNumber = currentThreadList.size
-
-                            Log.d(TAG, "PAGE " + viewThreadQueryStatus.page + " MAX POSITION " + maxThreadNumber + " CUR " + totalThreadCommentsNumber + " " + totalThreadSize)
-                            if (totalThreadSize >= maxThreadNumber + 1) {
-                                networkStatus.postValue(ConstUtils.NETWORK_STATUS_LOADED_ALL)
-                            } else {
-                                networkStatus.postValue(ConstUtils.NETWORK_STATUS_SUCCESSFULLY)
-                            }
-                        }
-
-                        // networkStatus.postValue(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
                     } else {
-                        errorMessageMutableLiveData.postValue(ErrorMessage(
-                                getApplication<Application>().getString(R.string.empty_result),
-                                getApplication<Application>().getString(R.string.discuz_network_result_null)
-                        ))
+                        if (viewThreadQueryStatus.page == 1 && threadResult.message != null) {
+                            errorText.postValue(getApplication<Application>().getString(R.string.parse_failed))
+                        }
+                        networkStatus.postValue(ConstUtils.NETWORK_STATUS_LOADED_ALL)
+                        // rollback
+                        if (viewThreadQueryStatus.page != 1) {
+                            viewThreadQueryStatus.page -= 1
+                            Log.d(TAG, "Roll back page when page to " + viewThreadQueryStatus.page)
+                            threadStatusMutableLiveData.postValue(viewThreadQueryStatus)
+                        }
+                    }
+                    if (threadResult.message != null) {
+                        errorMessageMutableLiveData.postValue(threadResult.message!!.toErrorMessage())
                         networkStatus.postValue(ConstUtils.NETWORK_STATUS_FAILED)
                     }
+
+                    // load all?
+                    val maxThreadNumber = detailedThreadInfo.replies
+                    val currentThreadList: List<Post> = totalPostListLiveData.value as List<Post>
+                    val totalThreadCommentsNumber = currentThreadList.size
+
+                    Log.d(TAG, "PAGE " + viewThreadQueryStatus.page + " MAX POSITION " + maxThreadNumber + " CUR " + totalThreadCommentsNumber + " " + totalThreadSize)
+                    if (totalThreadSize >= maxThreadNumber + 1) {
+                        networkStatus.postValue(ConstUtils.NETWORK_STATUS_LOADED_ALL)
+                    } else {
+                        networkStatus.postValue(ConstUtils.NETWORK_STATUS_SUCCESSFULLY)
+                    }
+
+                    // networkStatus.postValue(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
                 } else {
                     errorMessageMutableLiveData.postValue(ErrorMessage(response.code().toString(),
                             getApplication<Application>().getString(R.string.discuz_network_unsuccessful, response.message())))

@@ -19,6 +19,7 @@ public class ConstUtils {
     public static final String PASS_TID_KEY = "PASS_TID_KEY";
     public static final String PASS_FORMHASH_KEY = "PASS_FORMHASH_KEY";
     public static final String PASS_URL_KEY = "PASS_URL_KEY";
+    public static final String PASS_PAGE_KEY = "PASS_PAGE_KEY";
 
 
     public static final int REQUEST_CODE_PICK_A_PICTURE = 200;
