@@ -88,6 +88,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowTitleEnabled(true)
+        supportActionBar!!.title = getString(R.string.paging_view)
     }
 
     fun registerViewModel(){
