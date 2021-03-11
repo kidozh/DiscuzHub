@@ -35,16 +35,20 @@
                             android:layout_height="wrap_content"
                             android:theme="?attr/actionBarTheme">
 
+                            <TextView
+                                android:id="@+id/thread_subject"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center|center_vertical"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                                android:textColor="@color/colorTextDefault"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                tools:text="@tools:sample/full_names" />
+
                         </androidx.appcompat.widget.Toolbar>
 
-                        <TextView
-                            android:id="@+id/thread_subject"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingStart="8dp"
-                            android:paddingEnd="8dp"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                            tools:text="@tools:sample/full_names" />
+
 
                         <Spinner
                             android:id="@+id/page_spinner"
@@ -90,6 +94,7 @@
             android:id="@+id/reply_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">

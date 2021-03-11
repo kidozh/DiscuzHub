@@ -321,7 +321,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                 val page = position + 1
                 val status = threadViewModel.threadStatusMutableLiveData.value as ViewThreadQueryStatus
                 if(page != status.page){
-                    Log.d(TAG, "Page " + page + " is selected ")
+                    Log.d(TAG, "Page $page is selected ")
                     status.page = page
                     threadViewModel.getThreadDetail(status)
                 }
@@ -691,7 +691,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
         return true
     }
 
-    fun openJumpDialog(){
+    private fun openJumpDialog(){
         val builder = AlertDialog.Builder(this)
                 .setTitle(R.string.jump_to_position)
         val input = EditText(this)
@@ -714,7 +714,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
 
 
                 if(position> allReplies){
-                    Toasty.error(this,getString(R.string.jump_pos_over,allReplies)).show()
+                    Toasty.warning(this,getString(R.string.jump_pos_over,allReplies)).show()
                 }
                 else{
                     var ppp = result.threadPostVariables.ppp
