@@ -27,6 +27,7 @@ public class OneZeroBooleanJsonDeserializer extends JsonDeserializer<Boolean> {
         } else if (currentToken.equals(JsonToken.VALUE_NULL)) {
             return Boolean.FALSE;
         }
+
         return Boolean.TRUE;
     }
 }

@@ -58,17 +58,17 @@ class ThreadResult : BaseResult() {
         var ppp = 0
 
         @JsonProperty("setting_rewriterule")
-        var rewriteRule: Map<String, String> = HashMap()
+        var rewriteRule: Map<String, String>? = HashMap()
 
         @JsonProperty("setting_rewritestatus")
         @JsonDeserialize(using = SettingRewriteStatusJsonDeserializer::class)
-        var rewriteList: List<String> = ArrayList()
+        var rewriteList: List<String>? = ArrayList()
 
         @JsonProperty("forum_threadpay")
         var threadPay: String? = null
 
         @JsonProperty("cache_custominfo_postno")
-        var customPostNoList: List<String> = ArrayList()
+        var customPostNoList: List<String>? = ArrayList()
 
         // for poll
         @JsonIgnoreProperties(ignoreUnknown = true)

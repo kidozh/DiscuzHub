@@ -111,9 +111,9 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
             override fun onResponse(call: Call<ForumResult?>, response: Response<ForumResult?>) {
                 // clear status if page == 1
                 if (response.isSuccessful && response.body() != null) {
-                    val forumResult = response.body()
+                    val forumResult = response.body() as ForumResult
                     displayForumResultMutableLiveData.postValue(forumResult)
-                    Log.d(TAG, "Get forum thread size " + forumResult!!.forumVariables.forumThreadList.size)
+
 
                     // for list display
                     val threadList = forumResult.forumVariables.forumThreadList

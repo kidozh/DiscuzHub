@@ -181,5 +181,13 @@ public interface DiscuzApiService {
             @Query("page") int page
     );
 
+    @FormUrlEncoded
+    @POST(DISCUZ_API_PATH+"?version=4&module=sendreply&action=reply&replysubmit=yes")
+    Call<ApiMessageActionResult> replyThread(
+            @Query("fid") int fid,
+            @Query("tid") int tid,
+            @FieldMap HashMap<String,String> options
+    );
+
 
 }

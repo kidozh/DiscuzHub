@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kidozh.discuzhub.R
+import com.kidozh.discuzhub.activities.BaseStatusActivity
 import com.kidozh.discuzhub.daos.FavoriteThreadDao
 import com.kidozh.discuzhub.database.FavoriteThreadDatabase
 import com.kidozh.discuzhub.entities.*
@@ -17,11 +18,16 @@ import com.kidozh.discuzhub.utilities.NetworkUtils
 import com.kidozh.discuzhub.utilities.URLUtils
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils
 import com.kidozh.discuzhub.utilities.bbsParseUtils.DetailedThreadInfo
+import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.net.URLEncoder
+import java.text.DateFormat
+import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class ThreadViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = ThreadViewModel::class.java.simpleName
@@ -49,7 +55,11 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
     var interactErrorMutableLiveData = MutableLiveData<ErrorMessage?>(null)
     var threadPriceInfoMutableLiveData = MutableLiveData<BuyThreadResult?>(null)
     var buyThreadResultMutableLiveData = MutableLiveData<BuyThreadResult?>(null)
+    var replyResultMutableLiveData = MutableLiveData<ApiMessageActionResult?>(null)
     var dao: FavoriteThreadDao
+
+    var replyPostMutableLiveData: MutableLiveData<Post?> = MutableLiveData<Post?>(null)
+
     fun setBBSInfo(bbsInfo: Discuz, user: User?, forum: Forum?, tid: Int) {
         this.bbsInfo = bbsInfo
         this.user = user
@@ -62,11 +72,11 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
 
         isFavoriteThreadMutableLiveData = dao.isFavoriteItem(bbsInfo.id, user?.getUid()
                 ?: 0, tid, "tid")
-        if(user == null){
-            favoriteThreadLiveData = dao.getFavoriteItemByTid(bbsInfo.id, 0, tid, "tid")
+        favoriteThreadLiveData = if(user == null){
+            dao.getFavoriteItemByTid(bbsInfo.id, 0, tid, "tid")
         }
         else{
-            favoriteThreadLiveData = dao.getFavoriteItemByTid(bbsInfo.id, user.getUid(), tid, "tid")
+            dao.getFavoriteItemByTid(bbsInfo.id, user.getUid(), tid, "tid")
         }
     }
 
@@ -118,9 +128,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                     var detailedThreadInfo: DetailedThreadInfo? = null
                     threadPostResultMutableLiveData.postValue(threadResult)
                     // update formhash first
-                    if (threadResult.threadPostVariables.formHash != null) {
-                            formHash.postValue(threadResult.threadPostVariables.formHash)
-                        }
+                    formHash.postValue(threadResult.threadPostVariables.formHash)
                     // update user
                     bbsPersonInfoMutableLiveData.postValue(threadResult.threadPostVariables.userBriefInfo)
                     // parse detailed info
@@ -331,55 +339,182 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
         dao = FavoriteThreadDatabase.getInstance(getApplication()).dao
-        if(favoriteThreadActionResultCall != null){
-            favoriteThreadActionResultCall.enqueue(object :Callback<ApiMessageActionResult>{
-                override fun onResponse(call: Call<ApiMessageActionResult>, response: Response<ApiMessageActionResult>) {
-                    if (response.isSuccessful && response.body() != null) {
-                        val result = response.body() as ApiMessageActionResult
-                        val key = result.message?.key
-                        Thread{
-                            if (favorite && key == "favorite_do_success") {
-                                dao.insert(favoriteThread)
-                            } else if (!favorite && key == "do_success") {
-                                dao.delete(favoriteThread)
-                                dao.delete(bbsInfo.id, if (user != null) user!!.getUid() else 0, favoriteThread.idKey, "tid")
-                            } else {
+        favoriteThreadActionResultCall?.enqueue(object :Callback<ApiMessageActionResult>{
+            override fun onResponse(call: Call<ApiMessageActionResult>, response: Response<ApiMessageActionResult>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val result = response.body() as ApiMessageActionResult
+                    val key = result.message?.key
+                    Thread{
+                        if (favorite && key == "favorite_do_success") {
+                            dao.insert(favoriteThread)
+                        } else if (!favorite && key == "do_success") {
+                            dao.delete(favoriteThread)
+                            dao.delete(bbsInfo.id, if (user != null) user!!.getUid() else 0, favoriteThread.idKey, "tid")
+                        }
+                    }.start()
 
-                            }
+                } else {
+                    MessageResult().apply {
+                        content = getApplication<Application>().getString(R.string.network_failed)
+                        key = response.code().toString()
+                    }
+                    if(favorite){
+                        Thread{
+                            dao.delete(bbsInfo.id, if (user != null) user!!.getUid() else 0, favoriteThread.idKey, "tid")
+                            dao.insert(favoriteThread)
+                        }.start()
+
+                    } else{
+                        // clear potential
+                        Thread{
+                            dao.delete(bbsInfo.id, if (user != null) user!!.getUid() else 0, favoriteThread.idKey, "tid")
                         }.start()
 
                     }
-                    else {
-                        MessageResult().apply {
-                            content = getApplication<Application>().getString(R.string.network_failed)
-                            key = response.code().toString()
-                        }
-                        if(favorite){
-                            Thread{
-                                dao.delete(bbsInfo.id, if (user != null) user!!.getUid() else 0, favoriteThread.idKey, "tid")
-                                dao.insert(favoriteThread)
-                            }.start()
-
-                        }
-                        else{
-                            // clear potential
-                                Thread{
-                                    dao.delete(bbsInfo.id, if (user != null) user!!.getUid() else 0, favoriteThread.idKey, "tid")
-                                }.start()
-
-                        }
-
-                    }
-
 
                 }
 
-                override fun onFailure(call: Call<ApiMessageActionResult>, t: Throwable) {
 
-                }
+            }
 
-            })
+            override fun onFailure(call: Call<ApiMessageActionResult>, t: Throwable) {
+
+            }
+
+        })
+
+    }
+
+    private fun needCaptcha(): Boolean {
+        return !(secureInfoResultMutableLiveData.value == null || secureInfoResultMutableLiveData.value!!.secureVariables == null)
+    }
+
+    fun sendReplyRequest(fid: Int,message: String, captcha: String){
+        Log.d(TAG, "Get message $message Captcha $captcha")
+        val replyPost : Post? = replyPostMutableLiveData.value
+        if(threadPostResultMutableLiveData.value == null){
+            return
         }
+        val result = threadPostResultMutableLiveData.value as ThreadResult
+        // preparing forum parameters
+        val formHash: String = result.threadPostVariables.formHash
+        val now = Date()
+        val formBody: HashMap<String,String> = HashMap<String,String>()
+        formBody["usesig"] = "1"
+        formBody["subject"] = ""
+        formBody["tid"] = tid.toString()
+        formBody["posttime"] = (now.time / 1000 - 1).toString()
+        formBody["formhash"] = formHash
+        // encoding the charset for discuz encoding
+        val charsetType = result.getCharsetType()
+        when (charsetType) {
+            BaseStatusActivity.CHARSET_GBK -> {
+                formBody["message"] = URLEncoder.encode(message, "GBK")
+
+            }
+            BaseStatusActivity.CHARSET_BIG5 -> {
+                formBody["message"] = URLEncoder.encode(message, "BIG5")
+            }
+            else -> {
+                formBody["message"] = message
+            }
+        }
+        // captcha verification
+        if (needCaptcha()) {
+            val secureInfoResult = secureInfoResultMutableLiveData.value as SecureInfoResult
+            formBody["seccodehash"] = secureInfoResult.secureVariables.secHash
+            if(replyPost==null){
+                // it's a post
+                formBody["seccodemodid"] = "forum::viewthread"
+            }
+            else{
+                formBody["seccodemodid"] = "forum::post"
+            }
+
+            Log.d(TAG,"Need captcha and the seccodeHash "+secureInfoResult.secureVariables.secHash)
+
+
+            when (charsetType) {
+                BaseStatusActivity.CHARSET_GBK -> {
+                    formBody["seccodeverify"] = URLEncoder.encode(captcha, "GBK")
+                }
+                BaseStatusActivity.CHARSET_BIG5 -> {
+                    formBody["seccodeverify"] = URLEncoder.encode(captcha, "BIG5")
+                }
+                else -> {
+                    formBody["seccodeverify"] = captcha
+                }
+            }
+        }
+        if(replyPost != null){
+            // reply to someone
+            formBody.put("handlekey", "reply")
+            formBody.put("reppid", replyPost.pid.toString())
+            formBody.put("reppost", replyPost.pid.toString())
+            val df = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.FULL, Locale.getDefault())
+            val publishAtString = df.format(replyPost.publishAt)
+            val MAX_CHAR_LENGTH = 300
+            val trimEnd = MAX_CHAR_LENGTH.coerceAtMost(replyPost.message.length)
+            var replyMessage = replyPost.message.substring(0, trimEnd)
+            if (replyPost.message.length > MAX_CHAR_LENGTH) {
+                replyMessage += "..."
+            }
+            val noticeAuthorMsg = replyPost.message
+
+            val noticeMsgTrimString = getApplication<Application>().getString(R.string.bbs_reply_notice_author_string,
+                    URLUtils.getReplyPostURLInLabel(replyPost.pid, tid),
+                    replyPost.author,
+                    publishAtString,
+                    replyMessage
+            )
+            when (charsetType) {
+                BaseStatusActivity.CHARSET_GBK -> {
+                    formBody["message"] = URLEncoder.encode(message, "GBK")
+                    formBody["noticeauthormsg"] = URLEncoder.encode(noticeAuthorMsg, "GBK")
+                    formBody["noticetrimstr"] = URLEncoder.encode(noticeMsgTrimString, "GBK")
+
+                }
+                BaseStatusActivity.CHARSET_BIG5 -> {
+                    formBody["message"] = URLEncoder.encode(message, "BIG5")
+                    formBody["noticeauthormsg"] = URLEncoder.encode(noticeAuthorMsg, "BIG5")
+                    formBody["noticetrimstr"] = URLEncoder.encode(noticeMsgTrimString, "BIG5")
+                }
+                else -> {
+                    formBody["message"] = message
+                    formBody["noticeauthormsg"] = noticeAuthorMsg
+                    formBody["noticetrimstr"] = noticeMsgTrimString
+                }
+            }
+
+        }
+
+        // start to send information
+        val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url, client)
+        val service = retrofit.create(DiscuzApiService::class.java)
+        val call = service.replyThread(fid,tid,formBody)
+        call.enqueue(object :Callback<ApiMessageActionResult>{
+            override fun onResponse(call: Call<ApiMessageActionResult>, response: Response<ApiMessageActionResult>) {
+                if(response.isSuccessful && response.body() != null){
+                    val result = response.body() as ApiMessageActionResult
+                    replyResultMutableLiveData.postValue(result)
+                }
+                else{
+                    interactErrorMutableLiveData.postValue(ErrorMessage(response.code().toString(),
+                            getApplication<Application>().getString(R.string.discuz_network_unsuccessful,
+                                    response.message()
+                            )
+                    ))
+                }
+            }
+
+            override fun onFailure(call: Call<ApiMessageActionResult>, t: Throwable) {
+                interactErrorMutableLiveData.postValue(ErrorMessage(getApplication<Application>().getString(R.string.discuz_network_failure_template),
+                        if (t.localizedMessage == null) t.toString() else t.localizedMessage))
+            }
+
+        })
+
+
 
     }
 

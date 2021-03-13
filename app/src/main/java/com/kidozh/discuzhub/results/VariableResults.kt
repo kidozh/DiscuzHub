@@ -18,13 +18,13 @@ open class VariableResults : BaseResult() {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     var groupId = 0
 
-    @JvmField
-    @JsonProperty("formhash")
-    var formHash: String? = null
 
-    @JsonProperty("ismoderator")
-    @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
-    var moderator: Boolean? = null
+    @JsonProperty("formhash")
+    lateinit var formHash: String
+
+//    @JsonProperty("ismoderator")
+//    @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+//    var moderator: Boolean = false
 
     @JsonProperty("readaccess")
     var readAccess = 0

@@ -144,8 +144,9 @@ public class ForumActivity extends BaseStatusActivity implements
     private void bindViewModel(){
         forumViewModel.totalThreadListMutableLiveData.observe(this, it->{
             Map<String,String> threadTypeMap = null;
-            if(forumViewModel.displayForumResultMutableLiveData.getValue()!=null){
-                threadTypeMap = forumViewModel.displayForumResultMutableLiveData.getValue().forumVariables.threadTypeInfo.idNameMap;
+            if(forumViewModel.displayForumResultMutableLiveData.getValue()!=null &&
+                    forumViewModel.displayForumResultMutableLiveData.getValue().forumVariables.getThreadTypeInfo()!=null){
+                threadTypeMap = forumViewModel.displayForumResultMutableLiveData.getValue().forumVariables.getThreadTypeInfo().idNameMap;
             }
 
             adapter.updateListAndType(it, threadTypeMap);
@@ -377,9 +378,9 @@ public class ForumActivity extends BaseStatusActivity implements
                         intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user);
                         intent.putExtra(ConstUtils.PASS_POST_TYPE, ConstUtils.TYPE_POST_THREAD);
                         if(forumViewModel.displayForumResultMutableLiveData
-                                .getValue().forumVariables.threadTypeInfo != null){
+                                .getValue().forumVariables.getThreadTypeInfo() != null){
                             intent.putExtra(ConstUtils.PASS_THREAD_CATEGORY_KEY, (Serializable) forumViewModel.displayForumResultMutableLiveData
-                                    .getValue().forumVariables.threadTypeInfo.idNameMap);
+                                    .getValue().forumVariables.getThreadTypeInfo().idNameMap);
                         }
 
 

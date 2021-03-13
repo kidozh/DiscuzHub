@@ -1342,7 +1342,8 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 builder.url(URLUtils.getPostThreadUrl(fid));
             }
             else {
-                int fidInt = Integer.parseInt(fid);
+                // int fidInt = Integer.parseInt(fid);
+                int fidInt = 0;
                 builder.url(URLUtils.getReplyThreadUrl(fidInt,tid));
 
             }

@@ -317,7 +317,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
             val bundle = options.toBundle()
             context.startActivity(intent, bundle)
         }
-        holder.mReplyBtn.setOnClickListener { replyListener!!.replyToSomeOne(position) }
+        holder.mReplyBtn.setOnClickListener { replyListener!!.replyToSomeOne(post) }
 
         // advance option
         if (bbsInfo.apiVersion > 4) {
@@ -826,7 +826,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
     }
 
     interface onAdapterReply {
-        fun replyToSomeOne(position: Int)
+        fun replyToSomeOne(post : Post)
     }
 
     interface OnLinkClicked {
