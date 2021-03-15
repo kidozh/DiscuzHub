@@ -43,7 +43,7 @@ class ThreadResult : BaseResult() {
         var postList: List<Post> = ArrayList()
 
         @JsonProperty("allowpostcomment")
-        var allowPostCommentList: List<String> = ArrayList()
+        var allowPostCommentList: List<String>? = ArrayList()
 
         @JsonProperty("comments")
         @JsonDeserialize(using = CommentListJsonDeserializer::class)
