@@ -109,7 +109,7 @@ class PrivateMessageActivity : BaseStatusActivity(), SmileyFragment.OnSmileyPres
                     }
                 }
 
-                privateMessageViewModel.sendPrivateMessage(privateMessageInfo.plid, privateMessageInfo.pmid,message)
+                privateMessageViewModel.sendPrivateMessage(privateMessageInfo.plid, privateMessageInfo.pmid,message,privateMessageInfo.toUid)
 
             } else {
                 Toasty.warning(application, getString(R.string.bbs_pm_is_required), Toast.LENGTH_SHORT).show()
