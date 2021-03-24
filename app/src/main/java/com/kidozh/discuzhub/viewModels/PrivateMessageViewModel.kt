@@ -67,7 +67,7 @@ class PrivateMessageViewModel(application: Application) : AndroidViewModel(appli
                     if (totalPrivateMessages != null) {
                         mergedPrivateMessageListLiveData.addAll(totalPrivateMessages)
                     }
-                    mergedPrivateMessageListLiveData.addAll(privateMessageResult.variables.pmList)
+                    mergedPrivateMessageListLiveData.addAll(privateMessageResult.variables.pmList.reversed())
 
                     totalPrivateMessageListMutableLiveData.postValue(mergedPrivateMessageListLiveData)
 
