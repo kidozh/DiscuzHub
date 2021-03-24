@@ -71,7 +71,6 @@
                             android:drawableStart="@drawable/ic_forum_description_outlined_24px"
                             android:gravity="top"
                             android:text="@string/bbs_forum_description_not_set"
-                            android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
