@@ -83,6 +83,7 @@ public class LoginActivity extends BaseStatusActivity {
             binding.loginBbsUrl.setText(bbsInfo.base_url);
         }
         else {
+            binding.toolbarTitle.setText(getString(R.string.user_relogin, user.username));
             binding.loginBbsUrl.setText(getString(R.string.user_relogin, user.username));
             binding.loginBbsAccountTextInputEditText.setText(user.username);
         }
@@ -265,6 +266,8 @@ public class LoginActivity extends BaseStatusActivity {
 
                     }
                     else{
+                        // refresh the captcha
+                        viewModel.loadSecureInfo();
                         if(key.equals("login_seccheck2")){
                             // need captcha
                             viewModel.loadSecureInfo();
@@ -390,7 +393,7 @@ public class LoginActivity extends BaseStatusActivity {
         setSupportActionBar(binding.toolbar);
         if(getSupportActionBar() !=null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
+            binding.toolbarTitle.setText(getString(R.string.login_bbs_title,bbsInfo.site_name));
             if(bbsInfo.isSecureClient()){
                 binding.loginBbsNotice.setVisibility(View.GONE);
             }

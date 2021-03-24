@@ -653,7 +653,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
             binding.bbsPortalNavView.inflateMenu(R.menu.bottom_incognitive_nav_menu)
             return
         }
-        user = viewModel!!.currentForumUserBriefInfoMutableLiveData.value
+        user = viewModel.currentForumUserBriefInfoMutableLiveData.value
         if (user == null) {
             Log.d(TAG, "Current incognitive user $user")
             binding.bbsPortalNavViewpager.adapter = anonymousViewPagerAdapter(supportFragmentManager, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
@@ -743,10 +743,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
 
     override fun setNotificationsNum(notificationsNum: noticeNumInfo) {
         Log.d(TAG, "Notification fragment $notificationsFragment notification $notificationsNum")
-        if (notificationsNum == null) {
-            return
-        }
-        //noticeNumInfo = notificationsNum;
+
         Log.d(TAG, "notification number " + notificationsNum.allNoticeInfo)
         if (notificationsFragment != null) {
             notificationsFragment!!.renderTabNumber(notificationsNum)
@@ -775,7 +772,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
             finishAfterTransition()
             false
         } else if (id == R.id.bbs_share) {
-            val bbsInfo = viewModel!!.currentBBSInformationMutableLiveData.value
+            val bbsInfo = viewModel.currentBBSInformationMutableLiveData.value
             if (bbsInfo != null) {
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND

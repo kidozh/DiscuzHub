@@ -63,10 +63,9 @@ public class ThreadDraftActivity extends BaseStatusActivity implements recyclerV
 
     private void configureActionBar(){
         setSupportActionBar(binding.toolbar);
+        binding.toolbarTitle.setText(getString(R.string.bbs_draft_box));
+        binding.toolbarSubtitle.setText(bbsInfo.site_name);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle(getString(R.string.bbs_draft_box));
-        getSupportActionBar().setSubtitle(bbsInfo.site_name);
     }
 
     private void configureRecyclerview(){

@@ -11,8 +11,7 @@
         android:id="@+id/bbs_search"
         android:icon="@drawable/ic_search_24px"
         android:title="@string/search"
-        android:visible="true"
-        app:showAsAction="ifRoom" />
+        android:visible="true" />
     <item
         android:id="@+id/bbs_favorite"
         android:icon="@drawable/ic_not_favorite_24px"

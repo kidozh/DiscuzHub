@@ -7,12 +7,12 @@
         android:icon="@drawable/ic_search_24px"
         android:title="@string/search"
         android:visible="true"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/forum_filter"
         android:icon="@drawable/ic_round_filter_list_24"
         android:title="@string/filter_forum"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/bbs_favorite"
         android:icon="@drawable/ic_not_favorite_24px"
@@ -22,13 +22,11 @@
     <item
         android:id="@+id/bbs_share"
         android:icon="@drawable/ic_share_24px"
-        android:title="@string/share"
-        app:showAsAction="ifRoom" />
+        android:title="@string/share" />
     <item
         android:id="@+id/bbs_forum_nav_show_in_webview"
-        android:title="@string/bbs_show_in_internal_browser"
         android:icon="@drawable/ic_open_in_new_24px"
-        app:showAsAction="ifRoom" />
+        android:title="@string/bbs_show_in_internal_browser" />
     <item
         android:id="@+id/bbs_forum_nav_show_in_external_browser"
         android:icon="@drawable/ic_open_in_browser_24px"

@@ -326,11 +326,11 @@
     <string name="app_agree_to_continue">同意並繼續</string>
     <string name="refresh_page">刷新</string>
     <string name="thread_is_closed">此貼已關閉貼</string>
-    <string name="thread_is_highlighted">高亮 貼</string>
+    <string name="thread_is_highlighted">高亮貼</string>
     <string name="thread_is_digested">精華帖</string>
-    <string name="thread_is_moderated">這個帖子被管理員或者用戶編輯過了。 </string>
+    <string name="thread_is_moderated">已重新編輯</string>
     <string name="thread_is_archived">"已存檔 "</string>
-    <string name="thread_stick_reply">回貼將會被置頂。 </string>
+    <string name="thread_stick_reply">回貼置頂</string>
     <string name="thread_price">價格%1$d</string>
     <string name="thread_is_hidden">已隱藏</string>
     <string name="bbs_poll_see_picture">查看圖片</string>
@@ -754,5 +754,12 @@
     <string name="preference_summary_on_remove_jammer_contents">應用將會自動移除乾擾內容的干擾碼。</string>
     <string name="preference_summary_off_remove_jammer_contents">當帖子內容出現亂碼的字符時，你可以開啟此選項以移除乾擾碼內容。</string>
     <string name="no_mark_smiley_found">你還沒有使用一個表情呢</string>
+    <string name="per_page">第 %1$d 頁</string>
+    <string name="paging_view">分頁視圖</string>
+    <string name="jump_to_position">跳轉到樓層</string>
+    <string name="jump_not_ready">還未加載完畢，請等待就緒。 </string>
+    <string name="jump_pos_over">請鍵入一個比%1$d要小的樓層。 </string>
+    <string name="invalid_position">此輸入樓層為錯誤值。 </string>
+    <string name="view_thread_title">查看帖子</string>
 
 </resources>

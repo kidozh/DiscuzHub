@@ -81,9 +81,9 @@ public class ManageUserActivity extends BaseStatusActivity
         setSupportActionBar(binding.toolbar);
         if(getSupportActionBar() !=null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
-            getSupportActionBar().setTitle(bbsInfo.site_name);
-            getSupportActionBar().setSubtitle(bbsInfo.base_url);
+            binding.toolbarTitle.setText(bbsInfo.site_name);
+            binding.toolbarSubtitle.setText(bbsInfo.base_url);
+
         }
 
     }

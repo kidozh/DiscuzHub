@@ -6,14 +6,15 @@
         android:id="@+id/bbs_share"
         android:icon="@drawable/ic_share_24px"
         android:title="@string/share"
-        app:showAsAction="ifRoom" />
-    <item android:id="@+id/bbs_settings"
-        android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/bbs_settings"
         android:icon="@drawable/ic_settings_outlined_24px"
-        app:showAsAction="ifRoom" />
+        android:title="@string/action_settings"
+        app:showAsAction="collapseActionView" />
     <item
         android:id="@+id/bbs_about_app"
         android:icon="@drawable/ic_info_outlined_24px"
         android:title="@string/app_about"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="collapseActionView" />
 </menu>

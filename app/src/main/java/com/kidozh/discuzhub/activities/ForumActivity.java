@@ -219,10 +219,16 @@ public class ForumActivity extends BaseStatusActivity implements
                         
                         Forum forum = forumResult.forumVariables.forum;
                         ForumActivity.this.forum = forum;
-                        if(getSupportActionBar()!=null){
-                            getSupportActionBar().setTitle(forum.name);
-                            getSupportActionBar().setSubtitle(forum.description);
+                        binding.toolbarTitle.setText(forum.name);
+                        if(forum.description.isEmpty()){
+                            binding.toolbarSubtitle.setVisibility(View.GONE);
                         }
+                        else{
+                            binding.toolbarSubtitle.setVisibility(View.VISIBLE);
+                            binding.toolbarSubtitle.setText(forum.description);
+                        }
+
+
                     }
                 }
             }
@@ -412,9 +418,11 @@ public class ForumActivity extends BaseStatusActivity implements
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getSupportActionBar().setTitle(bbsInfo.site_name);
+
+        binding.toolbarTitle.setText(bbsInfo.site_name);
         if(forum.name !=null){
-            getSupportActionBar().setSubtitle(forum.name);
+            binding.toolbarTitle.setText(forum.name);
+            //getSupportActionBar().setSubtitle(forum.name);
         }
     }
 
