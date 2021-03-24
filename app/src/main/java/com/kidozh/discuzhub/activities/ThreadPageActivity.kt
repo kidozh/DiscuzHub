@@ -174,9 +174,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                 Toasty.error(application,
                         getString(R.string.discuz_api_message_template, errorMessage.key, errorMessage.content),
                         Toast.LENGTH_LONG).show()
-                networkIndicatorAdapter.setErrorStatus(ErrorMessage(
-                        errorMessage.key, errorMessage.content, R.drawable.ic_error_outline_24px
-                ))
+                networkIndicatorAdapter.setErrorStatus(errorMessage)
                 VibrateUtils.vibrateForError(application)
             }
         })

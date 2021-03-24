@@ -210,7 +210,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             var authorid = 0
             val threadResult = threadDetailViewModel.threadPostResultMutableLiveData.value
             val viewThreadQueryStatus : ViewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value as ViewThreadQueryStatus
-            if (threadResult?.threadPostVariables != null && threadResult.threadPostVariables.detailedThreadInfo != null) {
+            if (threadResult?.threadPostVariables != null) {
                 authorid = threadResult.threadPostVariables.detailedThreadInfo.authorId
             }
             // update list
@@ -248,9 +248,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 Toasty.error(application,
                         getString(R.string.discuz_api_message_template, errorMessage.key, errorMessage.content),
                         Toast.LENGTH_LONG).show()
-                networkIndicatorAdapter.setErrorStatus(ErrorMessage(
-                        errorMessage.key, errorMessage.content, R.drawable.ic_error_outline_24px
-                ))
+                networkIndicatorAdapter.setErrorStatus(errorMessage)
                 VibrateUtils.vibrateForError(application)
             }
         })

@@ -102,7 +102,13 @@ public class HotForumsFragment extends Fragment {
                 binding.errorView.setVisibility(View.VISIBLE);
                 binding.errorContent.setText(errorMessage.content);
                 binding.errorValue.setText(errorMessage.key);
-                binding.errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
+                if(errorMessage.errorIconResource == 0){
+                    binding.errorIcon.setImageResource(R.drawable.ic_error_outline_24px);
+                }
+                else{
+                    binding.errorIcon.setImageResource(errorMessage.errorIconResource);
+                }
+
             }
             else {
                 binding.errorView.setVisibility(View.GONE);

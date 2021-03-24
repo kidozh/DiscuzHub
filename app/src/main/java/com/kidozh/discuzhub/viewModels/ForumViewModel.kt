@@ -35,7 +35,7 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
     var networkState = MutableLiveData(ConstUtils.NETWORK_STATUS_SUCCESSFULLY)
     @JvmField
     val totalThreadListMutableLiveData: MutableLiveData<List<Thread>> = MutableLiveData<List<Thread>>(ArrayList())
-    private var newThreadListMutableLiveData: MutableLiveData<List<Thread>?>? = null
+    private var newThreadListMutableLiveData: MutableLiveData<List<Thread>> = MutableLiveData(ArrayList())
     var draftNumberLiveData: LiveData<Int>
     @JvmField
     var forumDetailedInfoMutableLiveData: MutableLiveData<Forum>
@@ -49,14 +49,7 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
     var errorMessageMutableLiveData = MutableLiveData<ErrorMessage?>(null)
     @JvmField
     var loadAllNoticeOnce = MutableLiveData(false)
-    fun getNewThreadListMutableLiveData(): MutableLiveData<List<Thread>?> {
-        if (newThreadListMutableLiveData == null) {
-            newThreadListMutableLiveData = MutableLiveData(ArrayList())
-            val displayForumQueryStatus = DisplayForumQueryStatus(forum.fid, 1)
-            setForumStatusAndFetchThread(displayForumQueryStatus)
-        }
-        return newThreadListMutableLiveData!!
-    }
+
 
     fun setBBSInfo(discuz: Discuz, user: User?, forum: Forum) {
         this.discuz = discuz
@@ -150,6 +143,7 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
                     // check with api message
                     if (forumResult.message != null) {
                         errorMessageMutableLiveData.postValue(forumResult.message!!.toErrorMessage())
+                        networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED)
                     }
 
                 }

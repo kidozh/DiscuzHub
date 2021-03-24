@@ -266,7 +266,7 @@ public class NetworkUtils {
 
     public static ErrorMessage getOfflineErrorMessage(Context context){
         return new ErrorMessage(context.getString(R.string.network_state_unavaliable_error_key),
-                context.getString(R.string.network_state_unavaliable_error_content));
+                context.getString(R.string.network_state_unavaliable_error_content),R.drawable.ic_baseline_signal_cellular_connected_no_internet_4_bar_24);
     }
 
     public static boolean isWifiConnected(@NonNull Context context){

@@ -88,7 +88,13 @@ class HomeFragment : Fragment() {
         homeViewModel.errorMessageMutableLiveData.observe(viewLifecycleOwner, { errorMessage: ErrorMessage? ->
             if (errorMessage != null) {
                 activityBbsForumIndexBinding.errorView.visibility = View.VISIBLE
-                activityBbsForumIndexBinding.errorIcon.setImageResource(R.drawable.ic_error_outline_24px)
+                if(errorMessage.errorIconResource == 0){
+                    activityBbsForumIndexBinding.errorIcon.setImageResource(R.drawable.ic_error_outline_24px)
+                }
+                else{
+                    activityBbsForumIndexBinding.errorIcon.setImageResource(errorMessage.errorIconResource)
+                }
+
                 activityBbsForumIndexBinding.errorValue.text = errorMessage.key
                 activityBbsForumIndexBinding.errorContent.text = errorMessage.content
             } else {
