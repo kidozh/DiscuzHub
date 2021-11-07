@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.activities.ForumActivity
@@ -24,7 +25,7 @@ import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.TimeDisplayUtils.Companion.getLocalePastTimeString
 import com.kidozh.discuzhub.utilities.VibrateUtils
 
-class FavoriteForumAdapter : PagedListAdapter<FavoriteForum?, FavoriteForumViewHolder>(FavoriteForum.DIFF_CALLBACK) {
+class FavoriteForumAdapter : PagingDataAdapter<FavoriteForum, FavoriteForumViewHolder>(FavoriteForum.DIFF_CALLBACK) {
     lateinit var context: Context
     lateinit var bbsInfo: Discuz
     var user: User? = null

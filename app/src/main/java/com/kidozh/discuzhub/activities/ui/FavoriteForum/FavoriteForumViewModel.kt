@@ -1,140 +1,139 @@
-package com.kidozh.discuzhub.activities.ui.FavoriteForum;
+package com.kidozh.discuzhub.activities.ui.FavoriteForum
 
-import android.app.Application;
-import android.util.Log;
+import android.app.Application
+import android.util.Log
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.kidozh.discuzhub.R
+import com.kidozh.discuzhub.activities.ui.FavoriteForum.FavoriteForumViewModel
+import com.kidozh.discuzhub.daos.FavoriteForumDao
+import com.kidozh.discuzhub.database.FavoriteForumDatabase
+import com.kidozh.discuzhub.entities.Discuz
+import com.kidozh.discuzhub.entities.ErrorMessage
+import com.kidozh.discuzhub.entities.FavoriteForum
+import com.kidozh.discuzhub.entities.User
+import com.kidozh.discuzhub.results.FavoriteForumResult
+import com.kidozh.discuzhub.services.DiscuzApiService
+import com.kidozh.discuzhub.utilities.ConstUtils
+import com.kidozh.discuzhub.utilities.NetworkUtils
+import okhttp3.OkHttpClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
+class FavoriteForumViewModel(application: Application) : AndroidViewModel(application) {
+    var networkState = MutableLiveData(ConstUtils.NETWORK_STATUS_SUCCESSFULLY)
+    @JvmField
+    var errorMessageMutableLiveData = MutableLiveData<ErrorMessage?>(null)
+    var favoriteForumListData: LiveData<PagingData<FavoriteForum>>? = null
+        private set
+    @JvmField
+    var totalCount = MutableLiveData(-1)
+    @JvmField
+    var favoriteForumInServer = MutableLiveData<List<FavoriteForum>?>(ArrayList())
+    @JvmField
+    var newFavoriteForum = MutableLiveData<List<FavoriteForum>>(ArrayList())
+    @JvmField
+    var resultMutableLiveData = MutableLiveData<FavoriteForumResult?>()
+    private var client: OkHttpClient? = null
+    var bbsInfo: Discuz? = null
+    var userBriefInfo: User? = null
+    var idType: String? = null
+    var dao: FavoriteForumDao
+    var myPagingConfig : PagingConfig = PagingConfig(pageSize = 5)
 
-import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.daos.FavoriteForumDao;
-import com.kidozh.discuzhub.database.FavoriteForumDatabase;
-import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.ErrorMessage;
-import com.kidozh.discuzhub.entities.FavoriteForum;
-import com.kidozh.discuzhub.entities.User;
-import com.kidozh.discuzhub.results.FavoriteForumResult;
-import com.kidozh.discuzhub.services.DiscuzApiService;
-import com.kidozh.discuzhub.utilities.ConstUtils;
-import com.kidozh.discuzhub.utilities.NetworkUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-
-public class FavoriteForumViewModel extends AndroidViewModel {
-
-    private static final String TAG = FavoriteForumViewModel.class.getSimpleName();
-    public MutableLiveData<Integer> networkState = new MutableLiveData<>(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
-    public MutableLiveData<ErrorMessage> errorMessageMutableLiveData = new MutableLiveData<>(null);
-    private LiveData<PagedList<FavoriteForum>> FavoriteForumListData;
-    @NonNull
-    public MutableLiveData<Integer> totalCount = new MutableLiveData<>(-1);
-    @NonNull
-    public MutableLiveData<List<FavoriteForum>> FavoriteForumInServer = new MutableLiveData<>(new ArrayList<>());
-    public MutableLiveData<List<FavoriteForum>> newFavoriteForum = new MutableLiveData<>(new ArrayList<>());
-    public MutableLiveData<FavoriteForumResult> resultMutableLiveData = new MutableLiveData<>();
-    private OkHttpClient client;
-    Discuz bbsInfo;
-    User userBriefInfo;
-    String idType;
-
-    FavoriteForumDao dao;
-
-    PagedList.Config myPagingConfig = new PagedList.Config.Builder()
-            .setEnablePlaceholders(true)
-            .setPageSize(5)
-            .build();
-
-    public FavoriteForumViewModel(@NonNull Application application) {
-        super(application);
-        dao = FavoriteForumDatabase.getInstance(application).getDao();
+    fun setInfo(bbsInfo: Discuz, userBriefInfo: User?) {
+        this.bbsInfo = bbsInfo
+        this.userBriefInfo = userBriefInfo
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), userBriefInfo)
+//        favoriteForumListData =
     }
 
-    public void setInfo(@NonNull Discuz bbsInfo, User userBriefInfo) {
-
-        this.bbsInfo = bbsInfo;
-        this.userBriefInfo = userBriefInfo;
-        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
-        FavoriteForumListData = new LivePagedListBuilder<>(dao.getFavoriteItemPageListByBBSId(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0),myPagingConfig).build();
+    fun startSyncFavoriteForum() {
+        getFavoriteItem(1)
     }
 
-    public LiveData<PagedList<FavoriteForum>> getFavoriteItemListData() {
-        return FavoriteForumListData;
-    }
-
-    public void startSyncFavoriteForum(){
-        getFavoriteItem(1);
-    }
-
-
-
-    private void getFavoriteItem(int page){
-        if(!NetworkUtils.isOnline(getApplication())){
-            errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()));
-            return;
+    private fun getFavoriteItem(page: Int) {
+        if (!NetworkUtils.isOnline(getApplication())) {
+            errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()))
+            return
         }
-        networkState.postValue(ConstUtils.NETWORK_STATUS_LOADING);
-        Retrofit retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url,client);
-        DiscuzApiService apiService = retrofit.create(DiscuzApiService.class);
-        Call<FavoriteForumResult> favoriteCall;
-        favoriteCall = apiService.getFavoriteForumResult(page);
-
-
-        Log.d(TAG,"Get favorite result "+favoriteCall.request().url());
-        favoriteCall.enqueue(new Callback<FavoriteForumResult>() {
-            @Override
-            public void onResponse(Call<FavoriteForumResult> call, Response<FavoriteForumResult> response) {
-                if(response.isSuccessful() && response.body()!=null){
-
-                    FavoriteForumResult result = response.body();
-                    resultMutableLiveData.postValue(result);
-                    if(result.isError()){
-                        networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED);
-                        errorMessageMutableLiveData.postValue(new ErrorMessage(result.getErrorMessage().key,result.getErrorMessage().content));
-                    }
-                    else if(result.favoriteForumVariable !=null) {
-                        totalCount.postValue(result.favoriteForumVariable.count);
-                        Log.d(TAG,"Get cnt "+result.favoriteForumVariable.count + " "+result.favoriteForumVariable.FavoriteForumList);
-                        newFavoriteForum.postValue(result.favoriteForumVariable.FavoriteForumList);
-                        List<FavoriteForum> curFavoriteForumList =
-                                FavoriteForumInServer.getValue() == null ? new ArrayList<>()
-                                : FavoriteForumInServer.getValue();
-                        curFavoriteForumList.addAll(result.favoriteForumVariable.FavoriteForumList);
-                        FavoriteForumInServer.postValue(curFavoriteForumList);
+        networkState.postValue(ConstUtils.NETWORK_STATUS_LOADING)
+        val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo!!.base_url, client!!)
+        val apiService = retrofit.create(DiscuzApiService::class.java)
+        val favoriteCall: Call<FavoriteForumResult>
+        favoriteCall = apiService.getFavoriteForumResult(page)
+        Log.d(TAG, "Get favorite result " + favoriteCall.request().url())
+        favoriteCall.enqueue(object : Callback<FavoriteForumResult?> {
+            override fun onResponse(
+                call: Call<FavoriteForumResult?>,
+                response: Response<FavoriteForumResult?>
+            ) {
+                if (response.isSuccessful && response.body() != null) {
+                    val result = response.body()
+                    resultMutableLiveData.postValue(result)
+                    if (result!!.isError()) {
+                        networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED)
+                        errorMessageMutableLiveData.postValue(
+                            ErrorMessage(
+                                result.errorMessage!!.key,
+                                result.errorMessage!!.content
+                            )
+                        )
+                    } else if (result.favoriteForumVariable != null) {
+                        totalCount.postValue(result.favoriteForumVariable.count)
+                        Log.d(
+                            TAG,
+                            "Get cnt " + result.favoriteForumVariable.count + " " + result.favoriteForumVariable.FavoriteForumList
+                        )
+                        newFavoriteForum.postValue(result.favoriteForumVariable.FavoriteForumList)
+                        val curFavoriteForumList: MutableList<FavoriteForum> =
+                            if (favoriteForumInServer.value == null) ArrayList() else favoriteForumInServer.getValue() as MutableList<FavoriteForum>
+                        curFavoriteForumList.addAll(result.favoriteForumVariable.FavoriteForumList)
+                        favoriteForumInServer.postValue(curFavoriteForumList)
 
                         // recursive
-                        if(result.favoriteForumVariable.count > curFavoriteForumList.size()){
-                            getFavoriteItem(page+1);
+                        if (result.favoriteForumVariable.count > curFavoriteForumList.size) {
+                            getFavoriteItem(page + 1)
                         }
                     }
-                }
-                else {
-                    Log.d(TAG,"Get favorite response failed"+response.body());
-                    networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED);
-                    errorMessageMutableLiveData.postValue(new ErrorMessage(String.valueOf(response.code()),
-                            getApplication().getString(R.string.discuz_network_unsuccessful,response.message())));
+                } else {
+                    Log.d(TAG, "Get favorite response failed" + response.body())
+                    networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED)
+                    errorMessageMutableLiveData.postValue(
+                        ErrorMessage(
+                            response.code().toString(),
+                            getApplication<Application>().getString(
+                                R.string.discuz_network_unsuccessful,
+                                response.message()
+                            )
+                        )
+                    )
                 }
             }
 
-            @Override
-            public void onFailure(Call<FavoriteForumResult> call, Throwable t) {
-                networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED);
-                errorMessageMutableLiveData.postValue(new ErrorMessage(
-                        getApplication().getString(R.string.discuz_network_failure_template),
-                        t.getLocalizedMessage() == null?t.toString():t.getLocalizedMessage()
-                ));
-                t.printStackTrace();
+            override fun onFailure(call: Call<FavoriteForumResult?>, t: Throwable) {
+                networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED)
+                errorMessageMutableLiveData.postValue(
+                    ErrorMessage(
+                        getApplication<Application>().getString(R.string.discuz_network_failure_template),
+                        if (t.localizedMessage == null) t.toString() else t.localizedMessage
+                    )
+                )
+                t.printStackTrace()
             }
-        });
+        })
+    }
+
+    companion object {
+        private val TAG = FavoriteForumViewModel::class.java.simpleName
+    }
+
+    init {
+        dao = FavoriteForumDatabase.getInstance(application).dao
     }
 }

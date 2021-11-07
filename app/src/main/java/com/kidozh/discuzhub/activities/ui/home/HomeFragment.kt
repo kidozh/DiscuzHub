@@ -67,9 +67,9 @@ class HomeFragment : Fragment() {
 
     private fun configureAdapter(){
         favoriteForumAdapter.setInformation(bbsInfo, userBriefInfo)
-        favoriteForumViewModel.favoriteItemListData.observe(viewLifecycleOwner, {
-             favoriteForumAdapter.submitList(it)
-        })
+//        favoriteForumViewModel.favoriteItemListData.observe(viewLifecycleOwner, {
+//             favoriteForumAdapter.submitList(it)
+//        })
     }
     
 
