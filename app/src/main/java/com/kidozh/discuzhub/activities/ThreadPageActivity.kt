@@ -768,7 +768,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
         Log.d(TAG, "You click $unescapedURL")
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_thread_page, menu)
         return true
     }

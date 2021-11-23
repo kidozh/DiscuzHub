@@ -1,64 +1,62 @@
-package com.kidozh.discuzhub.daos;
+package com.kidozh.discuzhub.daos
 
-import androidx.lifecycle.LiveData;
-import androidx.paging.DataSource;
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-
-import com.kidozh.discuzhub.entities.FavoriteForum;
-
-import java.util.List;
+import com.kidozh.discuzhub.entities.FavoriteForum
+import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
+import androidx.paging.PagingSource
+import androidx.room.*
 
 @Dao
-public interface FavoriteForumDao {
-    @Query("SELECT * FROM FavoriteForum ORDER BY favid")
-    DataSource.Factory<Integer, FavoriteForum> getAllFavoriteForumDataSource();
+interface FavoriteForumDao {
+//    @Query("SELECT * FROM FavoriteForum ORDER BY favid")
+//    val allFavoriteForumDataSource: DataSource<Int, FavoriteForum>
+//
+//    @Query("SELECT * FROM FavoriteForum ORDER BY favid DESC")
+//    val allFavoriteForumPagingSource: PagingSource<Int, FavoriteForum>
+
+//    @Query("SELECT * FROM FavoriteForum WHERE belongedBBSId=:bbsId AND userId=:userId AND idType='fid' ORDER BY favid")
+//    fun getFavoriteItemPageListByBBSId(bbsId: Int, userId: Int): DataSource<Int, FavoriteForum>
 
     @Query("SELECT * FROM FavoriteForum WHERE belongedBBSId=:bbsId AND userId=:userId AND idType='fid' ORDER BY favid")
-    DataSource.Factory<Integer, FavoriteForum> getFavoriteItemPageListByBBSId(int bbsId, int userId);
+    fun getFavoriteItemPagingListByBBSId(bbsId: Int, userId: Int): PagingSource<Int, FavoriteForum>
 
     @Query("SELECT COUNT(idKey) FROM FavoriteForum WHERE belongedBBSId=:bbsId AND userId=:userId AND idType='fid'")
-    LiveData<Integer> getFavoriteItemCountLiveData(int bbsId, int userId);
-
-
+    fun getFavoriteItemCountLiveData(bbsId: Int, userId: Int): LiveData<Int>
 
     @Query("DELETE FROM FavoriteForum WHERE belongedBBSId=:bbsId AND userId=:userId AND idKey=:fid AND idType='fid'")
-    void delete(int bbsId, int userId, int fid);
+    fun delete(bbsId: Int, userId: Int, fid: Int)
 
     @Query(" SELECT EXISTS (SELECT * FROM FavoriteForum WHERE belongedBBSId=:bbsId AND userId=:userId AND idKey=:fid AND idType='fid') ")
-    LiveData<Boolean> isFavoriteItem(int bbsId, int userId, int fid);
+    fun isFavoriteItem(bbsId: Int, userId: Int, fid: Int): LiveData<Boolean>
 
     @Query("SELECT * FROM FavoriteForum WHERE belongedBBSId=:bbsId AND userId=:userId AND idKey=:fid AND idType='fid'")
-    LiveData<FavoriteForum> getFavoriteItemByfid(int bbsId, int userId, int fid);
+    fun getFavoriteItemByfid(bbsId: Int, userId: Int, fid: Int): LiveData<FavoriteForum>
 
     @Query("SELECT * FROM FavoriteForum WHERE (belongedBBSId=:bbsId AND userId=:userId) AND idKey IN (:fids) AND idType='fid'")
-    List<FavoriteForum> queryFavoriteItemListByfids(int bbsId, int userId, List<Integer> fids);
+    fun queryFavoriteItemListByfids(
+        bbsId: Int,
+        userId: Int,
+        fids: List<Int?>?
+    ): List<FavoriteForum?>?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public void insert(FavoriteForum... FavoriteForums);
+    fun insert(vararg FavoriteForums: FavoriteForum?)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public void insert(FavoriteForum FavoriteForum);
+    fun insert(FavoriteForum: FavoriteForum?)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public void insert(List<FavoriteForum> FavoriteForums);
+    fun insert(FavoriteForums: List<FavoriteForum?>?)
 
     @Query("DELETE FROM FavoriteForum WHERE belongedBBSId=:bbsId AND userId=:userId AND idType='fid'")
-    void clearFavoriteItemByBBSId(int bbsId, int userId);
+    fun clearFavoriteItemByBBSId(bbsId: Int, userId: Int)
 
     @Query("DELETE FROM FavoriteForum WHERE belongedBBSId=:bbsId AND userId=:userId AND idType='fid' AND favid != 0")
-    void clearSyncedFavoriteItemByBBSId(int bbsId, int userId);
+    fun clearSyncedFavoriteItemByBBSId(bbsId: Int, userId: Int)
 
     @Delete
-    void delete(FavoriteForum FavoriteForum);
-
-
+    fun delete(FavoriteForum: FavoriteForum?)
 
     @Delete
-    void delete(FavoriteForum... FavoriteForums);
-
-
+    fun delete(vararg FavoriteForums: FavoriteForum?)
 }

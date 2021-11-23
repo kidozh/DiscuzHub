@@ -5,10 +5,12 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.kidozh.discuzhub.R
-import com.kidozh.discuzhub.activities.ui.FavoriteForum.FavoriteForumViewModel
 import com.kidozh.discuzhub.daos.FavoriteForumDao
 import com.kidozh.discuzhub.database.FavoriteForumDatabase
 import com.kidozh.discuzhub.entities.Discuz
@@ -19,6 +21,7 @@ import com.kidozh.discuzhub.results.FavoriteForumResult
 import com.kidozh.discuzhub.services.DiscuzApiService
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.NetworkUtils
+import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -29,7 +32,7 @@ class FavoriteForumViewModel(application: Application) : AndroidViewModel(applic
     var networkState = MutableLiveData(ConstUtils.NETWORK_STATUS_SUCCESSFULLY)
     @JvmField
     var errorMessageMutableLiveData = MutableLiveData<ErrorMessage?>(null)
-    var favoriteForumListData: LiveData<PagingData<FavoriteForum>>? = null
+    var favoriteForumListData: LiveData<List<FavoriteForum>>? = null
         private set
     @JvmField
     var totalCount = MutableLiveData(-1)
@@ -43,14 +46,32 @@ class FavoriteForumViewModel(application: Application) : AndroidViewModel(applic
     var bbsInfo: Discuz? = null
     var userBriefInfo: User? = null
     var idType: String? = null
-    var dao: FavoriteForumDao
-    var myPagingConfig : PagingConfig = PagingConfig(pageSize = 5)
+    lateinit var dao: FavoriteForumDao
+    var favoritePagingConfig : PagingConfig = PagingConfig(pageSize = 5)
+//    var favoriteItem = Pager(
+//        config = favoritePagingConfig,
+//        remoteMediator = FavoriteForumRemoteMediator(0,DiscuzApiService(userBriefInfo), database = dao.allFavoriteForumDataSource)
+//    )
+//    var favoriteItem = Pager(favoritePagingConfig){
+//        dao.getFavoriteItemPageListByBBSId(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0)
+//    }.flow
+    lateinit var flow : Flow<PagingData<FavoriteForum>>
+
 
     fun setInfo(bbsInfo: Discuz, userBriefInfo: User?) {
         this.bbsInfo = bbsInfo
         this.userBriefInfo = userBriefInfo
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), userBriefInfo)
-//        favoriteForumListData =
+        var userId = 0
+        if(userBriefInfo != null){
+            userId = userBriefInfo.uid;
+        }
+        flow = Pager(favoritePagingConfig){
+            dao.getFavoriteItemPagingListByBBSId(bbsInfo.id,userId)
+        }.flow
+
+
+        flow.cachedIn(viewModelScope)
     }
 
     fun startSyncFavoriteForum() {
