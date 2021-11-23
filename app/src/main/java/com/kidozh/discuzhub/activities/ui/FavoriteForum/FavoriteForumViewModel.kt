@@ -45,15 +45,8 @@ class FavoriteForumViewModel(application: Application) : AndroidViewModel(applic
     var bbsInfo: Discuz? = null
     var userBriefInfo: User? = null
     var idType: String? = null
-    lateinit var dao: FavoriteForumDao
-    var favoritePagingConfig : PagingConfig = PagingConfig(pageSize = 5)
-//    var favoriteItem = Pager(
-//        config = favoritePagingConfig,
-//        remoteMediator = FavoriteForumRemoteMediator(0,DiscuzApiService(userBriefInfo), database = dao.allFavoriteForumDataSource)
-//    )
-//    var favoriteItem = Pager(favoritePagingConfig){
-//        dao.getFavoriteItemPageListByBBSId(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0)
-//    }.flow
+    var dao: FavoriteForumDao = FavoriteForumDatabase.getInstance(application).dao
+    private var favoritePagingConfig : PagingConfig = PagingConfig(pageSize = 5)
     lateinit var flow : Flow<PagingData<FavoriteForum>>
 
 
@@ -63,14 +56,14 @@ class FavoriteForumViewModel(application: Application) : AndroidViewModel(applic
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), userBriefInfo)
         var userId = 0
         if(userBriefInfo != null){
-            userId = userBriefInfo.uid;
+            userId = userBriefInfo.uid
         }
         flow = Pager(favoritePagingConfig){
             dao.getFavoriteItemPagingListByBBSId(bbsInfo.id,userId)
         }.flow
 
 
-        flow.cachedIn(viewModelScope)
+        flow = flow.cachedIn(viewModelScope)
 
         favoriteForumCount = dao.getFavoriteItemCountLiveData(bbsInfo.id,userId)
     }
@@ -87,8 +80,7 @@ class FavoriteForumViewModel(application: Application) : AndroidViewModel(applic
         networkState.postValue(ConstUtils.NETWORK_STATUS_LOADING)
         val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo!!.base_url, client!!)
         val apiService = retrofit.create(DiscuzApiService::class.java)
-        val favoriteCall: Call<FavoriteForumResult>
-        favoriteCall = apiService.getFavoriteForumResult(page)
+        val favoriteCall: Call<FavoriteForumResult> = apiService.getFavoriteForumResult(page)
         Log.d(TAG, "Get favorite result " + favoriteCall.request().url())
         favoriteCall.enqueue(object : Callback<FavoriteForumResult?> {
             override fun onResponse(
@@ -114,7 +106,7 @@ class FavoriteForumViewModel(application: Application) : AndroidViewModel(applic
                         )
                         newFavoriteForum.postValue(result.favoriteForumVariable.FavoriteForumList)
                         val curFavoriteForumList: MutableList<FavoriteForum> =
-                            if (favoriteForumInServer.value == null) ArrayList() else favoriteForumInServer.getValue() as MutableList<FavoriteForum>
+                            if (favoriteForumInServer.value == null) ArrayList() else favoriteForumInServer.value as MutableList<FavoriteForum>
                         curFavoriteForumList.addAll(result.favoriteForumVariable.FavoriteForumList)
                         favoriteForumInServer.postValue(curFavoriteForumList)
 
@@ -155,7 +147,4 @@ class FavoriteForumViewModel(application: Application) : AndroidViewModel(applic
         private val TAG = FavoriteForumViewModel::class.java.simpleName
     }
 
-    init {
-        dao = FavoriteForumDatabase.getInstance(application).dao
-    }
 }
