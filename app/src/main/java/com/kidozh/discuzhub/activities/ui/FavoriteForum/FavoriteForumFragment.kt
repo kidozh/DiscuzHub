@@ -110,9 +110,9 @@ class FavoriteForumFragment : Fragment() {
 
     private fun bindViewModel() {
 
-        mViewModel.favoriteForumListData?.observe(viewLifecycleOwner) { favoriteThreads ->
+        mViewModel.favoriteForumCount.observe(viewLifecycleOwner) { cnt ->
 
-            if (favoriteThreads.size == 0) {
+            if (cnt == 0) {
                 binding!!.blankFavoriteThreadView.visibility = View.VISIBLE
                 binding!!.blankFavoriteThreadNotice.setText(R.string.favorite_forum_not_found)
             } else {
@@ -200,29 +200,32 @@ class FavoriteForumFragment : Fragment() {
                 if (userBriefInfo != null) userBriefInfo!!.getUid() else 0
             //Log.d(TAG,"fav id "+favoriteForumList.get(i).favid);
         }
-        val queryList = dao.queryFavoriteItemListByfids(
-            bbsInfo!!.id, if (userBriefInfo != null) userBriefInfo!!.getUid() else 0,
-            insertTids
-        )
-        if (queryList != null) {
-            for (i in queryList.indices) {
-                val tid = queryList.get(i)?.idKey
-                val queryForum = queryList[i]
-                for (j in favoriteForumList.indices) {
-                    val favoriteForum = favoriteForumList[j]
-                    if (favoriteForum.idKey == tid) {
-                        if (queryForum != null) {
-                            favoriteForum.id = queryForum.id
+        Thread{
+            val queryList = dao.queryFavoriteItemListByfids(
+                bbsInfo!!.id, if (userBriefInfo != null) userBriefInfo!!.getUid() else 0,
+                insertTids
+            )
+            if (queryList != null) {
+                for (i in queryList.indices) {
+                    val tid = queryList.get(i)?.idKey
+                    val queryForum = queryList[i]
+                    for (j in favoriteForumList.indices) {
+                        val favoriteForum = favoriteForumList[j]
+                        if (favoriteForum.idKey == tid) {
+                            if (queryForum != null) {
+                                favoriteForum.id = queryForum.id
+                            }
+                            break
                         }
-                        break
                     }
                 }
             }
-        }
-        // remove all synced information
+            // remove all synced information
 
-        //dao.clearSyncedFavoriteItemByBBSId(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0);
-        dao.insert(favoriteForumList)
+            //dao.clearSyncedFavoriteItemByBBSId(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0);
+            dao.insert(favoriteForumList)
+        }.start()
+
 
         return
     }

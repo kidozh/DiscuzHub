@@ -32,8 +32,7 @@ class FavoriteForumViewModel(application: Application) : AndroidViewModel(applic
     var networkState = MutableLiveData(ConstUtils.NETWORK_STATUS_SUCCESSFULLY)
     @JvmField
     var errorMessageMutableLiveData = MutableLiveData<ErrorMessage?>(null)
-    var favoriteForumListData: LiveData<List<FavoriteForum>>? = null
-        private set
+    lateinit var favoriteForumCount: LiveData<Int>
     @JvmField
     var totalCount = MutableLiveData(-1)
     @JvmField
@@ -72,6 +71,8 @@ class FavoriteForumViewModel(application: Application) : AndroidViewModel(applic
 
 
         flow.cachedIn(viewModelScope)
+
+        favoriteForumCount = dao.getFavoriteItemCountLiveData(bbsInfo.id,userId)
     }
 
     fun startSyncFavoriteForum() {
