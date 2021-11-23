@@ -1,42 +1,35 @@
 package com.kidozh.discuzhub.activities.ui.FavoriteForum
 
-import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
-import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
-import com.kidozh.discuzhub.utilities.UserPreferenceUtils.syncFavorite
-import com.kidozh.discuzhub.activities.ui.FavoriteForum.FavoriteForumViewModel
-import com.kidozh.discuzhub.entities.Discuz
 import android.os.Bundle
-import com.kidozh.discuzhub.activities.ui.FavoriteForum.FavoriteForumFragment
-import com.kidozh.discuzhub.adapter.FavoriteForumAdapter
 import android.view.LayoutInflater
-import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import es.dmoral.toasty.Toasty
-import com.kidozh.discuzhub.R
-import android.widget.Toast
-import com.kidozh.discuzhub.entities.ErrorMessage
-import com.kidozh.discuzhub.results.FavoriteForumResult
-import com.kidozh.discuzhub.interact.BaseStatusInteract
-import com.kidozh.discuzhub.utilities.UserPreferenceUtils
-import com.kidozh.discuzhub.entities.FavoriteForum
-import android.os.AsyncTask
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.kidozh.discuzhub.daos.FavoriteForumDao
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.kidozh.discuzhub.R
+import com.kidozh.discuzhub.adapter.FavoriteForumAdapter
 import com.kidozh.discuzhub.database.FavoriteForumDatabase
 import com.kidozh.discuzhub.databinding.FragmentFavoriteThreadBinding
+import com.kidozh.discuzhub.entities.Discuz
+import com.kidozh.discuzhub.entities.ErrorMessage
+import com.kidozh.discuzhub.entities.FavoriteForum
 import com.kidozh.discuzhub.entities.User
+import com.kidozh.discuzhub.interact.BaseStatusInteract
+import com.kidozh.discuzhub.results.FavoriteForumResult
+import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
+import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
+import com.kidozh.discuzhub.utilities.UserPreferenceUtils.syncFavorite
+import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.ArrayList
+import java.util.*
 
 class FavoriteForumFragment : Fragment() {
-    lateinit var mViewModel: FavoriteForumViewModel
+    private lateinit var mViewModel: FavoriteForumViewModel
     private var bbsInfo: Discuz? = null
     private var userBriefInfo: User? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +52,7 @@ class FavoriteForumFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mViewModel = ViewModelProvider(this).get(FavoriteForumViewModel::class.java)
+        mViewModel = ViewModelProvider(this)[FavoriteForumViewModel::class.java]
         mViewModel.setInfo(bbsInfo!!, userBriefInfo)
         configureRecyclerview()
         bindViewModel()
@@ -75,7 +68,7 @@ class FavoriteForumFragment : Fragment() {
         adapter = FavoriteForumAdapter()
         adapter!!.setInformation(bbsInfo!!, userBriefInfo)
         viewLifecycleOwner.lifecycleScope.launch {
-            mViewModel.flow.collectLatest { it ->
+            mViewModel.flow.collectLatest {
                 adapter!!.submitData(it)
 
             }
@@ -100,7 +93,7 @@ class FavoriteForumFragment : Fragment() {
                     getString(R.string.sync_favorite_forum_start, bbsInfo!!.site_name),
                     Toast.LENGTH_SHORT
                 ).show()
-                mViewModel!!.startSyncFavoriteForum()
+                mViewModel.startSyncFavoriteForum()
                 binding!!.favoriteThreadSwipelayout.isRefreshing = false
             }
         } else {
@@ -121,7 +114,7 @@ class FavoriteForumFragment : Fragment() {
         }
         mViewModel.errorMessageMutableLiveData.observe(
             viewLifecycleOwner,
-            Observer { errorMessage: ErrorMessage? ->
+            { errorMessage: ErrorMessage? ->
                 if (errorMessage != null) {
                     Toasty.error(
                         requireContext(), getString(
@@ -133,7 +126,7 @@ class FavoriteForumFragment : Fragment() {
             })
         mViewModel.resultMutableLiveData.observe(
             viewLifecycleOwner,
-            Observer { favoriteForumResult: FavoriteForumResult? ->
+            { favoriteForumResult: FavoriteForumResult? ->
                 if (context is BaseStatusInteract) {
                     (context as BaseStatusInteract?)!!.setBaseResult(
                         favoriteForumResult,
@@ -143,15 +136,15 @@ class FavoriteForumFragment : Fragment() {
             })
     }
 
-    fun syncFavoriteThreadFromServer() {
+    private fun syncFavoriteThreadFromServer() {
         if (context != null && syncFavorite(requireContext()) && userBriefInfo != null) {
             bindSyncStatus()
-            mViewModel!!.startSyncFavoriteForum()
+            mViewModel.startSyncFavoriteForum()
         }
     }
 
     private fun bindSyncStatus() {
-        mViewModel!!.totalCount.observe(viewLifecycleOwner, { count: Int ->
+        mViewModel.totalCount.observe(viewLifecycleOwner, { count: Int ->
             if (count == -1) {
                 binding!!.favoriteThreadSyncProgressbar.visibility = View.VISIBLE
                 binding!!.favoriteThreadSyncProgressbar.isIndeterminate = true
@@ -160,22 +153,19 @@ class FavoriteForumFragment : Fragment() {
             }
         })
 
-        mViewModel!!.favoriteForumInServer.observe(viewLifecycleOwner) { favoriteForums ->
-            if (mViewModel != null) {
-                val count = mViewModel!!.totalCount.value!!
-                if (count == -1) {
-                } else if (favoriteForums != null) {
-                    if (count > favoriteForums.size) {
-                        binding!!.favoriteThreadSyncProgressbar.visibility = View.VISIBLE
-                        binding!!.favoriteThreadSyncProgressbar.max = count
-                        binding!!.favoriteThreadSyncProgressbar.progress = favoriteForums.size
-                    } else {
-                        binding!!.favoriteThreadSyncProgressbar.visibility = View.GONE
-                        //Toasty.success(getContext(),getString(R.string.sync_favorite_thread_load_all),Toast.LENGTH_LONG).show();
-                    }
+        mViewModel.favoriteForumInServer.observe(viewLifecycleOwner) { favoriteForums ->
+            val count = mViewModel.totalCount.value!!
+            if (count == -1) {
+                return@observe
+            } else if (favoriteForums != null) {
+                if (count > favoriteForums.size) {
+                    binding!!.favoriteThreadSyncProgressbar.visibility = View.VISIBLE
+                    binding!!.favoriteThreadSyncProgressbar.max = count
+                    binding!!.favoriteThreadSyncProgressbar.progress = favoriteForums.size
+                } else {
+                    binding!!.favoriteThreadSyncProgressbar.visibility = View.GONE
+                    //Toasty.success(getContext(),getString(R.string.sync_favorite_thread_load_all),Toast.LENGTH_LONG).show();
                 }
-            } else {
-                binding!!.favoriteThreadSyncProgressbar.visibility = View.GONE
             }
         }
         mViewModel.newFavoriteForum.observe(
@@ -207,7 +197,7 @@ class FavoriteForumFragment : Fragment() {
             )
             if (queryList != null) {
                 for (i in queryList.indices) {
-                    val tid = queryList.get(i)?.idKey
+                    val tid = queryList[i]?.idKey
                     val queryForum = queryList[i]
                     for (j in favoriteForumList.indices) {
                         val favoriteForum = favoriteForumList[j]
