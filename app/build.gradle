@@ -4,13 +4,13 @@ apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 31
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.kidozh.discuzhub"
         minSdkVersion 24
         targetSdkVersion 31
-        versionCode 39
-        versionName "4.9"
+        versionCode 40
+        versionName "4.10"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [
                 discuz_title: "NOT_IMPLEMENTED",
