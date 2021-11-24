@@ -25,6 +25,11 @@
             android:id="@+id/draft_box"
             android:icon="@drawable/ic_baseline_drafts_24"
             android:title="@string/bbs_draft_box" />
+
+        <item
+            android:id="@+id/short_cut"
+            android:icon="@drawable/ic_baseline_my_location_24"
+            android:title="@string/short_cut_activity_title" />
         <item
             android:id="@+id/search"
             android:icon="@drawable/ic_baseline_search_24"

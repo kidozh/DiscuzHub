@@ -136,6 +136,14 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                     startActivity(intent)
                     true
                 }
+                R.id.short_cut ->{
+
+                    val intent = Intent(this, ShortcutActivity::class.java)
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbs)
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
+                    startActivity(intent)
+                    true
+                }
 
                 R.id.draft_box -> {
                     val userBriefInfo = viewModel.currentUserMutableLiveData.value
