@@ -3,6 +3,7 @@ package com.kidozh.discuzhub.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
@@ -160,5 +161,13 @@ class ShortcutActivity : BaseStatusActivity() {
         intent.putExtra("UID", uid)
 
         startActivity(intent)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home -> finishAfterTransition();
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 }
