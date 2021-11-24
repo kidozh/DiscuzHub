@@ -106,6 +106,9 @@ public interface DiscuzApiService {
     @GET(DISCUZ_API_PATH+"?version=4&module=viewthread")
     Call<ThreadResult> viewThreadResult(@QueryMap HashMap<String,String> options);
 
+    @GET(DISCUZ_API_PATH+"?version=4&module=viewthread")
+    Call<String> viewThreadResultRaw(@QueryMap HashMap<String,String> options);
+
     @GET(DISCUZ_API_PATH+"?version=4&module=secure")
     Call<SecureInfoResult> secureResult(@Query("type") String type);
 

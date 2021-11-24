@@ -211,7 +211,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                         .apply(RequestOptions.placeholderOf(avatarResource).error(avatarResource))
                         .into(navHeaderBinding.userAvatar)
                 navHeaderBinding.headerTitle.setText(user.username)
-                navHeaderBinding.headerSubtitle.setText(getString(R.string.user_id_description,user.getUid().toString()))
+                navHeaderBinding.headerSubtitle.setText(getString(R.string.user_id_description,user.getUid()))
             }
         })
         viewModel.userListLiveData.observe(this, Observer { userList ->

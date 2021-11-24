@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.activities.BaseStatusActivity
 import com.kidozh.discuzhub.daos.FavoriteThreadDao
@@ -18,7 +19,6 @@ import com.kidozh.discuzhub.utilities.NetworkUtils
 import com.kidozh.discuzhub.utilities.URLUtils
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils
 import com.kidozh.discuzhub.utilities.bbsParseUtils.DetailedThreadInfo
-import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -119,6 +119,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
         }
         val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url, client)
         val service = retrofit.create(DiscuzApiService::class.java)
+
         val threadResultCall = service.viewThreadResult(viewThreadQueryStatus.generateQueryHashMap())
         threadResultCall.enqueue(object : Callback<ThreadResult?> {
             override fun onResponse(call: Call<ThreadResult?>, response: Response<ThreadResult?>) {
@@ -179,6 +180,19 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
 
                     // networkStatus.postValue(ConstUtils.NETWORK_STATUS_SUCCESSFULLY);
                 } else {
+                    val responseString = response.errorBody()?.string()
+                    Log.i(TAG,"response error body ${responseString}")
+                    try{
+
+                        Log.i(TAG,"REsp Error RAW ${responseString}")
+                        val objectMapper = ObjectMapper()
+                        objectMapper.readValue(responseString,ThreadResult::class.java)
+
+                    }
+                    catch (e:Exception){
+                        e.printStackTrace()
+                    }
+
                     errorMessageMutableLiveData.postValue(ErrorMessage(response.code().toString(),
                             getApplication<Application>().getString(R.string.discuz_network_unsuccessful, response.message())))
                     if (viewThreadQueryStatus.page != 1) {
