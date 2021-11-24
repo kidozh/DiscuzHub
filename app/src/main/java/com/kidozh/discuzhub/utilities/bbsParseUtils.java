@@ -592,7 +592,7 @@ public class bbsParseUtils {
         @JsonProperty("displayorder")
         public int displayOrder;
         @JsonFormat(shape=JsonFormat.Shape.STRING)
-        public int views, replies;
+        public long views, replies;
         public String highlight;
         @JsonDeserialize(using = OneZeroDeserializer.class)
         @JsonFormat(shape=JsonFormat.Shape.STRING)
@@ -652,7 +652,8 @@ public class bbsParseUtils {
             favoriteThread.description = this.freeMessage == null ?"":this.freeMessage;
             favoriteThread.author = this.author;
             favoriteThread.date = this.lastPostTime;
-            favoriteThread.replies = this.replies;
+
+            favoriteThread.replies = (int) this.replies;
             favoriteThread.userId = userId;
             return favoriteThread;
         }

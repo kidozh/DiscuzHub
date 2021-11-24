@@ -20,7 +20,6 @@ import android.text.Spanned
 import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
 import android.text.style.StrikethroughSpan
-import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -48,7 +47,6 @@ import com.kidozh.discuzhub.activities.UserProfileActivity
 import com.kidozh.discuzhub.adapter.PostAdapter.PostViewHolder
 import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.Post
-import com.kidozh.discuzhub.entities.Thread
 import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.entities.ViewThreadQueryStatus
 import com.kidozh.discuzhub.results.ThreadResult
@@ -96,11 +94,6 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
     private var onLinkClickedListener: OnLinkClicked? = null
     private var onAdvanceOptionClickedListener: OnAdvanceOptionClicked? = null
     private var authorId = 0
-//    set(value) {
-//        // all changed
-//        notifyItemRangeChanged(0,postList.size)
-//        field = value
-//    }
     private lateinit var context : Context
 
     init {
@@ -235,7 +228,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
             holder.mPostQuoteContent.setTextIsSelectable(true)
             holder.mPostQuoteContent.movementMethod = bbsLinkMovementMethod(OnLinkClickedListener { url ->
                 if (onLinkClickedListener != null) {
-                    if (url.toLowerCase().startsWith("http://") || url.toLowerCase().startsWith("https://")) {
+                    if (url.lowercase().startsWith("http://") || url.lowercase().startsWith("https://")) {
                         onLinkClickedListener!!.onLinkClicked(url)
                         true
                     } else {
@@ -265,8 +258,9 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
         // handle links
         holder.mContent.movementMethod = bbsLinkMovementMethod(object : OnLinkClickedListener {
             override fun onLinkClicked(url: String): Boolean {
+                print("Click link on adapter : ${url}")
                 if (onLinkClickedListener != null) {
-                    if (url.toLowerCase(Locale.ROOT).startsWith("http://") || url.toLowerCase(Locale.ROOT).startsWith("https://")) {
+                    if (url.lowercase().startsWith("http://") || url.lowercase().startsWith("https://")) {
                         onLinkClickedListener!!.onLinkClicked(url)
                         return true
                     } else {

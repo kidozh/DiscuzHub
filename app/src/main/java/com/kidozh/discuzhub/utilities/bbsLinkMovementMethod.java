@@ -116,7 +116,7 @@ public class bbsLinkMovementMethod extends LinkMovementMethod {
                 .replace("&gt;",">")
                 .replace("&nbsp;"," ");
         final String finalURL = url;
-        Log.d(TAG, "Parse and open URL " + url);
+        Log.d(TAG, "Parse and open URL in movement method " + url);
 
         Uri uri = Uri.parse(url);
         Uri baseUri = Uri.parse(bbsInfo.base_url);

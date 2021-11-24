@@ -1,85 +1,72 @@
 package com.kidozh.discuzhub.activities
 
 
-import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
-import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
-import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment.OnSmileyPressedInteraction
-import com.kidozh.discuzhub.adapter.PostAdapter.onFilterChanged
-import com.kidozh.discuzhub.adapter.PostAdapter.onAdapterReply
-import com.kidozh.discuzhub.adapter.PostAdapter.OnLinkClicked
-import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment
-import com.kidozh.discuzhub.adapter.ThreadPropertiesAdapter.OnThreadPropertyClicked
-import com.kidozh.discuzhub.adapter.PostAdapter.OnAdvanceOptionClicked
-import com.kidozh.discuzhub.dialogs.ReportPostDialogFragment.ReportDialogListener
-import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter.OnRefreshBtnListener
-import com.kidozh.discuzhub.adapter.ThreadCountAdapter.OnRecommendBtnPressed
-import com.kidozh.discuzhub.adapter.PostAdapter
-import com.kidozh.discuzhub.adapter.ThreadCountAdapter
-import com.kidozh.discuzhub.utilities.SmileyPicker
-import com.kidozh.discuzhub.utilities.EmotionInputHandler
-import com.kidozh.discuzhub.viewModels.ThreadViewModel
-import androidx.recyclerview.widget.ConcatAdapter
-import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter
-import androidx.lifecycle.ViewModelProvider
-import android.content.Intent
-import com.kidozh.discuzhub.utilities.ConstUtils
-import com.kidozh.discuzhub.utilities.URLUtils
-import android.text.Html
-import android.text.SpannableString
-import android.widget.TextView
-import android.graphics.drawable.Drawable
-import es.dmoral.toasty.Toasty
-import com.kidozh.discuzhub.R
-import android.widget.Toast
-import com.kidozh.discuzhub.utilities.VibrateUtils
-import com.kidozh.discuzhub.utilities.UserPreferenceUtils
-import kotlin.Throws
-import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.model.LazyHeaders
-import com.kidozh.discuzhub.results.ApiMessageActionResult
-import com.kidozh.discuzhub.results.BuyThreadResult
-import android.content.DialogInterface
-import com.kidozh.discuzhub.utilities.NetworkUtils
-import android.view.View.OnFocusChangeListener
-import com.kidozh.discuzhub.utilities.bbsParseUtils
-import android.app.ActivityOptions
 import android.app.Activity
+import android.app.ActivityOptions
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.*
-import com.kidozh.discuzhub.dialogs.ReportPostDialogFragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.GridLayoutManager
-import android.widget.EditText
-import android.widget.LinearLayout
+import android.text.Html
+import android.text.SpannableString
 import android.text.TextUtils
-import androidx.core.content.ContextCompat
-import androidx.preference.PreferenceManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.InputMethodManager
-import androidx.annotation.RequiresApi
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.chip.Chip
+import com.kidozh.discuzhub.R
+import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment
+import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment.OnSmileyPressedInteraction
+import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter
+import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter.OnRefreshBtnListener
+import com.kidozh.discuzhub.adapter.PostAdapter
+import com.kidozh.discuzhub.adapter.PostAdapter.*
 import com.kidozh.discuzhub.adapter.SmileyViewPagerAdapter
+import com.kidozh.discuzhub.adapter.ThreadCountAdapter
+import com.kidozh.discuzhub.adapter.ThreadCountAdapter.OnRecommendBtnPressed
+import com.kidozh.discuzhub.adapter.ThreadPropertiesAdapter.OnThreadPropertyClicked
 import com.kidozh.discuzhub.database.ViewHistoryDatabase
 import com.kidozh.discuzhub.databinding.ActivityViewThreadBinding
+import com.kidozh.discuzhub.dialogs.ReportPostDialogFragment
+import com.kidozh.discuzhub.dialogs.ReportPostDialogFragment.ReportDialogListener
 import com.kidozh.discuzhub.entities.*
+import com.kidozh.discuzhub.results.ApiMessageActionResult
+import com.kidozh.discuzhub.results.BuyThreadResult
+import com.kidozh.discuzhub.utilities.*
+import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
+import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
 import com.kidozh.discuzhub.viewModels.SmileyViewModel
+import com.kidozh.discuzhub.viewModels.ThreadViewModel
+import es.dmoral.toasty.Toasty
 import okhttp3.*
 import java.io.IOException
 import java.io.InputStream
-import java.lang.Exception
 import java.net.URLEncoder
 import java.text.DateFormat
 import java.util.*
@@ -920,12 +907,15 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         val baseURL = URLUtils.getBaseUrl()
         val baseUri = Uri.parse(baseURL)
         val clickedUri = Uri.parse(unescapedURL)
+        Log.i(TAG, "checking with ${unescapedURL} ${clickedUri.host} ${baseUri.host} ${clickedUri.host == null} ${clickedUri.host == baseUri.host}")
         if (clickedUri.host == null || clickedUri.host == baseUri.host) {
             // internal link
             val result = threadDetailViewModel.threadPostResultMutableLiveData.value
+            Log.i(TAG,"Recv result in the clicked path ${result != null}")
             if (result != null) {
-                val rewriteRules = result.threadPostVariables.rewriteRule
+                val rewriteRules: MutableMap<String, String>? = result.threadPostVariables.rewriteRule?.toMutableMap()
                 var clickedURLPath = clickedUri.path
+                Log.i(TAG,"clickedURLPath ${clickedURLPath}")
                 if (clickedURLPath == null) {
                     parseURLAndOpen(unescapedURL)
                 }
@@ -935,9 +925,31 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                         clickedURLPath = clickedURLPath.substring(basedURLPath.length)
                     }
                 }
+                Log.i(TAG,"new potiential clickedURLPath ${clickedURLPath}")
                 // only catch two type : forum_forumdisplay & forum_viewthread
                 // only 8.0+ support reverse copy
+                Log.i(TAG,"new judge ${Build.VERSION.SDK_INT >= Build.VERSION_CODES.O} ${rewriteRules}")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    // load from cache if not exist
+                    val displayForumRewriteRule = UserPreferenceUtils.getRewriteRule(context,discuz, rewriteKey = UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY)
+                    if ((rewriteRules == null || !rewriteRules.containsKey("forum_forumdisplay"))&&displayForumRewriteRule!=null){
+
+                        rewriteRules?.put("forum_forumdisplay", displayForumRewriteRule)
+                    }
+
+                    val viewThreadRewriteRule = UserPreferenceUtils.getRewriteRule(context,discuz, rewriteKey = UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY)
+                    if ((rewriteRules == null || !rewriteRules.containsKey("forum_viewthread") )&&viewThreadRewriteRule!=null){
+                        rewriteRules?.put("forum_viewthread", viewThreadRewriteRule)
+                    }
+
+                    val homeSpaceRewriteRule = UserPreferenceUtils.getRewriteRule(context,discuz, rewriteKey = UserPreferenceUtils.REWRITE_HOME_SPACE)
+                    if ((rewriteRules == null || !rewriteRules.containsKey("home_space")) && homeSpaceRewriteRule!=null){
+
+                        rewriteRules?.put("home_space", homeSpaceRewriteRule)
+                    }
+
+                    Log.i(TAG,"after fix  ${rewriteRules}")
+
                     if (rewriteRules != null) {
                         if (rewriteRules.containsKey("forum_forumdisplay")) {
                             var rewriteRule = rewriteRules["forum_forumdisplay"]
@@ -988,6 +1000,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                                 parseURLAndOpen(unescapedURL)
                                 return
                             }
+                            Log.i(TAG,"Match view thread ${rewriteRule} : ${clickedURLPath}")
                             // match template such as f{fid}-{page}
                             // crate reverse copy
                             rewriteRule = rewriteRule.replace("{tid}", "(?<tid>\\d+)")
@@ -1068,11 +1081,13 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 } else {
                     parseURLAndOpen(unescapedURL)
                 }
-            } else {
+            }
+            else {
                 // parse the URL
                 parseURLAndOpen(unescapedURL)
             }
-        } else {
+        }
+        else {
             val prefs = PreferenceManager.getDefaultSharedPreferences(this)
             val outLinkWarn = prefs.getBoolean(getString(R.string.preference_key_outlink_warn), true)
             if (outLinkWarn) {
@@ -1103,7 +1118,6 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 return
             }
         }
-        Log.d(TAG, "You click $unescapedURL")
     }
 
     override fun onRecommend(recommend: Boolean) {
