@@ -608,8 +608,8 @@ public class UserProfileActivity extends BaseStatusActivity implements
     }
 
     @Override
-    public boolean onLinkClicked(String url) {
-        bbsLinkMovementMethod.parseURLAndOpen(this,bbsInfo, user,url);
+    public boolean onLinkClicked(@NonNull String url) {
+        bbsLinkMovementMethod.Companion.onLinkClicked(this,bbsInfo, user,url);
         return true;
     }
 

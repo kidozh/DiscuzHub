@@ -1,12 +1,10 @@
 package com.kidozh.discuzhub.utilities
 
 import android.content.Context
-import androidx.preference.PreferenceManager
 import android.util.Log
+import androidx.preference.PreferenceManager
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.entities.Discuz
-import java.util.*
-import kotlin.collections.HashSet
 
 object UserPreferenceUtils {
     private val TAG = UserPreferenceUtils::class.java.simpleName
@@ -149,6 +147,14 @@ object UserPreferenceUtils {
         val preferenceName = context.getString(R.string.preference_key_remove_jammer_contents)
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         return prefs.getBoolean(preferenceName, true)
+    }
+
+    fun viewHistoryEnabled(context: Context): Boolean {
+        val preferenceName = context.getString(R.string.preference_key_record_history)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        return prefs.getBoolean(preferenceName, false)
+
+
     }
 
 

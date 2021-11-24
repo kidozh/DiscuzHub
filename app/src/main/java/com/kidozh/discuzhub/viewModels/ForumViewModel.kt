@@ -19,9 +19,6 @@ import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.concurrent.thread
 
 class ForumViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = ForumViewModel::class.java.simpleName
@@ -174,4 +171,6 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
         ruleTextCollapse = MutableLiveData(collapseForumRule(application))
         ruleTextCollapse.postValue(collapseForumRule(application))
     }
+
+
 }

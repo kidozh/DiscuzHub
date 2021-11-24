@@ -17,6 +17,11 @@
         android:visible="true"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/forum_info"
+        android:icon="@drawable/ic_info_outlined_24px"
+        android:title="@string/forum_information_title" />
+
+    <item
         android:id="@+id/bbs_forum_nav_draft_box"
         android:icon="@drawable/vector_drawable_drafts_24px"
         android:title="@string/bbs_draft_box" />

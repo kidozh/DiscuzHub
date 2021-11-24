@@ -895,6 +895,7 @@
     <string name="short_cut_activity_title">Shortcut</string>
     <string name="short_cut_submit">Go</string>
     <string name="short_cut_description">Quickly locate bbs resources</string>
+    <string name="forum_information_title">Forum info.</string>
 
 
 </resources>

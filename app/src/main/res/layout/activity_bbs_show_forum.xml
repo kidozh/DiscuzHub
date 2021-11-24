@@ -55,11 +55,11 @@
                     </androidx.appcompat.widget.Toolbar>
 
 
-
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/bbs_forum_constraintLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/bbs_forum_alert_textview"

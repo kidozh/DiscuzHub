@@ -20,6 +20,11 @@
         android:visible="true"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/forum_info"
+        android:icon="@drawable/ic_info_outlined_24px"
+        android:title="@string/forum_information_title" />
+
+    <item
         android:id="@+id/bbs_share"
         android:icon="@drawable/ic_share_24px"
         android:title="@string/share" />

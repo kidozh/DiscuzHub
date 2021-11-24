@@ -226,16 +226,21 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
             holder.mPostQuoteContent.setText(spannableString, TextView.BufferType.SPANNABLE)
             holder.mPostQuoteContent.isFocusable = true
             holder.mPostQuoteContent.setTextIsSelectable(true)
-            holder.mPostQuoteContent.movementMethod = bbsLinkMovementMethod(OnLinkClickedListener { url ->
-                if (onLinkClickedListener != null) {
-                    if (url.lowercase().startsWith("http://") || url.lowercase().startsWith("https://")) {
-                        onLinkClickedListener!!.onLinkClicked(url)
-                        true
+            holder.mPostQuoteContent.movementMethod = bbsLinkMovementMethod(object :
+                OnLinkClickedListener {
+                override fun onLinkClicked(url: String): Boolean {
+                    return if (onLinkClickedListener != null) {
+                        if (url.lowercase().startsWith("http://") || url.lowercase()
+                                .startsWith("https://")
+                        ) {
+                            onLinkClickedListener!!.onLinkClicked(url)
+                            true
+                        } else {
+                            false
+                        }
                     } else {
                         false
                     }
-                } else {
-                    false
                 }
             })
         } else {

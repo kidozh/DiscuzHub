@@ -245,7 +245,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                             int itemId = item.getItemId();
                             int position = itemId - Menu.FIRST;
                             String urlLink = urlLinkString.get(position);
-                            bbsLinkMovementMethod.parseURLAndOpen(context,bbsInfo,curUser,urlLink);
+                            bbsLinkMovementMethod.Companion.onLinkClicked(context,bbsInfo,curUser,urlLink);
                             return true;
                         }
                     });

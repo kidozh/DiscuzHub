@@ -459,8 +459,8 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                     val detailedThreadInfo = threadResult.threadPostVariables.detailedThreadInfo
                     if (!hasLoadOnce) {
                         hasLoadOnce = true
-                        val prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-                        val recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history), false)
+
+                        val recordHistory = UserPreferenceUtils.viewHistoryEnabled(this)
                         if (recordHistory) {
                             insertViewHistory(ViewHistory(
                                     URLUtils.getDefaultAvatarUrlByUid(detailedThreadInfo.authorId),

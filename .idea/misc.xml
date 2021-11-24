@@ -3,11 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/drawable/ic_ext_icon_wav_32px.xml" value="0.11885964912280701" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/drawable/ic_menu_24px.xml" value="0.10350877192982456" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_bbs_add_intro.xml" value="0.20043859649122808" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_bbs_show_forum.xml" value="0.20043859649122808" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_login_bbs.xml" value="0.10400000000000001" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_shortcut.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_show_personal_info.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/dialog_forum_display_option.xml" value="0.20043859649122808" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/dialog_forum_information.xml" value="0.4" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/menu/bbs_forum_nav_menu.xml" value="0.20043859649122808" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/menu/menu_incognitive_forum_nav_menu.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/menu/single_drawer_navigation.xml" value="0.264" />
       </map>
     </option>

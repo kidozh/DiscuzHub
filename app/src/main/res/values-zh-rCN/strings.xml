@@ -764,5 +764,6 @@
     <string name="short_cut_activity_title">快速跳转</string>
     <string name="short_cut_submit">跳转</string>
     <string name="short_cut_description">快速锁定论坛资源</string>
+    <string name="forum_information_title">论坛详情</string>
 
 </resources>
