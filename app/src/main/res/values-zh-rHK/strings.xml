@@ -761,5 +761,12 @@
     <string name="jump_pos_over">請鍵入一個比%1$d要小的樓層。 </string>
     <string name="invalid_position">此輸入樓層為錯誤值。 </string>
     <string name="view_thread_title">查看帖子</string>
+    <string name="fid_input_edit_text_hint">輸入FID（論壇編號）</string>
+    <string name="tid_input_edit_text_hint">輸入TID（帖子編號）</string>
+    <string name="uid_input_edit_text_hint">輸入UID（用戶編號）</string>
+    <string name="short_cut_activity_title">快速跳轉</string>
+    <string name="short_cut_submit">跳轉</string>
+    <string name="short_cut_description">快速鎖定論壇資源</string>
+    <string name="forum_information_title">論壇詳情</string>
 
 </resources>
