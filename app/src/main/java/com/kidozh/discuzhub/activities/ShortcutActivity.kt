@@ -147,7 +147,7 @@ class ShortcutActivity : BaseStatusActivity() {
     }
 
     fun goForUidActivity(){
-        val uidText = binding.tidEditText.text
+        val uidText = binding.uidEditText.text
         var uid = 0
         try {
             uid = uidText.toString().toInt()

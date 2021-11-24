@@ -255,7 +255,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
                     binding.showPersonalInfoLastActivityTime.setText(userProfileResult.userProfileVariableResult.space.lastactivity);
 
                     binding.showPersonalInfoRecentNoteTextView.setText(userProfileResult.userProfileVariableResult.space.recentNote);
-                    if(userProfileResult.userProfileVariableResult.space.group!=null){
+                    if(userProfileResult.userProfileVariableResult.space.group!=null && userProfileResult.userProfileVariableResult.space.group.groupTitle!= null){
                         binding.showPersonalInfoGroupInfo.setText(
                                 Html.fromHtml(userProfileResult.userProfileVariableResult.space.group.groupTitle),
                                 TextView.BufferType.SPANNABLE);
@@ -267,7 +267,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
                     SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     boolean recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history),false);
-                    if(recordHistory){
+                    if(recordHistory && bbsInfo != null){
                         new InsertViewHistory(new ViewHistory(
                                 URLUtils.getDefaultAvatarUrlByUid(uid),
                                 username,

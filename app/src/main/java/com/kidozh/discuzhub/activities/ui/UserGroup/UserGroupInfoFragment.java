@@ -134,6 +134,9 @@ public class UserGroupInfoFragment extends Fragment {
                         //binding.userGroupInfo.setBackgroundColor(Color.parseColor(groupVariables.color));
                     }
                     binding.userGroupInfo.setVisibility(View.VISIBLE);
+                    if(groupVariables.groupTitle == null){
+                        return;
+                    }
                     String title = groupVariables.groupTitle.replaceAll("<.*?>","");
                     binding.userGroupTitle.setText(Html.fromHtml(title), TextView.BufferType.SPANNABLE);
                     binding.userGroupReadaccess.setText(String.valueOf(groupVariables.readAccess));
