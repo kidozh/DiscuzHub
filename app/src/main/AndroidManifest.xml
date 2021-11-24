@@ -22,7 +22,9 @@
         android:theme="@style/AppTheme.Default"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
-
+        <activity
+            android:name=".activities.ShortcutActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.PortalActivity"
             android:exported="true">
@@ -32,26 +34,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.SingleDiscuzActivity" />
+        <activity android:name=".activities.SingleDiscuzActivity" />
         <activity android:name=".activities.SearchPostsActivity" />
         <activity
             android:name=".activities.ViewHistoryActivity"
             android:label="@string/view_history" />
         <activity android:name=".activities.DrawerActivity" />
-        <activity
-            android:name=".activities.AddIntroActivity" />
+        <activity android:name=".activities.AddIntroActivity" />
         <activity android:name=".activities.AboutAppActivity" />
         <activity android:name=".activities.InternalWebViewActivity" />
         <activity android:name=".activities.ThreadDraftActivity" />
-        <activity
-            android:name=".activities.UserProfileActivity" />
+        <activity android:name=".activities.UserProfileActivity" />
         <activity android:name=".activities.PrivateMessageActivity" />
         <activity
             android:name=".activities.WebViewLoginActivity"
+            android:exported="true"
             android:label="@string/qq_login_feedback"
-            android:launchMode="singleTop"
-            android:exported="true">
+            android:launchMode="singleTop">
             <intent-filter android:autoVerify="true">
                 <category android:name="android.intent.category.DEFAULT" />
 
@@ -84,10 +83,9 @@
         <activity android:name=".activities.PublishActivity" />
         <activity android:name=".activities.ManageUserActivity" />
         <activity android:name=".activities.ManageBBSActivity" />
-        <activity android:name=".activities.ChooseThemeActivity"
-            android:label="@string/preference_title_theme">
-
-        </activity>
+        <activity
+            android:name=".activities.ChooseThemeActivity"
+            android:label="@string/preference_title_theme"></activity>
 
         <meta-data
             android:name="preloaded_fonts"

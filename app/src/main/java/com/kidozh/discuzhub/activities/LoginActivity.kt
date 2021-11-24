@@ -1,450 +1,386 @@
-package com.kidozh.discuzhub.activities;
+package com.kidozh.discuzhub.activities
 
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
+import android.content.Intent
+import android.os.Build
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
+import com.bumptech.glide.request.RequestOptions
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
+import com.kidozh.discuzhub.R
+import com.kidozh.discuzhub.database.UserDatabase
+import com.kidozh.discuzhub.databinding.ActivityLoginBbsBinding
+import com.kidozh.discuzhub.entities.Discuz
+import com.kidozh.discuzhub.entities.ErrorMessage
+import com.kidozh.discuzhub.entities.User
+import com.kidozh.discuzhub.results.LoginResult
+import com.kidozh.discuzhub.results.SecureInfoResult
+import com.kidozh.discuzhub.utilities.ConstUtils
+import com.kidozh.discuzhub.utilities.NetworkUtils
+import com.kidozh.discuzhub.utilities.URLUtils
+import com.kidozh.discuzhub.utilities.VibrateUtils
+import com.kidozh.discuzhub.viewModels.LoginViewModel
+import es.dmoral.toasty.Toasty
+import okhttp3.*
+import java.io.IOException
+import java.io.InputStream
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.request.RequestOptions;
-import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
-import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.database.UserDatabase;
-import com.kidozh.discuzhub.databinding.ActivityLoginBbsBinding;
-import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.User;
-import com.kidozh.discuzhub.results.MessageResult;
-import com.kidozh.discuzhub.results.SecureInfoResult;
-import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.ConstUtils;
-import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.NetworkUtils;
-import com.kidozh.discuzhub.viewModels.LoginViewModel;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import es.dmoral.toasty.Toasty;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Cookie;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
-public class LoginActivity extends BaseStatusActivity {
-
-    private String TAG = LoginActivity.class.getSimpleName();
-
-    LoginViewModel viewModel;
-
-    private OkHttpClient client;
-    ActivityLoginBbsBinding binding;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityLoginBbsBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        
-        viewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-
-        configureData();
-        configureActionBar();
-        setInformation();
-        configureEditText();
-        configureLoginBtn();
-        bindViewModel();
-
+class LoginActivity : BaseStatusActivity() {
+    private val TAG = LoginActivity::class.java.simpleName
+    var viewModel: LoginViewModel? = null
+    lateinit var binding: ActivityLoginBbsBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityLoginBbsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+        configureData()
+        configureActionBar()
+        setInformation()
+        configureEditText()
+        configureLoginBtn()
+        bindViewModel()
     }
 
-    void setInformation(){
-        binding.loginBbsTitle.setText(bbsInfo.site_name);
-        if(user == null){
-            binding.loginBbsUrl.setText(bbsInfo.base_url);
+    private fun setInformation() {
+        binding.loginBbsTitle.text = bbsInfo!!.site_name
+        if (user == null) {
+            binding.loginBbsUrl.text = bbsInfo!!.base_url
+        } else {
+            binding.toolbarTitle.text = getString(R.string.user_relogin, user!!.username)
+            binding.loginBbsUrl.text = getString(R.string.user_relogin, user!!.username)
+            binding.loginBbsAccountTextInputEditText.setText(user!!.username)
         }
-        else {
-            binding.toolbarTitle.setText(getString(R.string.user_relogin, user.username));
-            binding.loginBbsUrl.setText(getString(R.string.user_relogin, user.username));
-            binding.loginBbsAccountTextInputEditText.setText(user.username);
-        }
-
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
-        Glide.get(this).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-
+        val factory = OkHttpUrlLoader.Factory(client)
+        Glide.get(this).registry.replace(GlideUrl::class.java, InputStream::class.java, factory)
         Glide.with(this)
-                .load(URLUtils.getBBSLogoUrl())
-                .error(R.drawable.ic_baseline_public_24)
-                .placeholder(R.drawable.ic_baseline_public_24)
-                .centerInside()
-                .into(binding.loginBbsAvatar);
-        binding.loginBbsSecurityQuestionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 0){
-                    binding.loginBbsSecurityAnswerEditText.setVisibility(View.GONE);
+            .load(URLUtils.getBBSLogoUrl())
+            .error(R.drawable.ic_baseline_public_24)
+            .placeholder(R.drawable.ic_baseline_public_24)
+            .centerInside()
+            .into(binding.loginBbsAvatar)
+        binding.loginBbsSecurityQuestionSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View,
+                    position: Int,
+                    id: Long
+                ) {
+                    if (position == 0) {
+                        binding.loginBbsSecurityAnswerEditText.visibility = View.GONE
+                    } else {
+                        binding.loginBbsSecurityAnswerEditText.visibility = View.VISIBLE
+                        binding.loginBbsSecurityAnswerEditText.hint =
+                            binding.loginBbsSecurityQuestionSpinner.selectedItem.toString()
+                    }
                 }
-                else {
-                    binding.loginBbsSecurityAnswerEditText.setVisibility(View.VISIBLE);
-                    binding.loginBbsSecurityAnswerEditText.setHint(binding.loginBbsSecurityQuestionSpinner.getSelectedItem().toString());
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    binding.loginBbsSecurityAnswerEditText.visibility = View.GONE
                 }
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                binding.loginBbsSecurityAnswerEditText.setVisibility(View.GONE);
-            }
-        });
-        
-
     }
 
-    void configureEditText(){
-        binding.loginBbsCaptchaImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewModel.loadSecureInfo();
-                VibrateUtils.vibrateForClick(getApplication());
-            }
-        });
-
-        binding.loginBbsAccountTextInputEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                binding.loginBbsAccountTextInputLayout.setErrorEnabled(false);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        binding.loginBbsPasswordTextInputEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                binding.loginBbsPasswordTextInputLayout.setErrorEnabled(false);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-    }
-
-    private boolean needCaptcha(){
-        if(viewModel == null
-                || viewModel.getSecureInfoResultMutableLiveData().getValue()==null
-                || viewModel.getSecureInfoResultMutableLiveData().getValue().secureVariables==null){
-            return false;
+    private fun configureEditText() {
+        // for auto-fill service
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            binding.loginBbsAccountTextInputEditText.setAutofillHints(View.AUTOFILL_HINT_USERNAME)
+            binding.loginBbsPasswordTextInputEditText.setAutofillHints(View.AUTOFILL_HINT_PASSWORD)
         }
-        else {
-            return true;
+
+
+        binding.loginBbsCaptchaImageView.setOnClickListener {
+            viewModel!!.loadSecureInfo()
+            VibrateUtils.vibrateForClick(application)
         }
-    }
-
-    void bindViewModel(){
-
-        viewModel.getErrorMessage().observe(this, errorMessage -> {
-            if(errorMessage != null){
-                Toasty.error(this,
-                        getString(R.string.discuz_api_message_template,errorMessage.key,errorMessage.content),
-                        Toast.LENGTH_LONG).show();
+        binding.loginBbsAccountTextInputEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                binding.loginBbsAccountTextInputLayout.isErrorEnabled = false
             }
 
-        });
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable) {}
+        })
+        binding.loginBbsPasswordTextInputEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                binding.loginBbsPasswordTextInputLayout.isErrorEnabled = false
+            }
 
-        viewModel.getSecureInfoResultMutableLiveData().observe(this,secureInfoResult -> {
-            if(secureInfoResult != null){
-                if(secureInfoResult.secureVariables == null){
-                    binding.loginBbsCaptchaInputLayout.setVisibility(View.GONE);
-                    binding.loginBbsCaptchaImageView.setVisibility(View.GONE);
-                }
-                else{
-                    // need further query
-                    binding.loginBbsCaptchaInputLayout.setVisibility(View.VISIBLE);
-                    binding.loginBbsCaptchaImageView.setVisibility(View.VISIBLE);
-                    binding.loginBbsCaptchaImageView.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_captcha_placeholder_24px));
-                    String captchaURL = secureInfoResult.secureVariables.secCodeURL;
-                    String captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash);
-                    Request captchaRequest = new Request.Builder()
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable) {}
+        })
+    }
+
+    private fun needCaptcha(): Boolean {
+        return !(viewModel == null || viewModel!!.secureInfoResultMutableLiveData.value == null || viewModel!!.secureInfoResultMutableLiveData.value!!.secureVariables == null)
+    }
+
+    fun bindViewModel() {
+        viewModel!!.errorMessage.observe(this, { errorMessage: ErrorMessage? ->
+            if (errorMessage != null) {
+                Toasty.error(
+                    this,
+                    getString(
+                        R.string.discuz_api_message_template,
+                        errorMessage.key,
+                        errorMessage.content
+                    ),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        })
+        viewModel!!.secureInfoResultMutableLiveData.observe(
+            this,
+            { secureInfoResult: SecureInfoResult? ->
+                if (secureInfoResult != null) {
+                    if (secureInfoResult.secureVariables == null) {
+                        binding.loginBbsCaptchaInputLayout.visibility = View.GONE
+                        binding.loginBbsCaptchaImageView.visibility = View.GONE
+                    } else {
+                        // need further query
+                        binding.loginBbsCaptchaInputLayout.visibility = View.VISIBLE
+                        binding.loginBbsCaptchaImageView.visibility = View.VISIBLE
+                        binding.loginBbsCaptchaImageView.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                this,
+                                R.drawable.ic_captcha_placeholder_24px
+                            )
+                        )
+                        val captchaURL = secureInfoResult.secureVariables.secCodeURL
+                        val captchaImageURL =
+                            URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash)
+                        val captchaRequest = Request.Builder()
                             .url(captchaURL)
-                            .build();
-                    client.newCall(captchaRequest).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
-                        }
-
-                        @Override
-                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                            if (response.isSuccessful() && response.body() != null) {
-                                // get the session
-                                binding.loginBbsCaptchaImageView.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-
-                                        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
-                                        Glide.get(getApplication()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+                            .build()
+                        client.newCall(captchaRequest).enqueue(object : Callback {
+                            override fun onFailure(call: Call, e: IOException) {}
+                            @Throws(IOException::class)
+                            override fun onResponse(call: Call, response: Response) {
+                                if (response.isSuccessful && response.body() != null) {
+                                    // get the session
+                                    binding.loginBbsCaptchaImageView.post {
+                                        val factory = OkHttpUrlLoader.Factory(
+                                            client
+                                        )
+                                        Glide.get(application).registry.replace(
+                                            GlideUrl::class.java, InputStream::class.java, factory
+                                        )
 
                                         // forbid cache captcha
-                                        RequestOptions options = new RequestOptions()
-                                                .fitCenter()
-                                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                                .placeholder(R.drawable.ic_captcha_placeholder_24px)
-                                                .error(R.drawable.ic_post_status_warned_24px);
-                                        GlideUrl pictureGlideURL = new GlideUrl(captchaImageURL,
-                                                new LazyHeaders.Builder()
-                                                        .addHeader("Referer",captchaURL)
-                                                        .build()
-                                        );
-
-                                        Glide.with(getApplication())
-                                                .load(pictureGlideURL)
-                                                .apply(options)
-                                                .into(binding.loginBbsCaptchaImageView);
+                                        val options = RequestOptions()
+                                            .fitCenter()
+                                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                            .placeholder(R.drawable.ic_captcha_placeholder_24px)
+                                            .error(R.drawable.ic_post_status_warned_24px)
+                                        val pictureGlideURL = GlideUrl(
+                                            captchaImageURL,
+                                            LazyHeaders.Builder()
+                                                .addHeader("Referer", captchaURL)
+                                                .build()
+                                        )
+                                        Glide.with(application)
+                                            .load(pictureGlideURL)
+                                            .apply(options)
+                                            .into(binding.loginBbsCaptchaImageView)
                                     }
-                                });
+                                }
                             }
-                        }
-                    });
-
-                }
-            }
-            else{
-                // not get login parameter
-
-            }
-        });
-
-        viewModel.getLoginResultMutableLiveData().observe(this, loginResult -> {
-            if(loginResult!=null){
-                MessageResult loginMessage = loginResult.message;
-                if(loginMessage !=null){
-                    String key = loginMessage.key;
-                    if(key.equals("login_succeed")){
-                        User user = loginResult.variables.getUserBriefInfo();
-                        user.belongedBBSID = bbsInfo.getId();
-                        if(user !=null){
-                            // relogin user
-                            user.setId(user.getId());
-                        }
-                        Toasty.success(this,
-                                getString(R.string.discuz_api_message_template,loginMessage.key,loginMessage.content),
-                                Toast.LENGTH_LONG).show();
-                        new saveUserToDatabaseAsyncTask(user,client,bbsInfo.base_url).execute();
-
+                        })
                     }
-                    else{
+                }
+            })
+        viewModel!!.loginResultMutableLiveData.observe(this, { loginResult: LoginResult? ->
+            if (loginResult != null) {
+                val loginMessage = loginResult.message
+                if (loginMessage != null) {
+                    val key = loginMessage.key
+                    if (key == "login_succeed") {
+                        val user = loginResult.variables.userBriefInfo
+                        user.belongedBBSID = bbsInfo!!.id
+                        user.id = user.id
+                        Toasty.success(
+                            this,
+                            getString(
+                                R.string.discuz_api_message_template,
+                                loginMessage.key,
+                                loginMessage.content
+                            ),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        saveUserToDatabase(user, client, bbsInfo!!.base_url)
+                    } else {
                         // refresh the captcha
-                        viewModel.loadSecureInfo();
-                        if(key.equals("login_seccheck2")){
+                        viewModel!!.loadSecureInfo()
+                        if (key == "login_seccheck2") {
                             // need captcha
-                            viewModel.loadSecureInfo();
+                            viewModel!!.loadSecureInfo()
                         }
-                        Toasty.error(this,
-                                getString(R.string.discuz_api_message_template,loginMessage.key,loginMessage.content),
-                                Toast.LENGTH_SHORT).show();
+                        Toasty.error(
+                            this,
+                            getString(
+                                R.string.discuz_api_message_template,
+                                loginMessage.key,
+                                loginMessage.content
+                            ),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
-
-        });
+        })
     }
 
-    void configureLoginBtn(){
-        binding.loginBbsLoginButton.setOnClickListener(v -> {
-            if(binding.loginBbsAccountTextInputEditText.getText()!=null && binding.loginBbsPasswordTextInputEditText.getText()!=null && binding.loginBbsCaptchaEditText.getText()!=null){
-                String account = binding.loginBbsAccountTextInputEditText.getText().toString();
-                String password = binding.loginBbsPasswordTextInputEditText.getText().toString();
-                String captchaText = binding.loginBbsCaptchaEditText.getText().toString();
-
-
-
-                String secureHash = null;
-
-                SecureInfoResult secureInfoResult = viewModel.getSecureInfoResultMutableLiveData().getValue();
-                if(secureInfoResult!=null && secureInfoResult.secureVariables!=null){
-                    secureHash = secureInfoResult.secureVariables.secHash;
+    private fun configureLoginBtn() {
+        binding.loginBbsLoginButton.setOnClickListener {
+            if (binding.loginBbsAccountTextInputEditText.text != null && binding.loginBbsPasswordTextInputEditText.text != null && binding.loginBbsCaptchaEditText.text != null) {
+                val account = binding.loginBbsAccountTextInputEditText.text.toString()
+                val password = binding.loginBbsPasswordTextInputEditText.text.toString()
+                val captchaText = binding.loginBbsCaptchaEditText.text.toString()
+                var secureHash: String? = null
+                val secureInfoResult = viewModel!!.secureInfoResultMutableLiveData.value
+                if (secureInfoResult?.secureVariables != null) {
+                    secureHash = secureInfoResult.secureVariables.secHash
                 }
-                if(needCaptcha() && captchaText.length() == 0){
-                    binding.loginBbsCaptchaInputLayout.setError(getString(R.string.field_required));
-                    binding.loginBbsCaptchaInputLayout.setErrorEnabled(true);
-                    return;
+                if (needCaptcha() && captchaText.isEmpty()) {
+                    binding.loginBbsCaptchaInputLayout.error = getString(R.string.field_required)
+                    binding.loginBbsCaptchaInputLayout.isErrorEnabled = true
+                    return@setOnClickListener
+                } else {
+                    binding.loginBbsCaptchaInputLayout.isErrorEnabled = false
                 }
-                else {
-                    binding.loginBbsCaptchaInputLayout.setErrorEnabled(false);
-                }
-
-
-                if(password.length()==0 || account.length() == 0){
-                    if(account.length() == 0){
-                        binding.loginBbsPasswordTextInputLayout.setErrorEnabled(true);
-                        binding.loginBbsAccountTextInputLayout.setError(getString(R.string.field_required));
+                if (password.isEmpty() || account.isEmpty()) {
+                    if (account.isEmpty()) {
+                        binding.loginBbsPasswordTextInputLayout.isErrorEnabled = true
+                        binding.loginBbsAccountTextInputLayout.error =
+                            getString(R.string.field_required)
                         //binding.loginBbsAccountTextInputEditText.setError();
                     }
-                    if(password.length() == 0){
-                        binding.loginBbsPasswordTextInputLayout.setErrorEnabled(true);
-                        binding.loginBbsPasswordTextInputLayout.setError(getString(R.string.field_required));
+                    if (password.length == 0) {
+                        binding.loginBbsPasswordTextInputLayout.isErrorEnabled = true
+                        binding.loginBbsPasswordTextInputLayout.error =
+                            getString(R.string.field_required)
                         //binding.loginBbsPasswordTextInputEditText.setError();
                     }
-                    Toasty.warning(getApplicationContext(),getString(R.string.bbs_login_account_password_required),Toast.LENGTH_SHORT).show();
+                    Toasty.warning(
+                        applicationContext,
+                        getString(R.string.bbs_login_account_password_required),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    viewModel!!.login(
+                        client,
+                        account, password,
+                        binding.loginBbsSecurityQuestionSpinner.selectedItemPosition,
+                        binding.loginBbsSecurityAnswerEditText.text.toString(),
+                        secureHash,
+                        binding.loginBbsCaptchaEditText.text.toString()
+                    )
                 }
-                else {
-                    viewModel.login(
-                            client,
-                            account,password,
-                            binding.loginBbsSecurityQuestionSpinner.getSelectedItemPosition(),
-                            binding.loginBbsSecurityAnswerEditText.getText().toString(),
-                            secureHash,
-                            binding.loginBbsCaptchaEditText.getText().toString()
-
-                    );
-                }
+            } else {
+                Toasty.warning(
+                    applicationContext,
+                    getString(R.string.bbs_login_account_password_required),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-            else {
-
-                Toasty.warning(getApplicationContext(),getString(R.string.bbs_login_account_password_required),Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-        binding.loginBbsLoginInWebButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), WebViewLoginActivity.class);
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                startActivity(intent);
-            }
-        });
-    }
-
-
-
-    private class saveUserToDatabaseAsyncTask extends AsyncTask<Void,Void,Void>{
-        User userBriefInfo;
-        OkHttpClient client;
-        long insertedId;
-        HttpUrl httpUrl;
-        saveUserToDatabaseAsyncTask(User userBriefInfo, OkHttpClient client, String httpURL){
-            this.userBriefInfo = userBriefInfo;
-            this.client = client;
-            this.httpUrl = HttpUrl.parse(httpURL);
         }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            insertedId = UserDatabase.getInstance(getApplicationContext())
-                    .getforumUserBriefInfoDao().insert(userBriefInfo);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            Context context = getApplicationContext();
-            Log.d(TAG,"save user to database id: "+userBriefInfo.getId()+"  "+insertedId);
-            userBriefInfo.setId((int) insertedId);
-
-            OkHttpClient savedClient = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplicationContext(),userBriefInfo);
-            List<Cookie> cookies = client.cookieJar().loadForRequest(httpUrl);
-            Log.d(TAG,"Http url "+httpUrl.toString()+" cookie list size "+cookies.size());
-            savedClient.cookieJar().saveFromResponse(httpUrl,cookies);
-            // manually set the cookie to shared preference
-            SharedPrefsCookiePersistor sharedPrefsCookiePersistor = new SharedPrefsCookiePersistor(context.getSharedPreferences(NetworkUtils.getSharedPreferenceNameByUser(userBriefInfo),Context.MODE_PRIVATE));
-            sharedPrefsCookiePersistor.saveAll(savedClient.cookieJar().loadForRequest(httpUrl));
-            Log.d(TAG,"Http url "+httpUrl.toString()+" saved cookie list size "+savedClient.cookieJar().loadForRequest(httpUrl).size());
-
-            finishAfterTransition();
+        binding.loginBbsLoginInWebButton.setOnClickListener {
+            val intent = Intent(applicationContext, WebViewLoginActivity::class.java)
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+            startActivity(intent)
         }
     }
 
-    void configureActionBar(){
-        setSupportActionBar(binding.toolbar);
-        if(getSupportActionBar() !=null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            binding.toolbarTitle.setText(getString(R.string.login_bbs_title,bbsInfo.site_name));
-            if(bbsInfo.isSecureClient()){
-                binding.loginBbsNotice.setVisibility(View.GONE);
-            }
-            else {
-                binding.loginBbsNotice.setVisibility(View.VISIBLE);
+    private fun saveUserToDatabase(userBriefInfo: User, client: OkHttpClient, httpURL: String){
+        val httpUrl: HttpUrl? = HttpUrl.parse(httpURL)
+
+        var insertedId: Long = 0
+        Thread{
+            insertedId = UserDatabase.getInstance(applicationContext)
+                .getforumUserBriefInfoDao().insert(userBriefInfo)
+        }.start()
+        userBriefInfo.id = insertedId.toInt()
+        val savedClient = NetworkUtils.getPreferredClientWithCookieJarByUser(
+            applicationContext, userBriefInfo
+        )
+        val cookies = client.cookieJar().loadForRequest(httpUrl)
+        Log.d(TAG, "Http url " + httpUrl.toString() + " cookie list size " + cookies.size)
+        savedClient.cookieJar().saveFromResponse(httpUrl, cookies)
+        // manually set the cookie to shared preference
+        val sharedPrefsCookiePersistor = SharedPrefsCookiePersistor(
+            getSharedPreferences(
+                NetworkUtils.getSharedPreferenceNameByUser(
+                    userBriefInfo
+                ), MODE_PRIVATE
+            )
+        )
+        sharedPrefsCookiePersistor.saveAll(savedClient.cookieJar().loadForRequest(httpUrl))
+        Log.d(
+            TAG,
+            "Http url " + httpUrl.toString() + " saved cookie list size " + savedClient.cookieJar()
+                .loadForRequest(httpUrl).size
+        )
+        finishAfterTransition()
+    }
+
+    fun configureActionBar() {
+        setSupportActionBar(binding.toolbar)
+        if (supportActionBar != null) {
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+            binding.toolbarTitle.text = getString(R.string.login_bbs_title, bbsInfo!!.site_name)
+            if (bbsInfo!!.isSecureClient) {
+                binding.loginBbsNotice.visibility = View.GONE
+            } else {
+                binding.loginBbsNotice.visibility = View.VISIBLE
             }
         }
     }
 
-    void configureData(){
-        Intent intent = getIntent();
-        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
-        user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
-        client = NetworkUtils.getPreferredClientWithCookieJar(getApplicationContext());
-        viewModel.setInfo(bbsInfo, user,client);
-
-
-        if(bbsInfo == null){
-            finishAfterTransition();
-        }
-        else {
-            Log.d(TAG,"get bbs name "+bbsInfo.site_name);
-            URLUtils.setBBS(bbsInfo);
+    private fun configureData() {
+        val intent = intent
+        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
+        user = intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY) as User?
+        client = NetworkUtils.getPreferredClientWithCookieJar(applicationContext)
+        viewModel!!.setInfo(bbsInfo!!, user, client)
+        if (bbsInfo == null) {
+            finishAfterTransition()
+        } else {
+            Log.d(TAG, "get bbs name " + bbsInfo!!.site_name)
+            URLUtils.setBBS(bbsInfo)
             //bbsURLUtils.setBaseUrl(bbsInfo.base_url);
         }
-        if(getSupportActionBar()!=null){
-            if(user == null){
-                getSupportActionBar().setTitle(R.string.bbs_login);
+        if (supportActionBar != null) {
+            if (user == null) {
+                supportActionBar!!.setTitle(R.string.bbs_login)
+            } else {
+                supportActionBar!!.title = getString(R.string.user_relogin, user!!.username)
             }
-            else {
-                getSupportActionBar().setTitle(getString(R.string.user_relogin, user.username));
-            }
-
-            getSupportActionBar().setSubtitle(bbsInfo.site_name);
+            supportActionBar!!.subtitle = bbsInfo!!.site_name
             // clear it first
-            getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE).edit().clear().apply();
-
+            getSharedPreferences("CookiePersistence", MODE_PRIVATE).edit().clear().apply()
         }
-
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if(id == android.R.id.home){
-            this.finishAfterTransition();
-            return false;
-        }
-
-        else {
-            return super.onOptionsItemSelected(item);
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+        return if (id == android.R.id.home) {
+            finishAfterTransition()
+            false
+        } else {
+            super.onOptionsItemSelected(item)
         }
     }
 }

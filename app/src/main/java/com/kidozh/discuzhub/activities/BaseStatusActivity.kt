@@ -1,17 +1,17 @@
 package com.kidozh.discuzhub.activities
 
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.preference.PreferenceManager
+import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.User
-import okhttp3.OkHttpClient
 import com.kidozh.discuzhub.results.BaseResult
 import com.kidozh.discuzhub.results.VariableResults
-import android.os.Bundle
-import com.kidozh.discuzhub.R
-import androidx.preference.PreferenceManager
-import androidx.appcompat.app.AppCompatDelegate
 import com.kidozh.discuzhub.utilities.ThemeUtils
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils
+import okhttp3.OkHttpClient
 
 open class BaseStatusActivity : AppCompatActivity() {
     @JvmField

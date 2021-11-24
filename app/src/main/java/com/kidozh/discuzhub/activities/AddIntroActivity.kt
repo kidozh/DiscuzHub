@@ -1,37 +1,33 @@
 package com.kidozh.discuzhub.activities
 
-import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
-import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
-
-import com.kidozh.discuzhub.activities.BaseStatusActivity
-import com.kidozh.discuzhub.adapter.UrlSuggestionAdapter.OnClickSuggestionListener
-import com.kidozh.discuzhub.adapter.UrlSuggestionAdapter
-import com.kidozh.discuzhub.viewModels.AddBBSViewModel
-import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
 import android.content.Intent
 import android.graphics.Paint
 import android.net.Uri
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.kidozh.discuzhub.entities.SuggestURLInfo
-import com.kidozh.discuzhub.R
-import es.dmoral.toasty.Toasty
-import android.widget.Toast
-import com.kidozh.discuzhub.entities.Discuz
-import com.kidozh.discuzhub.database.DiscuzDatabase
-import com.kidozh.discuzhub.activities.AddIntroActivity
-import android.text.TextWatcher
+import android.os.Bundle
 import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.CompoundButton
+import android.widget.Toast
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.kidozh.discuzhub.R
+import com.kidozh.discuzhub.activities.AddIntroActivity
+import com.kidozh.discuzhub.adapter.UrlSuggestionAdapter
+import com.kidozh.discuzhub.adapter.UrlSuggestionAdapter.OnClickSuggestionListener
+import com.kidozh.discuzhub.database.DiscuzDatabase
 import com.kidozh.discuzhub.databinding.ActivityBbsAddIntroBinding
+import com.kidozh.discuzhub.entities.Discuz
+import com.kidozh.discuzhub.entities.SuggestURLInfo
+import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
+import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
 import com.kidozh.discuzhub.utilities.VibrateUtils
-import java.lang.Exception
+import com.kidozh.discuzhub.viewModels.AddBBSViewModel
+import es.dmoral.toasty.Toasty
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.ArrayList
+import java.util.*
 
 class AddIntroActivity : BaseStatusActivity(), OnClickSuggestionListener {
     var adapter: UrlSuggestionAdapter = UrlSuggestionAdapter()
@@ -41,7 +37,7 @@ class AddIntroActivity : BaseStatusActivity(), OnClickSuggestionListener {
         super.onCreate(savedInstanceState)
         binding = ActivityBbsAddIntroBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
-        viewModel = ViewModelProvider(this).get(AddBBSViewModel::class.java)
+        viewModel = ViewModelProvider(this)[AddBBSViewModel::class.java]
         configureRecyclerview()
         bindViewModel()
         configureUrlEditText()

@@ -195,7 +195,7 @@
     <string name="bbs_no_item_found">No item is found.</string>
     <string name="bbs_send_pm">Send</string>
     <string name="bbs_pm_is_required">Please at least say something.</string>
-    
+
     <string name="bbs_follow_user">Follow</string>
     <string name="bbs_bio_not_set">Bio is not set</string>
     <string name="bbs_user_friend">Friends</string>
