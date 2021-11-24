@@ -272,7 +272,7 @@ class ThreadAdapter(var threadType: Map<String, String>?, var bbsInfo: Discuz, v
                 // holder.mPriceNumber.setText(String.valueOf(threadInfo.price));
                 holder.mPriceNumber.visibility = View.GONE
             }
-            if (thread.shortReplyList != null && thread.shortReplyList.size > 0) {
+            if (thread.shortReplyList.isNotEmpty()) {
                 val linearLayoutManager = LinearLayoutManager(context)
                 holder.mReplyRecyclerview.isFocusable = false
                 holder.mReplyRecyclerview.isNestedScrollingEnabled = false

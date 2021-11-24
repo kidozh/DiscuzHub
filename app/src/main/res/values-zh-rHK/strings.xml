@@ -452,7 +452,7 @@
     <string name="bbs">論壇</string>
     <string name="management">管理</string>
     <string name="user_anonymous_description">在不登陸賬號下訪問論壇。 </string>
-    <string name="user_id_description">用戶編號: %1$s</string>
+    <string name="user_id_description">用戶編號: %1$d</string>
     <string name="add_a_bbs">添加論壇</string>
     <string name="manage_bbs">管理論壇</string>
     <string name="manage_bbs_description">對現有的論壇進行排序或者刪除操作。 </string>

@@ -4,8 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_bbs_add_intro.xml" value="0.20043859649122808" />
-        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_login_bbs.xml" value="0.4" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_login_bbs.xml" value="0.10400000000000001" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_shortcut.xml" value="0.2" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_show_personal_info.xml" value="0.1" />
       </map>
     </option>
   </component>

@@ -452,7 +452,7 @@
     <string name="bbs">论坛</string>
     <string name="management">管理</string>
     <string name="user_anonymous_description">在不登陆账号下访问论坛。</string>
-    <string name="user_id_description">用户编号: %1$s</string>
+    <string name="user_id_description">用户编号: %1$d</string>
     <string name="add_a_bbs">添加论坛</string>
     <string name="manage_bbs">管理论坛</string>
     <string name="manage_bbs_description">对现有的论坛进行排序或者删除操作。</string>
@@ -758,5 +758,11 @@
     <string name="jump_pos_over">请键入一个比%1$d要小的楼层。</string>
     <string name="invalid_position">此输入楼层为错误值。</string>
     <string name="view_thread_title">查看帖子</string>
+    <string name="fid_input_edit_text_hint">输入FID（论坛编号）</string>
+    <string name="tid_input_edit_text_hint">输入TID（帖子编号）</string>
+    <string name="uid_input_edit_text_hint">输入UID（用户编号）</string>
+    <string name="short_cut_activity_title">快速跳转</string>
+    <string name="short_cut_submit">跳转</string>
+    <string name="short_cut_description">快速锁定论坛资源</string>
 
 </resources>

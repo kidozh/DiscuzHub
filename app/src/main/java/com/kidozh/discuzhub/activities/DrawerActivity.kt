@@ -33,8 +33,8 @@ import com.kidozh.discuzhub.activities.ui.home.HomeFragment
 import com.kidozh.discuzhub.activities.ui.notifications.NotificationsFragment
 import com.kidozh.discuzhub.activities.ui.privateMessages.bbsPrivateMessageFragment
 import com.kidozh.discuzhub.activities.ui.publicPM.bbsPublicMessageFragment
-import com.kidozh.discuzhub.database.ViewHistoryDatabase
 import com.kidozh.discuzhub.database.UserDatabase
+import com.kidozh.discuzhub.database.ViewHistoryDatabase
 import com.kidozh.discuzhub.databinding.ActivityNewMainDrawerBinding
 import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.User
@@ -71,6 +71,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
     val FOOTER_SETTINGS:Long = -955415674
     val FOOTER_ABOUT:Long = -964245451
     val FUNC_VIEW_HISTORY:Long = -85642154
+    val FUNC_SHORT_CUT:Long = -856421554
     val FUNC_DRFAT_BOX :Long = -85642414
     val FUNC_SEARCH :Long = -85647
     var savedInstanceState: Bundle? = null
@@ -291,6 +292,16 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                     badgeStyle = badgeStyle
                 }
 
+                // short cut
+                val shortCutItem = PrimaryDrawerItem().apply {
+                    name = StringHolder(R.string.short_cut_activity_title)
+                    isSelectable = false
+                    icon = ImageHolder(R.drawable.ic_baseline_my_location_24)
+                    identifier = FUNC_SHORT_CUT
+                    description = StringHolder(R.string.short_cut_description)
+                    badgeStyle = badgeStyle
+                }
+
                 // search
                 val searchItem = PrimaryDrawerItem().apply {
                     name = StringHolder(R.string.search)
@@ -327,6 +338,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                         manageAccount,
                         draftItem,
                         viewHistory,
+                        shortCutItem,
                         searchItem,
                         DividerDrawerItem(),
                         settingItem,
@@ -540,6 +552,16 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                         startActivity(intent)
                         return@label true
                     }
+                    FUNC_SHORT_CUT -> {
+                        val forumInfo = viewModel.currentBBSInformationMutableLiveData.value
+                        val userBriefInfo = viewModel.currentForumUserBriefInfoMutableLiveData.value
+                        val intent = Intent(activity, ShortcutActivity::class.java)
+                        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, forumInfo)
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                        startActivity(intent)
+                        return@label true
+                    }
+
                     FUNC_DRFAT_BOX -> {
                         val forumInfo = viewModel.currentBBSInformationMutableLiveData.value
                         val userBriefInfo = viewModel.currentForumUserBriefInfoMutableLiveData.value

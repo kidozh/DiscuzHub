@@ -889,6 +889,12 @@
     <string name="jump_pos_over">You just input a over-sized number(max:%1$d).</string>
     <string name="invalid_position">Invalid value is given.</string>
     <string name="view_thread_title">View a thread</string>
+    <string name="fid_input_edit_text_hint">Input forum\'s ID</string>
+    <string name="tid_input_edit_text_hint">Input thread\'s ID</string>
+    <string name="uid_input_edit_text_hint">Input user\'s ID</string>
+    <string name="short_cut_activity_title">Shortcut</string>
+    <string name="short_cut_submit">Go</string>
+    <string name="short_cut_description">Quickly locate bbs resources</string>
 
 
 </resources>

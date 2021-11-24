@@ -24,6 +24,7 @@
         tools:targetApi="n">
         <activity
             android:name=".activities.ShortcutActivity"
+            android:label="@string/short_cut_activity_title"
             android:exported="false" />
         <activity
             android:name=".activities.PortalActivity"
@@ -85,7 +86,7 @@
         <activity android:name=".activities.ManageBBSActivity" />
         <activity
             android:name=".activities.ChooseThemeActivity"
-            android:label="@string/preference_title_theme"></activity>
+            android:label="@string/preference_title_theme" />
 
         <meta-data
             android:name="preloaded_fonts"
