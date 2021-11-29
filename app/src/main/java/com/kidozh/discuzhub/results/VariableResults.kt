@@ -22,9 +22,9 @@ open class VariableResults : BaseResult() {
     @JsonProperty("formhash")
     lateinit var formHash: String
 
-//    @JsonProperty("ismoderator")
-//    @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
-//    var moderator: Boolean = false
+    @JsonProperty("ismoderator", defaultValue = "0", required = false)
+    @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+    var moderator: Boolean = false
 
     @JsonProperty("readaccess")
     var readAccess = 0

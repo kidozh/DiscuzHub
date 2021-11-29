@@ -84,7 +84,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     var formHash: String? = null
     var forum: Forum? = null
     lateinit var discuz: Discuz
-    var thread: Thread? = null
+    lateinit var thread: Thread
     private var hasLoadOnce = false
     private var notifyLoadAll = false
     var poll: Poll? = null
@@ -123,7 +123,8 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         forum = intent.getParcelableExtra(ConstUtils.PASS_FORUM_THREAD_KEY)
         discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
         user = intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY) as User?
-        thread = intent.getSerializableExtra(ConstUtils.PASS_THREAD_KEY) as Thread?
+        thread = intent.getSerializableExtra(ConstUtils.PASS_THREAD_KEY) as Thread
+
         tid = intent.getIntExtra("TID", 0)
         fid = intent.getIntExtra("FID", 0)
         subject = intent.getStringExtra("SUBJECT")
@@ -131,11 +132,9 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         URLUtils.setBBS(discuz)
         threadDetailViewModel.setBBSInfo(discuz, user, forum, tid)
         smileyViewModel.configureDiscuz(discuz, user)
-        if (thread != null) {
-            val sp = Html.fromHtml(thread!!.subject, HtmlCompat.FROM_HTML_MODE_LEGACY)
-            val spannableString = SpannableString(sp)
-            binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
-        }
+        val sp = Html.fromHtml(thread!!.subject, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        val spannableString = SpannableString(sp)
+        binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
         smileyViewPagerAdapter = SmileyViewPagerAdapter(supportFragmentManager,
                 FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT,discuz,this)
     }

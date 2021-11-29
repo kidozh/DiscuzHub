@@ -31,6 +31,7 @@ import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.activities.ThreadActivity;
 import com.kidozh.discuzhub.activities.UserProfileActivity;
 import com.kidozh.discuzhub.entities.Discuz;
+import com.kidozh.discuzhub.entities.Thread;
 import com.kidozh.discuzhub.entities.User;
 import com.kidozh.discuzhub.results.UserNoteListResult;
 import com.kidozh.discuzhub.utilities.VibrateUtils;
@@ -199,6 +200,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     Intent intent = new Intent(context, ThreadActivity.class);
                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,curUser);
+                    Thread putThreadInfo = new Thread();
+                    putThreadInfo.tid = notificationDetailInfo.notificationExtraInfo.tid;
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThreadInfo);
                     intent.putExtra("TID",notificationDetailInfo.notificationExtraInfo.tid);
                     intent.putExtra("FID",notificationDetailInfo.authorId);
                     intent.putExtra("SUBJECT",notificationDetailInfo.notificationExtraInfo.subject);
