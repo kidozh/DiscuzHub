@@ -1,54 +1,64 @@
-package com.kidozh.discuzhub.database;
+package com.kidozh.discuzhub.database
 
-import android.content.Context;
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.kidozh.discuzhub.daos.UserDao
+import com.kidozh.discuzhub.database.UserDatabase
+import com.kidozh.discuzhub.entities.User
+import com.kidozh.discuzhub.utilities.DateConverter
 
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
-import androidx.room.TypeConverters;
-import androidx.room.migration.Migration;
-import androidx.sqlite.db.SupportSQLiteDatabase;
+@Database(entities = [User::class], version = 4, exportSchema = true)
+@TypeConverters(
+    DateConverter::class
+)
+abstract class UserDatabase : RoomDatabase() {
+    abstract fun getforumUserBriefInfoDao(): UserDao
 
-import com.kidozh.discuzhub.daos.UserDao;
-import com.kidozh.discuzhub.entities.User;
-import com.kidozh.discuzhub.utilities.DateConverter;
+    companion object {
+        private const val DB_NAME = "forumUserBriefInfoDatabase.db"
 
-@Database(entities = {User.class},version = 3, exportSchema = true)
-@TypeConverters(DateConverter.class)
-public abstract class UserDatabase extends RoomDatabase {
-    private static final String DB_NAME = "forumUserBriefInfoDatabase.db";
-    private static volatile UserDatabase instance;
-    public static synchronized UserDatabase getInstance(Context context){
-        if(instance == null){
-            instance = getDatabase(context);
+        @Volatile
+        private var instance: UserDatabase? = null
+        @JvmStatic
+        @Synchronized
+        fun getInstance(context: Context): UserDatabase {
+            if (instance == null) {
+                instance = getDatabase(context)
+                return instance as UserDatabase
+            }
+            else{
+                return instance as UserDatabase
+            }
         }
-        return instance;
-    }
 
-    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE 'forumUserBriefInfo' "
-                    + " ADD COLUMN 'position' INTEGER NOT NULL DEFAULT(0)");
+        val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "ALTER TABLE 'forumUserBriefInfo' "
+                            + " ADD COLUMN 'position' INTEGER NOT NULL DEFAULT(0)"
+                )
+            }
         }
-    };
 
-    private static UserDatabase getDatabase(final Context context){
-        return Room.databaseBuilder(context, UserDatabase.class,DB_NAME)
+        private fun getDatabase(context: Context): UserDatabase {
+            return Room.databaseBuilder(context, UserDatabase::class.java, DB_NAME)
                 .addMigrations(MIGRATION_1_2)
                 .fallbackToDestructiveMigration()
-                .build();
-    }
+                .build()
+        }
 
-    public static UserDatabase getSyncDatabase(final Context context){
-        return Room.databaseBuilder(context, UserDatabase.class,DB_NAME)
+        @JvmStatic
+        fun getSyncDatabase(context: Context): UserDatabase {
+            return Room.databaseBuilder(context, UserDatabase::class.java, DB_NAME)
                 .allowMainThreadQueries()
                 .addMigrations(MIGRATION_1_2)
                 .fallbackToDestructiveMigration()
-                .build();
+                .build()
+        }
     }
-
-    public abstract UserDao getforumUserBriefInfoDao();
-
-
 }

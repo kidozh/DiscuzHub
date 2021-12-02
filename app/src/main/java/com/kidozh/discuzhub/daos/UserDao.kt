@@ -1,51 +1,47 @@
-package com.kidozh.discuzhub.daos;
+package com.kidozh.discuzhub.daos
 
-import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.kidozh.discuzhub.entities.User;
-
-import java.util.List;
+import androidx.lifecycle.LiveData
+import androidx.room.*
+import com.kidozh.discuzhub.entities.User
 
 @Dao
-public interface UserDao {
-
+interface UserDao {
     @Query("SELECT * FROM User WHERE belongedBBSID=:bbs_id ORDER BY position,id ASC")
-    LiveData<List<User>> getAllUserByBBSID(int bbs_id);
+    fun getAllUserByBBSID(bbs_id: Int): LiveData<List<User>>
 
-    @Query("SELECT * FROM User")
-    LiveData<List<User>> getAllUserLiveData();
+    @get:Query("SELECT * FROM User")
+    val allUserLiveData: LiveData<List<User>>
 
-    @Query("SELECT * FROM User")
-    List<User> getAllUser();
+    @get:Query("SELECT * FROM User")
+    val allUser: List<User>
 
     @Query("DELETE FROM User WHERE belongedBBSID=:bbs_id")
-    void deleteAllUserByBBSID(int bbs_id);
+    fun deleteAllUserByBBSID(bbs_id: Int)
 
     @Query("SELECT * FROM User WHERE id=:id")
-    LiveData<User> getUserLiveDataById(int id);
+    fun getUserLiveDataById(id: Int): LiveData<User?>
 
     @Query("SELECT * FROM User WHERE id=:id")
-    User getUserById(int id);
+    fun getUserById(id: Int): User?
 
     @Insert
-    void insert(User... Users);
+    fun insert(vararg Users: User)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insert(User User);
+    fun insert(User: User): Long
 
     @Update
-    void update(User... Users);
+    fun update(vararg Users: User)
+
     @Update
-    void update(List<User> Users);
+    fun update(Users: List<User>)
 
     @Delete
-    void delete(User... Users);
+    fun delete(vararg Users: User)
 
+    @Query("SELECT * FROM User WHERE belongedBBSID=:discuzId AND uid=:uid LIMIT 1")
+    fun getFirstUserByDiscuzIdAndUid(discuzId: Int, uid: Int): User?
 
+    @Query("DELETE FROM User WHERE belongedBBSID=:discuzId AND uid=:uid")
+    fun deleteAllUserByDiscuzIdAndUid(discuzId: Int, uid: Int)
 }

@@ -1556,7 +1556,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                 val result = threadDetailViewModel.threadPostResultMutableLiveData.value
                 if (result != null) {
                     val detailedThreadInfo = result.threadPostVariables.detailedThreadInfo
-                    val favoriteThread = detailedThreadInfo.toFavoriteThread(discuz.id, if (user != null) user!!.getUid() else 0)
+                    val favoriteThread = detailedThreadInfo.toFavoriteThread(discuz.id, if (user != null) user!!.uid else 0)
                     // save it to the database
                     // boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
                     val favoriteThreadInDB = threadDetailViewModel.favoriteThreadLiveData.value

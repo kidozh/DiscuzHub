@@ -1,316 +1,247 @@
-package com.kidozh.discuzhub.activities;
+package com.kidozh.discuzhub.activities
 
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import android.app.Activity
+import android.app.ActivityOptions
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import com.kidozh.discuzhub.R
+import com.kidozh.discuzhub.activities.ManageUserActivity
+import com.kidozh.discuzhub.activities.ui.bbsDetailedInformation.bbsShowInformationViewModel
+import com.kidozh.discuzhub.adapter.UsersAdapter
+import com.kidozh.discuzhub.callback.RecyclerViewItemTouchCallback
+import com.kidozh.discuzhub.callback.RecyclerViewItemTouchCallback.onInteraction
+import com.kidozh.discuzhub.database.UserDatabase.Companion.getInstance
+import com.kidozh.discuzhub.databinding.ActivityManageUserBinding
+import com.kidozh.discuzhub.dialogs.ManageAdapterHelpDialogFragment
+import com.kidozh.discuzhub.dialogs.ManageUserAdapterHelpDialogFragment
+import com.kidozh.discuzhub.entities.Discuz
+import com.kidozh.discuzhub.entities.User
+import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
+import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
+import com.kidozh.discuzhub.utilities.ConstUtils
+import com.kidozh.discuzhub.utilities.URLUtils
+import com.kidozh.discuzhub.utilities.VibrateUtils
+import java.util.*
 
-import android.app.Activity;
-import android.app.ActivityOptions;
-import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-
-import com.google.android.material.snackbar.Snackbar;
-import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ui.bbsDetailedInformation.bbsShowInformationViewModel;
-import com.kidozh.discuzhub.adapter.UsersAdapter;
-import com.kidozh.discuzhub.callback.RecyclerViewItemTouchCallback;
-import com.kidozh.discuzhub.database.UserDatabase;
-import com.kidozh.discuzhub.databinding.ActivityManageUserBinding;
-import com.kidozh.discuzhub.dialogs.ManageAdapterHelpDialogFragment;
-import com.kidozh.discuzhub.dialogs.ManageUserAdapterHelpDialogFragment;
-import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.User;
-import com.kidozh.discuzhub.utilities.AnimationUtils;
-import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.VibrateUtils;
-import com.kidozh.discuzhub.utilities.ConstUtils;
-
-import java.util.Collections;
-import java.util.List;
-
-
-public class ManageUserActivity extends BaseStatusActivity
-        implements RecyclerViewItemTouchCallback.onInteraction{
-    final static String TAG = ManageUserActivity.class.getSimpleName();
-
-
-    bbsShowInformationViewModel viewModel;
-
-
-    UsersAdapter userAdapter;
-    ActivityManageUserBinding binding;
-
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityManageUserBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        viewModel = new ViewModelProvider(this).get(bbsShowInformationViewModel.class);
-        configureIntent();
-        configureActionBar();
-        configureRecyclerView();
-        fetchUserList();
-        configureAddUserBtn();
-        showHelpDialog();
+class ManageUserActivity : BaseStatusActivity(), onInteraction {
+    lateinit var viewModel: bbsShowInformationViewModel
+    lateinit var userAdapter: UsersAdapter
+    var binding: ActivityManageUserBinding? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityManageUserBinding.inflate(layoutInflater)
+        setContentView(binding!!.root)
+        viewModel = ViewModelProvider(this).get(
+            bbsShowInformationViewModel::class.java
+        )
+        configureIntent()
+        configureActionBar()
+        configureRecyclerView()
+        fetchUserList()
+        configureAddUserBtn()
+        showHelpDialog()
     }
 
-    private void configureIntent(){
-        Intent intent = getIntent();
-        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
-        if(bbsInfo == null){
-            finishAfterTransition();
-        }
-        else {
-            URLUtils.setBBS(bbsInfo);
+    private fun configureIntent() {
+        val intent = intent
+        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
+        if (bbsInfo == null) {
+            finishAfterTransition()
+        } else {
+            URLUtils.setBBS(bbsInfo)
         }
     }
 
-    void configureActionBar(){
-        setSupportActionBar(binding.toolbar);
-        if(getSupportActionBar() !=null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            binding.toolbarTitle.setText(bbsInfo.site_name);
-            binding.toolbarSubtitle.setText(bbsInfo.base_url);
-
+    fun configureActionBar() {
+        setSupportActionBar(binding!!.toolbar)
+        if (supportActionBar != null) {
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+            binding!!.toolbarTitle.text = bbsInfo!!.site_name
+            binding!!.toolbarSubtitle.text = bbsInfo!!.base_url
         }
-
     }
 
-    void configureRecyclerView(){
-        binding.bbsUserRecyclerview.setLayoutManager(new LinearLayoutManager(this));
-        binding.bbsUserRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
-        userAdapter = new UsersAdapter(this, bbsInfo);
-        binding.bbsUserRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,userAdapter));
+    fun configureRecyclerView() {
+        binding!!.bbsUserRecyclerview.layoutManager = LinearLayoutManager(this)
+        binding!!.bbsUserRecyclerview.itemAnimator = getRecyclerviewAnimation(this)
+        userAdapter = UsersAdapter(this, bbsInfo!!)
+        binding!!.bbsUserRecyclerview.adapter =
+            getAnimatedAdapter(this, userAdapter)
         // swipe to delete
         // swipe to delete support
-        RecyclerViewItemTouchCallback callback = new RecyclerViewItemTouchCallback(this);
+        val callback = RecyclerViewItemTouchCallback(this)
         //forumSwipeToDeleteUserCallback swipeToDeleteUserCallback = new forumSwipeToDeleteUserCallback(userAdapter);
-
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-        itemTouchHelper.attachToRecyclerView(binding.bbsUserRecyclerview);
-
-        binding.bbsUserRecyclerview.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        val itemTouchHelper = ItemTouchHelper(callback)
+        itemTouchHelper.attachToRecyclerView(binding!!.bbsUserRecyclerview)
+        binding!!.bbsUserRecyclerview.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+        )
     }
 
-    void fetchUserList(){
-        viewModel.loadUserList(bbsInfo.getId());
-        viewModel.bbsUserInfoLiveDataList.observe(this, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> Users) {
-                userAdapter.setUserList(Users);
-                if(Users == null || Users.size() == 0){
-                    binding.emptyUserView.setVisibility(View.VISIBLE);
-                }
-                else {
-                    binding.emptyUserView.setVisibility(View.GONE);
-                }
+    private fun fetchUserList() {
+        viewModel.loadUserList(bbsInfo!!.id)
+        viewModel.bbsUserInfoLiveDataList.observe(this, { Users ->
+            userAdapter.userList = Users
+            if (Users == null || Users.size == 0) {
+                binding!!.emptyUserView.visibility = View.VISIBLE
+            } else {
+                binding!!.emptyUserView.visibility = View.GONE
             }
-        });
-
+        })
     }
 
-    void configureAddUserBtn(){
-        Activity activity =this;
-        binding.addAUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(activity, LoginActivity.class);
-
-                Log.d(TAG,"ADD A account "+bbsInfo);
-                if(bbsInfo !=null){
-                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, (User) null);
-                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(activity);
-
-                    Bundle bundle = options.toBundle();
-                    activity.startActivity(intent,bundle);
-                }
+    private fun configureAddUserBtn() {
+        val activity: Activity = this
+        binding!!.addAUser.setOnClickListener {
+            val intent = Intent(activity, LoginActivity::class.java)
+            Log.d(TAG, "ADD A account $bbsInfo")
+            if (bbsInfo != null) {
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, null as User?)
+                val options = ActivityOptions.makeSceneTransitionAnimation(activity)
+                val bundle = options.toBundle()
+                activity.startActivity(intent, bundle)
             }
-        });
+        }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_manage_info, menu);
-        return true;
+        menuInflater.inflate(R.menu.menu_manage_info, menu)
+        return true
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if(id == android.R.id.home){
-            this.finishAfterTransition();
-            return true;
-        }
-        else if(id == R.id.show_help_info){
-            showHelpDialog();
-            return true;
-        }
-        else if(id == R.id.add_item){
-            Intent intent = new Intent(this, LoginActivity.class);
-
-            if(bbsInfo !=null){
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, (User) null);
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
-
-                Bundle bundle = options.toBundle();
-                startActivity(intent,bundle);
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finishAfterTransition()
+                true
             }
-            return true;
-        }
-        else{
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-    public void showHelpDialog(){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        ManageUserAdapterHelpDialogFragment dialogFragment = new ManageUserAdapterHelpDialogFragment();
-        dialogFragment.show(fragmentManager,ManageAdapterHelpDialogFragment.class.getSimpleName());
-    }
-
-
-    @Override
-    public void onRecyclerViewSwiped(int position, int direction) {
-        List<User> userBriefInfos = userAdapter.getUserList();
-        if(userBriefInfos!=null){
-            User userBriefInfo = userBriefInfos.get(position);
-            Log.d(TAG,"Get direction "+direction);
-            if(direction == ItemTouchHelper.START){
-                Intent intent = new Intent(this, LoginActivity.class);
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                startActivity(intent);
-                VibrateUtils.vibrateForNotice(this);
-                userAdapter.notifyDataSetChanged();
+            R.id.show_help_info -> {
+                showHelpDialog()
+                true
             }
-            else {
-                userAdapter.getUserList().remove(position);
-                userAdapter.notifyDataSetChanged();
-                showUndoSnackbar(userBriefInfo,position);
+            R.id.add_item -> {
+                val intent = Intent(this, LoginActivity::class.java)
+                if (bbsInfo != null) {
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                    intent.putExtra(
+                        ConstUtils.PASS_BBS_USER_KEY,
+                        null as User?
+                    )
+                    val options = ActivityOptions.makeSceneTransitionAnimation(this)
+                    val bundle = options.toBundle()
+                    startActivity(intent, bundle)
+                }
+                true
             }
-
-
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
     }
 
-    @Override
-    public void onRecyclerViewMoved(int fromPosition, int toPosition) {
-        List<User> userBriefInfos = userAdapter.getUserList();
-        if(userBriefInfos!=null){
+    private fun showHelpDialog() {
+        val fragmentManager = supportFragmentManager
+        val dialogFragment = ManageUserAdapterHelpDialogFragment()
+        dialogFragment.show(fragmentManager, ManageAdapterHelpDialogFragment::class.java.simpleName)
+    }
+
+    override fun onRecyclerViewSwiped(position: Int, direction: Int) {
+        val userBriefInfos = userAdapter.userList
+        if (userBriefInfos != null) {
+            val userBriefInfo = userBriefInfos[position]
+            Log.d(TAG, "Get direction $direction")
+            if (direction == ItemTouchHelper.START) {
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                startActivity(intent)
+                VibrateUtils.vibrateForNotice(this)
+                userAdapter.notifyDataSetChanged()
+            } else {
+                userAdapter.userList.removeAt(position)
+                userAdapter.notifyDataSetChanged()
+                showUndoSnackbar(userBriefInfo, position)
+            }
+        }
+    }
+
+    override fun onRecyclerViewMoved(fromPosition: Int, toPosition: Int) {
+        val userBriefInfos = userAdapter.userList
+        if (userBriefInfos != null) {
             if (fromPosition < toPosition) {
-                for (int i = fromPosition; i < toPosition; i++) {
-                    Collections.swap(userBriefInfos, i, i + 1);
+                for (i in fromPosition until toPosition) {
+                    Collections.swap(userBriefInfos, i, i + 1)
                 }
             } else {
-                for (int i = fromPosition; i > toPosition; i--) {
-                    Collections.swap(userBriefInfos, i, i - 1);
+                for (i in fromPosition downTo toPosition + 1) {
+                    Collections.swap(userBriefInfos, i, i - 1)
                 }
             }
-            for(int i=0;i<userBriefInfos.size(); i++){
-                userBriefInfos.get(i).position = i;
+            for (i in userBriefInfos.indices) {
+                userBriefInfos[i]!!.position = i
             }
-            new UpdateBBSUserTask(userBriefInfos).execute();
-
+            updateDiscuzUser(userBriefInfos)
         }
     }
-
-    public class removeBBSUserTask extends AsyncTask<Void, Void, Void> {
-        private User userBriefInfo;
-        private Context context;
-        public removeBBSUserTask(User userBriefInfo, Context context){
-            this.userBriefInfo = userBriefInfo;
-            this.context = context;
-        }
-        @Override
-        protected Void doInBackground(Void... voids) {
-            UserDatabase.getInstance(context).getforumUserBriefInfoDao().delete(userBriefInfo);
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-        }
+    
+    private fun deleteDiscuzUser(userBriefInfo: User){
+        Thread{
+            getInstance(this).getforumUserBriefInfoDao().delete(userBriefInfo)
+        }.start()
+    }
+    
+    private fun updateDiscuzUser(userBriefInfos: List<User>){
+        Thread{
+            
+            getInstance(this).getforumUserBriefInfoDao().update(userBriefInfos)
+        }.start()
     }
 
-    public class UpdateBBSUserTask extends AsyncTask<Void, Void, Void> {
-        private List<User> userBriefInfos;
-        private Context context;
-        public UpdateBBSUserTask(List<User> userBriefInfos){
-            this.userBriefInfos = userBriefInfos;
-
-        }
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            UserDatabase.getInstance(context).getforumUserBriefInfoDao().update(userBriefInfos);
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-        }
+    private fun showUndoSnackbar(userBriefInfo: User, position: Int) {
+        Log.d(TAG, "SHOW REMOVED POS $position")
+        deleteDiscuzUser(userBriefInfo)
+        val snackbar = Snackbar.make(
+            binding!!.manageUserCoordinatorLayout,
+            getString(
+                R.string.bbs_delete_user_info_template,
+                userBriefInfo.username,
+                bbsInfo!!.site_name
+            ),
+            Snackbar.LENGTH_LONG
+        )
+        snackbar.setAction(R.string.bbs_undo_delete) { undoDelete(userBriefInfo, position) }
+        snackbar.show()
     }
 
-    public void showUndoSnackbar(final User userBriefInfo, final int position) {
-        Log.d(TAG,"SHOW REMOVED POS "+position);
-        new removeBBSUserTask(userBriefInfo,this).execute();
-        Snackbar snackbar = Snackbar.make(binding.manageUserCoordinatorLayout, getString(R.string.bbs_delete_user_info_template,userBriefInfo.username,bbsInfo.site_name),
-                Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.bbs_undo_delete, new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                undoDelete(userBriefInfo,position);
-            }
-        });
-        snackbar.show();
-    }
-
-    public void undoDelete(User userBriefInfo, int position) {
+    private fun undoDelete(userBriefInfo: User, position: Int) {
         // insert to database
-        userAdapter.getUserList().add(position,userBriefInfo);
-        userAdapter.notifyDataSetChanged();
-        new addBBSUserTask(userBriefInfo, this).execute();
+        userAdapter.userList.add(position, userBriefInfo)
+        userAdapter.notifyDataSetChanged()
+        addUser(userBriefInfo)
+        
+    }
+    
+    private fun addUser(userBriefInfo: User){
+        Thread{
+            getInstance(this).getforumUserBriefInfoDao().insert(userBriefInfo)
+        }.start()
     }
 
-    public class addBBSUserTask extends AsyncTask<Void, Void, Void> {
-        private User userBriefInfo;
-        private Context context;
-        public addBBSUserTask(User userBriefInfo, Context context){
-            this.userBriefInfo = userBriefInfo;
-            this.context = context;
-        }
-        @Override
-        protected Void doInBackground(Void... voids) {
-            UserDatabase.getInstance(context).getforumUserBriefInfoDao().insert(userBriefInfo);
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-        }
+    companion object {
+        val TAG: String = ManageUserActivity::class.java.simpleName
     }
 }

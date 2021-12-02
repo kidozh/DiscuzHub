@@ -204,13 +204,13 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                 }
 
             } else {
-                var avatar_num: Int = user.getUid() % 16
+                var avatar_num: Int = user.uid % 16
                 if (avatar_num < 0) {
                     avatar_num = -avatar_num
                 }
                 val avatarResource: Int = getResources().getIdentifier(String.format("avatar_%s", avatar_num + 1), "drawable", packageName)
                 URLUtils.bbsInfo = bbsInfo
-                val source: String = URLUtils.getLargeAvatarUrlByUid(user.getUid())
+                val source: String = URLUtils.getLargeAvatarUrlByUid(user.uid)
                 val glideUrl = GlideUrl(source,
                         LazyHeaders.Builder().addHeader("referer", source).build()
                 )
@@ -219,7 +219,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                         .apply(RequestOptions.placeholderOf(avatarResource).error(avatarResource))
                         .into(navHeaderBinding.userAvatar)
                 navHeaderBinding.headerTitle.setText(user.username)
-                navHeaderBinding.headerSubtitle.setText(getString(R.string.user_id_description,user.getUid()))
+                navHeaderBinding.headerSubtitle.setText(getString(R.string.user_id_description,user.uid))
             }
         })
         viewModel.userListLiveData.observe(this, Observer { userList ->
@@ -319,8 +319,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
             val user: User? = this@SingleDiscuzActivity.viewModel.currentUserMutableLiveData.value
             when (position) {
                 0 -> {
-                    val homeFragment = HomeFragment.newInstance(bbsInfo, user)
-                    return homeFragment
+                    return HomeFragment.newInstance(bbsInfo, user)
                 }
                 1 -> return DashBoardFragment.newInstance(bbsInfo, user)
                 2 -> {

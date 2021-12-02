@@ -187,12 +187,12 @@ class FavoriteForumFragment : Fragment() {
             insertTids.add(favoriteForumList[i].idKey)
             favoriteForumList[i].belongedBBSId = bbsInfo!!.id
             favoriteForumList[i].userId =
-                if (userBriefInfo != null) userBriefInfo!!.getUid() else 0
+                if (userBriefInfo != null) userBriefInfo!!.uid else 0
             //Log.d(TAG,"fav id "+favoriteForumList.get(i).favid);
         }
         Thread{
             val queryList = dao.queryFavoriteItemListByfids(
-                bbsInfo!!.id, if (userBriefInfo != null) userBriefInfo!!.getUid() else 0,
+                bbsInfo!!.id, if (userBriefInfo != null) userBriefInfo!!.uid else 0,
                 insertTids
             )
             if (queryList != null) {

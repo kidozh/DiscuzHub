@@ -224,14 +224,14 @@ public class FavoriteThreadFragment extends Fragment {
             for(int i = 0; i< favoriteThreadList.size(); i++){
                 insertTids.add(favoriteThreadList.get(i).idKey);
                 favoriteThreadList.get(i).belongedBBSId = bbsInfo.getId();
-                favoriteThreadList.get(i).userId = userBriefInfo!=null?userBriefInfo.getUid():0;
+                favoriteThreadList.get(i).userId = userBriefInfo!=null?userBriefInfo.uid:0;
                 //Log.d(TAG,"fav id "+favoriteThreadList.get(i).favid);
             }
 
 
 
             List<FavoriteThread> queryList = dao.queryFavoriteItemListByTids(bbsInfo.getId()
-                    ,userBriefInfo!=null?userBriefInfo.getUid():0,
+                    ,userBriefInfo!=null?userBriefInfo.uid:0,
                     insertTids
                     ,idType
                     );

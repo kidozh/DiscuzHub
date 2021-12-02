@@ -56,8 +56,8 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), user)
         favoriteForumLiveData = FavoriteForumDatabase.getInstance(getApplication())
                 .dao
-                .getFavoriteItemByfid(discuz.id, user?.getUid() ?: 0, forum.fid)
-        val uid = user?.getUid() ?: 0
+                .getFavoriteItemByfid(discuz.id, user?.uid ?: 0, forum.fid)
+        val uid = user?.uid ?: 0
         Log.d(TAG, "Get favorite form info " + user + " fid " + forum.fid + " uid " + uid)
         forumStatusMutableLiveData = MutableLiveData(DisplayForumQueryStatus(forum.fid,1))
     }

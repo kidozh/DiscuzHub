@@ -66,7 +66,7 @@ public class FavoriteThreadViewModel extends AndroidViewModel {
         this.userBriefInfo = userBriefInfo;
         this.idType = idType;
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(),userBriefInfo);
-        favoriteThreadListData = new LivePagedListBuilder<>(dao.getFavoriteItemPageListByBBSId(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0,idType),myPagingConfig).build();
+        favoriteThreadListData = new LivePagedListBuilder<>(dao.getFavoriteItemPageListByBBSId(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.uid:0,idType),myPagingConfig).build();
     }
 
     public LiveData<PagedList<FavoriteThread>> getFavoriteItemListData() {

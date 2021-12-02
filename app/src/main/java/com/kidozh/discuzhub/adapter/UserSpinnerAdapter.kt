@@ -49,7 +49,7 @@ class UserSpinnerAdapter : BaseAdapter() {
         val user = userList.get(position)
         binding.name.text = user.username
         Glide.with(binding.root)
-                .load(URLUtils.getDefaultAvatarUrlByUid(user.getUid()))
+                .load(URLUtils.getDefaultAvatarUrlByUid(user.uid))
                 .error(R.drawable.avatar_1)
                 .into(binding.avatar)
         return binding.root

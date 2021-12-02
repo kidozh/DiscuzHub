@@ -305,12 +305,20 @@ class LoginActivity : BaseStatusActivity() {
     }
 
     private fun saveUserToDatabase(userBriefInfo: User, client: OkHttpClient, httpURL: String){
-        val httpUrl: HttpUrl? = HttpUrl.parse(httpURL)
-
+        val httpUrl: HttpUrl = HttpUrl.parse(httpURL) ?: return
         var insertedId: Long = 0
         Thread{
-            insertedId = UserDatabase.getInstance(applicationContext)
-                .getforumUserBriefInfoDao().insert(userBriefInfo)
+            // may clear all the users first
+            val firstMightExistUser = UserDatabase.getInstance(this).getforumUserBriefInfoDao().getFirstUserByDiscuzIdAndUid(bbsInfo!!.id,userBriefInfo.uid)
+            Log.d(TAG,"GET all users(${userBriefInfo.uid}) from database $firstMightExistUser")
+            if (firstMightExistUser != null){
+                // if not null then replace the first one
+                userBriefInfo.id = firstMightExistUser.id
+                // then delete all the existing users
+                UserDatabase.getInstance(this).getforumUserBriefInfoDao().deleteAllUserByDiscuzIdAndUid(bbsInfo!!.id,userBriefInfo.uid)
+            }
+            // then insert this to database
+            insertedId = UserDatabase.getInstance(applicationContext).getforumUserBriefInfoDao().insert(userBriefInfo)
         }.start()
         userBriefInfo.id = insertedId.toInt()
         val savedClient = NetworkUtils.getPreferredClientWithCookieJarByUser(
@@ -351,7 +359,7 @@ class LoginActivity : BaseStatusActivity() {
 
     private fun configureData() {
         val intent = intent
-        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
+        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
         user = intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY) as User?
         client = NetworkUtils.getPreferredClientWithCookieJar(applicationContext)
         viewModel!!.setInfo(bbsInfo!!, user, client)

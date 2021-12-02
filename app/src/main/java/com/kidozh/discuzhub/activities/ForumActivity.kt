@@ -544,7 +544,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                     val forum = result.forumVariables.forum
                     val favoriteForum = forum.toFavoriteForm(
                         bbsInfo!!.id,
-                        if (user != null) user!!.getUid() else 0
+                        if (user != null) user!!.uid else 0
                     )
                     // save it to the database
                     // boolean isFavorite = threadDetailViewModel.isFavoriteThreadMutableLiveData.getValue();
@@ -699,7 +699,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                         if (favorite && key == "favorite_do_success") {
                             dao!!.delete(
                                 bbsInfo!!.id,
-                                if (user != null) user!!.getUid() else 0,
+                                if (user != null) user!!.uid else 0,
                                 favoriteForum.idKey
                             )
                             dao.insert(favoriteForum)
@@ -707,13 +707,13 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                         if (favorite && key == "favorite_repeat") {
                             dao!!.delete(
                                 bbsInfo!!.id,
-                                if (user != null) user!!.getUid() else 0,
+                                if (user != null) user!!.uid else 0,
                                 favoriteForum.idKey
                             )
                             dao.insert(favoriteForum)
                         } else if (!favorite && key == "do_success") {
                             dao.delete(favoriteForum)
-                            dao.delete(bbsInfo!!.id, user!!.getUid(), favoriteForum.idKey)
+                            dao.delete(bbsInfo!!.id, user!!.uid, favoriteForum.idKey)
                         } else {
                             containError = true
                         }
@@ -724,7 +724,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                         if (favorite) {
                             dao!!.delete(
                                 bbsInfo!!.id,
-                                if (user != null) user!!.getUid() else 0,
+                                if (user != null) user!!.uid else 0,
                                 favoriteForum.idKey
                             )
                             dao.insert(favoriteForum)
@@ -734,7 +734,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                             // clear potential
                             dao!!.delete(
                                 bbsInfo!!.id,
-                                if (user != null) user!!.getUid() else 0,
+                                if (user != null) user!!.uid else 0,
                                 favoriteForum.idKey
                             )
                             //dao.delete(favoriteThread);
@@ -752,7 +752,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                     if (favorite) {
                         dao!!.delete(
                             bbsInfo!!.id,
-                            if (user != null) user!!.getUid() else 0,
+                            if (user != null) user!!.uid else 0,
                             favoriteForum.idKey
                         )
                         dao.insert(favoriteForum)
@@ -761,7 +761,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                         // clear potential
                         dao!!.delete(
                             bbsInfo!!.id,
-                            if (user != null) user!!.getUid() else 0,
+                            if (user != null) user!!.uid else 0,
                             favoriteForum.idKey
                         )
                         //dao.delete(favoriteThread);
@@ -773,7 +773,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                 if (favorite) {
                     dao!!.delete(
                         bbsInfo!!.id,
-                        if (user != null) user!!.getUid() else 0,
+                        if (user != null) user!!.uid else 0,
                         favoriteForum.idKey
                     )
                     dao.insert(favoriteForum)
@@ -782,7 +782,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                     // clear potential
                     dao!!.delete(
                         bbsInfo!!.id,
-                        if (user != null) user!!.getUid() else 0,
+                        if (user != null) user!!.uid else 0,
                         favoriteForum.idKey
                     )
                     //dao.delete(favoriteThread);
