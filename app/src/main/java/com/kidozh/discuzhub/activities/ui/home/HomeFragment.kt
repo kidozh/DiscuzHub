@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +24,8 @@ import com.kidozh.discuzhub.utilities.AnimationUtils.configureRecyclerviewAnimat
 import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
 import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
 import com.kidozh.discuzhub.utilities.ConstUtils
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -37,8 +40,8 @@ class HomeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-        favoriteForumViewModel = ViewModelProvider(this).get(FavoriteForumViewModel::class.java)
+        homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        favoriteForumViewModel = ViewModelProvider(this)[FavoriteForumViewModel::class.java]
         activityBbsForumIndexBinding = ActivityBbsForumIndexBinding.inflate(layoutInflater)
         val root = activityBbsForumIndexBinding.root
         configureViewModel()
@@ -67,6 +70,12 @@ class HomeFragment : Fragment() {
 
     private fun configureAdapter(){
         favoriteForumAdapter.setInformation(bbsInfo, userBriefInfo)
+
+        lifecycleScope.launch {
+            favoriteForumViewModel.flow.collectLatest {
+                favoriteForumAdapter.submitData(it)
+            }
+        }
 //        favoriteForumViewModel.favoriteItemListData.observe(viewLifecycleOwner, {
 //             favoriteForumAdapter.submitList(it)
 //        })
