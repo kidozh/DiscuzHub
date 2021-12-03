@@ -168,7 +168,7 @@ class ThreadAdapter(var threadType: Map<String, String>?, var bbsInfo: Discuz, v
             }
         } else if (holderRaw is ThreadViewHolder) {
             val holder = holderRaw
-            val sp = Html.fromHtml(thread.subject)
+            val sp = Html.fromHtml(thread.subject,Html.FROM_HTML_MODE_COMPACT)
             val spannableString = SpannableString(sp)
             holder.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE)
             holder.mThreadViewNum.text = numberFormatUtils.getShortNumberText(thread.views)
@@ -284,6 +284,8 @@ class ThreadAdapter(var threadType: Map<String, String>?, var bbsInfo: Discuz, v
                 holder.mReplyRecyclerview.adapter = adapter
                 holder.mReplyRecyclerview.isNestedScrollingEnabled = false
             } else {
+                // still flush it to avoid cache problem
+                holder.mReplyRecyclerview.adapter = ShortPostAdapter()
             }
             holder.mCardview.setOnClickListener {
                 val intent = Intent(context, ThreadActivity::class.java)
