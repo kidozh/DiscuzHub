@@ -100,6 +100,9 @@ public interface DiscuzApiService {
     @GET(DISCUZ_API_PATH+"?version=4&module=forumindex")
     Call<DiscuzIndexResult> indexResult();
 
+    @GET(DISCUZ_API_PATH+"?version=4&module=forumindex")
+    Call<String> indexResultRaw();
+
     @GET(DISCUZ_API_PATH+"?version=4&module=forumdisplay")
     Call<ForumResult> forumDisplayResult(@QueryMap HashMap<String,String> options);
 

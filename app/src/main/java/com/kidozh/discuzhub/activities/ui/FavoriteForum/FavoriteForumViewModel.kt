@@ -81,7 +81,7 @@ class FavoriteForumViewModel(application: Application) : AndroidViewModel(applic
         val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo!!.base_url, client!!)
         val apiService = retrofit.create(DiscuzApiService::class.java)
         val favoriteCall: Call<FavoriteForumResult> = apiService.getFavoriteForumResult(page)
-        Log.d(TAG, "Get favorite result " + favoriteCall.request().url())
+        Log.d(TAG, "Get favorite result ${favoriteCall.request()}")
         favoriteCall.enqueue(object : Callback<FavoriteForumResult?> {
             override fun onResponse(
                 call: Call<FavoriteForumResult?>,

@@ -9,9 +9,9 @@ import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.results.UserFriendResult
 import com.kidozh.discuzhub.results.UserFriendResult.UserFriend
+import com.kidozh.discuzhub.utilities.NetworkUtils
 import com.kidozh.discuzhub.utilities.URLUtils
 import com.kidozh.discuzhub.utilities.bbsParseUtils
-import com.kidozh.discuzhub.utilities.NetworkUtils
 import okhttp3.*
 import java.io.IOException
 import kotlin.math.max
@@ -84,9 +84,9 @@ class UserFriendViewModel(application: Application) : AndroidViewModel(applicati
             }
 
             override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful && response.body() != null){
+                if (response.isSuccessful && response.body != null){
                     isLoadingMutableLiveData.postValue(false)
-                    val s = response.body()!!.string()
+                    val s = response.body!!.string()
                     Log.d(TAG,s);
                     val friendsResult = bbsParseUtils.parseUserFriendsResult(s)
 

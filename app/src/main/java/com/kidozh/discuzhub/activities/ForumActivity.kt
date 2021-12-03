@@ -688,7 +688,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                 try {
                     Log.d(
                         TAG,
-                        "request favorite url " + favoriteForumActionResultCall.request().url()
+                        "request favorite url ${favoriteForumActionResultCall.request()}"
                     )
                     val response = favoriteForumActionResultCall.execute()
                     //Log.d(TAG,"get response "+response.raw().body().string());

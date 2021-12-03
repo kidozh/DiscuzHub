@@ -14,7 +14,6 @@ import com.kidozh.discuzhub.results.PrivateMessageResult
 import com.kidozh.discuzhub.services.DiscuzApiService
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.NetworkUtils
-import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -54,7 +53,7 @@ class PrivateMessageViewModel(application: Application) : AndroidViewModel(appli
         }
         networkState.postValue(ConstUtils.NETWORK_STATUS_LOADING)
         val call = service.getPrivateMessageListResult(toUid,pageString)
-        Log.d(TAG,"Send list request "+call.request().url())
+        Log.d(TAG,"Send list request ${call.request()}")
         call.enqueue(object : Callback<PrivateMessageResult>{
             override fun onResponse(call: Call<PrivateMessageResult>, response: Response<PrivateMessageResult>) {
                 if(response.isSuccessful && response.body() != null){
@@ -108,7 +107,7 @@ class PrivateMessageViewModel(application: Application) : AndroidViewModel(appli
             sendNetworkState.postValue(ConstUtils.NETWORK_STATUS_LOADING)
             val formHash = formHashMutableLiveData.value as String
             val call = service.sendPrivateMessage(plid,pmId,formHash,message, toUid.toString())
-            Log.d(TAG,"Call request "+call.request().url()+" To uid "+toUid)
+            Log.d(TAG,"Call request ${call.request()} To uid "+toUid)
             call.enqueue(object : Callback<ApiMessageActionResult>{
                 override fun onResponse(call: Call<ApiMessageActionResult>, response: Response<ApiMessageActionResult>) {
                     if(response.isSuccessful && response.body() != null){

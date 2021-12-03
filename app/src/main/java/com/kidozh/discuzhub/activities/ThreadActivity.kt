@@ -81,7 +81,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
 
     lateinit var postAdapter: PostAdapter
     lateinit var countAdapter: ThreadCountAdapter
-    var formHash: String? = null
+    var formHash: String = ""
     var forum: Forum? = null
     lateinit var discuz: Discuz
     lateinit var thread: Thread
@@ -514,7 +514,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
 
                         @Throws(IOException::class)
                         override fun onResponse(call: Call, response: Response) {
-                            if (response.isSuccessful && response.body() != null) {
+                            if (response.isSuccessful && response.body != null) {
                                 // get the session
                                 binding.bbsPostCaptchaImageview.post {
                                     val factory = OkHttpUrlLoader.Factory(client)
@@ -1271,8 +1271,8 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful && response.body() != null) {
-                    val s = response.body()!!.string()
+                if (response.isSuccessful && response.body != null) {
+                    val s = response.body!!.string()
                     Log.d(TAG, "Recv comment info $s")
                     val returnedMessage = bbsParseUtils.parseReturnMessage(s)
                     if (returnedMessage != null && returnedMessage.value == "post_reply_succeed") {
@@ -1408,8 +1408,8 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                if (response.body() != null) {
-                    val s = response.body()!!.string()
+                if (response.body != null) {
+                    val s = response.body!!.string()
                     val returnedMessage = bbsParseUtils.parseReturnMessage(s)
                     Log.d(TAG, "Recv reply comment info $s")
                     if (returnedMessage != null && returnedMessage.value == "post_reply_succeed") {

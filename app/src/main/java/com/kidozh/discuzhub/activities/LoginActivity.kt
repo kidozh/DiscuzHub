@@ -34,6 +34,7 @@ import com.kidozh.discuzhub.utilities.VibrateUtils
 import com.kidozh.discuzhub.viewModels.LoginViewModel
 import es.dmoral.toasty.Toasty
 import okhttp3.*
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.io.IOException
 import java.io.InputStream
 
@@ -75,7 +76,7 @@ class LoginActivity : BaseStatusActivity() {
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>?,
-                    view: View,
+                    view: View?,
                     position: Int,
                     id: Long
                 ) {
@@ -169,7 +170,7 @@ class LoginActivity : BaseStatusActivity() {
                             override fun onFailure(call: Call, e: IOException) {}
                             @Throws(IOException::class)
                             override fun onResponse(call: Call, response: Response) {
-                                if (response.isSuccessful && response.body() != null) {
+                                if (response.isSuccessful && response.body != null) {
                                     // get the session
                                     binding.loginBbsCaptchaImageView.post {
                                         val factory = OkHttpUrlLoader.Factory(
@@ -305,7 +306,7 @@ class LoginActivity : BaseStatusActivity() {
     }
 
     private fun saveUserToDatabase(userBriefInfo: User, client: OkHttpClient, httpURL: String){
-        val httpUrl: HttpUrl = HttpUrl.parse(httpURL) ?: return
+        val httpUrl: HttpUrl = httpURL.toHttpUrlOrNull() ?: return
         var insertedId: Long = 0
         Thread{
             // may clear all the users first
@@ -324,9 +325,9 @@ class LoginActivity : BaseStatusActivity() {
         val savedClient = NetworkUtils.getPreferredClientWithCookieJarByUser(
             applicationContext, userBriefInfo
         )
-        val cookies = client.cookieJar().loadForRequest(httpUrl)
+        val cookies = client.cookieJar.loadForRequest(httpUrl)
         Log.d(TAG, "Http url " + httpUrl.toString() + " cookie list size " + cookies.size)
-        savedClient.cookieJar().saveFromResponse(httpUrl, cookies)
+        savedClient.cookieJar.saveFromResponse(httpUrl, cookies)
         // manually set the cookie to shared preference
         val sharedPrefsCookiePersistor = SharedPrefsCookiePersistor(
             getSharedPreferences(
@@ -335,10 +336,10 @@ class LoginActivity : BaseStatusActivity() {
                 ), MODE_PRIVATE
             )
         )
-        sharedPrefsCookiePersistor.saveAll(savedClient.cookieJar().loadForRequest(httpUrl))
+        sharedPrefsCookiePersistor.saveAll(savedClient.cookieJar.loadForRequest(httpUrl))
         Log.d(
             TAG,
-            "Http url " + httpUrl.toString() + " saved cookie list size " + savedClient.cookieJar()
+            "Http url " + httpUrl.toString() + " saved cookie list size " + savedClient.cookieJar
                 .loadForRequest(httpUrl).size
         )
         finishAfterTransition()

@@ -1,6 +1,7 @@
 package com.kidozh.discuzhub.activities.ui.home
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,7 +23,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     var userBriefInfoMutableLiveData: MutableLiveData<User?>
     var isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     var bbsIndexResultMutableLiveData: MutableLiveData<DiscuzIndexResult?> = MutableLiveData(null)
-    var bbsInfo: Discuz? = null
+    lateinit var bbsInfo: Discuz
     var userBriefInfo: User? = null
     fun setBBSInfo(bbsInfo: Discuz, userBriefInfo: User?) {
         this.bbsInfo = bbsInfo
@@ -47,10 +48,28 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
         val client =
             NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), userBriefInfo)
-        val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo!!.base_url, client)
+
+
+
+        val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url, client)
         val service = retrofit.create(DiscuzApiService::class.java)
         val bbsIndexResultCall = service.indexResult()
         isLoading.postValue(true)
+        Log.d(TAG,"Send raw request to ${service.indexResultRaw().request()}")
+//        service.indexResultRaw().enqueue(object : Callback<String?>{
+//            override fun onResponse(call: Call<String?>, response: Response<String?>) {
+//                Log.d(TAG,"GET response from index ${response.isSuccessful} ${response.message()}")
+//                if(response.isSuccessful && response.body() != null){
+//                    Log.d(TAG,"Get raw bbs index string ${response.body()}")
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<String?>, t: Throwable) {
+//
+//            }
+//
+//        })
+
         bbsIndexResultCall.enqueue(object : Callback<DiscuzIndexResult?> {
             override fun onResponse(
                 call: Call<DiscuzIndexResult?>,
@@ -58,6 +77,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             ) {
                 if (response.isSuccessful && response.body() != null) {
                     val indexResult = response.body()
+                    Log.d(TAG,"GET index response message ${response.message()} user ${userBriefInfo}")
                     bbsIndexResultMutableLiveData.postValue(indexResult)
                     if (indexResult!!.forumVariables != null) {
                         val serverReturnedUser = indexResult.forumVariables.userBriefInfo
@@ -65,6 +85,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                         errorMessageMutableLiveData.postValue(null)
                         // prepare to render index page
                         val categoryList = indexResult.forumVariables.forumCategoryList
+                        Log.d(TAG,"GET category list size ${indexResult.forumVariables.forumCategoryList.size}")
                         forumCategories!!.postValue(categoryList)
                     } else {
                         if (indexResult.message != null) {

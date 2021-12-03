@@ -3,7 +3,6 @@ package com.kidozh.discuzhub.activities.ui.HotThreads
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.entities.Discuz
@@ -18,8 +17,6 @@ import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
-import kotlin.collections.ArrayList
 
 class HotThreadsViewModel(application: Application?) : AndroidViewModel(application!!) {
     private val TAG = HotThreadsViewModel::class.java.simpleName
@@ -54,10 +51,10 @@ class HotThreadsViewModel(application: Application?) : AndroidViewModel(applicat
             return
         }
         isLoading.postValue(true)
-        val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo!!.base_url, client)
+        val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url, client)
         val service = retrofit.create(DiscuzApiService::class.java)
         val displayThreadsResultCall = service.hotThreadResult(page)
-        Log.d(TAG, "Get hot thread page " + page + " url " + displayThreadsResultCall.request().url().toString())
+        Log.d(TAG, "Get hot thread page " + page + " url ${displayThreadsResultCall.request()}")
         displayThreadsResultCall.enqueue(object : Callback<DisplayThreadsResult?> {
             override fun onResponse(call: Call<DisplayThreadsResult?>, response: Response<DisplayThreadsResult?>) {
                 if (response.isSuccessful && response.body() != null) {

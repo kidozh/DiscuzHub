@@ -18,7 +18,6 @@ import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
@@ -48,7 +47,6 @@ import okhttp3.Response
 import java.io.IOException
 import java.io.InputStream
 import java.util.regex.Pattern
-import kotlin.concurrent.thread
 
 
 class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressedInteraction, PostAdapter.onFilterChanged, PostAdapter.onAdapterReply, PostAdapter.OnLinkClicked{
@@ -266,7 +264,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
 
                         @Throws(IOException::class)
                         override fun onResponse(call: Call, response: Response) {
-                            if (response.isSuccessful && response.body() != null) {
+                            if (response.isSuccessful && response.body != null) {
                                 // get the session
                                 binding.captchaImageview.post {
                                     val factory = OkHttpUrlLoader.Factory(client)

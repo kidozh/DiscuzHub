@@ -19,15 +19,15 @@ import com.kidozh.discuzhub.activities.ForumActivity
 import com.kidozh.discuzhub.activities.ThreadActivity
 import com.kidozh.discuzhub.activities.UserProfileActivity
 import com.kidozh.discuzhub.databinding.FragmentExplorePageBinding
+import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.Forum
 import com.kidozh.discuzhub.entities.Thread
-import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.NetworkUtils
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils
 import com.kidozh.discuzhub.utilities.VibrateUtils
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import java.util.regex.Pattern
 
@@ -98,13 +98,13 @@ class ExplorePageFragment : Fragment() {
         cookieClient = CookieWebViewClient()
         cookieClient.cookieManager.setAcceptThirdPartyCookies(binding.explorePageWebview, true)
         // set cookie
-        val currentHttpUrl = HttpUrl.parse(exploreURL)
+        val currentHttpUrl = exploreURL.toHttpUrlOrNull()
         if (currentHttpUrl != null) {
-            val cookies = client.cookieJar().loadForRequest(currentHttpUrl)
+            val cookies = client.cookieJar.loadForRequest(currentHttpUrl)
             for (i in cookies.indices) {
                 val cookie = cookies[i]
-                val value = cookie.name() + "=" + cookie.value()
-                cookieClient.cookieManager.setCookie(cookie.domain(), value)
+                val value = cookie.name + "=" + cookie.value
+                cookieClient.cookieManager.setCookie(cookie.domain, value)
             }
         }
         binding.explorePageWebview.setWebViewClient(cookieClient)

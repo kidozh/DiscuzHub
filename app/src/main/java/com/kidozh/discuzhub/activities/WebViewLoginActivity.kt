@@ -34,6 +34,7 @@ import com.kidozh.discuzhub.utilities.URLUtils
 import es.dmoral.toasty.Toasty
 import okhttp3.Cookie
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -216,15 +217,17 @@ class WebViewLoginActivity : BaseStatusActivity() {
         val currentUrl = binding!!.loginByWebWebview.url ?: return
         val cookieString = cookieWebViewClientInstance!!.cookieString.getCookie(currentUrl)
         val cookieStringArray = cookieString.split(";").toTypedArray()
-        val cookieList: MutableList<Cookie?> = ArrayList()
-        val httpUrl = HttpUrl.parse(currentUrl) ?: return
+        val cookieList: MutableList<Cookie> = ArrayList()
+        val httpUrl = currentUrl.toHttpUrlOrNull() ?: return
         for (eachCookieString in cookieStringArray) {
             Log.d(TAG, "http url " + httpUrl.toString() + " cookie " + eachCookieString)
             val cookie = Cookie.parse(httpUrl, eachCookieString)
-            cookieList.add(cookie)
+            if (cookie != null) {
+                cookieList.add(cookie)
+            }
         }
         NetworkUtils.clearUserCookieInfo(applicationContext, userBriefInfo)
-        client.cookieJar().saveFromResponse(httpUrl, cookieList)
+        client.cookieJar.saveFromResponse(httpUrl, cookieList.toList())
         // exact login url
         val retrofit: Retrofit
         retrofit = if (bbsInfo != null) {
@@ -412,19 +415,19 @@ class WebViewLoginActivity : BaseStatusActivity() {
             val savedClient = NetworkUtils.getPreferredClientWithCookieJarByUser(
                 applicationContext, userBriefInfo
             )
-            val cookies = client.cookieJar().loadForRequest(httpUrl)
+            val cookies = client.cookieJar.loadForRequest(httpUrl)
             Log.d(TAG, "Http url " + httpUrl.toString() + " cookie list size " + cookies.size)
-            savedClient.cookieJar().saveFromResponse(httpUrl, cookies)
+            savedClient.cookieJar.saveFromResponse(httpUrl, cookies)
             // manually set the cookie to shared preference
             val sharedPrefsCookiePersistor = SharedPrefsCookiePersistor(
                 getSharedPreferences(
                     NetworkUtils.getSharedPreferenceNameByUser(userBriefInfo), MODE_PRIVATE
                 )
             )
-            sharedPrefsCookiePersistor.saveAll(savedClient.cookieJar().loadForRequest(httpUrl))
+            sharedPrefsCookiePersistor.saveAll(savedClient.cookieJar.loadForRequest(httpUrl))
             Log.d(
                 TAG,
-                "Http url " + httpUrl.toString() + " saved cookie list size " + savedClient.cookieJar()
+                "Http url " + httpUrl.toString() + " saved cookie list size " + savedClient.cookieJar
                     .loadForRequest(httpUrl).size
             )
         }

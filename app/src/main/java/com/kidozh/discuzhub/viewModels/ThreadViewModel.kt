@@ -86,7 +86,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
             val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url, client)
             val service = retrofit.create(DiscuzApiService::class.java)
             val secureInfoResultCall = service.secureResult("post")
-            Log.d(TAG,"Send secure info "+secureInfoResultCall.request().url())
+            Log.d(TAG,"Send secure info ${secureInfoResultCall.request()}")
             secureInfoResultCall.enqueue(object : Callback<SecureInfoResult?> {
                 override fun onResponse(call: Call<SecureInfoResult?>, response: Response<SecureInfoResult?>) {
                     if (response.isSuccessful && response.body() != null) {
@@ -212,7 +212,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                 networkStatus.postValue(ConstUtils.NETWORK_STATUS_FAILED)
             }
         })
-        Log.d(TAG, "Send request to " + threadResultCall.request().url().toString())
+        Log.d(TAG, "Send request to ${threadResultCall.request()}")
     }
 
     fun recommendThread(tid: Int, recommend: Boolean) {
@@ -283,7 +283,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
         } else {
             service.reportPost(formHashValue, pid, message, message)
         }
-        Log.d(TAG, "Report to " + reportPostCall.request().url().toString())
+        Log.d(TAG, "Report to ${reportPostCall.request()}")
         reportPostCall.enqueue(object : Callback<ApiMessageActionResult?> {
             override fun onResponse(call: Call<ApiMessageActionResult?>, response: Response<ApiMessageActionResult?>) {
                 if (response.isSuccessful && response.body() != null) {

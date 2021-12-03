@@ -5,14 +5,14 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.kidozh.discuzhub.R
-import com.kidozh.discuzhub.entities.ErrorMessage
 import com.kidozh.discuzhub.entities.Discuz
+import com.kidozh.discuzhub.entities.ErrorMessage
 import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.results.LoginResult
 import com.kidozh.discuzhub.results.SecureInfoResult
 import com.kidozh.discuzhub.services.DiscuzApiService
 import com.kidozh.discuzhub.utilities.NetworkUtils
-import okhttp3.*
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -87,7 +87,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         val loginCall = service.loginCall(options)
-        Log.d(TAG,"login call "+loginCall.request().url()+" "+loginCall.request().body().toString())
+        Log.d(TAG,"login call ${loginCall.request()}")
         loginCall.enqueue(object :Callback<LoginResult>{
             override fun onResponse(call: Call<LoginResult>, response: Response<LoginResult>) {
                 Log.d(TAG,"GET JSON "+response.body().toString())

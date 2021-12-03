@@ -5,7 +5,10 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.kidozh.discuzhub.R
-import com.kidozh.discuzhub.entities.*
+import com.kidozh.discuzhub.entities.Discuz
+import com.kidozh.discuzhub.entities.ErrorMessage
+import com.kidozh.discuzhub.entities.Thread
+import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.results.DiscuzIndexResult
 import com.kidozh.discuzhub.results.NewThreadsResult
 import com.kidozh.discuzhub.services.DiscuzApiService
@@ -47,7 +50,7 @@ class NewThreadsViewModel(application: Application) : AndroidViewModel(applicati
     fun sendAllForumRequest(){
         val indexCall = service.indexResult()
         isLoadingMutableLiveData.postValue(true)
-        Log.d(TAG,"Send index request "+indexCall.request().url().toString())
+        Log.d(TAG,"Send index request ${indexCall.request()}")
         indexCall.enqueue(object : Callback<DiscuzIndexResult> {
             override fun onResponse(call: Call<DiscuzIndexResult>, response: Response<DiscuzIndexResult>) {
                 isLoadingMutableLiveData.postValue(false)
@@ -87,7 +90,7 @@ class NewThreadsViewModel(application: Application) : AndroidViewModel(applicati
                     fidsString+= forum.fid.toString()+","
                 }
                 val call = service.newThreadsResult(fidsString,start)
-                Log.d(TAG,"Send new threads request "+call.request().url().toString())
+                Log.d(TAG,"Send new threads request ${call.request()}")
                 isLoadingMutableLiveData.postValue(true)
                 call.enqueue(object :Callback<NewThreadsResult>{
                     override fun onResponse(call: Call<NewThreadsResult>, response: Response<NewThreadsResult>) {
