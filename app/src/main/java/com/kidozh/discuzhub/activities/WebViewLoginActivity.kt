@@ -364,73 +364,76 @@ class WebViewLoginActivity : BaseStatusActivity() {
                 insertUserIdList.add(insertedId)
             }
 
+            if (bbsInfo != null) {
+                Toasty.success(
+                    this,
+                    String.format(
+                        getString(R.string.save_user_to_bbs_successfully_template),
+                        userBriefInfo.username,
+                        bbsInfo!!.site_name
+                    ),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else if (discuzList.size > 1) {
+                Toasty.success(
+                    this,
+                    String.format(
+                        getString(R.string.bulk_save_user_to_bbs_successfully_template),
+                        discuzList.size
+                    ),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else if (discuzList.size == 1) {
+                Toasty.success(
+                    this,
+                    String.format(
+                        getString(R.string.save_user_to_bbs_successfully_template),
+                        userBriefInfo.username,
+                        discuzList[0].site_name
+                    ),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Log.d(TAG, "No bbs found")
+                Toasty.error(
+                    this,
+                    String.format(
+                        getString(R.string.save_user_bbs_not_found),
+                        userBriefInfo.username,
+                        redirectURL
+                    ),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            for (insertedId in insertUserIdList) {
+                Log.d(TAG, "save user to database id: " + userBriefInfo.id + "  " + insertedId)
+                userBriefInfo.id = insertedId.toInt()
+                val savedClient = NetworkUtils.getPreferredClientWithCookieJarByUser(
+                    applicationContext, userBriefInfo
+                )
+                val cookies = client.cookieJar.loadForRequest(httpUrl)
+                Log.d(TAG, "Http url " + httpUrl.toString() + " cookie list size " + cookies.size)
+                savedClient.cookieJar.saveFromResponse(httpUrl, cookies)
+                // manually set the cookie to shared preference
+                val sharedPrefsCookiePersistor = SharedPrefsCookiePersistor(
+                    getSharedPreferences(
+                        NetworkUtils.getSharedPreferenceNameByUser(userBriefInfo), MODE_PRIVATE
+                    )
+                )
+                sharedPrefsCookiePersistor.saveAll(savedClient.cookieJar.loadForRequest(httpUrl))
+                Log.d(
+                    TAG,
+                    "Http url " + httpUrl.toString() + " saved cookie list size " + savedClient.cookieJar
+                        .loadForRequest(httpUrl).size
+                )
+            }
+
+            runOnUiThread{
+                finishAfterTransition()
+            }
+
         }.start()
 
-        if (bbsInfo != null) {
-            Toasty.success(
-                this,
-                String.format(
-                    getString(R.string.save_user_to_bbs_successfully_template),
-                    userBriefInfo.username,
-                    bbsInfo!!.site_name
-                ),
-                Toast.LENGTH_SHORT
-            ).show()
-        } else if (discuzList.size > 1) {
-            Toasty.success(
-                this,
-                String.format(
-                    getString(R.string.bulk_save_user_to_bbs_successfully_template),
-                    discuzList.size
-                ),
-                Toast.LENGTH_SHORT
-            ).show()
-        } else if (discuzList.size == 1) {
-            Toasty.success(
-                this,
-                String.format(
-                    getString(R.string.save_user_to_bbs_successfully_template),
-                    userBriefInfo.username,
-                    discuzList[0].site_name
-                ),
-                Toast.LENGTH_SHORT
-            ).show()
-        } else {
-            Log.d(TAG, "No bbs found")
-            Toasty.error(
-                this,
-                String.format(
-                    getString(R.string.save_user_bbs_not_found),
-                    userBriefInfo.username,
-                    redirectURL
-                ),
-                Toast.LENGTH_LONG
-            ).show()
-        }
-        for (insertedId in insertUserIdList) {
-            Log.d(TAG, "save user to database id: " + userBriefInfo.id + "  " + insertedId)
-            userBriefInfo.id = insertedId.toInt()
-            val savedClient = NetworkUtils.getPreferredClientWithCookieJarByUser(
-                applicationContext, userBriefInfo
-            )
-            val cookies = client.cookieJar.loadForRequest(httpUrl)
-            Log.d(TAG, "Http url " + httpUrl.toString() + " cookie list size " + cookies.size)
-            savedClient.cookieJar.saveFromResponse(httpUrl, cookies)
-            // manually set the cookie to shared preference
-            val sharedPrefsCookiePersistor = SharedPrefsCookiePersistor(
-                getSharedPreferences(
-                    NetworkUtils.getSharedPreferenceNameByUser(userBriefInfo), MODE_PRIVATE
-                )
-            )
-            sharedPrefsCookiePersistor.saveAll(savedClient.cookieJar.loadForRequest(httpUrl))
-            Log.d(
-                TAG,
-                "Http url " + httpUrl.toString() + " saved cookie list size " + savedClient.cookieJar
-                    .loadForRequest(httpUrl).size
-            )
-        }
-
-        finishAfterTransition()
     }
 
 
