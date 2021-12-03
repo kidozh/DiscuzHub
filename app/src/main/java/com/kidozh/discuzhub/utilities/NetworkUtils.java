@@ -54,6 +54,7 @@ public class NetworkUtils {
 
     public static OkHttpClient getSafeOkHttpClient(Context context){
         OkHttpClient.Builder mBuilder = new OkHttpClient.Builder();
+        mBuilder.addInterceptor(new LoggingInterceptor.Builder().build());
         mBuilder.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)
                 .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
@@ -67,8 +68,10 @@ public class NetworkUtils {
         cookieJar.clearSession();
         cookieJar.clear();
         OkHttpClient.Builder mBuilder = new OkHttpClient.Builder().cookieJar(cookieJar);
+        mBuilder.addInterceptor(new LoggingInterceptor.Builder().build());
         mBuilder.readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT,TimeUnit.SECONDS)
+
                 .connectTimeout(CONNECT_TIMEOUT,TimeUnit.SECONDS);
 
 

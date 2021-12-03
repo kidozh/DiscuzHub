@@ -46,8 +46,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()))
             return
         }
-        val client =
-            NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), userBriefInfo)
+        var client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), userBriefInfo)
 
 
 
@@ -56,19 +55,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         val bbsIndexResultCall = service.indexResult()
         isLoading.postValue(true)
         Log.d(TAG,"Send raw request to ${service.indexResultRaw().request()}")
-//        service.indexResultRaw().enqueue(object : Callback<String?>{
-//            override fun onResponse(call: Call<String?>, response: Response<String?>) {
-//                Log.d(TAG,"GET response from index ${response.isSuccessful} ${response.message()}")
-//                if(response.isSuccessful && response.body() != null){
-//                    Log.d(TAG,"Get raw bbs index string ${response.body()}")
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<String?>, t: Throwable) {
-//
-//            }
-//
-//        })
 
         bbsIndexResultCall.enqueue(object : Callback<DiscuzIndexResult?> {
             override fun onResponse(

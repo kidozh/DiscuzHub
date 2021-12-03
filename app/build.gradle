@@ -90,7 +90,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'androidx.core:core:1.7.0'
+    implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     def material_version = '1.4.0'
     implementation "com.google.android.material:material:$material_version"
@@ -193,7 +193,7 @@ dependencies {
     implementation "com.mikepenz:materialdrawer-iconics:${lastestMaterialDrawerRelease}"
 
     def paging_version = '3.1.0'
-    implementation "androidx.paging:paging-runtime:$paging_version"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 
     def retrofit_version = "2.9.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
@@ -205,6 +205,8 @@ dependencies {
     implementation('com.github.ihsanbal:LoggingInterceptor:3.1.0') {
         exclude group: 'org.json', module: 'json'
     }
+    // okhttp
+    implementation 'com.squareup.okhttp3:okhttp:4.4.0'
 
 
 }

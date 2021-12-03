@@ -43,7 +43,7 @@ import retrofit2.Retrofit
 import java.util.*
 
 class WebViewLoginActivity : BaseStatusActivity() {
-    var cookieWebViewClientInstance: cookieWebViewClient? = null
+    lateinit var cookieWebViewClientInstance: CookieWebViewClient
     var binding: ActivityLoginByWebViewBinding? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,7 +93,7 @@ class WebViewLoginActivity : BaseStatusActivity() {
     }
 
     fun configureWebView() {
-        cookieWebViewClientInstance = cookieWebViewClient()
+        cookieWebViewClientInstance = CookieWebViewClient()
         Log.d(
             TAG, "login web url " + URLUtils.getLoginWebURL(
                 bbsInfo!!
@@ -102,52 +102,49 @@ class WebViewLoginActivity : BaseStatusActivity() {
         binding!!.loginByWebWebview.loadUrl(URLUtils.getLoginWebURL(bbsInfo!!))
         binding!!.loginByWebWebview.clearCache(true)
         val webSettings = binding!!.loginByWebWebview.settings
-        if (webSettings != null) {
 
-            // to allow authentication to use JS
-            webSettings.javaScriptEnabled = true
-            webSettings.useWideViewPort = true
-            webSettings.loadWithOverviewMode = true
+        // to allow authentication to use JS
+        webSettings.javaScriptEnabled = true
+        webSettings.useWideViewPort = true
+        webSettings.loadWithOverviewMode = true
 
-            //缩放操作
-            webSettings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
-            webSettings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
-            webSettings.displayZoomControls = false //隐藏原生的缩放控件
+        //缩放操作
+        webSettings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
+        webSettings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
+        webSettings.displayZoomControls = false //隐藏原生的缩放控件
 
-            // other detailed information
-            webSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK //关闭webview中缓存
-            webSettings.javaScriptCanOpenWindowsAutomatically = true //支持通过JS打开新窗口
-            webSettings.loadsImagesAutomatically = true //支持自动加载图片
-            binding!!.loginByWebWebview.webViewClient = cookieWebViewClientInstance!!
-        }
+        // other detailed information
+        webSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK //关闭webview中缓存
+        webSettings.javaScriptCanOpenWindowsAutomatically = true //支持通过JS打开新窗口
+        webSettings.loadsImagesAutomatically = true //支持自动加载图片
+        binding!!.loginByWebWebview.webViewClient = cookieWebViewClientInstance!!
     }
 
     fun configureQQLoginWebview(url: String) {
-        cookieWebViewClientInstance = cookieWebViewClient()
+        cookieWebViewClientInstance = CookieWebViewClient()
         Log.d(TAG, "login qq url $url")
         binding!!.loginByWebWebview.loadUrl(url)
 
 
         // binding.loginByWebWebview.clearCache(true);
         val webSettings = binding!!.loginByWebWebview.settings
-        if (webSettings != null) {
 
-            // to allow authentication to use JS
-            webSettings.javaScriptEnabled = true
-            webSettings.useWideViewPort = true
-            webSettings.loadWithOverviewMode = true
 
-            //缩放操作
-            webSettings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
-            webSettings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
-            webSettings.displayZoomControls = false //隐藏原生的缩放控件
+        // to allow authentication to use JS
+        webSettings.javaScriptEnabled = true
+        webSettings.useWideViewPort = true
+        webSettings.loadWithOverviewMode = true
 
-            // other detailed information
-            webSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK //关闭webview中缓存
-            webSettings.javaScriptCanOpenWindowsAutomatically = true //支持通过JS打开新窗口
-            webSettings.loadsImagesAutomatically = true //支持自动加载图片
-            binding!!.loginByWebWebview.webViewClient = cookieWebViewClientInstance!!
-        }
+        //缩放操作
+        webSettings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
+        webSettings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
+        webSettings.displayZoomControls = false //隐藏原生的缩放控件
+
+        // other detailed information
+        webSettings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK //关闭webview中缓存
+        webSettings.javaScriptCanOpenWindowsAutomatically = true //支持通过JS打开新窗口
+        webSettings.loadsImagesAutomatically = true //支持自动加载图片
+        binding!!.loginByWebWebview.webViewClient = cookieWebViewClientInstance!!
     }
 
     // hook for qq
@@ -174,7 +171,7 @@ class WebViewLoginActivity : BaseStatusActivity() {
         builder.show()
     }
 
-    inner class cookieWebViewClient internal constructor() : WebViewClient() {
+    inner class CookieWebViewClient internal constructor() : WebViewClient() {
         var cookieString: CookieManager
         override fun shouldOverrideUrlLoading(webview: WebView, url: String): Boolean {
             return if (url.startsWith("wtloginmqq://ptlogin/qlogin")) {
@@ -204,6 +201,7 @@ class WebViewLoginActivity : BaseStatusActivity() {
 
         init {
             cookieString = CookieManager.getInstance()
+
         }
     }
 

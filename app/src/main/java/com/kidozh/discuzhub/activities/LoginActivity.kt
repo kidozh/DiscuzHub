@@ -64,6 +64,7 @@ class LoginActivity : BaseStatusActivity() {
             binding.loginBbsUrl.text = getString(R.string.user_relogin, user!!.username)
             binding.loginBbsAccountTextInputEditText.setText(user!!.username)
         }
+
         val factory = OkHttpUrlLoader.Factory(client)
         Glide.get(this).registry.replace(GlideUrl::class.java, InputStream::class.java, factory)
         Glide.with(this)
@@ -225,7 +226,7 @@ class LoginActivity : BaseStatusActivity() {
                     } else {
                         // refresh the captcha
                         viewModel!!.loadSecureInfo()
-                        if (key == "login_seccheck2") {
+                        if (key == "login_seccheck2" || key == "login_seccheck") {
                             // need captcha
                             viewModel!!.loadSecureInfo()
                         }
@@ -320,29 +321,37 @@ class LoginActivity : BaseStatusActivity() {
             }
             // then insert this to database
             insertedId = UserDatabase.getInstance(applicationContext).getforumUserBriefInfoDao().insert(userBriefInfo)
-        }.start()
-        userBriefInfo.id = insertedId.toInt()
-        val savedClient = NetworkUtils.getPreferredClientWithCookieJarByUser(
-            applicationContext, userBriefInfo
-        )
-        val cookies = client.cookieJar.loadForRequest(httpUrl)
-        Log.d(TAG, "Http url " + httpUrl.toString() + " cookie list size " + cookies.size)
-        savedClient.cookieJar.saveFromResponse(httpUrl, cookies)
-        // manually set the cookie to shared preference
-        val sharedPrefsCookiePersistor = SharedPrefsCookiePersistor(
-            getSharedPreferences(
-                NetworkUtils.getSharedPreferenceNameByUser(
-                    userBriefInfo
-                ), MODE_PRIVATE
+            userBriefInfo.id = insertedId.toInt()
+            val savedClient = NetworkUtils.getPreferredClientWithCookieJarByUser(
+                applicationContext, userBriefInfo
             )
-        )
-        sharedPrefsCookiePersistor.saveAll(savedClient.cookieJar.loadForRequest(httpUrl))
-        Log.d(
-            TAG,
-            "Http url " + httpUrl.toString() + " saved cookie list size " + savedClient.cookieJar
-                .loadForRequest(httpUrl).size
-        )
-        finishAfterTransition()
+            val cookies = client.cookieJar.loadForRequest(httpUrl)
+            for (i in cookies){
+                Log.d(TAG,"Get user ${userBriefInfo.id} cookie: $i")
+            }
+            Log.d(TAG, "Http url " + httpUrl.toString() + " cookie list size " + cookies.size)
+            savedClient.cookieJar.saveFromResponse(httpUrl, cookies)
+            // manually set the cookie to shared preference
+            val sharedPrefsCookiePersistor = SharedPrefsCookiePersistor(
+                getSharedPreferences(
+                    NetworkUtils.getSharedPreferenceNameByUser(
+                        userBriefInfo
+                    ), MODE_PRIVATE
+                )
+            )
+
+            sharedPrefsCookiePersistor.saveAll(savedClient.cookieJar.loadForRequest(httpUrl))
+            Log.d(
+                TAG,
+                "Http url $httpUrl saved cookie list size " + savedClient.cookieJar
+                    .loadForRequest(httpUrl).size
+            )
+            runOnUiThread {
+                finishAfterTransition()
+            }
+
+        }.start()
+
     }
 
     fun configureActionBar() {
@@ -362,7 +371,7 @@ class LoginActivity : BaseStatusActivity() {
         val intent = intent
         bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
         user = intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY) as User?
-        client = NetworkUtils.getPreferredClientWithCookieJar(applicationContext)
+        client = NetworkUtils.getPreferredClientWithCookieJar(this)
         viewModel!!.setInfo(bbsInfo!!, user, client)
         if (bbsInfo == null) {
             finishAfterTransition()
