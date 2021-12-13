@@ -1,36 +1,41 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="MaterialTheme">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+<!--        <item name="colorPrimary">@color/my_app_primary</item>-->
+<!--        <item name="colorPrimaryDark">@color/my_app_primary_dark</item>-->
+<!--        <item name="colorSecondary">@color/colorEmerland</item>-->
+<!--        <item name="android:colorBackground">?attr/colorOnBackground</item>-->
+<!--        <item name="colorError">@color/colorAlizarin</item>-->
 
         <!-- set status bar-->
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowTranslucentNavigation">false</item>
+<!--        <item name="android:windowLightStatusBar">true</item>-->
+<!--        <item name="android:windowTranslucentStatus">false</item>-->
+<!--        <item name="android:windowTranslucentNavigation">false</item>-->
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
-        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>
-
+<!--        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>-->
+        <item name="android:statusBarColor">?attr/colorPrimaryContainer</item>
+        <item name="android:enforceStatusBarContrast" tools:targetApi="q">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">?attr/colorPrimaryContainer</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="q">true</item>
         <!-- navigation bar -->
-        <item name="android:navigationBarColor">@color/colorBackgroundDefault</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
-        <item name="android:actionMenuTextColor">@color/colorTextDefault</item>
+<!--        <item name="android:actionMenuTextColor">@color/colorTextDefault</item>-->
 
 
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
         <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
-        <item name="actionMenuTextColor">@color/colorTextDefault</item>
+<!--        <item name="actionMenuTextColor">@color/colorTextDefault</item>-->
 
-        <item name="cardViewStyle">@style/CardView.DayNight</item>
+<!--        <item name="cardViewStyle">@style/CardView.DayNight</item>-->
 
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
@@ -53,36 +58,36 @@
         <item name="android:textColor">@color/colorTextDefault</item>
     </style>
 
-    <style name="LightActionBar" parent="Theme.MaterialComponents.Light">
+    <style name="LightActionBar" parent="Theme.Material3.Light">
         <item name="android:background">@color/colorBackgroundDefault</item>
         <item name="background">@color/colorBackgroundDefault</item>
         <item name="android:backgroundStacked">@color/colorBackgroundDefault</item>
-        <item name="android:titleTextStyle">@style/ActionBarTitle</item>
-        <item name="android:titleTextColor">@color/colorTextDefault</item>
-        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>
+<!--        <item name="android:titleTextStyle">@style/ActionBarTitle</item>-->
+<!--        <item name="android:titleTextColor">@color/colorTextDefault</item>-->
+<!--        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>-->
 
-        <item name="titleTextStyle">@style/ActionBarTitle</item>
-        <item name="titleTextColor">@color/colorTextDefault</item>
+<!--        <item name="titleTextStyle">@style/ActionBarTitle</item>-->
+<!--        <item name="titleTextColor">@color/colorTextDefault</item>-->
 
         <item name="android:displayOptions">showHome|useLogo|showTitle</item>
         <item name="displayOptions">showHome|useLogo|showTitle</item>
 
     </style>
 
-    <style name="LightActionBarTitle" parent="Theme.MaterialComponents.DayNight">
-        <item name="android:textColor">@color/colorTextDefault</item>
-        <item name="android:textAlignment">center</item>
-        <item name="android:titleTextColor">@color/colorTextDefault</item>
-        <item name="android:textSize">20sp</item>
+    <style name="LightActionBarTitle" parent="Theme.Material3.DayNight">
+<!--        <item name="android:textColor">@color/colorTextDefault</item>-->
+<!--        <item name="android:textAlignment">center</item>-->
+<!--        <item name="android:titleTextColor">@color/colorTextDefault</item>-->
+<!--        <item name="android:textSize">20sp</item>-->
 
     </style>
 
-    <style name="DarkActionBar" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="background">@color/colorPrimary</item>
-        <item name="android:backgroundStacked">@color/colorPrimary</item>
+    <style name="DarkActionBar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">?attr/colorPrimaryContainer</item>
+        <item name="background">?attr/colorPrimaryContainer</item>
+        <item name="android:backgroundStacked">?attr/colorPrimaryContainer</item>
         <item name="android:titleTextStyle">@style/DarkActionBarTitle</item>
-        <item name="android:statusBarColor">@color/colorPrimary</item>
+<!--        <item name="android:statusBarColor">@color/colorPrimary</item>-->
 
 
         <item name="titleTextStyle">@style/DarkActionBarTitle</item>
@@ -92,11 +97,11 @@
 
     </style>
 
-    <style name="DarkActionBarTitle" parent="Theme.MaterialComponents.Light">
-        <item name="android:textColor">@color/colorPureWhite</item>
-        <item name="android:textAlignment">center</item>
-        <item name="android:titleTextColor">@color/colorPureWhite</item>
-        <item name="android:textSize">20sp</item>
+    <style name="DarkActionBarTitle" parent="Theme.Material3.Light">
+        <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
+<!--        <item name="android:textAlignment">center</item>-->
+<!--        <item name="android:titleTextColor">@color/colorPureWhite</item>-->
+<!--        <item name="android:textSize">20sp</item>-->
 
     </style>
 
@@ -144,6 +149,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+<!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+<!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+<!--        <item name="colorAccent">?attr/colorAccent</item>-->
 
         <!-- status bar configuration -->
 

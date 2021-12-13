@@ -110,6 +110,7 @@ class AboutAppActivity : BaseStatusActivity() {
     }
 
     private fun configureActionBar() {
+        binding.toolbar.title = getString(R.string.app_name)
         setSupportActionBar(binding.toolbar)
         if (supportActionBar != null) {
 
@@ -121,7 +122,7 @@ class AboutAppActivity : BaseStatusActivity() {
             }
             val metadata = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA).metaData
             val discuzTitle = metadata.getString("discuz_title")
-            supportActionBar!!.title = discuzTitle
+            binding.toolbar.title = discuzTitle
         }
     }
 

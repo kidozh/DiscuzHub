@@ -9,149 +9,42 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <com.google.android.material.appbar.CollapsingToolbarLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorBackgroundDefault"
-                android:backgroundTint="@color/colorBackgroundDefault"
-                app:contentScrim="@null"
-                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
-                app:statusBarScrim="@null">
+                android:orientation="vertical">
 
-                <LinearLayout
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    style="@style/DarkActionBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:textAlignment="center"
+                    app:subtitleCentered="true"
+                    app:titleCentered="true" />
 
 
-                    <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/toolbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center" >
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/bbs_forum_sublist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:itemCount="1">
 
-                            <TextView
-                                android:id="@+id/toolbar_title"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:lines="1"
-                                android:textAlignment="center"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                </androidx.recyclerview.widget.RecyclerView>
 
-                            <TextView
-                                android:id="@+id/toolbar_subtitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:lines="1"
-                                android:textAlignment="center"
-                                android:visibility="gone" />
-                        </LinearLayout>
+            </LinearLayout>
 
-                    </androidx.appcompat.widget.Toolbar>
+<!--            <com.google.android.material.appbar.CollapsingToolbarLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:contentScrim="@null"-->
+<!--                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"-->
+<!--                app:statusBarScrim="@null">-->
 
+<!--                -->
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/bbs_forum_constraintLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:id="@+id/bbs_forum_alert_textview"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:clickable="true"
-                            android:drawableStart="@drawable/ic_forum_description_outlined_24px"
-                            android:gravity="top"
-                            android:text="@string/bbs_forum_description_not_set"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/bbs_forum_rule_textview"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:clickable="true"
-                            android:drawableStart="@drawable/ic_forum_rule_outlined_24px"
-                            android:ellipsize="end"
-                            android:focusable="auto"
-                            android:foreground="?attr/selectableItemBackground"
-                            android:gravity="top"
-                            android:text="@string/bbs_rule_not_set"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/bbs_forum_alert_textview" />
-
-                        <TextView
-                            android:id="@+id/bbs_forum_thread"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:text="@string/bbs_forum_thread"
-                            android:textAllCaps="true"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/bbs_forum_rule_textview" />
-
-                        <TextView
-                            android:id="@+id/bbs_forum_thread_number_textview"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:textColor="?attr/colorPrimary"
-                            android:textSize="18sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/bbs_forum_thread"
-                            app:layout_constraintTop_toTopOf="@+id/bbs_forum_thread"
-                            tools:text="7" />
-
-                        <TextView
-                            android:id="@+id/bbs_forum_post_number_textview"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            android:textColor="?attr/colorPrimary"
-                            android:textSize="18sp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/bbs_forum_thread_number_textview"
-                            tools:text="7.7w" />
-
-                        <TextView
-                            android:id="@+id/bbs_forum_post"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            android:text="@string/bbs_forum_post"
-                            android:textAllCaps="true"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                            app:layout_constraintEnd_toStartOf="@+id/bbs_forum_post_number_textview"
-                            app:layout_constraintTop_toTopOf="@+id/bbs_forum_thread" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/bbs_forum_sublist"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        tools:itemCount="1">
-
-                    </androidx.recyclerview.widget.RecyclerView>
-
-                </LinearLayout>
-
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
+<!--            </com.google.android.material.appbar.CollapsingToolbarLayout>-->
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView

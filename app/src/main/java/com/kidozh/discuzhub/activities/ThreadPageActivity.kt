@@ -112,7 +112,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
         // init toolbar
         val sp = Html.fromHtml(thread.subject, HtmlCompat.FROM_HTML_MODE_LEGACY)
         val spannableString = SpannableString(sp)
-        binding.threadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
+        binding.toolbar.title = thread.subject
         smileyViewPagerAdapter = SmileyViewPagerAdapter(supportFragmentManager,
                 FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, discuz, this)
 
@@ -183,7 +183,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                 val threadInfo = it.threadPostVariables.detailedThreadInfo
                 val sp = Html.fromHtml(threadInfo.subject, HtmlCompat.FROM_HTML_MODE_LEGACY)
                 val spannableString = SpannableString(sp)
-                binding.threadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
+                binding.toolbar.title = threadInfo.subject
                 // rendering list
                 val posts = it.threadPostVariables.postList
                 val status = threadViewModel.threadStatusMutableLiveData.value as ViewThreadQueryStatus

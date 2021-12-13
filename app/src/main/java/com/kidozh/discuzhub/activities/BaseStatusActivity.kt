@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
+import com.google.android.material.color.DynamicColors
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.User
@@ -26,6 +27,8 @@ open class BaseStatusActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         configureTheme()
         configureDarkMode()
+        // allow adaptive color
+        DynamicColors.applyToActivitiesIfAvailable(application)
     }
 
     var themeIndex : Int = 0
@@ -41,6 +44,8 @@ open class BaseStatusActivity : AppCompatActivity() {
             //theme.applyStyle(styleList[position],true)
 
         }
+        // try to implement material you container color
+        //setTheme(R.style.AppTheme)
     }
 
     // follow UTF8 default
@@ -60,8 +65,7 @@ open class BaseStatusActivity : AppCompatActivity() {
 
     private fun configureDarkMode() {
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val dark_mode_settings = prefs.getString(getString(R.string.preference_key_display_mode), "")
-        when (dark_mode_settings) {
+        when (prefs.getString(getString(R.string.preference_key_display_mode), "")) {
             "MODE_NIGHT_NO" -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 return

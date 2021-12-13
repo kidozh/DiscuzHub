@@ -63,7 +63,7 @@ public class ManageBBSActivity extends BaseStatusActivity
         setSupportActionBar(binding.toolbar);
         if(getSupportActionBar() !=null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            binding.toolbarTitle.setText(R.string.manage_bbs_title);
+            binding.toolbar.setTitle(R.string.manage_bbs_title);
         }
 
     }

@@ -24,6 +24,7 @@
         android:ems="10"
         android:hint="@string/bbs_input_a_base_url"
         android:inputType="textPersonName"
+        android:minHeight="48dp"
         android:singleLine="true"
         android:textAlignment="viewStart"
         app:layout_constraintEnd_toEndOf="parent"

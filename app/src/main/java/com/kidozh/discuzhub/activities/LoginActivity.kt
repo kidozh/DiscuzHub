@@ -60,7 +60,7 @@ class LoginActivity : BaseStatusActivity() {
         if (user == null) {
             binding.loginBbsUrl.text = bbsInfo!!.base_url
         } else {
-            binding.toolbarTitle.text = getString(R.string.user_relogin, user!!.username)
+            binding.toolbar.title = getString(R.string.user_relogin, user!!.username)
             binding.loginBbsUrl.text = getString(R.string.user_relogin, user!!.username)
             binding.loginBbsAccountTextInputEditText.setText(user!!.username)
         }
@@ -358,7 +358,7 @@ class LoginActivity : BaseStatusActivity() {
         setSupportActionBar(binding.toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            binding.toolbarTitle.text = getString(R.string.login_bbs_title, bbsInfo!!.site_name)
+            binding.toolbar.title = getString(R.string.login_bbs_title, bbsInfo!!.site_name)
             if (bbsInfo!!.isSecureClient) {
                 binding.loginBbsNotice.visibility = View.GONE
             } else {

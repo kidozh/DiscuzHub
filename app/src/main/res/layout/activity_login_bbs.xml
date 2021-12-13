@@ -11,25 +11,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:theme="?attr/actionBarTheme"
+                android:theme="@style/DarkActionBar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/toolbar_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    tools:layout_editor_absoluteX="16dp"
-                    tools:layout_editor_absoluteY="18dp"
-                    tools:text="@tools:sample/full_names" />
-            </androidx.appcompat.widget.Toolbar>
+                app:layout_constraintTop_toTopOf="parent"
+                app:subtitleCentered="true"
+                app:titleCentered="true"></com.google.android.material.appbar.MaterialToolbar>
 
 
 

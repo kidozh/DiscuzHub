@@ -65,8 +65,8 @@ class ManageUserActivity : BaseStatusActivity(), onInteraction {
         setSupportActionBar(binding!!.toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            binding!!.toolbarTitle.text = bbsInfo!!.site_name
-            binding!!.toolbarSubtitle.text = bbsInfo!!.base_url
+            binding!!.toolbar.title = bbsInfo!!.site_name
+            binding!!.toolbar.subtitle = bbsInfo!!.base_url
         }
     }
 

@@ -38,7 +38,7 @@ public class SettingsActivity extends BaseStatusActivity {
                 .commit();
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
 
 
     }

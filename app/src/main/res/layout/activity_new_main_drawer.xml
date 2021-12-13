@@ -20,53 +20,19 @@
                 android:id="@+id/appbar"
 
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                >
 
-                <com.google.android.material.appbar.CollapsingToolbarLayout
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+
+                    style="@style/DarkActionBar"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:subtitleCentered="true"
+                    app:titleCentered="true"
+                    tools:title="123" />
 
-                    app:contentScrim="@color/colorBackgroundDefault"
-                    app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
-                    app:toolbarId="@+id/toolbar">
-
-
-                    <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/toolbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        android:background="@color/colorBackgroundDefault"
-                        tools:title="123" >
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/toolbar_title"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:singleLine="true"
-                                android:textAlignment="center"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                                tools:text="@tools:sample/full_names" />
-
-                            <TextView
-                                android:id="@+id/toolbar_subtitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textAlignment="center"
-                                tools:text="@tools:sample/cities" />
-                        </LinearLayout>
-
-
-                    </androidx.appcompat.widget.Toolbar>
-
-
-
-
-                </com.google.android.material.appbar.CollapsingToolbarLayout>
             </com.google.android.material.appbar.AppBarLayout>
 
             <LinearLayout
@@ -93,7 +59,6 @@
                         android:id="@+id/bbs_portal_nav_view"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="?android:attr/windowBackground"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"

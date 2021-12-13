@@ -188,7 +188,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
 
         viewModel.currentBBSMutableLiveData.observe(this, Observer { bbsInfo ->
             if (bbsInfo != null) {
-                binding.toolbarTitle.setText(bbsInfo.site_name)
+                binding.toolbar.title = bbsInfo.site_name
             }
         })
         viewModel.currentUserMutableLiveData.observe(this, Observer { user ->

@@ -25,7 +25,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/single_discuz_portal_title"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/portal_logo" />
@@ -38,6 +38,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="8dp"
             android:textAlignment="center"
+
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,8 +51,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textColor="@color/colorPrimaryDark"
+
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/discuz_title"
@@ -100,7 +101,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/warn_app_id"
-                    android:textColor="@color/colorUnSafeStatus"
+                    android:textColor="?attr/colorError"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/warn_icon"
@@ -161,7 +162,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/loading_bbs_check_info"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/check_loading_progressbar"
@@ -231,7 +232,7 @@
             android:background="?attr/colorPrimary"
             android:padding="4dp"
             android:text="@string/agreement"
-            android:textColor="@color/colorPureWhite"
+            android:textColor="?attr/colorControlNormal"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/warn_http_cardview"

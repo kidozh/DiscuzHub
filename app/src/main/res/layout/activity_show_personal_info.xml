@@ -27,12 +27,15 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <androidx.appcompat.widget.Toolbar
+                    <com.google.android.material.appbar.MaterialToolbar
                         android:id="@+id/toolbar"
+                        style="@style/DarkActionBar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="?attr/actionBarSize"
-                        android:theme="?attr/actionBarTheme" />
+                        android:theme="?attr/actionBarTheme"
+                        app:subtitleCentered="true"
+                        app:titleCentered="true" />
 
                     <ProgressBar
                         android:id="@+id/show_personal_info_progressbar"

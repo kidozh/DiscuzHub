@@ -49,8 +49,8 @@ class ThreadDraftActivity : BaseStatusActivity(), onRecyclerviewSwiped {
 
     private fun configureActionBar() {
         setSupportActionBar(binding!!.toolbar)
-        binding!!.toolbarTitle.text = getString(R.string.bbs_draft_box)
-        binding!!.toolbarSubtitle.text = bbsInfo!!.site_name
+        binding!!.toolbar.title = getString(R.string.bbs_draft_box)
+        binding!!.toolbar.subtitle = bbsInfo!!.site_name
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 

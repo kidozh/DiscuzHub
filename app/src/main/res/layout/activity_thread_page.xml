@@ -19,43 +19,31 @@
                 android:layout_height="wrap_content"
                 android:background="@color/colorBackgroundDefault">
 
-                <com.google.android.material.appbar.CollapsingToolbarLayout
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    style="@style/DarkActionBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_scrollFlags="scroll|enterAlways">
+                    android:theme="?attr/actionBarTheme"
+                    app:titleCentered="true" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+<!--                <com.google.android.material.appbar.CollapsingToolbarLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    app:layout_scrollFlags="scroll|enterAlways">-->
 
-                        <androidx.appcompat.widget.Toolbar
-                            android:id="@+id/toolbar"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:theme="?attr/actionBarTheme">
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:orientation="vertical">-->
 
-                            <TextView
-                                android:id="@+id/thread_subject"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center|center_vertical"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                android:textColor="@color/colorTextDefault"
-                                android:textSize="18sp"
-                                android:textStyle="bold"
-                                tools:text="@tools:sample/full_names" />
-
-                        </androidx.appcompat.widget.Toolbar>
+<!--                        -->
 
 
 
-                        <Spinner
-                            android:id="@+id/page_spinner"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                </com.google.android.material.appbar.CollapsingToolbarLayout>
+<!--                        -->
+<!--                    </LinearLayout>-->
+<!--                </com.google.android.material.appbar.CollapsingToolbarLayout>-->
             </com.google.android.material.appbar.AppBarLayout>
 
             <androidx.core.widget.NestedScrollView
@@ -75,7 +63,10 @@
                         android:layout_height="match_parent"
                         android:orientation="vertical">
 
-
+                        <Spinner
+                            android:id="@+id/page_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/posts_recyclerview"

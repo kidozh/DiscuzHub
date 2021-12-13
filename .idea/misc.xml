@@ -5,18 +5,54 @@
       <map>
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/drawable/ic_ext_icon_wav_32px.xml" value="0.11885964912280701" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/drawable/ic_menu_24px.xml" value="0.10350877192982456" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_about_app.xml" value="0.20043859649122808" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_bbs_add_intro.xml" value="0.20043859649122808" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_bbs_forum_index.xml" value="0.19783549783549784" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_bbs_post_thread.xml" value="0.19783549783549784" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_bbs_private_message_detail.xml" value="0.19783549783549784" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_bbs_show_forum.xml" value="0.20043859649122808" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_bbs_show_information.xml" value="0.19783549783549784" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_bbs_show_portal.xml" value="0.19783549783549784" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_choose_theme.xml" value="0.19783549783549784" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_login_bbs.xml" value="0.10400000000000001" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_login_by_web_view.xml" value="0.19783549783549784" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_manage_bbs.xml" value="0.19783549783549784" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_manage_user.xml" value="0.19783549783549784" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_new_main_drawer.xml" value="0.2" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_portal.xml" value="0.264" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_search_posts.xml" value="0.19783549783549784" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_shortcut.xml" value="0.2" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_show_image_fullscreen.xml" value="0.19783549783549784" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_show_personal_info.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_show_web_page.xml" value="0.19783549783549784" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_single_discuz.xml" value="0.19783549783549784" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_splash_screen.xml" value="0.19783549783549784" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_thread_page.xml" value="0.19783549783549784" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_view_history.xml" value="0.19783549783549784" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_view_thread.xml" value="0.2" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/activity_view_thread_draft.xml" value="0.10526315789473684" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/content_bbs_post_thread_editor_bar.xml" value="0.10526315789473684" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/content_empty_bbs_information.xml" value="0.264" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/content_empty_information.xml" value="0.10526315789473684" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/content_show_personal_info.xml" value="0.2" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/dialog_add_new_forum.xml" value="0.2" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/dialog_attachment_information.xml" value="0.10526315789473684" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/dialog_forum_display_option.xml" value="0.20043859649122808" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/dialog_forum_information.xml" value="0.4" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/settings_activity.xml" value="0.20043859649122808" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/menu/bbs_forum_nav_menu.xml" value="0.20043859649122808" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/menu/menu_incognitive_forum_nav_menu.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/menu/single_drawer_navigation.xml" value="0.264" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/xml/root_preferences.xml" value="0.20043859649122808" />
       </map>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.2" />
+      </ProjectState>
+    </option>
+  </component>
 </project>

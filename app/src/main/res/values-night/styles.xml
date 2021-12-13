@@ -1,22 +1,27 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="MaterialTheme">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
+<!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+<!--        <item name="colorAccent">@color/colorAccent</item>-->
 
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowTranslucentNavigation">false</item>
+<!--        <item name="android:windowLightStatusBar">false</item>-->
+<!--        <item name="android:windowTranslucentStatus">false</item>-->
+<!--        <item name="android:windowTranslucentNavigation">false</item>-->
         <!--Android 5.x开始需要把颜色设置为指定的颜色，否则导航栏会呈现系统默认的浅灰色-->
-        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>
+<!--        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>-->
 
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryContainer</item>
+        <item name="android:enforceStatusBarContrast" tools:targetApi="q">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">?attr/colorPrimaryContainer</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="q">true</item>
+
+
 
         <item name="cardViewStyle">@style/CardView.DayNight</item>
 
@@ -56,37 +61,11 @@
         <item name="android:textColor">@color/colorTextDefault</item>
     </style>
 
-    <style name="DarkActionBar" parent="Theme.MaterialComponents.Light.DarkActionBar">
-        <item name="android:background">@color/colorPureBlack</item>
-        <item name="background">@color/colorPureBlack</item>
-        <item name="android:backgroundStacked">@color/colorPureBlack</item>
-
-        <item name="android:titleTextStyle">@style/ActionBarTitle</item>
-        <item name="android:titleTextColor">@color/colorPureWhite</item>
-        <item name="titleTextStyle">@style/ActionBarTitle</item>
-        <item name="titleTextColor">@color/colorPureWhite</item>
-
-        <item name="android:displayOptions">showHome|useLogo|showTitle</item>
-        <item name="displayOptions">showHome|useLogo|showTitle</item>
-
-    </style>
-
-    <style name="ActionBarTitle" parent="Theme.MaterialComponents.Light.DarkActionBar">
-        <item name="android:textColor">@color/colorPureWhite</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:textAlignment">center</item>
-        <item name="android:titleTextColor">@color/colorPureWhite</item>
-
-    </style>
-
     <style name="AppTheme.Black">
         <item name="colorPrimary">@color/colorCloud</item>
         <item name="colorPrimaryDark">@color/colorSilver</item>
         <item name="colorAccent">@color/colorTurquoise</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->

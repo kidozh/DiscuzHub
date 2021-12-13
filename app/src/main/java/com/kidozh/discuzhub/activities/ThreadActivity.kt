@@ -447,11 +447,6 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
                     val sp = Html.fromHtml(threadResult.threadPostVariables.detailedThreadInfo.subject,HtmlCompat.FROM_HTML_MODE_COMPACT)
                     val spannableString = SpannableString(sp)
                     binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
-//                    if (supportActionBar != null) {
-//                        supportActionBar!!.setTitle(threadResult.threadPostVariables.detailedThreadInfo.subject)
-//                    }
-                    // binding.toolbarTitle.text = threadResult.threadPostVariables.detailedThreadInfo.subject
-                    // check with comments
 
                     postAdapter.mergeCommentMap(threadResult.threadPostVariables.commentList)
 
@@ -1445,7 +1440,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
     private fun configureToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        binding.toolbarSubtitle.text = thread?.tid.toString()
+        binding.toolbar.subtitle = thread.tid.toString()
 
         //getSupportActionBar().setTitle(subject);
     }
