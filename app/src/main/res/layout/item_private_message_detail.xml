@@ -50,7 +50,7 @@
         android:maxEms="15"
         android:padding="8dp"
         android:singleLine="false"
-        android:textColor="@color/colorPureWhite"
+        android:textColor="?attr/colorOnPrimary"
         android:textIsSelectable="false"
         app:layout_constraintCircleRadius="8dp"
         app:layout_constraintEnd_toStartOf="@+id/item_private_message_detail_recv_avatar"

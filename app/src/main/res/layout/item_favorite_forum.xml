@@ -28,7 +28,7 @@
                 android:layout_marginStart="8dp"
                 android:text="@string/favoite_status_sync"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textColor="@color/MaterialColorTeal"
+                android:textColor="?attr/colorPrimary"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/favorite_forum_description" />

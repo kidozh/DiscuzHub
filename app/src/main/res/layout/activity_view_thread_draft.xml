@@ -12,16 +12,14 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorBackgroundDefault"
             android:fitsSystemWindows="true"
             app:expanded="false">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
-                style="@style/DarkActionBar"
+                style="@style/Material3ActionBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorBackgroundDefault"
                 app:subtitleCentered="true"
                 app:titleCentered="true">
 

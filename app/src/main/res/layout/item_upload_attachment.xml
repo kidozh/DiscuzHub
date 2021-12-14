@@ -14,7 +14,7 @@
         android:layout_marginBottom="8dp"
         android:background="?attr/colorPrimary"
         android:padding="4dp"
-        android:textColor="@color/colorPureWhite"
+        android:textColor="?attr/colorOnPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

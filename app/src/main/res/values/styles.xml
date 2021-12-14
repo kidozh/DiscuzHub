@@ -3,21 +3,21 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="MaterialTheme">
         <!-- Customize your theme here. -->
-<!--        <item name="colorPrimary">@color/my_app_primary</item>-->
-<!--        <item name="colorPrimaryDark">@color/my_app_primary_dark</item>-->
-<!--        <item name="colorSecondary">@color/colorEmerland</item>-->
-<!--        <item name="android:colorBackground">?attr/colorOnBackground</item>-->
-<!--        <item name="colorError">@color/colorAlizarin</item>-->
+        <!--        <item name="colorPrimary">@color/my_app_primary</item>-->
+        <!--        <item name="colorPrimaryDark">@color/my_app_primary_dark</item>-->
+        <!--        <item name="colorSecondary">@color/colorEmerland</item>-->
+        <!--        <item name="android:colorBackground">?attr/colorOnBackground</item>-->
+        <!--        <item name="colorError">@color/colorAlizarin</item>-->
 
         <!-- set status bar-->
-<!--        <item name="android:windowLightStatusBar">true</item>-->
-<!--        <item name="android:windowTranslucentStatus">false</item>-->
-<!--        <item name="android:windowTranslucentNavigation">false</item>-->
+        <!--        <item name="android:windowLightStatusBar">true</item>-->
+        <!--        <item name="android:windowTranslucentStatus">false</item>-->
+        <!--        <item name="android:windowTranslucentNavigation">false</item>-->
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
-<!--        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>-->
+        <!--        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>-->
         <item name="android:statusBarColor">?attr/colorPrimaryContainer</item>
         <item name="android:enforceStatusBarContrast" tools:targetApi="q">true</item>
         <item name="android:windowLightStatusBar">true</item>
@@ -26,16 +26,16 @@
         <!-- navigation bar -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
-<!--        <item name="android:actionMenuTextColor">@color/colorTextDefault</item>-->
+        <!--        <item name="android:actionMenuTextColor">@color/colorTextDefault</item>-->
 
 
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
         <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
-<!--        <item name="actionMenuTextColor">@color/colorTextDefault</item>-->
+        <!--        <item name="actionMenuTextColor">@color/colorTextDefault</item>-->
 
-<!--        <item name="cardViewStyle">@style/CardView.DayNight</item>-->
+        <!--        <item name="cardViewStyle">@style/CardView.DayNight</item>-->
 
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
@@ -57,59 +57,35 @@
         <!--        <item name="android:background">@color/cardview_light_background</item>-->
         <item name="android:textColor">@color/colorTextDefault</item>
     </style>
+    
 
-    <style name="LightActionBar" parent="Theme.Material3.Light">
-        <item name="android:background">@color/colorBackgroundDefault</item>
-        <item name="background">@color/colorBackgroundDefault</item>
-        <item name="android:backgroundStacked">@color/colorBackgroundDefault</item>
-<!--        <item name="android:titleTextStyle">@style/ActionBarTitle</item>-->
-<!--        <item name="android:titleTextColor">@color/colorTextDefault</item>-->
-<!--        <item name="android:statusBarColor">@color/colorBackgroundDefault</item>-->
-
-<!--        <item name="titleTextStyle">@style/ActionBarTitle</item>-->
-<!--        <item name="titleTextColor">@color/colorTextDefault</item>-->
-
-        <item name="android:displayOptions">showHome|useLogo|showTitle</item>
-        <item name="displayOptions">showHome|useLogo|showTitle</item>
-
-    </style>
-
-    <style name="LightActionBarTitle" parent="Theme.Material3.DayNight">
-<!--        <item name="android:textColor">@color/colorTextDefault</item>-->
-<!--        <item name="android:textAlignment">center</item>-->
-<!--        <item name="android:titleTextColor">@color/colorTextDefault</item>-->
-<!--        <item name="android:textSize">20sp</item>-->
-
-    </style>
-
-    <style name="DarkActionBar" parent="Widget.Material3.Toolbar">
+    <style name="Material3ActionBar" parent="Widget.Material3.Toolbar">
         <item name="android:background">?attr/colorPrimaryContainer</item>
         <item name="background">?attr/colorPrimaryContainer</item>
         <item name="android:backgroundStacked">?attr/colorPrimaryContainer</item>
-        <item name="android:titleTextStyle">@style/DarkActionBarTitle</item>
-<!--        <item name="android:statusBarColor">@color/colorPrimary</item>-->
+        <item name="android:titleTextStyle">@style/Material3ActionBarTitle</item>
+        <item name="titleTextColor">?attr/colorOnPrimaryContainer</item>
+        <!--        <item name="android:statusBarColor">@color/colorPrimary</item>-->
 
 
-        <item name="titleTextStyle">@style/DarkActionBarTitle</item>
+        <item name="titleTextStyle">@style/Material3ActionBarTitle</item>
 
         <item name="android:displayOptions">showHome|useLogo|showTitle</item>
         <item name="displayOptions">showHome|useLogo|showTitle</item>
 
     </style>
 
-    <style name="DarkActionBarTitle" parent="Theme.Material3.Light">
+    <style name="Material3ActionBarTitle" parent="Theme.Material3.Light">
         <item name="android:textColor">?attr/colorOnPrimaryContainer</item>
-<!--        <item name="android:textAlignment">center</item>-->
-<!--        <item name="android:titleTextColor">@color/colorPureWhite</item>-->
-<!--        <item name="android:textSize">20sp</item>-->
+        <!--        <item name="android:textAlignment">center</item>-->
+        <!--        <item name="android:titleTextColor">@color/colorPureWhite</item>-->
+        <!--        <item name="android:textSize">20sp</item>-->
 
     </style>
 
     <style name="ActionBarTabText" parent="@style/Widget.AppCompat.ActionBar.TabText">
         <item name="android:textColor">@color/colorTextDefault</item>
     </style>
-
-
 
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar" />
@@ -146,33 +122,57 @@
     </style>
 
     <style name="AppTheme.Default">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/md_theme_blue_red_light_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_blue_red_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_blue_red_light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_blue_red_light_onPrimaryContainer
+        </item>
+        <item name="colorSecondary">@color/md_theme_blue_red_light_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_blue_red_light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_blue_red_light_secondaryContainer
+        </item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_blue_red_light_onSecondaryContainer
+        </item>
+        <item name="colorTertiary">@color/md_theme_blue_red_light_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_blue_red_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_blue_red_light_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_blue_red_light_onTertiaryContainer
+        </item>
+        <item name="colorError">@color/md_theme_blue_red_light_error</item>
+        <item name="colorErrorContainer">@color/md_theme_blue_red_light_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_blue_red_light_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_blue_red_light_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_blue_red_light_background</item>
+        <item name="colorOnBackground">@color/md_theme_blue_red_light_onBackground</item>
+        <item name="colorSurface">@color/md_theme_blue_red_light_surface</item>
+        <item name="colorOnSurface">@color/md_theme_blue_red_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_blue_red_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_blue_red_light_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_blue_red_light_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_blue_red_light_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_blue_red_light_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_blue_red_light_primaryInverse</item>
 
-<!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
-<!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
-<!--        <item name="colorAccent">?attr/colorAccent</item>-->
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
 
         <!-- status bar configuration -->
 
 
-
-        <item name="android:actionBarStyle">@style/LightActionBar</item>
-        <item name="android:toolbarStyle">@style/LightActionBar</item>
-        <item name="actionBarStyle">@style/LightActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
 
 
     </style>
 
     <style name="AppTheme.Red">
-        <item name="colorPrimary">@color/MaterialColorPink</item>
-        <item name="colorPrimaryDark">@color/MaterialColorRed</item>
-        <item name="colorAccent">@color/MaterialColorCyan</item>
+        <item name="colorPrimary">@color/md_theme_red_light_primary</item><item name="colorOnPrimary">@color/md_theme_red_light_onPrimary</item><item name="colorPrimaryContainer">@color/md_theme_red_light_primaryContainer</item><item name="colorOnPrimaryContainer">@color/md_theme_red_light_onPrimaryContainer</item><item name="colorSecondary">@color/md_theme_red_light_secondary</item><item name="colorOnSecondary">@color/md_theme_red_light_onSecondary</item><item name="colorSecondaryContainer">@color/md_theme_red_light_secondaryContainer</item><item name="colorOnSecondaryContainer">@color/md_theme_red_light_onSecondaryContainer</item><item name="colorTertiary">@color/md_theme_red_light_tertiary</item><item name="colorOnTertiary">@color/md_theme_red_light_onTertiary</item><item name="colorTertiaryContainer">@color/md_theme_red_light_tertiaryContainer</item><item name="colorOnTertiaryContainer">@color/md_theme_red_light_onTertiaryContainer</item><item name="colorError">@color/md_theme_red_light_error</item><item name="colorErrorContainer">@color/md_theme_red_light_errorContainer</item><item name="colorOnError">@color/md_theme_red_light_onError</item><item name="colorOnErrorContainer">@color/md_theme_red_light_onErrorContainer</item><item name="android:colorBackground">@color/md_theme_red_light_background</item><item name="colorOnBackground">@color/md_theme_red_light_onBackground</item><item name="colorSurface">@color/md_theme_red_light_surface</item><item name="colorOnSurface">@color/md_theme_red_light_onSurface</item><item name="colorSurfaceVariant">@color/md_theme_red_light_surfaceVariant</item><item name="colorOnSurfaceVariant">@color/md_theme_red_light_onSurfaceVariant</item><item name="colorOutline">@color/md_theme_red_light_outline</item><item name="colorOnSurfaceInverse">@color/md_theme_red_light_inverseOnSurface</item><item name="colorSurfaceInverse">@color/md_theme_red_light_inverseSurface</item><item name="colorPrimaryInverse">@color/md_theme_red_light_primaryInverse</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -184,9 +184,9 @@
         <item name="colorPrimaryDark">@color/MaterialColorDeepPurple</item>
         <item name="colorAccent">@color/MaterialColorGreen</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -198,9 +198,9 @@
         <item name="colorPrimaryDark">@color/MaterialColorBlue</item>
         <item name="colorAccent">@color/MaterialColorOrange</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -212,9 +212,9 @@
         <item name="colorPrimaryDark">@color/MaterialColorTeal</item>
         <item name="colorAccent">@color/MaterialColorRed</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -226,9 +226,9 @@
         <item name="colorPrimaryDark">@color/MaterialColorGreen</item>
         <item name="colorAccent">@color/MaterialColorPurple</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -240,9 +240,9 @@
         <item name="colorPrimaryDark">@color/MaterialColorYellow</item>
         <item name="colorAccent">@color/MaterialColorIndigo</item>
 
-        <item name="android:actionBarStyle">@style/LightActionBar</item>
-        <item name="android:toolbarStyle">@style/LightActionBar</item>
-        <item name="actionBarStyle">@style/LightActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -254,9 +254,9 @@
         <item name="colorPrimaryDark">@color/MaterialColorAmber</item>
         <item name="colorAccent">@color/MaterialColorPurple</item>
 
-        <item name="android:actionBarStyle">@style/LightActionBar</item>
-        <item name="android:toolbarStyle">@style/LightActionBar</item>
-        <item name="actionBarStyle">@style/LightActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -268,9 +268,9 @@
         <item name="colorPrimaryDark">@color/MaterialColorDeepOrange</item>
         <item name="colorAccent">@color/MaterialColorBlue</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -282,9 +282,9 @@
         <item name="colorPrimaryDark">@color/MaterialColorBlueGrey</item>
         <item name="colorAccent">@color/colorPeterRiver</item>
 
-        <item name="android:actionBarStyle">@style/LightActionBar</item>
-        <item name="android:toolbarStyle">@style/LightActionBar</item>
-        <item name="actionBarStyle">@style/LightActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -296,9 +296,9 @@
         <item name="colorPrimaryDark">@color/colorMidnightblue</item>
         <item name="colorAccent">@color/colorEmerland</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -310,9 +310,9 @@
         <item name="colorPrimaryDark">#3700B3</item>
         <item name="colorAccent">#BB86FC</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -324,9 +324,9 @@
         <item name="colorPrimaryDark">#3700B3</item>
         <item name="colorAccent">#03DAC5</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -338,9 +338,9 @@
         <item name="colorPrimaryDark">#388E3C</item>
         <item name="colorAccent">#536DFE</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -352,9 +352,9 @@
         <item name="colorPrimaryDark">#512DA8</item>
         <item name="colorAccent">#7C4DFF</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -366,9 +366,9 @@
         <item name="colorPrimaryDark">#C2185B</item>
         <item name="colorAccent">#FF4081</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -380,9 +380,9 @@
         <item name="colorPrimaryDark">#00796B</item>
         <item name="colorAccent">#009688</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -394,9 +394,9 @@
         <item name="colorPrimaryDark">#303F9F</item>
         <item name="colorAccent">#FF5722</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -408,9 +408,9 @@
         <item name="colorPrimaryDark">#455A64</item>
         <item name="colorAccent">#9E9E9E</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -422,9 +422,9 @@
         <item name="colorPrimaryDark">#689F38</item>
         <item name="colorAccent">#4CAF50</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -436,9 +436,9 @@
         <item name="colorPrimaryDark">#303F9F</item>
         <item name="colorAccent">#FF4081</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -450,9 +450,9 @@
         <item name="colorPrimaryDark">#5D4037</item>
         <item name="colorAccent">#795548</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -464,9 +464,9 @@
         <item name="colorPrimaryDark">#303F9F</item>
         <item name="colorAccent">#009688</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->
@@ -478,9 +478,9 @@
         <item name="colorPrimaryDark">#303F9F</item>
         <item name="colorAccent">#607D8B</item>
 
-        <item name="android:actionBarStyle">@style/DarkActionBar</item>
-        <item name="android:toolbarStyle">@style/DarkActionBar</item>
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
 
         <!-- 支持库兼容 -->

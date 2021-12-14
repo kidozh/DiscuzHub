@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:textColor="?attr/colorPrimary"
+        android:textColor="?attr/colorTertiary"
         app:layout_constraintStart_toEndOf="@+id/bbs_forum_thread_short_reply_user_avatar"
         app:layout_constraintTop_toTopOf="@+id/bbs_forum_thread_short_reply_user_avatar"
         tools:text="@tools:sample/last_names" />

@@ -15,7 +15,7 @@
         android:paddingTop="4dp"
         android:paddingEnd="4dp"
         android:paddingBottom="4dp"
-        android:textColor="@color/colorCloud"
+        android:textColor="?attr/colorOnPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

@@ -70,7 +70,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
     fun configureToolbar(){
         setSupportActionBar(binding.toolbar)
         binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_menu_24px)
-
+        binding.toolbar.title = bbsInfo?.site_name ?: ""
 
     }
 

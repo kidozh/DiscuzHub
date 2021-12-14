@@ -31,7 +31,7 @@
                 android:background="?attr/colorPrimary"
                 android:paddingStart="4dp"
                 android:paddingEnd="4dp"
-                android:textColor="@color/colorPureWhite"
+                android:textColor="?attr/colorOnPrimary"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/item_poll_option_name"
                 app:layout_constraintStart_toEndOf="@+id/item_poll_option_check_icon"

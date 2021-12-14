@@ -32,7 +32,7 @@
                 android:paddingTop="2dp"
                 android:paddingEnd="4dp"
                 android:paddingBottom="2dp"
-                android:textColor="@color/colorPureWhite"
+                android:textColor="?attr/colorOnPrimary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="@tools:sample/cities" />
