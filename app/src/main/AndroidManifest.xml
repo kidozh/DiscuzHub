@@ -44,7 +44,7 @@
         <activity android:name=".activities.AddIntroActivity" />
         <activity android:name=".activities.AboutAppActivity" />
         <activity android:name=".activities.InternalWebViewActivity" />
-        <activity android:name=".activities.ThreadDraftActivity" />
+        <activity android:name=".activities.ThreadDraftActivity" android:label="@string/bbs_draft_box"/>
         <activity android:name=".activities.UserProfileActivity" />
         <activity android:name=".activities.PrivateMessageActivity" />
         <activity
@@ -69,7 +69,7 @@
                     android:scheme="http" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.LoginActivity" android:label="@string/bbs_login"/>
         <activity
             android:name=".activities.FullImageActivity"
             android:colorMode="wideColorGamut"

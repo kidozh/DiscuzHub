@@ -382,11 +382,11 @@ class LoginActivity : BaseStatusActivity() {
         }
         if (supportActionBar != null) {
             if (user == null) {
-                supportActionBar!!.setTitle(R.string.bbs_login)
+                binding.toolbar.title = getString(R.string.bbs_login)
             } else {
-                supportActionBar!!.title = getString(R.string.user_relogin, user!!.username)
+                binding.toolbar.title = getString(R.string.user_relogin, user!!.username)
             }
-            supportActionBar!!.subtitle = bbsInfo!!.site_name
+            binding.toolbar.subtitle = bbsInfo!!.site_name
             // clear it first
             getSharedPreferences("CookiePersistence", MODE_PRIVATE).edit().clear().apply()
         }

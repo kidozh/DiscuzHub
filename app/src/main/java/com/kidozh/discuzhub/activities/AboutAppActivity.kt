@@ -117,7 +117,7 @@ class AboutAppActivity : BaseStatusActivity() {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
             supportActionBar!!.setDisplayShowTitleEnabled(true)
             val buildType = BuildConfig.BUILD_TYPE
-            if(buildType.contentEquals("release")){
+            if(buildType.contentEquals("release") || buildType.contentEquals("debug")){
                 return
             }
             val metadata = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA).metaData

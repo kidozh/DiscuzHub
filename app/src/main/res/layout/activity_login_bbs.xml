@@ -20,7 +20,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:subtitleCentered="true"
-                app:titleCentered="true"></com.google.android.material.appbar.MaterialToolbar>
+                app:titleCentered="true" />
 
 
 
