@@ -59,16 +59,16 @@
         <item name="android:textColor">@color/colorTextDefault</item>
     </style>
 
-    <style name="AppTheme.Black">
-        <item name="colorPrimary">@color/colorCloud</item>
-        <item name="colorPrimaryDark">@color/colorSilver</item>
-        <item name="colorAccent">@color/colorTurquoise</item>
+<!--    <style name="AppTheme.Black">-->
+<!--        <item name="colorPrimary">@color/colorCloud</item>-->
+<!--        <item name="colorPrimaryDark">@color/colorSilver</item>-->
+<!--        <item name="colorAccent">@color/colorTurquoise</item>-->
 
-        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>
+<!--        <item name="android:actionBarTabTextStyle">@style/ActionBarTabText</item>-->
 
-        <!-- 支持库兼容 -->
-        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>
-    </style>
+<!--        &lt;!&ndash; 支持库兼容 &ndash;&gt;-->
+<!--        <item name="actionBarTabTextStyle">@style/ActionBarTabText</item>-->
+<!--    </style>-->
 
     <style name="AppTheme.Default">
         <item name="colorPrimary">@color/md_theme_blue_red_dark_primary</item>
@@ -141,6 +141,930 @@
         <item name="colorOnSurfaceInverse">@color/md_theme_red_dark_inverseOnSurface</item>
         <item name="colorSurfaceInverse">@color/md_theme_red_dark_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_red_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.Purple">
+        <item name="colorPrimary">@color/md_theme_purple_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_purple_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_purple_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_purple_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_purple_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_purple_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_purple_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_purple_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_purple_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_purple_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_purple_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_purple_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_purple_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_purple_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_purple_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_purple_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_purple_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_purple_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_purple_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_purple_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_purple_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_purple_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_purple_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_purple_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_purple_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_purple_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.Indigo">
+        <item name="colorPrimary">@color/md_theme_indigo_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_indigo_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_indigo_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_indigo_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_indigo_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_indigo_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_indigo_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_indigo_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_indigo_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_indigo_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_indigo_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_indigo_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_indigo_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_indigo_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_indigo_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_indigo_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_indigo_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_indigo_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_indigo_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_indigo_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_indigo_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_indigo_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_indigo_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_indigo_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_indigo_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_indigo_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.Cyan">
+        <item name="colorPrimary">@color/md_theme_cyan_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_cyan_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_cyan_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_cyan_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_cyan_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_cyan_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_cyan_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_cyan_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_cyan_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_cyan_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_cyan_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_cyan_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_cyan_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_cyan_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_cyan_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_cyan_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_cyan_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_cyan_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_cyan_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_cyan_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_cyan_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_cyan_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_cyan_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_cyan_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_cyan_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_cyan_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.Green">
+        <item name="colorPrimary">@color/md_theme_green_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_green_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_green_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_green_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_green_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_green_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_green_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_green_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_green_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_green_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_green_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_green_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_green_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_green_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_green_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_green_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_green_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_green_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_green_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_green_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_green_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_green_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_green_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_green_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_green_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_green_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.Lime">
+        <item name="colorPrimary">@color/md_theme_lime_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_lime_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_lime_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_lime_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_lime_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_lime_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_lime_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_lime_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_lime_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_lime_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_lime_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_lime_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_lime_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_lime_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_lime_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_lime_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_lime_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_lime_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_lime_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_lime_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_lime_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_lime_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_lime_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_lime_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_lime_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_lime_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.Yellow">
+        <item name="colorPrimary">@color/md_theme_yellow_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_yellow_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_yellow_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_yellow_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_yellow_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_yellow_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_yellow_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_yellow_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_yellow_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_yellow_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_yellow_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_yellow_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_yellow_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_yellow_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_yellow_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_yellow_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_yellow_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_yellow_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_yellow_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_yellow_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_yellow_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_yellow_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_yellow_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_yellow_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_yellow_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_yellow_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.Orange">
+        <item name="colorPrimary">@color/md_theme_orange_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_orange_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_orange_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_orange_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_orange_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_orange_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_orange_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_orange_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_orange_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_orange_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_orange_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_orange_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_orange_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_orange_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_orange_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_orange_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_orange_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_orange_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_orange_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_orange_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_orange_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_orange_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_orange_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_orange_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_orange_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_orange_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.Grey">
+        <item name="colorPrimary">@color/md_theme_grey_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_grey_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_grey_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_grey_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_grey_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_grey_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_grey_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_grey_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_grey_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_grey_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_grey_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_grey_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_grey_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_grey_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_grey_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_grey_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_grey_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_grey_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_grey_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_grey_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_grey_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_grey_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_grey_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_grey_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_grey_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_grey_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.Black">
+        <item name="colorPrimary">@color/md_theme_black_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_black_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_black_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_black_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_black_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_black_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_black_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_black_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_black_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_black_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_black_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_black_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_black_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_black_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_black_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_black_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_black_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_black_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_black_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_black_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_black_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_black_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_black_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_black_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_black_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_black_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.AndroidDefault">
+        <item name="colorPrimary">@color/md_theme_android_default_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_android_default_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_android_default_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_android_default_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_android_default_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_android_default_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_android_default_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_android_default_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_android_default_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_android_default_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_android_default_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_android_default_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_android_default_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_android_default_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_android_default_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_android_default_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_android_default_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_android_default_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_android_default_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_android_default_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_android_default_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_android_default_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_android_default_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_android_default_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_android_default_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_android_default_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.AndroidDefault2">
+        <item name="colorPrimary">@color/md_theme_android_default2_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_android_default2_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_android_default2_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_android_default2_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_android_default2_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_android_default2_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_android_default2_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_android_default2_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_android_default2_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_android_default2_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_android_default2_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_android_default2_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_android_default2_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_android_default2_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_android_default2_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_android_default2_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_android_default2_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_android_default2_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_android_default2_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_android_default2_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_android_default2_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_android_default2_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_android_default2_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_android_default2_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_android_default2_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_android_default2_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.GreenIndigo">
+        <item name="colorPrimary">@color/md_theme_green_indigo_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_green_indigo_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_green_indigo_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_green_indigo_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_green_indigo_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_green_indigo_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_green_indigo_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_green_indigo_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_green_indigo_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_green_indigo_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_green_indigo_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_green_indigo_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_green_indigo_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_green_indigo_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_green_indigo_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_green_indigo_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_green_indigo_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_green_indigo_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_green_indigo_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_green_indigo_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_green_indigo_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_green_indigo_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_green_indigo_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_green_indigo_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_green_indigo_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_green_indigo_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.PureDeepPurple">
+        <item name="colorPrimary">@color/md_theme_pure_deep_purple_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_pure_deep_purple_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_pure_deep_purple_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_pure_deep_purple_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_pure_deep_purple_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_pure_deep_purple_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_pure_deep_purple_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_pure_deep_purple_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_pure_deep_purple_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_pure_deep_purple_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_pure_deep_purple_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_pure_deep_purple_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_pure_deep_purple_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_pure_deep_purple_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_pure_deep_purple_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_pure_deep_purple_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_pure_deep_purple_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_pure_deep_purple_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_pure_deep_purple_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_pure_deep_purple_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_pure_deep_purple_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_pure_deep_purple_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_pure_deep_purple_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_pure_deep_purple_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_pure_deep_purple_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_pure_deep_purple_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.PurePink">
+        <item name="colorPrimary">@color/md_theme_pure_pink_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_pure_pink_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_pure_pink_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_pure_pink_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_pure_pink_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_pure_pink_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_pure_pink_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_pure_pink_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_pure_pink_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_pure_pink_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_pure_pink_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_pure_pink_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_pure_pink_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_pure_pink_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_pure_pink_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_pure_pink_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_pure_pink_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_pure_pink_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_pure_pink_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_pure_pink_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_pure_pink_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_pure_pink_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_pure_pink_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_pure_pink_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_pure_pink_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_pure_pink_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.PureTeal">
+        <item name="colorPrimary">@color/md_theme_pure_teal_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_pure_teal_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_pure_teal_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_pure_teal_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_pure_teal_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_pure_teal_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_pure_teal_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_pure_teal_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_pure_teal_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_pure_teal_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_pure_teal_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_pure_teal_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_pure_teal_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_pure_teal_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_pure_teal_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_pure_teal_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_pure_teal_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_pure_teal_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_pure_teal_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_pure_teal_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_pure_teal_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_pure_teal_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_pure_teal_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_pure_teal_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_pure_teal_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_pure_teal_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.IndigoDeepOrange">
+        <item name="colorPrimary">@color/md_theme_indigo_orange_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_indigo_orange_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_indigo_orange_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_indigo_orange_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_indigo_orange_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_indigo_orange_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_indigo_orange_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_indigo_orange_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_indigo_orange_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_indigo_orange_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_indigo_orange_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_indigo_orange_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_indigo_orange_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_indigo_orange_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_indigo_orange_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_indigo_orange_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_indigo_orange_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_indigo_orange_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_indigo_orange_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_indigo_orange_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_indigo_orange_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_indigo_orange_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_indigo_orange_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_indigo_orange_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_indigo_orange_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_indigo_orange_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.BlueGrayGray">
+        <item name="colorPrimary">@color/md_theme_bluegray_gray_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_bluegray_gray_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_bluegray_gray_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_bluegray_gray_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_bluegray_gray_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_bluegray_gray_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_bluegray_gray_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_bluegray_gray_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_bluegray_gray_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_bluegray_gray_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_bluegray_gray_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_bluegray_gray_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_bluegray_gray_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_bluegray_gray_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_bluegray_gray_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_bluegray_gray_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_bluegray_gray_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_bluegray_gray_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_bluegray_gray_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_bluegray_gray_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_bluegray_gray_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_bluegray_gray_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_bluegray_gray_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_bluegray_gray_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_bluegray_gray_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_bluegray_gray_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.LightGreenGreen">
+        <item name="colorPrimary">@color/md_theme_lightGreen_green_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_lightGreen_green_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_lightGreen_green_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_lightGreen_green_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_lightGreen_green_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_lightGreen_green_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_lightGreen_green_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_lightGreen_green_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_lightGreen_green_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_lightGreen_green_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_lightGreen_green_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_lightGreen_green_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_lightGreen_green_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_lightGreen_green_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_lightGreen_green_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_lightGreen_green_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_lightGreen_green_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_lightGreen_green_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_lightGreen_green_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_lightGreen_green_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_lightGreen_green_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_lightGreen_green_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_lightGreen_green_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_lightGreen_green_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_lightGreen_green_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_lightGreen_green_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.IndigoPink">
+        <item name="colorPrimary">@color/md_theme_indigo_pink_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_indigo_pink_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_indigo_pink_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_indigo_pink_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_indigo_pink_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_indigo_pink_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_indigo_pink_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_indigo_pink_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_indigo_pink_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_indigo_pink_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_indigo_pink_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_indigo_pink_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_indigo_pink_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_indigo_pink_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_indigo_pink_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_indigo_pink_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_indigo_pink_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_indigo_pink_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_indigo_pink_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_indigo_pink_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_indigo_pink_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_indigo_pink_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_indigo_pink_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_indigo_pink_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_indigo_pink_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_indigo_pink_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.PureBrown">
+        <item name="colorPrimary">@color/md_theme_pure_brown_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_pure_brown_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_pure_brown_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_pure_brown_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_pure_brown_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_pure_brown_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_pure_brown_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_pure_brown_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_pure_brown_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_pure_brown_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_pure_brown_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_pure_brown_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_pure_brown_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_pure_brown_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_pure_brown_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_pure_brown_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_pure_brown_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_pure_brown_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_pure_brown_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_pure_brown_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_pure_brown_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_pure_brown_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_pure_brown_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_pure_brown_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_pure_brown_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_pure_brown_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.IndigoTeal">
+        <item name="colorPrimary">@color/md_theme_indigo_teal_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_indigo_teal_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_indigo_teal_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_indigo_teal_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_indigo_teal_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_indigo_teal_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_indigo_teal_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_indigo_teal_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_indigo_teal_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_indigo_teal_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_indigo_teal_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_indigo_teal_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_indigo_teal_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_indigo_teal_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_indigo_teal_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_indigo_teal_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_indigo_teal_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_indigo_teal_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_indigo_teal_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_indigo_teal_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_indigo_teal_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_indigo_teal_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_indigo_teal_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_indigo_teal_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_indigo_teal_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_indigo_teal_dark_primaryInverse</item>
+
+        <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
+        <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
+        <!--        <item name="colorAccent">?attr/colorAccent</item>-->
+
+        <!-- status bar configuration -->
+
+
+        <item name="android:actionBarStyle">@style/Material3ActionBar</item>
+        <item name="android:toolbarStyle">@style/Material3ActionBar</item>
+        <item name="actionBarStyle">@style/Material3ActionBar</item>
+
+
+    </style>
+
+    <style name="AppTheme.IndigoBlueGray">
+        <item name="colorPrimary">@color/md_theme_indigo_blueGray_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_indigo_blueGray_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_indigo_blueGray_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_indigo_blueGray_dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/md_theme_indigo_blueGray_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_indigo_blueGray_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_indigo_blueGray_dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_indigo_blueGray_dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_indigo_blueGray_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_indigo_blueGray_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_indigo_blueGray_dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_indigo_blueGray_dark_onTertiaryContainer</item>
+        <item name="colorError">@color/md_theme_indigo_blueGray_dark_error</item>
+        <item name="colorErrorContainer">@color/md_theme_indigo_blueGray_dark_errorContainer</item>
+        <item name="colorOnError">@color/md_theme_indigo_blueGray_dark_onError</item>
+        <item name="colorOnErrorContainer">@color/md_theme_indigo_blueGray_dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/md_theme_indigo_blueGray_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_indigo_blueGray_dark_onBackground</item>
+        <item name="colorSurface">@color/md_theme_indigo_blueGray_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_indigo_blueGray_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_indigo_blueGray_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_indigo_blueGray_dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_indigo_blueGray_dark_outline</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_indigo_blueGray_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_indigo_blueGray_dark_inverseSurface</item>
+        <item name="colorPrimaryInverse">@color/md_theme_indigo_blueGray_dark_primaryInverse</item>
 
         <!--        <item name="colorPrimary">?attr/colorPrimary</item>-->
         <!--        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>-->
