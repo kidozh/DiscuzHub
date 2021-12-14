@@ -1,13 +1,11 @@
 package com.kidozh.discuzhub.activities
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.adapter.AppThemeAdapter
 import com.kidozh.discuzhub.databinding.ActivityChooseThemeBinding
 import com.kidozh.discuzhub.entities.AppTheme
@@ -75,11 +73,17 @@ class ChooseThemeActivity : AppCompatActivity(), AppThemeAdapter.OnThemeCardClic
         // Change theme
         if(position < styleList.size){
             Toasty.info(this,getString(themeList[position].nameResource),Toast.LENGTH_SHORT).show()
-            setTheme(styleList[position])
-            theme.applyStyle(styleList[position],true)
+            runOnUiThread{
+                setTheme(styleList[position])
+                theme.applyStyle(styleList[position],true)
+            }
+
+
             UserPreferenceUtils.setThemeIndex(this, position)
             adapter.changeSelectedAppTheme(position)
             // recreate()
+            recreate()
+
         }
 
     }
