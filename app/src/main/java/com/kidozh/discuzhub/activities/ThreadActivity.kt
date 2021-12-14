@@ -40,6 +40,7 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.chip.Chip
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment.OnSmileyPressedInteraction
@@ -567,7 +568,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         threadDetailViewModel.threadPriceInfoMutableLiveData.observe(this, { buyThreadResult: BuyThreadResult? ->
             if (buyThreadResult != null) {
                 val variableResult = buyThreadResult.variableResults
-                val builder = AlertDialog.Builder(context)
+                val builder = MaterialAlertDialogBuilder(context)
                         .setTitle(R.string.buy_thread_title)
                         .setMessage(
                                 getString(R.string.buy_thread_dialog_message,
@@ -1085,7 +1086,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
             val prefs = PreferenceManager.getDefaultSharedPreferences(this)
             val outLinkWarn = prefs.getBoolean(getString(R.string.preference_key_outlink_warn), true)
             if (outLinkWarn) {
-                AlertDialog.Builder(this)
+                MaterialAlertDialogBuilder(this)
                         .setTitle(R.string.outlink_warn_title)
                         .setMessage(getString(R.string.outlink_warn_message, clickedUri.host, baseUri.host))
                         .setNeutralButton(R.string.bbs_show_in_internal_browser) { dialog, which ->

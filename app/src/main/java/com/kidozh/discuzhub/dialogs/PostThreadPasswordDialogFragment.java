@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.kidozh.discuzhub.R;
 import com.kidozh.discuzhub.databinding.DialogAttachmentInformationBinding;
 import com.kidozh.discuzhub.databinding.DialogSetThreadPasswordBinding;
@@ -41,7 +42,7 @@ public class PostThreadPasswordDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         //return super.onCreateDialog(savedInstanceState);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
         // Get the layout inflater
         LayoutInflater inflater = requireActivity().getLayoutInflater();
 

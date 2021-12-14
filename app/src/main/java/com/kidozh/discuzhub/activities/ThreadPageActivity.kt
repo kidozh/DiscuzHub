@@ -2,7 +2,6 @@ package com.kidozh.discuzhub.activities
 
 import android.app.Activity
 import android.app.ActivityOptions
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -29,6 +28,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment
 import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter
@@ -736,7 +736,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
             val prefs = PreferenceManager.getDefaultSharedPreferences(this)
             val outLinkWarn = prefs.getBoolean(getString(R.string.preference_key_outlink_warn), true)
             if (outLinkWarn) {
-                AlertDialog.Builder(this)
+                MaterialAlertDialogBuilder(this)
                         .setTitle(R.string.outlink_warn_title)
                         .setMessage(getString(R.string.outlink_warn_message, clickedUri.host, baseUri.host))
                         .setNeutralButton(R.string.bbs_show_in_internal_browser) { dialog, which ->
@@ -772,7 +772,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
     }
 
     private fun openJumpDialog(){
-        val builder = AlertDialog.Builder(this)
+        val builder = MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.jump_to_position)
         val input = EditText(this)
         input.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL

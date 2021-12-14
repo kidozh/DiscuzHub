@@ -10,7 +10,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -22,6 +21,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.activities.ui.BlankBBSFragment.BlankBBSFragment
 import com.kidozh.discuzhub.activities.ui.DashBoard.DashBoardFragment
@@ -110,7 +110,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                 }
                 R.id.register_an_account -> {
                     if (bbs != null) {
-                        AlertDialog.Builder(this)
+                        MaterialAlertDialogBuilder(this)
                                 .setTitle(getString(R.string.bbs_register_an_account, bbs.site_name))
                                 .setMessage(R.string.bbs_register_account_notification)
                                 .setPositiveButton(android.R.string.ok) { _, _ ->

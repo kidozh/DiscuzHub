@@ -2,7 +2,6 @@ package com.kidozh.discuzhub.activities
 
 import android.app.Activity
 import android.app.ActivityOptions
-import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -24,6 +23,7 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.bumptech.glide.load.model.GlideUrl
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.activities.ui.BlankBBSFragment.BlankBBSFragment
 import com.kidozh.discuzhub.activities.ui.DashBoard.DashBoardFragment
@@ -503,7 +503,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                         run {
                             val forumInfo = viewModel.currentBBSInformationMutableLiveData.value
                             if (forumInfo != null) {
-                                AlertDialog.Builder(activity)
+                                MaterialAlertDialogBuilder(activity)
                                         .setTitle(getString(R.string.bbs_register_an_account, forumInfo.site_name))
                                         .setMessage(R.string.bbs_register_account_notification)
                                         .setPositiveButton(android.R.string.ok) { _ , _ ->

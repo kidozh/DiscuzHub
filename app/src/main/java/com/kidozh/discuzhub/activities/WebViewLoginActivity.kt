@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.activities
 
-import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
@@ -18,6 +17,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.activities.WebViewLoginActivity
 import com.kidozh.discuzhub.database.DiscuzDatabase
@@ -57,7 +57,7 @@ class WebViewLoginActivity : BaseStatusActivity() {
     }
 
     fun configureAlertDialog() {
-        AlertDialog.Builder(this)
+        MaterialAlertDialogBuilder(this)
             .setTitle(R.string.bbs_login_in_webpage_alert)
             .setMessage(R.string.bbs_login_in_webpage_content)
             .setPositiveButton(android.R.string.ok) { dialog, which -> }
@@ -159,7 +159,7 @@ class WebViewLoginActivity : BaseStatusActivity() {
     }
 
     private fun triggerQQLoginNoticeDialog(url: String) {
-        val builder = AlertDialog.Builder(this)
+        val builder = MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.qq_login_title))
             .setMessage(getString(R.string.qq_login_message))
             .setPositiveButton(

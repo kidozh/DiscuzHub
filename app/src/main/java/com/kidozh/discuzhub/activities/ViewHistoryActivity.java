@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
@@ -185,7 +186,7 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
             Toasty.info(this,getString(R.string.view_history_not_found), Toast.LENGTH_SHORT).show();
         }
         else {
-            AlertDialog alertDialogs = new AlertDialog.Builder(this)
+            AlertDialog alertDialogs = new MaterialAlertDialogBuilder(this)
                     .setTitle(getString(R.string.delete_all_view_history))
                     .setMessage(getString(R.string.delete_all_view_history_description))
                     .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {

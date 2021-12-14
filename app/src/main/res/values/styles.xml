@@ -21,7 +21,7 @@
         <item name="android:statusBarColor">?attr/colorPrimaryContainer</item>
         <item name="android:enforceStatusBarContrast" tools:targetApi="q">true</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">?attr/colorPrimaryContainer</item>
+        <item name="android:navigationBarColor">?attr/colorSecondaryContainer</item>
         <item name="android:enforceNavigationBarContrast" tools:targetApi="q">true</item>
         <!-- navigation bar -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>

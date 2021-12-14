@@ -1,6 +1,5 @@
 package com.kidozh.discuzhub.activities
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -20,6 +19,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.activities.ForumActivity
 import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter
@@ -556,7 +556,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
     }
 
     private fun launchFavoriteForumDialog(favoriteForum: FavoriteForum) {
-        val favoriteDialog = AlertDialog.Builder(this)
+        val favoriteDialog = MaterialAlertDialogBuilder(this)
         favoriteDialog.setTitle(R.string.favorite_description)
         val input = EditText(this)
         val lp = LinearLayout.LayoutParams(
