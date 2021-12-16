@@ -40,6 +40,32 @@
             window:secondaryActivityName="com.kidozh.discuzhub.activities.PublishActivity"/>
 
         <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.SingleDiscuzActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.ForumActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.SingleDiscuzActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.ThreadActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.SingleDiscuzActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.ShortcutActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.SingleDiscuzActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.SearchPostsActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.SingleDiscuzActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.LoginActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.SingleDiscuzActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.ManageUserActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.SingleDiscuzActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.ManageBBSActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.SingleDiscuzActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.SettingsActivity"/>
+
+
+        <SplitPairFilter
             window:primaryActivityName="*"
             window:secondaryActivityName="*/*"
             window:secondaryActivityAction="android.intent.action.VIEW"/>
@@ -52,6 +78,8 @@
 <!--        window:splitMinWidth="600dp">-->
 <!--        <ActivityFilter-->
 <!--            window:activityName="com.kidozh.discuzhub.activities.DrawerActivity"/>-->
+<!--        <ActivityFilter-->
+<!--            window:activityName="com.kidozh.discuzhub.activities.SingleDiscuzActivity"/>-->
 <!--    </SplitPlaceholderRule>-->
 
 </resources>
