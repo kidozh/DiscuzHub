@@ -65,10 +65,10 @@
             window:secondaryActivityName="com.kidozh.discuzhub.activities.SettingsActivity"/>
 
 
-        <SplitPairFilter
-            window:primaryActivityName="*"
-            window:secondaryActivityName="*/*"
-            window:secondaryActivityAction="android.intent.action.VIEW"/>
+<!--        <SplitPairFilter-->
+<!--            window:primaryActivityName="*"-->
+<!--            window:secondaryActivityName="*/*"-->
+<!--            window:secondaryActivityAction="android.intent.action.VIEW"/>-->
     </SplitPairRule>
 
     <!-- Automatically launch a placeholder for the list activity. -->

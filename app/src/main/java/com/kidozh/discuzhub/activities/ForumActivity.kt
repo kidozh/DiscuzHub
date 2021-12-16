@@ -431,7 +431,10 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
             R.id.bbs_forum_nav_show_in_external_browser -> {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(currentUrl))
                 Log.d(TAG, "Inputted URL $currentUrl")
-                startActivity(intent)
+                if (intent.resolveActivity(packageManager) != null) {
+                    startActivity(intent)
+                }
+                //startActivity(intent)
                 true
             }
             R.id.bbs_settings -> {
