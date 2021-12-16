@@ -9,8 +9,8 @@ android {
         applicationId "com.kidozh.discuzhub"
         minSdkVersion 24
         targetSdkVersion 31
-        versionCode 42
-        versionName "4.12"
+        versionCode 43
+        versionName "5.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [
                 discuz_title: "NOT_IMPLEMENTED",
@@ -207,6 +207,11 @@ dependencies {
     }
     // okhttp
     implementation 'com.squareup.okhttp3:okhttp:4.4.0'
+    // larger screen support
+    implementation("androidx.window:window:1.0.0-beta04")
+    implementation("androidx.startup:startup-runtime:1.1.0")
+
+
 
 
 }

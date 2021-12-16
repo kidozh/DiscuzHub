@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+    xmlns:window="http://schemas.android.com/apk/res-auto">
+
+    <!-- Automatically split the following activity pairs. -->
+    <SplitPairRule
+        window:splitRatio="0.3"
+        window:splitMinWidth="600dp"
+        window:finishPrimaryWithSecondary="true"
+        window:finishSecondaryWithPrimary="true">
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.DrawerActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.ForumActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.DrawerActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.ThreadActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.DrawerActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.ShortcutActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.DrawerActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.SearchPostsActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.DrawerActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.LoginActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.DrawerActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.ManageUserActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.DrawerActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.ManageBBSActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.DrawerActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.SettingsActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.ForumActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.ThreadActivity"/>
+        <SplitPairFilter
+            window:primaryActivityName="com.kidozh.discuzhub.activities.ThreadActivity"
+            window:secondaryActivityName="com.kidozh.discuzhub.activities.PublishActivity"/>
+
+        <SplitPairFilter
+            window:primaryActivityName="*"
+            window:secondaryActivityName="*/*"
+            window:secondaryActivityAction="android.intent.action.VIEW"/>
+    </SplitPairRule>
+
+    <!-- Automatically launch a placeholder for the list activity. -->
+<!--    <SplitPlaceholderRule-->
+<!--        window:placeholderActivityName=".SplitActivityListPlaceholder"-->
+<!--        window:splitRatio="0.3"-->
+<!--        window:splitMinWidth="600dp">-->
+<!--        <ActivityFilter-->
+<!--            window:activityName="com.kidozh.discuzhub.activities.DrawerActivity"/>-->
+<!--    </SplitPlaceholderRule>-->
+
+</resources>

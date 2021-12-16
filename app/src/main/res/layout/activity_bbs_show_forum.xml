@@ -11,42 +11,22 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <com.google.android.material.appbar.CollapsingToolbarLayout
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                style="@style/Material3ActionBar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+                android:layout_height="?attr/actionBarSize"
+                android:textAlignment="center"
+                app:subtitleCentered="true"
+                app:titleCentered="true" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.appbar.MaterialToolbar
-                        android:id="@+id/toolbar"
-                        style="@style/Material3ActionBar"
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        android:textAlignment="center"
-                        app:subtitleCentered="true"
-                        app:titleCentered="true" />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/bbs_forum_sublist"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            tools:itemCount="1"/>
-                    </LinearLayout>
-
-
-
-
-
-                </LinearLayout>
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
+<!--            <com.google.android.material.appbar.CollapsingToolbarLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">-->
+<!--                -->
+<!--                -->
+<!--            </com.google.android.material.appbar.CollapsingToolbarLayout>-->
 
 
             <!--            <com.google.android.material.appbar.CollapsingToolbarLayout-->

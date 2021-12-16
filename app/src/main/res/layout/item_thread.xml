@@ -6,20 +6,19 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/bbs_thread_cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground"
-        style="?attr/materialCardViewElevatedStyle"
-        app:state_dragged="false"
         app:cardElevation="4dp"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:state_dragged="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -81,10 +80,10 @@
                 android:layout_marginEnd="8dp"
 
                 android:background="?attr/colorPrimaryContainer"
-                android:textColor="?attr/colorOnPrimaryContainer"
                 android:padding="4dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
+                android:textColor="?attr/colorOnPrimaryContainer"
                 app:layout_constraintCircleRadius="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/bbs_post_publisher"
@@ -176,5 +175,5 @@
                 tools:listitem="@layout/item_short_post" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

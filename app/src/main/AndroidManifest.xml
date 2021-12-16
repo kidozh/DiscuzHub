@@ -97,6 +97,18 @@
         <meta-data
             android:name="discuz_title"
             android:value="${discuz_title}" />
+        
+        <provider
+            android:authorities="${applicationId}.androidx-startup"
+            android:name="androidx.startup.InitializationProvider"
+            android:exported="false"
+            tools:node="merge"
+            >
+            <meta-data android:name="com.kidozh.discuzhub.embedding.TabletWindowInitializer"
+                android:value="androidx.startup"/>
+        </provider>
     </application>
+    
+    
 
 </manifest>

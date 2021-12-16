@@ -16,7 +16,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -306,17 +305,17 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
 
 
     private fun configureRecyclerview() {
-        binding.bbsForumSublist.setHasFixedSize(true)
-        binding.bbsForumSublist.itemAnimator = getRecyclerviewAnimation(this)
-        binding.bbsForumSublist.layoutManager = GridLayoutManager(this, 4)
+//        binding.bbsForumSublist.setHasFixedSize(true)
+//        binding.bbsForumSublist.itemAnimator = getRecyclerviewAnimation(this)
+//        binding.bbsForumSublist.layoutManager = GridLayoutManager(this, 4)
         subForumAdapter = SubForumAdapter(bbsInfo, user)
-        binding.bbsForumSublist.adapter = getAnimatedAdapter(this, subForumAdapter)
+//        binding.bbsForumSublist.adapter = getAnimatedAdapter(this, subForumAdapter)
         binding.bbsForumThreadRecyclerview.setHasFixedSize(true)
         binding.bbsForumThreadRecyclerview.itemAnimator = getRecyclerviewAnimation(this)
         val linearLayoutManager = LinearLayoutManager(this)
         binding.bbsForumThreadRecyclerview.layoutManager = linearLayoutManager
         adapter = ThreadAdapter(null, bbsInfo!!, user)
-        concatAdapter = ConcatAdapter(adapter, networkIndicatorAdapter)
+        concatAdapter = ConcatAdapter(subForumAdapter,adapter, networkIndicatorAdapter)
         binding.bbsForumThreadRecyclerview.adapter = getAnimatedAdapter(this, concatAdapter!!)
         binding.bbsForumThreadRecyclerview.addOnScrollListener(object :
             RecyclerView.OnScrollListener() {

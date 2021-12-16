@@ -109,7 +109,7 @@ public class FavoriteThreadFragment extends Fragment {
         adapter.setInformation(bbsInfo,userBriefInfo);
         mViewModel.getFavoriteItemListData().observe(getViewLifecycleOwner(),adapter::submitList);
         binding.favoriteThreadRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
-        binding.favoriteThreadRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+        //binding.favoriteThreadRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
     }
 
     private void configureSwipeRefreshLayout(){

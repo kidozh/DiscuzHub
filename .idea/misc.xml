@@ -60,16 +60,16 @@
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_network_indicator_load_all.xml" value="0.4" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_network_indicator_load_successfully.xml" value="0.264" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_network_indicator_loading.xml" value="0.2" />
-        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_poll_option.xml" value="0.4" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_poll_option.xml" value="0.176" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_portal_forum_catagory.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_post.xml" value="0.264" />
-        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_post_comment.xml" value="0.536" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_post_comment.xml" value="0.4" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_private_message.xml" value="0.264" />
-        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_private_message_detail.xml" value="0.4" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_private_message_detail.xml" value="0.264" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_public_message.xml" value="0.264" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_short_post.xml" value="0.4" />
-        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_sub_forum.xml" value="0.6" />
-        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_thread.xml" value="0.264" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_sub_forum.xml" value="0.264" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_thread.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_thread_concise.xml" value="0.4" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_thread_pinned.xml" value="0.4" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/layout/item_upload_attachment.xml" value="0.264" />
@@ -88,11 +88,12 @@
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/menu/bbs_forum_nav_menu.xml" value="0.20043859649122808" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/menu/menu_incognitive_forum_nav_menu.xml" value="0.2" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/menu/single_drawer_navigation.xml" value="0.264" />
+        <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/xml/main_split_config.xml" value="0.175" />
         <entry key="..\:/AndroidProjects/DiscuzHub/app/src/main/res/xml/root_preferences.xml" value="0.20043859649122808" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
