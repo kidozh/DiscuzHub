@@ -77,7 +77,7 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
         if (!NetworkUtils.isOnline(getApplication())) {
             errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()))
             networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED)
-            newThreadListMutableLiveData!!.postValue(ArrayList())
+            newThreadListMutableLiveData.postValue(ArrayList())
             return
         }
 
@@ -93,7 +93,7 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
         networkState.postValue(ConstUtils.NETWORK_STATUS_LOADING)
-        val retrofit = NetworkUtils.getRetrofitInstance(discuz.base_url, client!!)
+        val retrofit = NetworkUtils.getRetrofitInstance(discuz.base_url, client)
         val service = retrofit.create(DiscuzApiService::class.java)
         val forumResultCall = service.forumDisplayResult(displayForumQueryStatus.generateQueryHashMap())
         Log.d(TAG, "Browse page " + displayForumQueryStatus.page + " url ${forumResultCall.request()}")
@@ -133,9 +133,10 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
                             // need to point to next
                             displayForumQueryStatus.page += 1
                             forumStatusMutableLiveData.postValue(displayForumQueryStatus)
+                            networkState.postValue(ConstUtils.NETWORK_STATUS_SUCCESSFULLY)
                         }
                     }
-                    networkState.postValue(ConstUtils.NETWORK_STATUS_SUCCESSFULLY)
+
 
                     // check with api message
                     if (forumResult.message != null) {
