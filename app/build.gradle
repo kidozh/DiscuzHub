@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 31
     buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.kidozh.discuzhub"
         minSdkVersion 24
-        targetSdkVersion 32
+        targetSdkVersion 31
         versionCode 44
         versionName "5.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
