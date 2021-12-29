@@ -145,13 +145,8 @@ public class NotificationsFragment extends Fragment {
         for(int i=0;i<binding.notificationsTablayout.getTabCount();i++){
 
             TabLayout.Tab tab = binding.notificationsTablayout.getTabAt(i);
-            int index = i;
-            if(BuildConfig.BUILD_TYPE.contentEquals("chinaEdition")){
-                // first is removed!!!
-                index += 1;
-            }
             if(tab!=null){
-                switch (index){
+                switch (i){
                     case 0:{
                         tab.setIcon(R.drawable.ic_message_24px);
                         switch (adapter.message_state){
@@ -173,82 +168,15 @@ public class NotificationsFragment extends Fragment {
                     }
                     case 1:{
                         tab.setIcon(R.drawable.ic_book_24px);
-                        switch (adapter.type){
-                            case "post":{
-                                tab.setText(R.string.bbs_notification_myThread_thread);
-                                break;
-                            }
-                            case "pcomment":{
-                                tab.setText(R.string.bbs_notification_myThread_comment);
-                                break;
-                            }
-                            case "activity":{
-                                tab.setText(R.string.bbs_notification_myThread_activity);
-                                break;
-                            }
-                            case "reward":{
-                                tab.setText(R.string.bbs_notification_myThread_reward);
-                                break;
-                            }
-                            case "goods":{
-                                tab.setText(R.string.bbs_notification_myThread_good);
-                                break;
-                            }
-                            case "at":{
-                                tab.setText(R.string.bbs_notification_myThread_mentioned);
-                                break;
-                            }
-                            default:{
-                                tab.setText(R.string.bbs_notification_my_thread);
-                                break;
-                            }
-
-                        }
-
+                        tab.setText(R.string.bbs_notification_my_thread);
                         break;
                     }
                     case 2:{
-                        tab.setIcon(R.drawable.ic_record_voice_over_24px);
-                        switch (adapter.type){
-                            case "poke":{
-                                tab.setText(R.string.bbs_notification_interact_poke);
-                                break;
-                            }
-                            case "friend":{
-                                tab.setText(R.string.bbs_notification_interact_friend);
-                                break;
-                            }
-                            case "wall":{
-                                tab.setText(R.string.bbs_notification_interact_wall);
-                                break;
-                            }
-                            case "comment":{
-                                tab.setText(R.string.bbs_notification_interact_comment);
-                                break;
-                            }
-                            case "click":{
-                                tab.setText(R.string.bbs_notification_interact_agree);
-                                break;
-                            }
-                            case "sharenotice":{
-                                tab.setText(R.string.bbs_notification_interact_share);
-                                break;
-                            }
-                            default:{
-                                tab.setText(R.string.bbs_notification_interact);
-
-                            }
-
-                        }
-
-                        break;
-                    }
-                    case 3:{
                         tab.setIcon(R.drawable.ic_security_24px);
                         tab.setText(R.string.bbs_notification_system);
                         break;
                     }
-                    case 4:{
+                    case 3:{
                         tab.setIcon(R.drawable.ic_view_list_24px);
                         tab.setText(R.string.bbs_notification_thread_list);
                         break;
@@ -272,129 +200,33 @@ public class NotificationsFragment extends Fragment {
             // first is removed!!!
             index += 1;
         }
-        switch (index){
-            case 0:{
-                inflater.inflate(R.menu.menu_notification_message,popupMenu.getMenu());
-                TabLayout.Tab messageTabInstance = binding.notificationsTablayout.getTabAt(0);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()){
-                            case R.id.menu_notification_messages_pm:{
-                                adapter.message_state = bbsNotificationMessagePortalFragment.FILTER_PRIVATE_MESSAGE;
-                                messageTabInstance.setText(R.string.bbs_notification_my_pm);
+        if (index == 0) {
+            inflater.inflate(R.menu.menu_notification_message, popupMenu.getMenu());
+            TabLayout.Tab messageTabInstance = binding.notificationsTablayout.getTabAt(0);
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.menu_notification_messages_pm: {
+                            adapter.message_state = bbsNotificationMessagePortalFragment.FILTER_PRIVATE_MESSAGE;
+                            messageTabInstance.setText(R.string.bbs_notification_my_pm);
 
-                                break;
-                            }
-                            case R.id.menu_notification_message_public_message:{
-                                adapter.message_state = bbsNotificationMessagePortalFragment.FILTER_PUBLIC_MESSAGE;
-                                messageTabInstance.setText(R.string.bbs_notification_public_pm);
-                                break;
-                            }
+                            break;
                         }
-                        Log.d(TAG,"Adapter change message status "+adapter.message_state);
-                        updateTabAndFragment(0);
-                        return true;
-                    }
-                });
-                break;
-            }
-            case 1:{
-                inflater.inflate(R.menu.menu_notification_my_thread,popupMenu.getMenu());
-                TabLayout.Tab tab = binding.notificationsTablayout.getTabAt(1);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        adapter.view = "mypost";
-                        switch (item.getItemId()){
-                            case R.id.menu_notification_myThread_thread:{
-
-                                adapter.type="post";
-                                tab.setText(R.string.bbs_notification_myThread_thread);
-
-                                break;
-                            }
-                            case R.id.menu_notification_myThread_comment:{
-                                adapter.type = "pcomment";
-                                tab.setText(R.string.bbs_notification_myThread_comment);
-                                break;
-                            }
-                            case R.id.menu_notification_myThread_activity:{
-                                adapter.type = "activity";
-                                tab.setText(R.string.bbs_notification_myThread_activity);
-                                break;
-                            }
-                            case R.id.menu_notification_myThread_reward:{
-                                adapter.type = "reward";
-                                tab.setText(R.string.bbs_notification_myThread_reward);
-                                break;
-                            }
-                            case R.id.menu_notification_myThread_good:{
-                                adapter.type = "goods";
-                                tab.setText(R.string.bbs_notification_myThread_good);
-                                break;
-                            }
-                            case R.id.menu_notification_myThread_mentioned:{
-                                adapter.type = "at";
-                                tab.setText(R.string.bbs_notification_myThread_mentioned);
-                                break;
-                            }
+                        case R.id.menu_notification_message_public_message: {
+                            adapter.message_state = bbsNotificationMessagePortalFragment.FILTER_PUBLIC_MESSAGE;
+                            messageTabInstance.setText(R.string.bbs_notification_public_pm);
+                            break;
                         }
-                        updateTabAndFragment(1);
-                        return true;
                     }
-                });
-                break;
-            }
-            case 2: {
-                inflater.inflate(R.menu.menu_notification_interact, popupMenu.getMenu());
-
-                TabLayout.Tab tab = binding.notificationsTablayout.getTabAt(2);
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        adapter.view = "interactive";
-                        switch (item.getItemId()){
-                            case R.id.menu_notification_interact_poke:{
-                                adapter.type="poke";
-                                tab.setText(R.string.bbs_notification_interact_poke);
-                                break;
-                            }
-                            case R.id.menu_notification_interact_friend:{
-                                adapter.type="friend";
-                                tab.setText(R.string.bbs_notification_interact_friend);
-                                break;
-                            }
-                            case R.id.menu_notification_interact_wall:{
-                                adapter.type="wall";
-                                tab.setText(R.string.bbs_notification_interact_wall);
-                                break;
-                            }
-                            case R.id.menu_notification_interact_comment:{
-                                adapter.type="comment";
-                                tab.setText(R.string.bbs_notification_interact_comment);
-                                break;
-                            }
-                            case R.id.menu_notification_interact_agree:{
-                                adapter.type="click";
-                                tab.setText(R.string.bbs_notification_interact_agree);
-                                break;
-                            }
-                            case R.id.menu_notification_interact_share:{
-                                adapter.type="sharenotice";
-                                tab.setText(R.string.bbs_notification_interact_share);
-                                break;
-                            }
-
-                        }
-                        updateTabAndFragment(2);
-                        return true;
-                    }
-                });
-                break;
-            }
+                    Log.d(TAG, "Adapter change message status " + adapter.message_state);
+                    updateTabAndFragment(0);
+                    return true;
+                }
+            });
+            popupMenu.show();
         }
-        popupMenu.show();
+
     }
 
     @Override
@@ -447,33 +279,16 @@ public class NotificationsFragment extends Fragment {
 
                 }
 
-
                 case 1:{
-                    if(view == null || type == null){
-                        return UserNotificationFragment.newInstance("mypost","", Discuz,userBriefInfo);
-                    }
-                    else {
-                        return UserNotificationFragment.newInstance(view,type, Discuz,userBriefInfo);
-                    }
+                    return UserNotificationFragment.newInstance("mypost","", Discuz,userBriefInfo);
 
                 }
-
-
                 case 2:{
-                    if(view == null || type == null){
-                        return UserNotificationFragment.newInstance("interactive","", Discuz,userBriefInfo);
-                    }
-                    else {
-                        return UserNotificationFragment.newInstance(view,type, Discuz,userBriefInfo);
-                    }
-
-                }
-                case 3:{
                     return UserNotificationFragment.newInstance("system","system", Discuz,userBriefInfo);
 
                 }
 
-                case 4:{
+                case 3:{
                     return UserThreadFragment.newInstance(Discuz,userBriefInfo);
 
                 }
@@ -498,10 +313,8 @@ public class NotificationsFragment extends Fragment {
                 case 1:
                     return getString(R.string.bbs_notification_thread);
                 case 2:
-                    return getString(R.string.bbs_notification_interact);
-                case 3:
                     return getString(R.string.bbs_notification_system);
-                case 4:
+                case 3:
                     return getString(R.string.bbs_notification_app);
                     default:
                         return "";
@@ -512,10 +325,10 @@ public class NotificationsFragment extends Fragment {
         public int getCount() {
             if(BuildConfig.BUILD_TYPE.contentEquals("chinaEdition")){
                 // first is removed!!!
-                return 4;
+                return 3;
             }
             else {
-                return 5;
+                return 4;
             }
 
         }
@@ -525,7 +338,6 @@ public class NotificationsFragment extends Fragment {
 
     @SuppressLint("RestrictedApi")
     public void setNewMessageNum(int i) {
-        return;
     }
 
 

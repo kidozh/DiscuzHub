@@ -20,12 +20,11 @@ import retrofit2.Response
 
 class HotThreadsViewModel(application: Application?) : AndroidViewModel(application!!) {
     private val TAG = HotThreadsViewModel::class.java.simpleName
-    private val mText: MutableLiveData<String>? = null
     lateinit var bbsInfo: Discuz
     var userBriefInfo: User? = null
     private var client = OkHttpClient()
     var pageNum = MutableLiveData(1)
-    var isLoading: MutableLiveData<Boolean>
+    var isLoading: MutableLiveData<Boolean> = MutableLiveData()
     var totalThreadListLiveData: MutableLiveData<List<Thread>> = MutableLiveData(ArrayList())
     var errorMessageMutableLiveData = MutableLiveData<ErrorMessage?>(null)
     var resultMutableLiveData = MutableLiveData<DisplayThreadsResult?>()
@@ -110,7 +109,6 @@ class HotThreadsViewModel(application: Application?) : AndroidViewModel(applicat
     }
 
     init {
-        isLoading = MutableLiveData()
         isLoading.postValue(false)
     }
 }

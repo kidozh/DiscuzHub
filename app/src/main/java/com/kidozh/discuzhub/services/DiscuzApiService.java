@@ -196,5 +196,12 @@ public interface DiscuzApiService {
             @FieldMap HashMap<String,String> options
     );
 
+    @GET(DISCUZ_API_PATH+"?version=4&module=mynotelist")
+    Call<UserNoteListResult> myNotificationList(
+            @Query("view") String view,
+            @Query("type") String type,
+            @Query("page") int page
+    );
+
 
 }

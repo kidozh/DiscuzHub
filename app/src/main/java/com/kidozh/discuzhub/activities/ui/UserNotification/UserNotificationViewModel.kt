@@ -1,88 +1,68 @@
-package com.kidozh.discuzhub.activities.ui.UserNotification;
+package com.kidozh.discuzhub.activities.ui.UserNotification
 
-import android.app.Application;
-import android.util.Log;
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
+import com.kidozh.discuzhub.entities.Discuz
+import com.kidozh.discuzhub.entities.User
+import com.kidozh.discuzhub.results.UserNoteListResult
+import com.kidozh.discuzhub.services.DiscuzApiService
+import com.kidozh.discuzhub.utilities.NetworkUtils
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.MutableLiveData;
-
-import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.User;
-import com.kidozh.discuzhub.results.UserNoteListResult;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.NetworkUtils;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
-public class UserNotificationViewModel extends AndroidViewModel {
-    private static final String TAG = UserNotificationViewModel.class.getSimpleName();
-
-    public MutableLiveData<UserNoteListResult> userNoteListResultMutableLiveData;
-    public MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false),
-            hasLoadedAll = new MutableLiveData<>(false),
-            isError= new MutableLiveData<>(false);
-
-    private Discuz curBBS;
-    private User curUser;
-    private OkHttpClient client;
-
-    public UserNotificationViewModel(@NonNull Application application) {
-        super(application);
-        userNoteListResultMutableLiveData = new MutableLiveData<>();
-        isLoading = new MutableLiveData<>(false);
-        hasLoadedAll = new MutableLiveData<>(false);
-        isError = new MutableLiveData<>(false);
+class UserNotificationViewModel(application: Application) : AndroidViewModel(application) {
+    var userNoteListResultMutableLiveData: MutableLiveData<UserNoteListResult>
+    var isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
+    var hasLoadedAll = MutableLiveData(false)
+    var isError = MutableLiveData(false)
+    lateinit var curBBS: Discuz
+    private var curUser: User? = null
+    lateinit var client: OkHttpClient
+    lateinit var retrofit: Retrofit
+    lateinit var service: DiscuzApiService
+    fun setBBSInfo(curBBS: Discuz, curUser: User?) {
+        this.curBBS = curBBS
+        this.curUser = curUser
+        client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), curUser)
+        retrofit = NetworkUtils.getRetrofitInstance(curBBS.base_url, client)
+        service = retrofit.create(DiscuzApiService::class.java)
     }
 
-    public void setBBSInfo(Discuz curBBS, User curUser){
-        this.curBBS = curBBS;
-        this.curUser = curUser;
-        this.client = NetworkUtils.getPreferredClientWithCookieJarByUser(this.getApplication(),curUser);
-    }
-
-    public void getUserNotificationByPage(String view, String type,int page){
-
-
-        if(isLoading != null && isLoading.getValue() != null && isLoading.getValue()){
-            return;
+    fun getUserNotificationByPage(view: String?, type: String?, page: Int) {
+        if (isLoading.value != null && isLoading.value!!) {
+            return
         }
-        isLoading.setValue(true);
-        String url = URLUtils.getNoteListApiUrl(view,type,page);
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        Log.d(TAG,"get notification url "+url);
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                isError.postValue(true);
-                isLoading.postValue(false);
-            }
+        isLoading.value = true
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if(response.isSuccessful()&& response.body() !=null){
-                    String s = response.body().string();
-                    Log.d(TAG, "recv note "+s);
-                    UserNoteListResult userNoteListResult = bbsParseUtils.getUserNoteListResult(s);
-                    // set it
-                    userNoteListResultMutableLiveData.postValue(userNoteListResult);
-
-
+        service.myNotificationList(view,type, page).enqueue(object : retrofit2.Callback<UserNoteListResult>{
+            override fun onResponse(
+                call: retrofit2.Call<UserNoteListResult>,
+                response: retrofit2.Response<UserNoteListResult>
+            ) {
+                if(response.isSuccessful && response.body()!= null){
+                    userNoteListResultMutableLiveData.postValue(response.body())
                 }
-
-                // called at final
-                isLoading.postValue(false);
+                isLoading.postValue(false)
             }
-        });
 
+            override fun onFailure(call: retrofit2.Call<UserNoteListResult>, t: Throwable) {
+                isError.postValue(true)
+                isLoading.postValue(false)
+            }
+
+        })
+    }
+
+    companion object {
+        private val TAG = UserNotificationViewModel::class.java.simpleName
+    }
+
+    init {
+        userNoteListResultMutableLiveData = MutableLiveData()
+        isLoading = MutableLiveData(false)
+        hasLoadedAll = MutableLiveData(false)
+        isError = MutableLiveData(false)
     }
 }
+

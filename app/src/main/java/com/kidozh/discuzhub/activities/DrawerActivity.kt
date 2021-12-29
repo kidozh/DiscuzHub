@@ -768,15 +768,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
         }
     }
 
-    override fun setNotificationsNum(notificationsNum: noticeNumInfo) {
-        Log.d(TAG, "Notification fragment $notificationsFragment notification $notificationsNum")
 
-        Log.d(TAG, "notification number " + notificationsNum.allNoticeInfo)
-        if (notificationsFragment != null) {
-            notificationsFragment!!.renderTabNumber(notificationsNum)
-        }
-        setNewMessageNum(notificationsNum.allNoticeInfo)
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -844,5 +836,19 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
 
     companion object {
         private val TAG = DrawerActivity::class.java.simpleName
+    }
+
+
+
+    override fun setNotificationsNum(notificationsNum: noticeNumInfo) {
+        Log.d(TAG, "Notification fragment $notificationsFragment notification $notificationsNum")
+
+        Log.d(TAG, "notification number " + notificationsNum.allNoticeInfo)
+        if (notificationsFragment != null) {
+            notificationsFragment!!.renderTabNumber(notificationsNum)
+        }
+        if (notificationsNum != null) {
+            setNewMessageNum(notificationsNum.allNoticeInfo)
+        }
     }
 }
