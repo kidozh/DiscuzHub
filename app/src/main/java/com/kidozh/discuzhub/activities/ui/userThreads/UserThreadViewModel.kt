@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.ErrorMessage
-import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.entities.Thread
+import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.results.DisplayThreadsResult
 import com.kidozh.discuzhub.services.DiscuzApiService
 import com.kidozh.discuzhub.utilities.ConstUtils
@@ -53,8 +53,8 @@ class UserThreadViewModel(application: Application) : AndroidViewModel(applicati
                     val result = response.body() as DisplayThreadsResult
                     val newThreadList = result.forumVariables.forumThreadList
                     val oldThreadList = totalThreadList.value
-                    Log.d(TAG,"Get user thread size "+newThreadList.size)
-                    if(newThreadList.isEmpty()){
+                    //Log.d(TAG,"Get user thread size "+newThreadList.size)
+                    if(newThreadList!= null && newThreadList.isEmpty()){
                         errorMessageMutableLiveData.postValue(ErrorMessage(response.code().toString(),
                                 getApplication<Application>().getString(R.string.discuz_network_unsuccessful, response.message())))
                     }
@@ -63,14 +63,16 @@ class UserThreadViewModel(application: Application) : AndroidViewModel(applicati
                         if (oldThreadList != null) {
                             totalList.addAll(oldThreadList)
                         }
-                        totalList.addAll(newThreadList)
+                        if (newThreadList != null) {
+                            totalList.addAll(newThreadList)
+                        }
                         Log.d(TAG,"Get total user thread size "+totalList.size)
                         totalThreadList.postValue(totalList)
                     }
 
                     // compare it
                     val pageSize = result.forumVariables.perPage
-                    if(newThreadList.size < pageSize){
+                    if(newThreadList == null || newThreadList.size < pageSize){
                         networkState.postValue(ConstUtils.NETWORK_STATUS_LOADED_ALL)
                     }
                     else{

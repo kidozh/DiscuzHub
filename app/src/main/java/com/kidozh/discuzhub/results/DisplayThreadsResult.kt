@@ -1,31 +1,27 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kidozh.discuzhub.entities.Thread;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.kidozh.discuzhub.entities.Thread
+import java.util.*
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DisplayThreadsResult extends BaseResult {
+class DisplayThreadsResult : BaseResult() {
     @JsonProperty("Variables")
-    public ForumVariables forumVariables;
+    var forumVariables: ForumVariables = ForumVariables()
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class ForumVariables extends VariableResults{
+    class ForumVariables : VariableResults() {
+        @JsonProperty(value = "data")
+        var forumThreadList: List<Thread>? = ArrayList()
 
-        @JsonProperty("data")
-
-        public List<Thread> forumThreadList = new ArrayList<>();
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("perpage")
-        public int perPage;
-
+        var perPage = 0
     }
 
-    public boolean isError(){
-        return this.message == null;
+    override fun isError(): Boolean {
+        return message == null
     }
 }
