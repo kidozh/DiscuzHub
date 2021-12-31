@@ -126,7 +126,7 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
 
                         // check with load all status
                         val totalThreadNumber = forumResult.forumVariables.forum.threadCount
-                        if(totalMutableList.size > totalThreadNumber){
+                        if(totalMutableList.size >= totalThreadNumber){
                             networkState.postValue(ConstUtils.NETWORK_STATUS_LOADED_ALL)
                         }
                         else{
