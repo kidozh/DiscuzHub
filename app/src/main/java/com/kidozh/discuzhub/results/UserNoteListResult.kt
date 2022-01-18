@@ -1,73 +1,104 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer;
-
-import java.util.Date;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer
+import java.util.*
+import kotlin.collections.ArrayList
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserNoteListResult extends BaseResult {
+class UserNoteListResult : BaseResult() {
+    @JvmField
     @JsonProperty("Variables")
-    public NoteListVariableResult noteListVariableResult;
+    var noteListVariableResult: NoteListVariableResult = NoteListVariableResult()
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class NoteListVariableResult extends VariableResults{
-
+    class NoteListVariableResult : VariableResults() {
+        @JvmField
         @JsonProperty("list")
-        public List<UserNotification> notificationList;
-        @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int count, page;
-        @JsonFormat(shape = JsonFormat.Shape.STRING)
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-        public int perPage;
+        var notificationList: List<UserNotification> = ArrayList()
 
+        @JvmField
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var count = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var page = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+        var perPage = 0
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class UserNotification{
+    class UserNotification {
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int id, uid;
+        var id = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var uid = 0
+
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("authorid")
-        public int authorId;
-        public String type, note, author="";
+        var authorId = 0
+        @JvmField
+        var type: String = ""
+        @JvmField
+        var note: String = ""
+        @JvmField
+        var author = ""
+
+        @JvmField
         @JsonProperty("new")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-        public boolean isNew;
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+        var isNew = false
+
+        @JvmField
         @JsonProperty("dateline")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "s")
-        public Date date;
+        var date: Date = Date()
+
         @JsonProperty("from_id")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int fromId;
+        var fromId = 0
+
         @JsonProperty("from_idtype")
-        public String fromIdType;
+        var fromIdType: String = ""
+
         @JsonProperty("from_num")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int fromNum;
+        var fromNum = 0
+
+        @JvmField
         @JsonProperty("notevar")
         @JsonIgnoreProperties(ignoreUnknown = true)
-        public UserNotificationExtraInfo notificationExtraInfo;
-
+        var notificationExtraInfo: UserNotificationExtraInfo? = null
     }
 
-    public static class UserNotificationExtraInfo{
+    class UserNotificationExtraInfo {
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int tid, pid;
-        public String subject;
+        var tid = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var pid = 0
+        @JvmField
+        var subject: String = ""
+
         @JsonProperty("actoruid")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int actorUid;
+        var actorUid = 0
+
         @JsonProperty("actorusername")
-        public String actorUsername;
+        var actorUsername: String? = null
     }
 
-    public boolean isError(){
-        return this.message == null;
+    override fun isError(): Boolean {
+        return message == null
     }
 }
