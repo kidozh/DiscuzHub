@@ -68,20 +68,6 @@ class ThreadAdapter(var threadType: Map<String, String>?, var bbsInfo: Discuz, v
         updateList(newThreadList)
     }
 
-//    fun clearList() {
-//        val oldSize = threadList.size
-//        threadList.clear()
-//        notifyItemRangeRemoved(0, oldSize)
-//    }
-
-//    fun addThreadInfoList(threadList: List<Thread>, threadType: Map<String, String>?) {
-//        this.threadType = threadType
-//        val oldSize = this.threadList.size
-//        this.threadList.addAll(threadList)
-//        Log.d(TAG, "Insert to thread adapter starting at " + oldSize + " count " + threadList.size)
-//        notifyItemRangeInserted(oldSize, threadList.size)
-//    }
-
     override fun getItemViewType(position: Int): Int {
         val thread = threadList[position]
         return if (thread.displayOrder <= 0) {
@@ -113,7 +99,7 @@ class ThreadAdapter(var threadType: Map<String, String>?, var bbsInfo: Discuz, v
     }
 
     override fun onBindViewHolder(holderRaw: RecyclerView.ViewHolder, position: Int) {
-        val thread = threadList[position] ?: return
+        val thread = threadList[position]
         if (holderRaw is PinnedViewHolder) {
             val holder = holderRaw
             val sp = Html.fromHtml(thread.subject)

@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import com.kidozh.discuzhub.R
@@ -17,6 +18,7 @@ import com.kidozh.discuzhub.results.VariableResults
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.ThemeUtils
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils
+import com.kidozh.discuzhub.viewModels.BaseStatusViewModel
 import okhttp3.OkHttpClient
 
 open class BaseStatusActivity : AppCompatActivity(), BaseStatusInteract {
@@ -28,8 +30,10 @@ open class BaseStatusActivity : AppCompatActivity(), BaseStatusInteract {
     var client = OkHttpClient()
     var baseVariableResult: BaseResult? = null
     var variableResults: VariableResults? = null
+    private lateinit var baseStatusViewModel: BaseStatusViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        baseStatusViewModel = ViewModelProvider(this)[BaseStatusViewModel::class.java]
         configureTheme()
         configureDarkMode()
         // allow adaptive color
@@ -117,7 +121,10 @@ open class BaseStatusActivity : AppCompatActivity(), BaseStatusInteract {
 
     override fun setBaseResult(baseVariableResult: BaseResult, variableResults: VariableResults) {
         if(user!= null && variableResults.member_uid != user!!.uid){
-
+            if(user!!.uid == baseStatusViewModel.notifyExpiredUserId.value){
+                return;
+            }
+            baseStatusViewModel.notifyExpiredUserId.value = user!!.uid
             Log.d(TAG,"Recv variable result ${variableResults.member_uid} , real name ${user!!.uid}")
             // launch a dialog
             val alertDialog = AlertDialog.Builder(this)
