@@ -30,7 +30,7 @@ class ShortcutActivity : BaseStatusActivity() {
     }
 
     fun configureIntentData(){
-        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
+        discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
         user = intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY) as User?
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -73,7 +73,7 @@ class ShortcutActivity : BaseStatusActivity() {
 
         val intent = Intent(this, ForumActivity::class.java)
         intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, forum)
-        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
         intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
         VibrateUtils.vibrateForClick(this)
         startActivity(intent)
@@ -114,7 +114,7 @@ class ShortcutActivity : BaseStatusActivity() {
         thread.tid = tid
 
         val intent = Intent(this, ThreadActivity::class.java)
-        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
         intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
         intent.putExtra(ConstUtils.PASS_THREAD_KEY, thread)
         intent.putExtra("FID", thread.fid)
@@ -156,7 +156,7 @@ class ShortcutActivity : BaseStatusActivity() {
 
         }
         val intent = Intent(this, UserProfileActivity::class.java)
-        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
         intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
         intent.putExtra("UID", uid)
 

@@ -66,9 +66,9 @@ class WebViewLoginActivity : BaseStatusActivity() {
 
     fun configureIntentData() {
         val intent = intent
-        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
-        if (bbsInfo != null) {
-            URLUtils.setBBS(bbsInfo)
+        discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
+        if (discuz != null) {
+            URLUtils.setBBS(discuz)
             configureWebView()
         } else {
             // judge whether from QQ
@@ -86,8 +86,8 @@ class WebViewLoginActivity : BaseStatusActivity() {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
             supportActionBar!!.setDisplayShowTitleEnabled(true)
             supportActionBar!!.setTitle(R.string.bbs_login_by_browser)
-            if (bbsInfo != null) {
-                supportActionBar!!.subtitle = bbsInfo!!.site_name
+            if (discuz != null) {
+                supportActionBar!!.subtitle = discuz!!.site_name
             }
         }
     }
@@ -96,10 +96,10 @@ class WebViewLoginActivity : BaseStatusActivity() {
         cookieWebViewClientInstance = CookieWebViewClient()
         Log.d(
             TAG, "login web url " + URLUtils.getLoginWebURL(
-                bbsInfo!!
+                discuz!!
             )
         )
-        binding!!.loginByWebWebview.loadUrl(URLUtils.getLoginWebURL(bbsInfo!!))
+        binding!!.loginByWebWebview.loadUrl(URLUtils.getLoginWebURL(discuz!!))
         binding!!.loginByWebWebview.clearCache(true)
         val webSettings = binding!!.loginByWebWebview.settings
 
@@ -228,8 +228,8 @@ class WebViewLoginActivity : BaseStatusActivity() {
         client.cookieJar.saveFromResponse(httpUrl, cookieList.toList())
         // exact login url
         val retrofit: Retrofit
-        retrofit = if (bbsInfo != null) {
-            NetworkUtils.getRetrofitInstance(bbsInfo!!.base_url, client)
+        retrofit = if (discuz != null) {
+            NetworkUtils.getRetrofitInstance(discuz!!.base_url, client)
         } else {
             val currentURL = binding!!.loginByWebWebview.url
             // parse base url
@@ -254,8 +254,8 @@ class WebViewLoginActivity : BaseStatusActivity() {
                     val parsedUserInfo = result.variables.userBriefInfo
                     Log.d(TAG, "Parse user info " + parsedUserInfo.uid + " " + parsedUserInfo.id)
                     // save it to database
-                    if (bbsInfo != null) {
-                        parsedUserInfo.belongedBBSID = bbsInfo!!.id
+                    if (discuz != null) {
+                        parsedUserInfo.belongedBBSID = discuz!!.id
                     }
 
                     //client.cookieJar().saveFromResponse(httpUrl,cookieList);
@@ -264,7 +264,7 @@ class WebViewLoginActivity : BaseStatusActivity() {
                         TAG,
                         "SAVE Cookie to " + httpUrl.toString() + " cookie list " + cookieList.size + " SET COOKIE" + cookie
                     )
-                    if (bbsInfo != null) {
+                    if (discuz != null) {
                         saveUserToDatabase(parsedUserInfo,client,httpUrl,null)
                         //saveUserToDatabaseAsyncTask(parsedUserInfo, client, httpUrl).execute()
                     } else {
@@ -324,25 +324,25 @@ class WebViewLoginActivity : BaseStatusActivity() {
     fun saveUserToDatabase(userBriefInfo: User, client: OkHttpClient, httpUrl: HttpUrl, redirectURL: String?){
         var insertUserIdList: MutableList<Long> = ArrayList()
         var discuzList: MutableList<Discuz> = ArrayList()
-        if (bbsInfo != null) {
-            discuzList.add(bbsInfo!!)
+        if (discuz != null) {
+            discuzList.add(discuz!!)
         }
         Thread{
-            if (bbsInfo == null) {
+            if (discuz == null) {
                 // search it
                 discuzList = DiscuzDatabase.getInstance(applicationContext)
                     .forumInformationDao
                     .getBBSInformationsByBaseURL(redirectURL)
                 // insert them by bbs
                 for (i in discuzList.indices) {
-                    val bbsInfo = discuzList[i]
-                    userBriefInfo.belongedBBSID = bbsInfo.id
-                    val firstMightExistUser = UserDatabase.getInstance(this).getforumUserBriefInfoDao().getFirstUserByDiscuzIdAndUid(bbsInfo.id,userBriefInfo.uid)
+                    val discuz = discuzList[i]
+                    userBriefInfo.belongedBBSID = discuz.id
+                    val firstMightExistUser = UserDatabase.getInstance(this).getforumUserBriefInfoDao().getFirstUserByDiscuzIdAndUid(discuz.id,userBriefInfo.uid)
                     if (firstMightExistUser != null){
                         // if not null then replace the first one
                         userBriefInfo.id = firstMightExistUser.id
                         // then delete all the existing users
-                        getInstance(this).getforumUserBriefInfoDao().deleteAllUserByDiscuzIdAndUid(bbsInfo.id,userBriefInfo.uid)
+                        getInstance(this).getforumUserBriefInfoDao().deleteAllUserByDiscuzIdAndUid(discuz.id,userBriefInfo.uid)
                     }
 
                     val insertedId = getInstance(applicationContext)
@@ -351,12 +351,12 @@ class WebViewLoginActivity : BaseStatusActivity() {
                 }
             } else {
                 // need to search it
-                val firstMightExistUser = getInstance(this).getforumUserBriefInfoDao().getFirstUserByDiscuzIdAndUid(bbsInfo!!.id,userBriefInfo.uid)
+                val firstMightExistUser = getInstance(this).getforumUserBriefInfoDao().getFirstUserByDiscuzIdAndUid(discuz!!.id,userBriefInfo.uid)
                 if (firstMightExistUser != null){
                     // if not null then replace the first one
                     userBriefInfo.id = firstMightExistUser.id
                     // then delete all the existing users
-                    getInstance(this).getforumUserBriefInfoDao().deleteAllUserByDiscuzIdAndUid(bbsInfo!!.id,userBriefInfo.uid)
+                    getInstance(this).getforumUserBriefInfoDao().deleteAllUserByDiscuzIdAndUid(discuz!!.id,userBriefInfo.uid)
                 }
 
                 val insertedId = getInstance(applicationContext)
@@ -364,13 +364,13 @@ class WebViewLoginActivity : BaseStatusActivity() {
                 insertUserIdList.add(insertedId)
             }
 
-            if (bbsInfo != null) {
+            if (discuz != null) {
                 Toasty.success(
                     this,
                     String.format(
                         getString(R.string.save_user_to_bbs_successfully_template),
                         userBriefInfo.username,
-                        bbsInfo!!.site_name
+                        discuz!!.site_name
                     ),
                     Toast.LENGTH_SHORT
                 ).show()

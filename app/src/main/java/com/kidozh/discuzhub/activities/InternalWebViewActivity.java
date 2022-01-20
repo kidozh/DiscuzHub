@@ -53,7 +53,7 @@ public class InternalWebViewActivity extends BaseStatusActivity {
 
     private void getIntentInfo(){
         Intent intent = getIntent();
-        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        discuz = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         startURL =  intent.getStringExtra(ConstUtils.PASS_URL_KEY);
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(this, user);

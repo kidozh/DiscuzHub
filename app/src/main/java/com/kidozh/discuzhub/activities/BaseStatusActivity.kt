@@ -1,6 +1,8 @@
 package com.kidozh.discuzhub.activities
 
+import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
@@ -8,15 +10,17 @@ import com.google.android.material.color.DynamicColors
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.User
+import com.kidozh.discuzhub.interact.BaseStatusInteract
 import com.kidozh.discuzhub.results.BaseResult
 import com.kidozh.discuzhub.results.VariableResults
+import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.ThemeUtils
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils
 import okhttp3.OkHttpClient
 
-open class BaseStatusActivity : AppCompatActivity() {
+open class BaseStatusActivity : AppCompatActivity(), BaseStatusInteract {
     @JvmField
-    var bbsInfo: Discuz? = null
+    var discuz: Discuz? = null
     @JvmField
     public var user: User? = null
     @JvmField
@@ -108,5 +112,22 @@ open class BaseStatusActivity : AppCompatActivity() {
         const val CHARSET_UTF8 = 1
         const val CHARSET_GBK = 2
         const val CHARSET_BIG5 = 3
+    }
+
+    override fun setBaseResult(baseVariableResult: BaseResult, variableResults: VariableResults) {
+        if(user!= null && variableResults.member_uid == user!!.uid){
+            // launch a dialog
+            val alertDialog = AlertDialog.Builder(this)
+                .setTitle(R.string.user_relogin)
+                .setMessage(getString(R.string.user_login_expired, user!!.username))
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz!!)
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
+                    startActivity(intent)
+                }
+                .create()
+            alertDialog.show();
+        }
     }
 }

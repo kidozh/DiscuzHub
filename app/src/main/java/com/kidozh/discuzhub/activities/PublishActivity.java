@@ -99,7 +99,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.kidozh.discuzhub.utilities.CharsetUtils.EncodeStringByCharset;
-import static java.text.DateFormat.getDateInstance;
 import static java.text.DateFormat.getDateTimeInstance;
 
 public class PublishActivity extends BaseStatusActivity implements View.OnClickListener,
@@ -172,7 +171,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
     private void configureIntentData(){
         Intent intent = getIntent();
         forum = intent.getParcelableExtra(ConstUtils.PASS_FORUM_THREAD_KEY);
-        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        discuz = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         if(intent.getSerializableExtra(ConstUtils.PASS_THREAD_CATEGORY_KEY) !=null){
             threadCategoryMapper = (Map<String, String>) intent.getSerializableExtra(ConstUtils.PASS_THREAD_CATEGORY_KEY);
@@ -184,7 +183,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
         // check if it comes from draft box
         ThreadDraft threadDraft = (ThreadDraft) intent.getSerializableExtra(ConstUtils.PASS_THREAD_DRAFT_KEY);
         postThreadViewModel.bbsThreadDraftMutableLiveData.setValue(threadDraft);
-        URLUtils.setBBS(bbsInfo);
+        URLUtils.setBBS(discuz);
         // check the type
         postType = intent.getIntExtra(ConstUtils.PASS_POST_TYPE,0);
         replyMessage = intent.getStringExtra(ConstUtils.PASS_POST_MESSAGE);
@@ -214,7 +213,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
         fid = intent.getStringExtra("fid");
 
-        postThreadViewModel.setBBSInfo(bbsInfo, user,fid);
+        postThreadViewModel.setBBSInfo(discuz, user,fid);
         forumName = intent.getStringExtra("fid_name");
 
     }
@@ -525,7 +524,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 threadDraft = new ThreadDraft(binding.bbsPostThreadSubjectEditText.getText().toString(),
                         binding.bbsPostThreadMessage.getText().toString(),
                         new Date(),
-                        bbsInfo.getId(),
+                        discuz.getId(),
                         fid,
                         forumName,
                         String.valueOf(binding.bbsPostThreadCateSpinner.getSelectedItemPosition()),
@@ -541,7 +540,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                 threadDraft = new ThreadDraft(binding.bbsPostThreadSubjectEditText.getText().toString(),
                         binding.bbsPostThreadMessage.getText().toString(),
                         new Date(),
-                        bbsInfo.getId(),
+                        discuz.getId(),
                         fid,
                         forumName,
                         "0",
@@ -672,7 +671,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
 
     private void configureEditTools(){
         myColorPicker = new bbsColorPicker(this);
-        smileyPicker = new SmileyPicker(this, bbsInfo);
+        smileyPicker = new SmileyPicker(this, discuz);
         smileyPicker.setListener((str,a)->{
             String decodeStr = str.replace("/","")
                     .replace("\\","");

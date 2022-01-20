@@ -128,10 +128,12 @@ class FavoriteForumFragment : Fragment() {
             viewLifecycleOwner,
             { favoriteForumResult: FavoriteForumResult? ->
                 if (context is BaseStatusInteract) {
-                    (context as BaseStatusInteract?)!!.setBaseResult(
-                        favoriteForumResult,
-                        favoriteForumResult?.favoriteForumVariable
-                    )
+                    if (favoriteForumResult != null) {
+                        (context as BaseStatusInteract?)!!.setBaseResult(
+                            favoriteForumResult,
+                            favoriteForumResult.favoriteForumVariable
+                        )
+                    }
                 }
             })
     }

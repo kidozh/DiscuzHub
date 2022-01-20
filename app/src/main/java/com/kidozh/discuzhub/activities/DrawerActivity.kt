@@ -353,7 +353,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
             }
         })
         viewModel.currentBBSInformationMutableLiveData.observe(this, { Discuz: Discuz? ->
-            bbsInfo = Discuz
+            discuz = Discuz
             if (Discuz != null) {
                 binding.toolbar.title = Discuz.site_name
                 //binding.toolbarTitle.text = Discuz.site_name
@@ -672,8 +672,8 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         // detecting current bbs
-        bbsInfo = viewModel.currentBBSInformationMutableLiveData.value
-        if (bbsInfo == null) {
+        discuz = viewModel.currentBBSInformationMutableLiveData.value
+        if (discuz == null) {
             // judge the
             binding.bbsPortalNavViewpager.adapter = EmptyViewPagerAdapter(supportFragmentManager, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
             binding.bbsPortalNavView.menu.clear()

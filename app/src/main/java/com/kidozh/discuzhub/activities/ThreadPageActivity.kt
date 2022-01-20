@@ -54,7 +54,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
     lateinit var binding: ActivityThreadPageBinding
     lateinit var threadViewModel: ThreadViewModel
     lateinit var smileyViewModel: SmileyViewModel
-    lateinit var discuz: Discuz
+
     var tid = 0
     var fid = 0
     lateinit var thread : Thread
@@ -107,17 +107,17 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
         fid = intent.getIntExtra("FID", 0)
         // configure view model
 
-        threadViewModel.setBBSInfo(discuz, user, forum, thread.tid)
-        smileyViewModel.configureDiscuz(discuz, user)
+        threadViewModel.setBBSInfo(discuz!!, user, forum, thread.tid)
+        smileyViewModel.configureDiscuz(discuz!!, user)
         // init toolbar
         val sp = Html.fromHtml(thread.subject, HtmlCompat.FROM_HTML_MODE_LEGACY)
         val spannableString = SpannableString(sp)
         binding.toolbar.title = thread.subject
         smileyViewPagerAdapter = SmileyViewPagerAdapter(supportFragmentManager,
-                FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, discuz, this)
+                FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT, discuz!!, this)
 
         // init adapter
-        postAdapter = PostAdapter(discuz, user, ViewThreadQueryStatus(tid, threadViewModel.threadStatusMutableLiveData.value!!.page))
+        postAdapter = PostAdapter(discuz!!, user, ViewThreadQueryStatus(tid, threadViewModel.threadStatusMutableLiveData.value!!.page))
         networkIndicatorAdapter.successPageShown = false
         concatAdapter = ConcatAdapter(postAdapter, networkIndicatorAdapter)
         Log.d(TAG, "Get tid " + thread.tid)
@@ -534,7 +534,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                 intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum)
                 intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
-                Log.d(TAG, "put base url " + discuz.base_url)
+                Log.d(TAG, "put base url " + discuz!!.base_url)
                 VibrateUtils.vibrateForClick(this)
                 startActivity(intent)
                 return
@@ -601,7 +601,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                     if (rewriteRules != null) {
                         if (rewriteRules.containsKey("forum_forumdisplay")) {
                             var rewriteRule = rewriteRules["forum_forumdisplay"]
-                            UserPreferenceUtils.saveRewriteRule(context, discuz, UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY, rewriteRule)
+                            UserPreferenceUtils.saveRewriteRule(context, discuz!!, UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY, rewriteRule)
                             if (rewriteRule == null || clickedURLPath == null) {
                                 parseURLAndOpen(unescapedURL)
                                 return
@@ -631,7 +631,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                                     intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum)
                                     intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
-                                    Log.d(TAG, "put base url " + discuz.base_url)
+                                    Log.d(TAG, "put base url " + discuz!!.base_url)
                                     VibrateUtils.vibrateForClick(context)
                                     context.startActivity(intent)
                                     return
@@ -643,7 +643,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                         if (rewriteRules.containsKey("forum_viewthread")) {
                             // match template such as t{tid}-{page}-{prevpage}
                             var rewriteRule = rewriteRules["forum_viewthread"]
-                            UserPreferenceUtils.saveRewriteRule(context, discuz, UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY, rewriteRule)
+                            UserPreferenceUtils.saveRewriteRule(context, discuz!!, UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY, rewriteRule)
                             if (rewriteRule == null || clickedURLPath == null) {
                                 parseURLAndOpen(unescapedURL)
                                 return
@@ -689,7 +689,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                             // match template such as t{tid}-{page}-{prevpage}
                             var rewriteRule = rewriteRules["home_space"]
                             Log.d(TAG, "get home space url $rewriteRule")
-                            UserPreferenceUtils.saveRewriteRule(context, discuz, UserPreferenceUtils.REWRITE_HOME_SPACE, rewriteRule)
+                            UserPreferenceUtils.saveRewriteRule(context, discuz!!, UserPreferenceUtils.REWRITE_HOME_SPACE, rewriteRule)
                             if (rewriteRule == null || clickedURLPath == null) {
                                 parseURLAndOpen(unescapedURL)
                                 return

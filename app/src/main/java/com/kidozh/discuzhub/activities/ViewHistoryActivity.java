@@ -73,12 +73,12 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
 
     private void configureIntentData(){
         Intent intent = getIntent();
-        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        discuz = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
-        if(bbsInfo !=null){
-            URLUtils.setBBS(bbsInfo);
-            Log.d(TAG,"Recv bbs info "+bbsInfo);
-            viewModel.setBBSInfo(bbsInfo);
+        if(discuz !=null){
+            URLUtils.setBBS(discuz);
+            Log.d(TAG,"Recv bbs info "+discuz);
+            viewModel.setBBSInfo(discuz);
         }
 
 
@@ -96,7 +96,7 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
         binding.viewHistoryRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(this));
         binding.viewHistoryRecyclerview.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.HORIZONTAL));
         adapter = new ViewHistoryAdapter();
-        adapter.setInfo(bbsInfo, user);
+        adapter.setInfo(discuz, user);
         viewModel.getPagedListLiveData().observe(this,adapter::submitList);
 
         binding.viewHistoryRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(this,adapter));
@@ -119,11 +119,11 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
             @Override
             public boolean onQueryTextChange(String newText) {
                 if(!TextUtils.isEmpty(newText)){
-                    viewModel.setSearchText(bbsInfo,newText);
+                    viewModel.setSearchText(discuz,newText);
                     viewModel.getPagedListLiveData().observe((LifecycleOwner) context,adapter::submitList);
                 }
                 else {
-                    viewModel.setBBSInfo(bbsInfo);
+                    viewModel.setBBSInfo(discuz);
                     viewModel.getPagedListLiveData().observe((LifecycleOwner) context,adapter::submitList);
                 }
                 return false;
@@ -227,11 +227,11 @@ public class ViewHistoryActivity extends BaseStatusActivity implements RecyclerV
 
         @Override
         protected Void doInBackground(Void... voids) {
-            if(bbsInfo == null){
+            if(discuz == null){
                 ViewHistoryDatabase.getInstance(context).getDao().deleteAllViewHistory();
             }
             else {
-                ViewHistoryDatabase.getInstance(context).getDao().deleteViewHistoryByBBSId(bbsInfo.getId());
+                ViewHistoryDatabase.getInstance(context).getDao().deleteViewHistoryByBBSId(discuz.getId());
             }
 
             return null;

@@ -53,11 +53,11 @@ class ManageUserActivity : BaseStatusActivity(), onInteraction {
 
     private fun configureIntent() {
         val intent = intent
-        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
-        if (bbsInfo == null) {
+        discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
+        if (discuz == null) {
             finishAfterTransition()
         } else {
-            URLUtils.setBBS(bbsInfo)
+            URLUtils.setBBS(discuz)
         }
     }
 
@@ -65,15 +65,15 @@ class ManageUserActivity : BaseStatusActivity(), onInteraction {
         setSupportActionBar(binding!!.toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            binding!!.toolbar.title = bbsInfo!!.site_name
-            binding!!.toolbar.subtitle = bbsInfo!!.base_url
+            binding!!.toolbar.title = discuz!!.site_name
+            binding!!.toolbar.subtitle = discuz!!.base_url
         }
     }
 
     fun configureRecyclerView() {
         binding!!.bbsUserRecyclerview.layoutManager = LinearLayoutManager(this)
         binding!!.bbsUserRecyclerview.itemAnimator = getRecyclerviewAnimation(this)
-        userAdapter = UsersAdapter(this, bbsInfo!!)
+        userAdapter = UsersAdapter(this, discuz!!)
         binding!!.bbsUserRecyclerview.adapter =
             getAnimatedAdapter(this, userAdapter)
         // swipe to delete
@@ -91,7 +91,7 @@ class ManageUserActivity : BaseStatusActivity(), onInteraction {
     }
 
     private fun fetchUserList() {
-        viewModel.loadUserList(bbsInfo!!.id)
+        viewModel.loadUserList(discuz!!.id)
         viewModel.bbsUserInfoLiveDataList.observe(this, { Users ->
             userAdapter.userList = Users
             if (Users == null || Users.size == 0) {
@@ -106,9 +106,9 @@ class ManageUserActivity : BaseStatusActivity(), onInteraction {
         val activity: Activity = this
         binding!!.addAUser.setOnClickListener {
             val intent = Intent(activity, LoginActivity::class.java)
-            Log.d(TAG, "ADD A account $bbsInfo")
-            if (bbsInfo != null) {
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+            Log.d(TAG, "ADD A account $discuz")
+            if (discuz != null) {
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, null as User?)
                 val options = ActivityOptions.makeSceneTransitionAnimation(activity)
                 val bundle = options.toBundle()
@@ -135,8 +135,8 @@ class ManageUserActivity : BaseStatusActivity(), onInteraction {
             }
             R.id.add_item -> {
                 val intent = Intent(this, LoginActivity::class.java)
-                if (bbsInfo != null) {
-                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                if (discuz != null) {
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                     intent.putExtra(
                         ConstUtils.PASS_BBS_USER_KEY,
                         null as User?
@@ -166,7 +166,7 @@ class ManageUserActivity : BaseStatusActivity(), onInteraction {
             Log.d(TAG, "Get direction $direction")
             if (direction == ItemTouchHelper.START) {
                 val intent = Intent(this, LoginActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
                 startActivity(intent)
                 VibrateUtils.vibrateForNotice(this)
@@ -219,7 +219,7 @@ class ManageUserActivity : BaseStatusActivity(), onInteraction {
             getString(
                 R.string.bbs_delete_user_info_template,
                 userBriefInfo.username,
-                bbsInfo!!.site_name
+                discuz!!.site_name
             ),
             Snackbar.LENGTH_LONG
         )

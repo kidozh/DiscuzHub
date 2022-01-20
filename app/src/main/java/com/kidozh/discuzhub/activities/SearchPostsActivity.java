@@ -68,7 +68,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
 
     private void getIntentInfo(){
         Intent intent = getIntent();
-        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        discuz = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(this, user);
     }
@@ -82,7 +82,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
 
     private void configurePostStartURL(){
         // this should be fixed
-        searchPostURL = bbsInfo.base_url+"/search.php?mod=forum&mobile=2";
+        searchPostURL = discuz.base_url+"/search.php?mod=forum&mobile=2";
     }
 
     void configureWebview(){
@@ -150,7 +150,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             //return false;
-            return parseURLAndOpen(activity,bbsInfo, user,request.getUrl().toString());
+            return parseURLAndOpen(activity,discuz, user,request.getUrl().toString());
             //return super.shouldOverrideUrlLoading(view, request);
         }
     }
@@ -183,7 +183,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
     }
 
     public static boolean parseURLAndOpen(Context context,
-                                          Discuz bbsInfo,
+                                          Discuz discuz,
                                           User userBriefInfo,
                                           String url) {
         // simple unescape
@@ -196,7 +196,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
         Log.d(TAG, "Parse and open URL " + url);
 
         Uri uri = Uri.parse(url);
-        Uri baseUri = Uri.parse(bbsInfo.base_url);
+        Uri baseUri = Uri.parse(discuz.base_url);
         Uri clickedUri = Uri.parse(url);
         String clickedURLPath = clickedUri.getPath();
         String basedURLPath = baseUri.getPath();
@@ -215,11 +215,11 @@ public class SearchPostsActivity extends BaseStatusActivity {
                 if(!TextUtils.isEmpty(
                         UserPreferenceUtils.getRewriteRule(
                                 context,
-                                bbsInfo,
+                                discuz,
                                 UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY))
                 ){
-                    String rewriteRule = UserPreferenceUtils.getRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY);
-                    UserPreferenceUtils.saveRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY,rewriteRule);
+                    String rewriteRule = UserPreferenceUtils.getRewriteRule(context,discuz,UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY);
+                    UserPreferenceUtils.saveRewriteRule(context,discuz,UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY,rewriteRule);
 
                     // match template such as f{fid}-{page}
                     // crate reverse copy
@@ -245,9 +245,9 @@ public class SearchPostsActivity extends BaseStatusActivity {
                             clickedForum.fid = fid;
 
                             intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY,clickedForum);
-                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,discuz);
                             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-                            Log.d(TAG,"put base url "+bbsInfo.base_url);
+                            Log.d(TAG,"put base url "+discuz.base_url);
                             VibrateUtils.vibrateForClick(context);
                             context.startActivity(intent);
                             return true;
@@ -256,10 +256,10 @@ public class SearchPostsActivity extends BaseStatusActivity {
                     }
 
                 }
-                if(!TextUtils.isEmpty(UserPreferenceUtils.getRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY))){
+                if(!TextUtils.isEmpty(UserPreferenceUtils.getRewriteRule(context,discuz,UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY))){
                     // match template such as t{tid}-{page}-{prevpage}
-                    String rewriteRule = UserPreferenceUtils.getRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY);
-                    UserPreferenceUtils.saveRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY,rewriteRule);
+                    String rewriteRule = UserPreferenceUtils.getRewriteRule(context,discuz,UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY);
+                    UserPreferenceUtils.saveRewriteRule(context,discuz,UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY,rewriteRule);
 
                     // match template such as f{fid}-{page}
                     // crate reverse copy
@@ -286,7 +286,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
 
                             putThread.tid = tid;
                             Intent intent = new Intent(context, ThreadActivity.class);
-                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,discuz);
                             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                             intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThread);
                             intent.putExtra("FID","0");
@@ -303,10 +303,10 @@ public class SearchPostsActivity extends BaseStatusActivity {
                     }
                 }
 
-                if(!TextUtils.isEmpty(UserPreferenceUtils.getRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_HOME_SPACE))){
+                if(!TextUtils.isEmpty(UserPreferenceUtils.getRewriteRule(context,discuz,UserPreferenceUtils.REWRITE_HOME_SPACE))){
                     // match template such as s{user}-{name}
-                    String rewriteRule = UserPreferenceUtils.getRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_HOME_SPACE);
-                    //UserPreferenceUtils.saveRewriteRule(context,bbsInfo,UserPreferenceUtils.REWRITE_HOME_SPACE,rewriteRule);
+                    String rewriteRule = UserPreferenceUtils.getRewriteRule(context,discuz,UserPreferenceUtils.REWRITE_HOME_SPACE);
+                    //UserPreferenceUtils.saveRewriteRule(context,discuz,UserPreferenceUtils.REWRITE_HOME_SPACE,rewriteRule);
                     Log.d(TAG,"Get home space rewrite url "+rewriteRule+" path "+clickedURLPath);
 
                     // match template such as f{fid}-{page}
@@ -332,7 +332,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
 
 
                             Intent intent = new Intent(context, UserProfileActivity.class);
-                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,discuz);
                             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
                             intent.putExtra("UID",uid);
 
@@ -373,7 +373,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
                     Thread putThread = new Thread();
                     putThread.tid = redirectTid;
                     Intent intent = new Intent(context, ThreadActivity.class);
-                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz);
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThread);
                     intent.putExtra("FID", 0);
@@ -398,7 +398,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
                     Thread putThread = new Thread();
                     putThread.tid = redirectTid;
                     Intent intent = new Intent(context, ThreadActivity.class);
-                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz);
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra(ConstUtils.PASS_THREAD_KEY, putThread);
                     intent.putExtra("FID", 0);
@@ -426,9 +426,9 @@ public class SearchPostsActivity extends BaseStatusActivity {
                     clickedForum.fid = fid;
 
                     intent.putExtra(ConstUtils.PASS_FORUM_THREAD_KEY, clickedForum);
-                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz);
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
-                    Log.d(TAG, "put base url " + bbsInfo.base_url);
+                    Log.d(TAG, "put base url " + discuz.base_url);
                     VibrateUtils.vibrateForClick(context);
                     context.startActivity(intent);
                     return true;
@@ -447,7 +447,7 @@ public class SearchPostsActivity extends BaseStatusActivity {
                     }
 
                     Intent intent = new Intent(context, UserProfileActivity.class);
-                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo);
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz);
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo);
                     intent.putExtra("UID", uid);
 

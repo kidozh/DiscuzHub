@@ -120,10 +120,12 @@ class UserNotificationFragment() : Fragment() {
             viewLifecycleOwner,
             Observer { userNoteListResult ->
                 if (context is BaseStatusInteract) {
-                    (context as BaseStatusInteract?)!!.setBaseResult(
-                        userNoteListResult,
-                        userNoteListResult?.noteListVariableResult
-                    )
+                    userNoteListResult?.noteListVariableResult?.let {
+                        (context as BaseStatusInteract?)!!.setBaseResult(
+                            userNoteListResult,
+                            it
+                        )
+                    }
                 }
                 Log.d(TAG, "Recv notelist $userNoteListResult")
                 if (userNoteListResult?.noteListVariableResult != null) {

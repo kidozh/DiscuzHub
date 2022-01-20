@@ -52,7 +52,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
         setContentView(binding.root)
         viewModel = ViewModelProvider(this).get(SingleDiscuzViewModel::class.java)
         getIntentInfo()
-        if(bbsInfo == null){
+        if(discuz == null){
             // activate single routes
             finishAfterTransition();
             return;
@@ -63,14 +63,14 @@ class SingleDiscuzActivity : BaseStatusActivity() {
     }
 
     fun getIntentInfo(){
-        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
+        discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
 
     }
 
     fun configureToolbar(){
         setSupportActionBar(binding.toolbar)
         binding.toolbar.navigationIcon = getDrawable(R.drawable.ic_menu_24px)
-        binding.toolbar.title = bbsInfo?.site_name ?: ""
+        binding.toolbar.title = discuz?.site_name ?: ""
 
     }
 
@@ -182,13 +182,13 @@ class SingleDiscuzActivity : BaseStatusActivity() {
     }
 
     fun bindViewModel(){
-        if(bbsInfo !=null){
-            viewModel.setBBSInfo(bbsInfo!!)
+        if(discuz !=null){
+            viewModel.setBBSInfo(discuz!!)
         }
 
-        viewModel.currentBBSMutableLiveData.observe(this, Observer { bbsInfo ->
-            if (bbsInfo != null) {
-                binding.toolbar.title = bbsInfo.site_name
+        viewModel.currentBBSMutableLiveData.observe(this, Observer { discuz ->
+            if (discuz != null) {
+                binding.toolbar.title = discuz.site_name
             }
         })
         viewModel.currentUserMutableLiveData.observe(this, Observer { user ->
@@ -198,9 +198,9 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                         getDrawable(R.drawable.ic_anonymous_user_icon_24px)
                 )
                 navHeaderBinding.headerTitle.setText(R.string.bbs_anonymous_mode_title)
-                if(bbsInfo!=null){
+                if(discuz!=null){
                     navHeaderBinding.headerSubtitle.setText(
-                            getString(R.string.bbs_anonymous_mode_description, bbsInfo!!.site_name))
+                            getString(R.string.bbs_anonymous_mode_description, discuz!!.site_name))
                 }
 
             } else {
@@ -209,7 +209,6 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                     avatar_num = -avatar_num
                 }
                 val avatarResource: Int = getResources().getIdentifier(String.format("avatar_%s", avatar_num + 1), "drawable", packageName)
-                URLUtils.bbsInfo = bbsInfo
                 val source: String = URLUtils.getLargeAvatarUrlByUid(user.uid)
                 val glideUrl = GlideUrl(source,
                         LazyHeaders.Builder().addHeader("referer", source).build()
@@ -296,16 +295,16 @@ class SingleDiscuzActivity : BaseStatusActivity() {
     inner class AnonymousViewPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
         override fun getItem(position: Int): Fragment {
 
-            val bbsInfo: Discuz? = this@SingleDiscuzActivity.viewModel.currentBBSMutableLiveData.value
+            val discuz: Discuz? = this@SingleDiscuzActivity.viewModel.currentBBSMutableLiveData.value
             user = viewModel.currentUserMutableLiveData.value
             when (position) {
                 0 -> {
-                    val homeFragment: HomeFragment = HomeFragment.newInstance(bbsInfo, user)
+                    val homeFragment: HomeFragment = HomeFragment.newInstance(discuz, user)
                     return homeFragment
                 }
-                1 -> return DashBoardFragment.newInstance(bbsInfo, user)
+                1 -> return DashBoardFragment.newInstance(discuz, user)
             }
-            return HomeFragment.newInstance(bbsInfo, user)
+            return HomeFragment.newInstance(discuz, user)
         }
 
         override fun getCount(): Int {
@@ -315,19 +314,19 @@ class SingleDiscuzActivity : BaseStatusActivity() {
 
     inner class UserViewPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
         override fun getItem(position: Int): Fragment {
-            val bbsInfo: Discuz? = this@SingleDiscuzActivity.viewModel.currentBBSMutableLiveData.value
+            val discuz: Discuz? = this@SingleDiscuzActivity.viewModel.currentBBSMutableLiveData.value
             val user: User? = this@SingleDiscuzActivity.viewModel.currentUserMutableLiveData.value
             when (position) {
                 0 -> {
-                    return HomeFragment.newInstance(bbsInfo, user)
+                    return HomeFragment.newInstance(discuz, user)
                 }
-                1 -> return DashBoardFragment.newInstance(bbsInfo, user)
+                1 -> return DashBoardFragment.newInstance(discuz, user)
                 2 -> {
-                    val notificationsFragment = NotificationsFragment(bbsInfo, user)
+                    val notificationsFragment = NotificationsFragment(discuz, user)
                     return notificationsFragment
                 }
             }
-            return HomeFragment.newInstance(bbsInfo, user)
+            return HomeFragment.newInstance(discuz, user)
         }
 
         override fun getCount(): Int {
@@ -353,12 +352,12 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                 return true
             }
             R.id.bbs_share -> {
-                val bbsInfo: Discuz? = viewModel.currentBBSMutableLiveData.getValue()
-                if (bbsInfo != null) {
+                val discuz: Discuz? = viewModel.currentBBSMutableLiveData.getValue()
+                if (discuz != null) {
                     val sendIntent = Intent()
                     sendIntent.action = Intent.ACTION_SEND
                     sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_template,
-                            bbsInfo.site_name, bbsInfo.base_url))
+                            discuz.site_name, discuz.base_url))
                     sendIntent.type = "text/plain"
                     val shareIntent = Intent.createChooser(sendIntent, null)
                     startActivity(shareIntent)

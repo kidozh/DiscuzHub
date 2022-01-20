@@ -126,7 +126,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
                         username,"",username,""
                 );
                 Intent intent = new Intent(getApplicationContext(), PrivateMessageActivity.class);
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,discuz);
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user);
                 intent.putExtra(ConstUtils.PASS_PRIVATE_MESSAGE_KEY,privateM);
 
@@ -144,20 +144,20 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
     private void getIntentInfo(){
         Intent intent = getIntent();
-        bbsInfo = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
+        discuz = (Discuz) intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY);
         user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         user = (User) intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY);
         userId = intent.getIntExtra("UID",0);
-        if(bbsInfo == null){
+        if(discuz == null){
             finishAfterTransition();
         }
         else {
-            Log.d(TAG,"get bbs name "+bbsInfo.site_name);
-            URLUtils.setBBS(bbsInfo);
-            viewModel.setBBSInfo(bbsInfo, user, userId);
+            Log.d(TAG,"get bbs name "+discuz.site_name);
+            URLUtils.setBBS(discuz);
+            viewModel.setBBSInfo(discuz, user, userId);
         }
         if(getSupportActionBar()!=null){
-            getSupportActionBar().setTitle(bbsInfo.site_name);
+            getSupportActionBar().setTitle(discuz.site_name);
         }
         client = NetworkUtils.getPreferredClientWithCookieJarByUser(this, user);
         if(user !=null && userId == user.uid){
@@ -267,11 +267,11 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
                     SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     boolean recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history),false);
-                    if(recordHistory && bbsInfo != null){
+                    if(recordHistory && discuz != null){
                         new InsertViewHistory(new ViewHistory(
                                 URLUtils.getDefaultAvatarUrlByUid(uid),
                                 username,
-                                bbsInfo.getId(),
+                                discuz.getId(),
                                 userProfileResult.userProfileVariableResult.space.sigatureHtml,
                                 ViewHistory.VIEW_TYPE_USER_PROFILE,
                                 uid,
@@ -609,7 +609,7 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
     @Override
     public boolean onLinkClicked(@NonNull String url) {
-        bbsLinkMovementMethod.Companion.onLinkClicked(this,bbsInfo, user,url);
+        bbsLinkMovementMethod.Companion.onLinkClicked(this,discuz, user,url);
         return true;
     }
 

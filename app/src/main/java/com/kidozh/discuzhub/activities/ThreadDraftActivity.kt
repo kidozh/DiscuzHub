@@ -43,26 +43,26 @@ class ThreadDraftActivity : BaseStatusActivity(), onRecyclerviewSwiped {
 
     private fun configureIntentData() {
         val intent = intent
-        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
+        discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
         user = intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY) as User?
     }
 
     private fun configureActionBar() {
         setSupportActionBar(binding!!.toolbar)
         binding!!.toolbar.title = getString(R.string.bbs_draft_box)
-        binding!!.toolbar.subtitle = bbsInfo!!.site_name
+        binding!!.toolbar.subtitle = discuz!!.site_name
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun configureRecyclerview() {
         binding!!.bbsShowThreadDraftRecyclerview.layoutManager = LinearLayoutManager(this)
-        threadDraftAdapter = ThreadDraftAdapter(bbsInfo, user)
+        threadDraftAdapter = ThreadDraftAdapter(discuz, user)
         binding!!.bbsShowThreadDraftRecyclerview.itemAnimator = getRecyclerviewAnimation(this)
         binding!!.bbsShowThreadDraftRecyclerview.adapter =
             getAnimatedAdapter(this, threadDraftAdapter!!)
         listLiveData = ThreadDraftDatabase.getInstance(this)
             .getbbsThreadDraftDao()
-            .getAllThreadDraftByBBSId(bbsInfo!!.id)
+            .getAllThreadDraftByBBSId(discuz!!.id)
         listLiveData.observe(this, { ThreadDrafts ->
             if (ThreadDrafts != null && ThreadDrafts.isNotEmpty()) {
                 threadDraftAdapter!!.threadDraftList = ThreadDrafts
@@ -109,7 +109,7 @@ class ThreadDraftActivity : BaseStatusActivity(), onRecyclerviewSwiped {
         } else {
             val alertDialogs = MaterialAlertDialogBuilder(this)
                 .setTitle(getString(R.string.bbs_delete_all_draft))
-                .setMessage(getString(R.string.bbs_delete_all_drafts_alert, bbsInfo!!.site_name))
+                .setMessage(getString(R.string.bbs_delete_all_drafts_alert, discuz!!.site_name))
                 .setNegativeButton(getString(android.R.string.cancel)) { _, _ -> }
                 .setPositiveButton(getString(android.R.string.ok)) { _, _ ->
                     deleteAllThreadDraft()
@@ -139,7 +139,7 @@ class ThreadDraftActivity : BaseStatusActivity(), onRecyclerviewSwiped {
         Thread{
             ThreadDraftDatabase
                 .getInstance(this)
-                .getbbsThreadDraftDao().deleteAllForumInformation(bbsInfo!!.id)
+                .getbbsThreadDraftDao().deleteAllForumInformation(discuz!!.id)
         }.start()
     }
 
@@ -156,7 +156,7 @@ class ThreadDraftActivity : BaseStatusActivity(), onRecyclerviewSwiped {
     private fun showUndoSnackbar(threadDraft: ThreadDraft) {
         val view = findViewById<View>(R.id.bbs_show_thread_draft_coordinatorlayout)
         val snackbar = Snackbar.make(
-            view, getString(R.string.bbs_delete_draft, threadDraft.subject, bbsInfo!!.site_name),
+            view, getString(R.string.bbs_delete_draft, threadDraft.subject, discuz!!.site_name),
             Snackbar.LENGTH_LONG
         )
         snackbar.setAction(R.string.bbs_undo_delete) { undoDeleteDraft(threadDraft) }

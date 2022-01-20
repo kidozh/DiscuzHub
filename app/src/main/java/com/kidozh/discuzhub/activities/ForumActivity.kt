@@ -70,7 +70,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
         configureIntentData()
         bindViewModel()
         configureActionBar()
-        Log.d(TAG, "Get bbs information $bbsInfo")
+        Log.d(TAG, "Get bbs information $discuz")
         initLiveData()
 
         configureFab()
@@ -84,13 +84,13 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
     private fun configureIntentData() {
         val intent = intent
         forum = intent.getSerializableExtra(ConstUtils.PASS_FORUM_THREAD_KEY) as Forum
-        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
+        discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
         user = intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY) as User?
-        URLUtils.setBBS(bbsInfo)
+        URLUtils.setBBS(discuz)
         fid = forum.fid.toString()
-        forumViewModel.setBBSInfo(bbsInfo!!, user, forum)
+        forumViewModel.setBBSInfo(discuz!!, user, forum)
         // hasLoadOnce = intent.getBooleanExtra(bbsConstUtils.PASS_IS_VIEW_HISTORY,false);
-        forumRuleFragment = ForumRuleFragment(bbsInfo!!,user,forum)
+        forumRuleFragment = ForumRuleFragment(discuz!!,user,forum)
     }
 
     private fun bindViewModel() {
@@ -176,6 +176,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                     this@ForumActivity.forum = forum
                     binding.toolbar.title = forum.name
                     binding.toolbar.subtitle = forum.fid.toString()
+                    this.setBaseResult(forumResult, forumResult.forumVariables)
 
                 }
             })
@@ -219,7 +220,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                 ViewHistory(
                     forum.iconUrl,
                     forum.name,
-                    bbsInfo!!.id,
+                    discuz!!.id,
                     forum.description,
                     ViewHistory.VIEW_TYPE_FORUM,
                     forum.fid,
@@ -258,7 +259,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                     val intent = Intent(context, PublishActivity::class.java)
                     intent.putExtra("fid", fid)
                     intent.putExtra("fid_name", forum.name)
-                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                     intent.putExtra(ConstUtils.PASS_POST_TYPE, ConstUtils.TYPE_POST_THREAD)
                     if (forumViewModel.displayForumResultMutableLiveData
@@ -279,7 +280,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                         Toast.LENGTH_LONG
                     ).show()
                     val intent = Intent(context, LoginActivity::class.java)
-                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                     intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                     startActivity(intent)
                 }
@@ -290,11 +291,11 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
     }
 
     private fun configureActionBar() {
-        binding.toolbar.title = bbsInfo!!.site_name
+        binding.toolbar.title = discuz!!.site_name
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setDisplayShowTitleEnabled(true)
-        binding.toolbar.title = bbsInfo!!.site_name
+        binding.toolbar.title = discuz!!.site_name
 
         if (forum.name != null) {
             binding.toolbar.title = forum.name
@@ -308,13 +309,13 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
 //        binding.bbsForumSublist.setHasFixedSize(true)
 //        binding.bbsForumSublist.itemAnimator = getRecyclerviewAnimation(this)
 //        binding.bbsForumSublist.layoutManager = GridLayoutManager(this, 4)
-        subForumAdapter = SubForumAdapter(bbsInfo, user)
+        subForumAdapter = SubForumAdapter(discuz, user)
 //        binding.bbsForumSublist.adapter = getAnimatedAdapter(this, subForumAdapter)
         binding.bbsForumThreadRecyclerview.setHasFixedSize(true)
         binding.bbsForumThreadRecyclerview.itemAnimator = getRecyclerviewAnimation(this)
         val linearLayoutManager = LinearLayoutManager(this)
         binding.bbsForumThreadRecyclerview.layoutManager = linearLayoutManager
-        adapter = ThreadAdapter(null, bbsInfo!!, user)
+        adapter = ThreadAdapter(null, discuz!!, user)
         concatAdapter = ConcatAdapter(subForumAdapter,adapter, networkIndicatorAdapter)
         binding.bbsForumThreadRecyclerview.adapter = getAnimatedAdapter(this, concatAdapter!!)
         binding.bbsForumThreadRecyclerview.addOnScrollListener(object :
@@ -359,7 +360,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
 
     private fun configureFab() {}
     override fun onLinkClicked(url: String): Boolean {
-        return bbsLinkMovementMethod.onLinkClicked(this, bbsInfo!!, user, url)
+        return bbsLinkMovementMethod.onLinkClicked(this, discuz!!, user, url)
     }
 
     override fun onRefreshBtnClicked() {
@@ -399,7 +400,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
 
             R.id.bbs_forum_nav_personal_center -> {
                 val intent = Intent(this, UserProfileActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                 intent.putExtra("UID", user!!.uid.toString())
                 startActivity(intent)
@@ -407,14 +408,14 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
             }
             R.id.bbs_forum_nav_draft_box -> {
                 val intent = Intent(this, ThreadDraftActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                 startActivity(intent, null)
                 true
             }
             R.id.bbs_forum_nav_show_in_webview -> {
                 val intent = Intent(this, InternalWebViewActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                 intent.putExtra(ConstUtils.PASS_URL_KEY, currentUrl)
                 Log.d(TAG, "Inputted URL $currentUrl")
@@ -423,7 +424,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
             }
             R.id.bbs_search -> {
                 val intent = Intent(this, SearchPostsActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
                 startActivity(intent)
                 true
@@ -472,7 +473,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                 if (result != null) {
                     val forum = result.forumVariables.forum
                     val favoriteForum = forum.toFavoriteForm(
-                        bbsInfo!!.id,
+                        discuz!!.id,
                         if (user != null) user!!.uid else 0
                     )
                     // save it to the database
@@ -583,7 +584,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
         var favoriteForumActionResultCall: Call<ApiMessageActionResult?>? = null
         var messageResult: MessageResult? = null
 
-        val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo!!.base_url, forumViewModel.client)
+        val retrofit = NetworkUtils.getRetrofitInstance(discuz!!.base_url, forumViewModel.client)
         val service = retrofit.create(DiscuzApiService::class.java)
         val result = forumViewModel.displayForumResultMutableLiveData.value
         val dao = FavoriteForumDatabase.getInstance(applicationContext).dao
@@ -627,7 +628,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                         val key = result.message!!.key
                         if (favorite && key == "favorite_do_success") {
                             dao!!.delete(
-                                bbsInfo!!.id,
+                                discuz!!.id,
                                 if (user != null) user!!.uid else 0,
                                 favoriteForum.idKey
                             )
@@ -635,14 +636,14 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                         }
                         if (favorite && key == "favorite_repeat") {
                             dao!!.delete(
-                                bbsInfo!!.id,
+                                discuz!!.id,
                                 if (user != null) user!!.uid else 0,
                                 favoriteForum.idKey
                             )
                             dao.insert(favoriteForum)
                         } else if (!favorite && key == "do_success") {
                             dao.delete(favoriteForum)
-                            dao.delete(bbsInfo!!.id, user!!.uid, favoriteForum.idKey)
+                            dao.delete(discuz!!.id, user!!.uid, favoriteForum.idKey)
                         } else {
                             containError = true
                         }
@@ -652,7 +653,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                         messageResult!!.key = response.code().toString()
                         if (favorite) {
                             dao!!.delete(
-                                bbsInfo!!.id,
+                                discuz!!.id,
                                 if (user != null) user!!.uid else 0,
                                 favoriteForum.idKey
                             )
@@ -662,7 +663,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
 
                             // clear potential
                             dao!!.delete(
-                                bbsInfo!!.id,
+                                discuz!!.id,
                                 if (user != null) user!!.uid else 0,
                                 favoriteForum.idKey
                             )
@@ -680,7 +681,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                     // insert as local database
                     if (favorite) {
                         dao!!.delete(
-                            bbsInfo!!.id,
+                            discuz!!.id,
                             if (user != null) user!!.uid else 0,
                             favoriteForum.idKey
                         )
@@ -689,7 +690,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                     } else {
                         // clear potential
                         dao!!.delete(
-                            bbsInfo!!.id,
+                            discuz!!.id,
                             if (user != null) user!!.uid else 0,
                             favoriteForum.idKey
                         )
@@ -701,7 +702,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
             } else {
                 if (favorite) {
                     dao!!.delete(
-                        bbsInfo!!.id,
+                        discuz!!.id,
                         if (user != null) user!!.uid else 0,
                         favoriteForum.idKey
                     )
@@ -710,7 +711,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                 } else {
                     // clear potential
                     dao!!.delete(
-                        bbsInfo!!.id,
+                        discuz!!.id,
                         if (user != null) user!!.uid else 0,
                         favoriteForum.idKey
                     )

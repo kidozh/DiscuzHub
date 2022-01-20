@@ -56,9 +56,9 @@ class LoginActivity : BaseStatusActivity() {
     }
 
     private fun setInformation() {
-        binding.loginBbsTitle.text = bbsInfo!!.site_name
+        binding.loginBbsTitle.text = discuz!!.site_name
         if (user == null) {
-            binding.loginBbsUrl.text = bbsInfo!!.base_url
+            binding.loginBbsUrl.text = discuz!!.base_url
         } else {
             binding.toolbar.title = getString(R.string.user_relogin, user!!.username)
             binding.loginBbsUrl.text = getString(R.string.user_relogin, user!!.username)
@@ -211,7 +211,7 @@ class LoginActivity : BaseStatusActivity() {
                     val key = loginMessage.key
                     if (key == "login_succeed") {
                         val user = loginResult.variables.userBriefInfo
-                        user.belongedBBSID = bbsInfo!!.id
+                        user.belongedBBSID = discuz!!.id
                         user.id = user.id
                         Toasty.success(
                             this,
@@ -222,7 +222,7 @@ class LoginActivity : BaseStatusActivity() {
                             ),
                             Toast.LENGTH_LONG
                         ).show()
-                        saveUserToDatabase(user, client, bbsInfo!!.base_url)
+                        saveUserToDatabase(user, client, discuz!!.base_url)
                     } else {
                         // refresh the captcha
                         viewModel!!.loadSecureInfo()
@@ -301,7 +301,7 @@ class LoginActivity : BaseStatusActivity() {
         }
         binding.loginBbsLoginInWebButton.setOnClickListener {
             val intent = Intent(applicationContext, WebViewLoginActivity::class.java)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
             startActivity(intent)
         }
     }
@@ -311,13 +311,13 @@ class LoginActivity : BaseStatusActivity() {
         var insertedId: Long = 0
         Thread{
             // may clear all the users first
-            val firstMightExistUser = UserDatabase.getInstance(this).getforumUserBriefInfoDao().getFirstUserByDiscuzIdAndUid(bbsInfo!!.id,userBriefInfo.uid)
+            val firstMightExistUser = UserDatabase.getInstance(this).getforumUserBriefInfoDao().getFirstUserByDiscuzIdAndUid(discuz!!.id,userBriefInfo.uid)
             Log.d(TAG,"GET all users(${userBriefInfo.uid}) from database $firstMightExistUser")
             if (firstMightExistUser != null){
                 // if not null then replace the first one
                 userBriefInfo.id = firstMightExistUser.id
                 // then delete all the existing users
-                UserDatabase.getInstance(this).getforumUserBriefInfoDao().deleteAllUserByDiscuzIdAndUid(bbsInfo!!.id,userBriefInfo.uid)
+                UserDatabase.getInstance(this).getforumUserBriefInfoDao().deleteAllUserByDiscuzIdAndUid(discuz!!.id,userBriefInfo.uid)
             }
             // then insert this to database
             insertedId = UserDatabase.getInstance(applicationContext).getforumUserBriefInfoDao().insert(userBriefInfo)
@@ -358,8 +358,8 @@ class LoginActivity : BaseStatusActivity() {
         setSupportActionBar(binding.toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            binding.toolbar.title = getString(R.string.login_bbs_title, bbsInfo!!.site_name)
-            if (bbsInfo!!.isSecureClient) {
+            binding.toolbar.title = getString(R.string.login_bbs_title, discuz!!.site_name)
+            if (discuz!!.isSecureClient) {
                 binding.loginBbsNotice.visibility = View.GONE
             } else {
                 binding.loginBbsNotice.visibility = View.VISIBLE
@@ -369,16 +369,16 @@ class LoginActivity : BaseStatusActivity() {
 
     private fun configureData() {
         val intent = intent
-        bbsInfo = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
+        discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
         user = intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY) as User?
         client = NetworkUtils.getPreferredClientWithCookieJar(this)
-        viewModel!!.setInfo(bbsInfo!!, user, client)
-        if (bbsInfo == null) {
+        viewModel!!.setInfo(discuz!!, user, client)
+        if (discuz == null) {
             finishAfterTransition()
         } else {
-            Log.d(TAG, "get bbs name " + bbsInfo!!.site_name)
-            URLUtils.setBBS(bbsInfo)
-            //bbsURLUtils.setBaseUrl(bbsInfo.base_url);
+            Log.d(TAG, "get bbs name " + discuz!!.site_name)
+            URLUtils.setBBS(discuz)
+            //bbsURLUtils.setBaseUrl(discuz.base_url);
         }
         if (supportActionBar != null) {
             if (user == null) {
@@ -386,7 +386,7 @@ class LoginActivity : BaseStatusActivity() {
             } else {
                 binding.toolbar.title = getString(R.string.user_relogin, user!!.username)
             }
-            binding.toolbar.subtitle = bbsInfo!!.site_name
+            binding.toolbar.subtitle = discuz!!.site_name
             // clear it first
             getSharedPreferences("CookiePersistence", MODE_PRIVATE).edit().clear().apply()
         }

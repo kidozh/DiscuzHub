@@ -2,8 +2,6 @@ package com.kidozh.discuzhub.activities
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -11,31 +9,23 @@ import android.view.View.OnFocusChangeListener
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment
-import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment.Companion.newInstance
 import com.kidozh.discuzhub.adapter.PrivateDetailMessageAdapter
 import com.kidozh.discuzhub.adapter.SmileyViewPagerAdapter
 import com.kidozh.discuzhub.databinding.ActivityBbsPrivateMessageDetailBinding
 import com.kidozh.discuzhub.entities.Discuz
-import com.kidozh.discuzhub.entities.Smiley
 import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.utilities.*
 import com.kidozh.discuzhub.utilities.bbsParseUtils.privateMessage
 import com.kidozh.discuzhub.viewModels.PrivateMessageViewModel
 import com.kidozh.discuzhub.viewModels.SmileyViewModel
 import es.dmoral.toasty.Toasty
-import okhttp3.*
-import java.io.IOException
-import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
-import java.util.*
 
 class PrivateMessageActivity : BaseStatusActivity(), SmileyFragment.OnSmileyPressedInteraction {
     lateinit var privateMessageInfo: privateMessage
@@ -65,7 +55,7 @@ class PrivateMessageActivity : BaseStatusActivity(), SmileyFragment.OnSmileyPres
 
     private fun configureSmileyLayout() {
         handler = EmotionInputHandler(binding.bbsPrivateMessageCommentEditText) { enable: Boolean, s: String? -> }
-        smileyPicker = SmileyPicker(this, bbsInfo)
+        smileyPicker = SmileyPicker(this, discuz)
         smileyPicker!!.setListener { str: String?, a: Drawable? -> handler!!.insertSmiley(str, a) }
         binding.bbsPrivateMessageCommentSmileyTabLayout.setupWithViewPager(binding.bbsPrivateMessageCommentSmileyViewPager)
         binding.bbsPrivateMessageCommentSmileyViewPager.adapter = smileyViewPagerAdapter
@@ -88,7 +78,7 @@ class PrivateMessageActivity : BaseStatusActivity(), SmileyFragment.OnSmileyPres
     private fun configureRecyclerview() {
         val linearLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, true)
         binding.bbsPrivateMessageDetailRecyclerview.layoutManager = linearLayoutManager
-        adapter = PrivateDetailMessageAdapter(bbsInfo!!, user)
+        adapter = PrivateDetailMessageAdapter(discuz!!, user)
         binding.bbsPrivateMessageDetailRecyclerview.adapter = adapter
         privateMessageViewModel.queryPrivateMessage()
     }
@@ -211,7 +201,7 @@ class PrivateMessageActivity : BaseStatusActivity(), SmileyFragment.OnSmileyPres
     fun configureIntent(){
         val intent = intent
         val discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
-        this.bbsInfo = discuz
+        this.discuz = discuz
         user = intent.getSerializableExtra(ConstUtils.PASS_BBS_USER_KEY) as User?
         model.configureDiscuz(discuz,user)
         smileyViewPagerAdapter = SmileyViewPagerAdapter(supportFragmentManager,

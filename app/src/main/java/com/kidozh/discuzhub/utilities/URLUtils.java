@@ -49,15 +49,6 @@ public class URLUtils {
     }
 
 
-
-    public static final String FILTER_TYPE_POLL = "FILTER_TYPE_POLL",
-            FILTER_TYPE_NEWEST = "FILTER_TYPE_NEWEST",
-            FILTER_TYPE_HEATS = "FILTER_TYPE_HEATS",
-            FILTER_TYPE_HOTTEST = "FILTER_TYPE_HOTTEST",
-            FILTER_TYPE_DIGEST = "FILTER_TYPE_DIGEST",
-            FILTER_TYPE_ID = "FILTER_TYPE_ID";
-
-
     public static String getSmallAvatarUrlByUid(String uid){
         return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=small",uid);
     }
