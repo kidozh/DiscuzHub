@@ -179,6 +179,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
 
         threadViewModel.threadPostResultMutableLiveData.observe(this, {
             if (it != null) {
+                this.setBaseResult(it, it.threadPostVariables)
                 // rendering subject
                 val threadInfo = it.threadPostVariables.detailedThreadInfo
                 val sp = Html.fromHtml(threadInfo.subject, HtmlCompat.FROM_HTML_MODE_LEGACY)

@@ -133,6 +133,7 @@ class PrivateMessageActivity : BaseStatusActivity(), SmileyFragment.OnSmileyPres
     private fun bindViewModel(){
         model.smileyResultLiveData.observe(this,  { it->
             if(it != null){
+                this.setBaseResult(it, it.variables)
                 val smileyList = it.variables.smileyList
                 smileyViewPagerAdapter.smileyList = smileyList
                 binding.bbsPrivateMessageCommentSmileyTabLayout.getTabAt(0)?.icon = ContextCompat.getDrawable(this,R.drawable.ic_baseline_history_24)

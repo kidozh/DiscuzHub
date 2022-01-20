@@ -170,120 +170,118 @@ public class UserProfileActivity extends BaseStatusActivity implements
 
 
     private void bindViewModel(){
-        viewModel.getUserProfileResultLiveData().observe(this, new Observer<UserProfileResult>() {
-            @Override
-            public void onChanged(UserProfileResult userProfileResult) {
-                Log.d(TAG,"User profile result "+userProfileResult);
+        viewModel.getUserProfileResultLiveData().observe(this, userProfileResult -> {
+            Log.d(TAG,"User profile result "+userProfileResult);
 
-                if(userProfileResult !=null
-                        && userProfileResult.userProfileVariableResult !=null
-                        && userProfileResult.userProfileVariableResult.space !=null){
-                    UserProfileResult.SpaceVariables spaceVariables = userProfileResult.userProfileVariableResult.space;
-                    String username = userProfileResult.userProfileVariableResult.space.username;
-                    if(getSupportActionBar()!=null){
-                        getSupportActionBar().setSubtitle(username);
-                    }
-
-
-                    // for avatar rendering
-                    OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(getApplication()));
-                    Glide.get(getApplicationContext()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
-                    int uid = userProfileResult.userProfileVariableResult.space.uid;
-                    int avatar_num = uid % 16;
-                    if(avatar_num < 0){
-                        avatar_num = -avatar_num;
-                    }
-
-                    int avatarResource = getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",getPackageName());
-
-                    Glide.with(getApplication())
-                            .load(URLUtils.getDefaultAvatarUrlByUid(uid))
-                            .error(avatarResource)
-                            .placeholder(avatarResource)
-                            .centerInside()
-                            .into(binding.showPersonalInfoAvatar);
-                    //check with verified status
-                    if(spaceVariables.emailStatus){
-                        binding.userVerifiedIcon.setVisibility(View.VISIBLE);
-                    }
-                    else {
-                        binding.userVerifiedIcon.setVisibility(View.GONE);
-                    }
-
-                    // signature
-                    String sigHtml = userProfileResult.userProfileVariableResult.space.sigatureHtml;
-                    Log.d(TAG,"Signature html "+sigHtml);
-                    MyTagHandler myTagHandler = new MyTagHandler(getApplication(),binding.userSignatureTextview,binding.userSignatureTextview);
-                    MyImageGetter myImageGetter = new MyImageGetter(getApplication(),binding.userSignatureTextview,binding.userSignatureTextview,true);
-                    Spanned sp = Html.fromHtml(sigHtml,myImageGetter,myTagHandler);
-                    SpannableString spannableString = new SpannableString(sp);
-
-                    binding.userSignatureTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
-                    binding.userSignatureTextview.setMovementMethod(new bbsLinkMovementMethod(UserProfileActivity.this));
-                    if(userProfileResult.userProfileVariableResult.space.bio.length()!=0){
-                        binding.userBioTextview.setText(userProfileResult.userProfileVariableResult.space.bio);
-                    }
-                    else {
-                        binding.userBioTextview.setVisibility(View.GONE);
-                    }
-
-                    if(userProfileResult.userProfileVariableResult.space.interest.length()!=0){
-
-                        binding.showPersonalInfoInterestTextView.setVisibility(View.VISIBLE);
-                        binding.showPersonalInfoInterestTextView.setText(userProfileResult.userProfileVariableResult.space.interest);
-                    }
-                    else {
-
-                        binding.showPersonalInfoInterestTextView.setVisibility(View.GONE);
-                        binding.showPersonalInfoInterestTextView.setText(userProfileResult.userProfileVariableResult.space.interest);
-                    }
-
-                    String birthPlace = userProfileResult.userProfileVariableResult.space.birthprovince +
-                            userProfileResult.userProfileVariableResult.space.birthcity +
-                            userProfileResult.userProfileVariableResult.space.birthdist +
-                            userProfileResult.userProfileVariableResult.space.birthcommunity;
-                    if(birthPlace.length()!=0){
-
-                        binding.showPersonalInfoBirthplaceTextView.setVisibility(View.VISIBLE);
-                        binding.showPersonalInfoBirthplaceTextView.setText(birthPlace);
-                    }
-                    else {
-
-                        binding.showPersonalInfoBirthplaceTextView.setVisibility(View.GONE);
-                    }
-                    binding.showPersonalInfoRegdateTextView.setText(userProfileResult.userProfileVariableResult.space.regdate);
-                    binding.showPersonalInfoLastActivityTime.setText(userProfileResult.userProfileVariableResult.space.lastactivity);
-
-                    binding.showPersonalInfoRecentNoteTextView.setText(userProfileResult.userProfileVariableResult.space.recentNote);
-                    if(userProfileResult.userProfileVariableResult.space.group!=null && userProfileResult.userProfileVariableResult.space.group.groupTitle!= null){
-                        binding.showPersonalInfoGroupInfo.setText(
-                                Html.fromHtml(userProfileResult.userProfileVariableResult.space.group.groupTitle),
-                                TextView.BufferType.SPANNABLE);
-                    }
-                    else {
-                        binding.showPersonalInfoGroupInfo.setVisibility(View.GONE);
-                    }
-                    // for detailed information
-
-                    SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    boolean recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history),false);
-                    if(recordHistory && discuz != null){
-                        new InsertViewHistory(new ViewHistory(
-                                URLUtils.getDefaultAvatarUrlByUid(uid),
-                                username,
-                                discuz.getId(),
-                                userProfileResult.userProfileVariableResult.space.sigatureHtml,
-                                ViewHistory.VIEW_TYPE_USER_PROFILE,
-                                uid,
-                                0,
-                                new Date()
-                        )).execute();
-                    }
-
+            if(userProfileResult !=null
+                    && userProfileResult.userProfileVariableResult !=null
+                    && userProfileResult.userProfileVariableResult.space !=null){
+                UserProfileResult.SpaceVariables spaceVariables = userProfileResult.userProfileVariableResult.space;
+                String username = userProfileResult.userProfileVariableResult.space.username;
+                if(getSupportActionBar()!=null){
+                    getSupportActionBar().setSubtitle(username);
                 }
-                binding.showPersonalInfoViewpager.invalidate();
-                adapter.notifyDataSetChanged();
+                this.setBaseResult(userProfileResult,userProfileResult.userProfileVariableResult);
+
+
+                // for avatar rendering
+                OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(getApplication()));
+                Glide.get(getApplicationContext()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
+                int uid = userProfileResult.userProfileVariableResult.space.uid;
+                int avatar_num = uid % 16;
+                if(avatar_num < 0){
+                    avatar_num = -avatar_num;
+                }
+
+                int avatarResource = getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",getPackageName());
+
+                Glide.with(getApplication())
+                        .load(URLUtils.getDefaultAvatarUrlByUid(uid))
+                        .error(avatarResource)
+                        .placeholder(avatarResource)
+                        .centerInside()
+                        .into(binding.showPersonalInfoAvatar);
+                //check with verified status
+                if(spaceVariables.emailStatus){
+                    binding.userVerifiedIcon.setVisibility(View.VISIBLE);
+                }
+                else {
+                    binding.userVerifiedIcon.setVisibility(View.GONE);
+                }
+
+                // signature
+                String sigHtml = userProfileResult.userProfileVariableResult.space.sigatureHtml;
+                Log.d(TAG,"Signature html "+sigHtml);
+                MyTagHandler myTagHandler = new MyTagHandler(getApplication(),binding.userSignatureTextview,binding.userSignatureTextview);
+                MyImageGetter myImageGetter = new MyImageGetter(getApplication(),binding.userSignatureTextview,binding.userSignatureTextview,true);
+                Spanned sp = Html.fromHtml(sigHtml,myImageGetter,myTagHandler);
+                SpannableString spannableString = new SpannableString(sp);
+
+                binding.userSignatureTextview.setText(spannableString, TextView.BufferType.SPANNABLE);
+                binding.userSignatureTextview.setMovementMethod(new bbsLinkMovementMethod(UserProfileActivity.this));
+                if(userProfileResult.userProfileVariableResult.space.bio.length()!=0){
+                    binding.userBioTextview.setText(userProfileResult.userProfileVariableResult.space.bio);
+                }
+                else {
+                    binding.userBioTextview.setVisibility(View.GONE);
+                }
+
+                if(userProfileResult.userProfileVariableResult.space.interest.length()!=0){
+
+                    binding.showPersonalInfoInterestTextView.setVisibility(View.VISIBLE);
+                    binding.showPersonalInfoInterestTextView.setText(userProfileResult.userProfileVariableResult.space.interest);
+                }
+                else {
+
+                    binding.showPersonalInfoInterestTextView.setVisibility(View.GONE);
+                    binding.showPersonalInfoInterestTextView.setText(userProfileResult.userProfileVariableResult.space.interest);
+                }
+
+                String birthPlace = userProfileResult.userProfileVariableResult.space.birthprovince +
+                        userProfileResult.userProfileVariableResult.space.birthcity +
+                        userProfileResult.userProfileVariableResult.space.birthdist +
+                        userProfileResult.userProfileVariableResult.space.birthcommunity;
+                if(birthPlace.length()!=0){
+
+                    binding.showPersonalInfoBirthplaceTextView.setVisibility(View.VISIBLE);
+                    binding.showPersonalInfoBirthplaceTextView.setText(birthPlace);
+                }
+                else {
+
+                    binding.showPersonalInfoBirthplaceTextView.setVisibility(View.GONE);
+                }
+                binding.showPersonalInfoRegdateTextView.setText(userProfileResult.userProfileVariableResult.space.regdate);
+                binding.showPersonalInfoLastActivityTime.setText(userProfileResult.userProfileVariableResult.space.lastactivity);
+
+                binding.showPersonalInfoRecentNoteTextView.setText(userProfileResult.userProfileVariableResult.space.recentNote);
+                if(userProfileResult.userProfileVariableResult.space.group!=null && userProfileResult.userProfileVariableResult.space.group.groupTitle!= null){
+                    binding.showPersonalInfoGroupInfo.setText(
+                            Html.fromHtml(userProfileResult.userProfileVariableResult.space.group.groupTitle),
+                            TextView.BufferType.SPANNABLE);
+                }
+                else {
+                    binding.showPersonalInfoGroupInfo.setVisibility(View.GONE);
+                }
+                // for detailed information
+
+                SharedPreferences prefs = android.preference.PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                boolean recordHistory = prefs.getBoolean(getString(R.string.preference_key_record_history),false);
+                if(recordHistory && discuz != null){
+                    new InsertViewHistory(new ViewHistory(
+                            URLUtils.getDefaultAvatarUrlByUid(uid),
+                            username,
+                            discuz.getId(),
+                            userProfileResult.userProfileVariableResult.space.sigatureHtml,
+                            ViewHistory.VIEW_TYPE_USER_PROFILE,
+                            uid,
+                            0,
+                            new Date()
+                    )).execute();
+                }
+
             }
+            binding.showPersonalInfoViewpager.invalidate();
+            adapter.notifyDataSetChanged();
         });
 
         viewModel.isLoading.observe(this, new Observer<Boolean>() {
