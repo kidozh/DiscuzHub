@@ -105,7 +105,8 @@ class FavoriteThreadFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             mViewModel!!.flow.collectLatest {
                 adapter.submitData(it)
-                if(adapter.snapshot().items.isEmpty()){
+
+                if(adapter.snapshot().items.isNullOrEmpty()){
                     binding.blankFavoriteThreadView.visibility = View.VISIBLE
                 }
                 else{

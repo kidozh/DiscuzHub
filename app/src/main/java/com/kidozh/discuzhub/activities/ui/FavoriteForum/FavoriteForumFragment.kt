@@ -47,7 +47,7 @@ class FavoriteForumFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentFavoriteThreadBinding.inflate(inflater, container, false)
-        return binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,22 +61,22 @@ class FavoriteForumFragment : Fragment() {
     }
 
     private fun configureRecyclerview() {
-        binding!!.favoriteThreadRecyclerview.itemAnimator = getRecyclerviewAnimation(
+        binding.favoriteThreadRecyclerview.itemAnimator = getRecyclerviewAnimation(
             requireContext()
         )
-        binding!!.favoriteThreadRecyclerview.layoutManager = LinearLayoutManager(context)
+        binding.favoriteThreadRecyclerview.layoutManager = LinearLayoutManager(context)
         adapter = FavoriteForumAdapter()
-        adapter!!.setInformation(bbsInfo!!, userBriefInfo)
+        adapter.setInformation(bbsInfo!!, userBriefInfo)
         viewLifecycleOwner.lifecycleScope.launch {
             mViewModel.flow.collectLatest {
-                adapter!!.submitData(it)
+                adapter.submitData(it)
 
             }
         }
-        binding!!.favoriteThreadRecyclerview.adapter = getAnimatedAdapter(
-            requireContext(), adapter!!
+        binding.favoriteThreadRecyclerview.adapter = getAnimatedAdapter(
+            requireContext(), adapter
         )
-        binding!!.favoriteThreadRecyclerview.addItemDecoration(
+        binding.favoriteThreadRecyclerview.addItemDecoration(
             DividerItemDecoration(
                 context,
                 DividerItemDecoration.VERTICAL
@@ -86,18 +86,18 @@ class FavoriteForumFragment : Fragment() {
 
     private fun configureSwipeRefreshLayout() {
         if (userBriefInfo != null) {
-            binding!!.favoriteThreadSwipelayout.setOnRefreshListener {
-                binding!!.favoriteThreadSyncProgressbar.visibility = View.GONE
+            binding.favoriteThreadSwipelayout.setOnRefreshListener {
+                binding.favoriteThreadSyncProgressbar.visibility = View.GONE
                 Toasty.info(
                     requireContext(),
                     getString(R.string.sync_favorite_forum_start, bbsInfo!!.site_name),
                     Toast.LENGTH_SHORT
                 ).show()
                 mViewModel.startSyncFavoriteForum()
-                binding!!.favoriteThreadSwipelayout.isRefreshing = false
+                binding.favoriteThreadSwipelayout.isRefreshing = false
             }
         } else {
-            binding!!.favoriteThreadSwipelayout.isEnabled = false
+            binding.favoriteThreadSwipelayout.isEnabled = false
         }
     }
 
@@ -106,10 +106,10 @@ class FavoriteForumFragment : Fragment() {
         mViewModel.favoriteForumCount.observe(viewLifecycleOwner) { cnt ->
 
             if (cnt == 0) {
-                binding!!.blankFavoriteThreadView.visibility = View.VISIBLE
-                binding!!.blankFavoriteThreadNotice.setText(R.string.favorite_forum_not_found)
+                binding.blankFavoriteThreadView.visibility = View.VISIBLE
+                binding.blankFavoriteThreadNotice.setText(R.string.favorite_forum_not_found)
             } else {
-                binding!!.blankFavoriteThreadView.visibility = View.GONE
+                binding.blankFavoriteThreadView.visibility = View.GONE
             }
         }
         mViewModel.errorMessageMutableLiveData.observe(
@@ -128,7 +128,7 @@ class FavoriteForumFragment : Fragment() {
             viewLifecycleOwner,
             { favoriteForumResult: FavoriteForumResult? ->
                 if (context is BaseStatusInteract) {
-                    if (favoriteForumResult != null) {
+                    if (favoriteForumResult?.favoriteForumVariable != null) {
                         (context as BaseStatusInteract?)!!.setBaseResult(
                             favoriteForumResult,
                             favoriteForumResult.favoriteForumVariable
@@ -148,10 +148,10 @@ class FavoriteForumFragment : Fragment() {
     private fun bindSyncStatus() {
         mViewModel.totalCount.observe(viewLifecycleOwner, { count: Int ->
             if (count == -1) {
-                binding!!.favoriteThreadSyncProgressbar.visibility = View.VISIBLE
-                binding!!.favoriteThreadSyncProgressbar.isIndeterminate = true
+                binding.favoriteThreadSyncProgressbar.visibility = View.VISIBLE
+                binding.favoriteThreadSyncProgressbar.isIndeterminate = true
             } else {
-                binding!!.favoriteThreadSyncProgressbar.visibility = View.GONE
+                binding.favoriteThreadSyncProgressbar.visibility = View.GONE
             }
         })
 
@@ -161,11 +161,11 @@ class FavoriteForumFragment : Fragment() {
                 return@observe
             } else if (favoriteForums != null) {
                 if (count > favoriteForums.size) {
-                    binding!!.favoriteThreadSyncProgressbar.visibility = View.VISIBLE
-                    binding!!.favoriteThreadSyncProgressbar.max = count
-                    binding!!.favoriteThreadSyncProgressbar.progress = favoriteForums.size
+                    binding.favoriteThreadSyncProgressbar.visibility = View.VISIBLE
+                    binding.favoriteThreadSyncProgressbar.max = count
+                    binding.favoriteThreadSyncProgressbar.progress = favoriteForums.size
                 } else {
-                    binding!!.favoriteThreadSyncProgressbar.visibility = View.GONE
+                    binding.favoriteThreadSyncProgressbar.visibility = View.GONE
                     //Toasty.success(getContext(),getString(R.string.sync_favorite_thread_load_all),Toast.LENGTH_LONG).show();
                 }
             }
@@ -226,7 +226,6 @@ class FavoriteForumFragment : Fragment() {
         private val TAG = FavoriteForumFragment::class.java.simpleName
         private const val ARG_BBS = "ARG_BBS"
         private const val ARG_USER = "ARG_USER"
-        private const val ARG_IDTYPE = "ARG_IDTYPE"
         @JvmStatic
         fun newInstance(bbsInfo: Discuz?, userBriefInfo: User?): FavoriteForumFragment {
             val fragment = FavoriteForumFragment()

@@ -13,8 +13,8 @@
         app:state_dragged="false"
         style="?attr/materialCardViewElevatedStyle"
         android:foreground="?attr/selectableItemBackground"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

@@ -117,6 +117,7 @@ open class BaseStatusActivity : AppCompatActivity(), BaseStatusInteract {
 
     override fun setBaseResult(baseVariableResult: BaseResult, variableResults: VariableResults) {
         if(user!= null && variableResults.member_uid != user!!.uid){
+
             Log.d(TAG,"Recv variable result ${variableResults.member_uid} , real name ${user!!.uid}")
             // launch a dialog
             val alertDialog = AlertDialog.Builder(this)
