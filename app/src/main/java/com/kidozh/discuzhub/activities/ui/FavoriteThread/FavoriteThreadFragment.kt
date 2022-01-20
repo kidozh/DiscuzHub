@@ -1,265 +1,237 @@
-package com.kidozh.discuzhub.activities.ui.FavoriteThread;
+package com.kidozh.discuzhub.activities.ui.FavoriteThread
 
-import androidx.lifecycle.ViewModelProvider;
 
-import android.os.AsyncTask;
-import android.os.Bundle;
+import android.os.Bundle
+import android.text.TextUtils
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.kidozh.discuzhub.R
+import com.kidozh.discuzhub.activities.ui.FavoriteThread.FavoriteThreadFragment
+import com.kidozh.discuzhub.adapter.FavoriteThreadAdapter
+import com.kidozh.discuzhub.database.FavoriteThreadDatabase
+import com.kidozh.discuzhub.databinding.FragmentFavoriteThreadBinding
+import com.kidozh.discuzhub.entities.Discuz
+import com.kidozh.discuzhub.entities.FavoriteForum
+import com.kidozh.discuzhub.entities.FavoriteThread
+import com.kidozh.discuzhub.entities.User
+import com.kidozh.discuzhub.interact.BaseStatusInteract
+import com.kidozh.discuzhub.results.FavoriteThreadResult
+import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
+import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
+import com.kidozh.discuzhub.utilities.UserPreferenceUtils.syncFavorite
+import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.FavoriteThreadAdapter;
-import com.kidozh.discuzhub.daos.FavoriteThreadDao;
-import com.kidozh.discuzhub.database.FavoriteThreadDatabase;
-import com.kidozh.discuzhub.databinding.FragmentFavoriteThreadBinding;
-import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.FavoriteThread;
-import com.kidozh.discuzhub.entities.User;
-import com.kidozh.discuzhub.interact.BaseStatusInteract;
-import com.kidozh.discuzhub.utilities.AnimationUtils;
-import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import es.dmoral.toasty.Toasty;
-
-public class FavoriteThreadFragment extends Fragment {
-    private static final String TAG = FavoriteThreadFragment.class.getSimpleName();
-
-    private FavoriteThreadViewModel mViewModel;
-
-    private static final String ARG_BBS = "ARG_BBS";
-    private static final String ARG_USER = "ARG_USER";
-    private static final String ARG_IDTYPE = "ARG_IDTYPE";
-
-    private Discuz bbsInfo;
-    private User userBriefInfo;
-    private String idType;
-
-    public FavoriteThreadFragment(){
-
-    }
-
-    public static FavoriteThreadFragment newInstance(Discuz bbsInfo, User userBriefInfo, String idType) {
-        FavoriteThreadFragment fragment = new FavoriteThreadFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ARG_BBS, bbsInfo);
-        args.putSerializable(ARG_USER,userBriefInfo);
-        args.putString(ARG_IDTYPE,idType);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            bbsInfo = (Discuz) getArguments().getSerializable(ARG_BBS);
-            userBriefInfo = (User) getArguments().getSerializable(ARG_USER);
-            idType = (String) getArguments().getString(ARG_IDTYPE,"tid");
+class FavoriteThreadFragment : Fragment() {
+    private var mViewModel: FavoriteThreadViewModel? = null
+    private var bbsInfo: Discuz? = null
+    private var userBriefInfo: User? = null
+    private var idType: String? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (arguments != null) {
+            bbsInfo = requireArguments().getSerializable(ARG_BBS) as Discuz?
+            userBriefInfo = requireArguments().getSerializable(ARG_USER) as User?
+            idType = requireArguments().getString(ARG_IDTYPE, "tid") as String
         }
     }
 
-    FavoriteThreadAdapter adapter;
-    FragmentFavoriteThreadBinding binding;
+    lateinit var adapter: FavoriteThreadAdapter
+    lateinit var binding: FragmentFavoriteThreadBinding
+    private var favoritePagingConfig : PagingConfig = PagingConfig(pageSize = 5)
+    lateinit var flow : Flow<PagingData<FavoriteForum>>
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        binding = FragmentFavoriteThreadBinding.inflate(inflater,container,false);
-        return binding.getRoot();
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentFavoriteThreadBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        // TODO: Use the ViewModel
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mViewModel = ViewModelProvider(this).get(FavoriteThreadViewModel::class.java)
+        mViewModel!!.setInfo(bbsInfo!!, userBriefInfo, idType)
+        configureRecyclerview()
+        bindViewModel()
+        configureSwipeRefreshLayout()
+        syncFavoriteThreadFromServer()
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(FavoriteThreadViewModel.class);
-        mViewModel.setInfo(bbsInfo,userBriefInfo,idType);
-        configureRecyclerview();
-        bindViewModel();
-        configureSwipeRefreshLayout();
-        syncFavoriteThreadFromServer();
-    }
+    private fun configureRecyclerview() {
+        binding.favoriteThreadRecyclerview.itemAnimator = getRecyclerviewAnimation(
+            requireContext()
+        )
+        binding.favoriteThreadRecyclerview.layoutManager = LinearLayoutManager(context)
+        adapter = FavoriteThreadAdapter()
+        adapter.setInformation(bbsInfo, userBriefInfo)
 
-    private void configureRecyclerview(){
-        binding.favoriteThreadRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
-        binding.favoriteThreadRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new FavoriteThreadAdapter();
-        adapter.setInformation(bbsInfo,userBriefInfo);
-        mViewModel.getFavoriteItemListData().observe(getViewLifecycleOwner(),adapter::submitList);
-        binding.favoriteThreadRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
+        binding.favoriteThreadRecyclerview.adapter = getAnimatedAdapter(
+            requireContext(), adapter
+        )
         //binding.favoriteThreadRecyclerview.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
     }
 
-    private void configureSwipeRefreshLayout(){
-        if(userBriefInfo !=null){
-            binding.favoriteThreadSwipelayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    binding.favoriteThreadSyncProgressbar.setVisibility(View.GONE);
-                    Toasty.info(getContext(),getString(R.string.sync_favorite_thread_start,bbsInfo.site_name), Toast.LENGTH_SHORT).show();
-                    mViewModel.startSyncFavoriteThread();
-                    binding.favoriteThreadSwipelayout.setRefreshing(false);
+    private fun configureSwipeRefreshLayout() {
+        if (userBriefInfo != null) {
+            binding.favoriteThreadSwipelayout.setOnRefreshListener {
+                binding.favoriteThreadSyncProgressbar.visibility = View.GONE
+                Toasty.info(
+                    requireContext(),
+                    getString(R.string.sync_favorite_thread_start, bbsInfo!!.site_name),
+                    Toast.LENGTH_SHORT
+                ).show()
+                mViewModel!!.startSyncFavoriteThread()
+                binding.favoriteThreadSwipelayout.isRefreshing = false
+            }
+        } else {
+            binding.favoriteThreadSwipelayout.isEnabled = false
+        }
+    }
+
+    private fun bindViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            mViewModel!!.flow.collectLatest {
+                adapter.submitData(it)
+                if(adapter.snapshot().items.isEmpty()){
+                    binding.blankFavoriteThreadView.visibility = View.VISIBLE
                 }
-            });
-        }
-        else {
-            binding.favoriteThreadSwipelayout.setEnabled(false);
+                else{
+                    binding.blankFavoriteThreadView.visibility = View.GONE
+                }
+            }
         }
 
+        mViewModel!!.errorMsgContent.observe(viewLifecycleOwner, { error: String? ->
+            if (!TextUtils.isEmpty(error)) {
+                Toasty.error(requireContext(), error!!, Toast.LENGTH_SHORT).show()
+            }
+        })
+        mViewModel!!.resultMutableLiveData.observe(
+            viewLifecycleOwner,
+            { favoriteThreadResult: FavoriteThreadResult? ->
+                if (context is BaseStatusInteract) {
+                    if (favoriteThreadResult != null) {
+                        (context as BaseStatusInteract).setBaseResult(
+                            favoriteThreadResult,
+                            favoriteThreadResult.favoriteThreadVariable
+                        )
+                    }
+                }
+            })
     }
 
-    private void bindViewModel(){
-
-
-        mViewModel.getFavoriteItemListData().observe(getViewLifecycleOwner(),favoriteThreads -> {
-            if(favoriteThreads.size() == 0){
-                binding.blankFavoriteThreadView.setVisibility(View.VISIBLE);
-            }
-            else {
-                binding.blankFavoriteThreadView.setVisibility(View.GONE);
-            }
-        });
-        mViewModel.errorMsgContent.observe(getViewLifecycleOwner(),error->{
-            if(!TextUtils.isEmpty(error)){
-                Toasty.error(getContext(),error,Toast.LENGTH_SHORT).show();
-            }
-
-        });
-        mViewModel.resultMutableLiveData.observe(getViewLifecycleOwner(), favoriteThreadResult -> {
-            if(getContext() instanceof BaseStatusInteract){
-                ((BaseStatusInteract) getContext()).setBaseResult(favoriteThreadResult,
-                        favoriteThreadResult!=null?favoriteThreadResult.favoriteThreadVariable:null);
-            }
-        });
-    }
-
-    public void syncFavoriteThreadFromServer(){
-        if(getContext() !=null && UserPreferenceUtils.syncFavorite(getContext()) && userBriefInfo!=null){
-            int page = 1;
+    fun syncFavoriteThreadFromServer() {
+        if (context != null && syncFavorite(requireContext()) && userBriefInfo != null) {
+            val page = 1
             // sync information
             // Toasty.info(getContext(),getString(R.string.sync_favorite_thread_start,bbsInfo.site_name), Toast.LENGTH_SHORT).show();
 
             // loop to fetch favorite thread from server
-            bindSyncStatus();
-
-            mViewModel.startSyncFavoriteThread();
-
+            bindSyncStatus()
+            mViewModel!!.startSyncFavoriteThread()
         }
-
     }
 
-    private void bindSyncStatus(){
-        mViewModel.totalCount.observe(getViewLifecycleOwner(), count ->{
-            if(count == -1){
-                binding.favoriteThreadSyncProgressbar.setVisibility(View.VISIBLE);
-                binding.favoriteThreadSyncProgressbar.setIndeterminate(true);
+    private fun bindSyncStatus() {
+        mViewModel!!.totalCount.observe(viewLifecycleOwner, { count: Int ->
+            if (count == -1) {
+                binding.favoriteThreadSyncProgressbar.visibility = View.VISIBLE
+                binding.favoriteThreadSyncProgressbar.isIndeterminate = true
             }
+        })
+        mViewModel!!.favoriteThreadInServer.observe(
+            viewLifecycleOwner,
+            { favoriteThreads: List<FavoriteThread> ->
+                if (mViewModel != null) {
+                    val count = mViewModel!!.totalCount.value!!
+                    if (count == -1) {
 
-        });
-
-        mViewModel.favoriteThreadInServer.observe(getViewLifecycleOwner(),favoriteThreads -> {
-            if(mViewModel !=null){
-                int count = mViewModel.totalCount.getValue();
-                if(count == -1){
-
+                    } else if (count > favoriteThreads.size) {
+                        binding.favoriteThreadSyncProgressbar.visibility = View.VISIBLE
+                        binding.favoriteThreadSyncProgressbar.max = count
+                        binding.favoriteThreadSyncProgressbar.progress = favoriteThreads.size
+                    } else {
+                        binding.favoriteThreadSyncProgressbar.visibility = View.GONE
+                        //Toasty.success(getContext(),getString(R.string.sync_favorite_thread_load_all),Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    binding.favoriteThreadSyncProgressbar.visibility = View.GONE
                 }
-                else if(count > favoriteThreads.size()){
-                    binding.favoriteThreadSyncProgressbar.setVisibility(View.VISIBLE);
-                    binding.favoriteThreadSyncProgressbar.setMax(count);
-
-                    binding.favoriteThreadSyncProgressbar.setProgress(favoriteThreads.size());
-
-                }
-                else {
-                    binding.favoriteThreadSyncProgressbar.setVisibility(View.GONE);
-                    //Toasty.success(getContext(),getString(R.string.sync_favorite_thread_load_all),Toast.LENGTH_LONG).show();
-                }
-            }
-            else {
-                binding.favoriteThreadSyncProgressbar.setVisibility(View.GONE);
-            }
-
-        });
-
-        mViewModel.newFavoriteThread.observe(getViewLifecycleOwner(),newFavoriteThreads ->{
-            new SaveFavoriteItemAsyncTask(newFavoriteThreads).execute();
-        });
+            })
+        mViewModel!!.newFavoriteThread.observe(
+            viewLifecycleOwner,
+            { newFavoriteThreads: List<FavoriteThread> ->
+                saveFavoriteItem(newFavoriteThreads)
+            })
     }
 
-    private class SaveFavoriteItemAsyncTask extends AsyncTask<Void,Void,Integer>{
-
-        private List<FavoriteThread> favoriteThreadList;
-
-        public SaveFavoriteItemAsyncTask(List<FavoriteThread> favoriteThreadList) {
-            this.favoriteThreadList = favoriteThreadList;
-        }
-
-        @Override
-        protected Integer doInBackground(Void... voids) {
-            FavoriteThreadDao dao = FavoriteThreadDatabase.getInstance(getContext()).getDao();
+    fun saveFavoriteItem(favoriteThreadList: List<FavoriteThread>){
+        Thread{
+            val dao = FavoriteThreadDatabase.getInstance(context).dao
             // query first
-            List<Integer> insertTids = new ArrayList<>();
-            for(int i = 0; i< favoriteThreadList.size(); i++){
-                insertTids.add(favoriteThreadList.get(i).idKey);
-                favoriteThreadList.get(i).belongedBBSId = bbsInfo.getId();
-                favoriteThreadList.get(i).userId = userBriefInfo!=null?userBriefInfo.uid:0;
+            val insertTids: MutableList<Int> = ArrayList()
+            for (i in favoriteThreadList.indices) {
+                insertTids.add(favoriteThreadList[i].idKey)
+                favoriteThreadList[i].belongedBBSId = bbsInfo!!.id
+                favoriteThreadList[i].userId = if (userBriefInfo != null) userBriefInfo!!.uid else 0
                 //Log.d(TAG,"fav id "+favoriteThreadList.get(i).favid);
             }
-
-
-
-            List<FavoriteThread> queryList = dao.queryFavoriteItemListByTids(bbsInfo.getId()
-                    ,userBriefInfo!=null?userBriefInfo.uid:0,
-                    insertTids
-                    ,idType
-                    );
-
-            for(int i=0;i<queryList.size();i++){
-                int tid = queryList.get(i).idKey;
-                FavoriteThread queryThread = queryList.get(i);
-                for(int j = 0; j< favoriteThreadList.size(); j++){
-                    FavoriteThread favoriteThread = favoriteThreadList.get(j);
-                    if(favoriteThread.idKey == tid){
-                        favoriteThread.id = queryThread.id;
-                        break;
+            val queryList = dao.queryFavoriteItemListByTids(
+                bbsInfo!!.id, if (userBriefInfo != null) userBriefInfo!!.uid else 0,
+                insertTids, idType
+            )
+            if (queryList != null) {
+                for (i in queryList.indices) {
+                    val tid = queryList[i]?.idKey
+                    val queryThread = queryList[i]
+                    for (j in favoriteThreadList.indices) {
+                        val favoriteThread = favoriteThreadList[j]
+                        if (favoriteThread.idKey == tid) {
+                            if (queryThread != null) {
+                                favoriteThread.id = queryThread.id
+                            }
+                            break
+                        }
                     }
                 }
             }
             // remove all synced information
             //dao.clearSyncedFavoriteItemByBBSId(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0,idType);
-
-            dao.insert(favoriteThreadList);
-            return favoriteThreadList.size();
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-
-        }
+            dao.insert(favoriteThreadList)
+        }.start()
     }
 
-
+    companion object {
+        private val TAG = FavoriteThreadFragment::class.java.simpleName
+        private const val ARG_BBS = "ARG_BBS"
+        private const val ARG_USER = "ARG_USER"
+        private const val ARG_IDTYPE = "ARG_IDTYPE"
+        @JvmStatic
+        fun newInstance(
+            bbsInfo: Discuz?,
+            userBriefInfo: User?,
+            idType: String?
+        ): FavoriteThreadFragment {
+            val fragment = FavoriteThreadFragment()
+            val args = Bundle()
+            args.putSerializable(ARG_BBS, bbsInfo)
+            args.putSerializable(ARG_USER, userBriefInfo)
+            args.putString(ARG_IDTYPE, idType)
+            fragment.arguments = args
+            return fragment
+        }
+    }
 }

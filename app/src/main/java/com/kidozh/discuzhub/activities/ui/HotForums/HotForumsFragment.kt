@@ -93,14 +93,12 @@ class HotForumsFragment : Fragment() {
             })
         viewModel!!.hotForumsResult.observe(viewLifecycleOwner, { hotForumsResult ->
             if (context is BaseStatusInteract) {
-                (context as BaseStatusInteract?)!!.setBaseResult(
+                (context as BaseStatusInteract).setBaseResult(
                     hotForumsResult!!,
                     hotForumsResult.variables
                 )
             }
-            if (hotForumsResult == null ||
-                hotForumsResult.variables == null
-            ) {
+            if (hotForumsResult?.variables == null) {
                 adapter!!.setHotForumList(ArrayList())
             } else {
                 if (hotForumsResult.variables.hotForumList == null

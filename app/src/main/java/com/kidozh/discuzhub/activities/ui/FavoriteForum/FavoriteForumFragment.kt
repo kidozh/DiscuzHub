@@ -40,8 +40,8 @@ class FavoriteForumFragment : Fragment() {
         }
     }
 
-    var adapter: FavoriteForumAdapter? = null
-    var binding: FragmentFavoriteThreadBinding? = null
+    lateinit var adapter: FavoriteForumAdapter
+    lateinit var binding: FragmentFavoriteThreadBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -221,46 +221,6 @@ class FavoriteForumFragment : Fragment() {
 
         return
     }
-
-//    private inner class SaveFavoriteItemAsyncTask(private val favoriteForumList: List<FavoriteForum>) :
-//        AsyncTask<Void?, Void?, Int>() {
-//        protected override fun doInBackground(vararg voids: Void): Int {
-//            val dao = FavoriteForumDatabase.getInstance(context).dao
-//            // query first
-//            val insertTids: MutableList<Int> = ArrayList()
-//            for (i in favoriteForumList.indices) {
-//                insertTids.add(favoriteForumList[i].idKey)
-//                favoriteForumList[i].belongedBBSId = bbsInfo!!.id
-//                favoriteForumList[i].userId =
-//                    if (userBriefInfo != null) userBriefInfo!!.getUid() else 0
-//                //Log.d(TAG,"fav id "+favoriteForumList.get(i).favid);
-//            }
-//            val queryList = dao.queryFavoriteItemListByfids(
-//                bbsInfo!!.id, if (userBriefInfo != null) userBriefInfo!!.getUid() else 0,
-//                insertTids
-//            )
-//            for (i in queryList.indices) {
-//                val tid = queryList[i].idKey
-//                val queryForum = queryList[i]
-//                for (j in favoriteForumList.indices) {
-//                    val favoriteForum = favoriteForumList[j]
-//                    if (favoriteForum.idKey == tid) {
-//                        favoriteForum.id = queryForum.id
-//                        break
-//                    }
-//                }
-//            }
-//            // remove all synced information
-//
-//            //dao.clearSyncedFavoriteItemByBBSId(bbsInfo.getId(),userBriefInfo!=null?userBriefInfo.getUid():0);
-//            dao.insert(favoriteForumList)
-//            return favoriteForumList.size
-//        }
-//
-//        override fun onPostExecute(integer: Int) {
-//            super.onPostExecute(integer)
-//        }
-//    }
 
     companion object {
         private val TAG = FavoriteForumFragment::class.java.simpleName

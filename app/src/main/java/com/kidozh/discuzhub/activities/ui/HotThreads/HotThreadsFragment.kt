@@ -121,7 +121,7 @@ class HotThreadsFragment : Fragment() {
         })
         hotThreadsViewModel.resultMutableLiveData.observe(viewLifecycleOwner, { displayThreadsResult: DisplayThreadsResult? ->
             if (context is BaseStatusInteract && displayThreadsResult != null) {
-                (context as BaseStatusInteract?)!!.setBaseResult(displayThreadsResult,
+                (context as BaseStatusInteract).setBaseResult(displayThreadsResult,
                         displayThreadsResult.forumVariables)
             }
         })

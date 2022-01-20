@@ -42,6 +42,7 @@ class ExplorePageFragment : Fragment() {
     private var exploreURL = ""
 
     private lateinit var cookieClient: CookieWebViewClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -56,7 +57,6 @@ class ExplorePageFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         // Inflate the layout for this fragment
-        runActivity = requireActivity()
         binding = FragmentExplorePageBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -78,24 +78,21 @@ class ExplorePageFragment : Fragment() {
         webSettings.loadsImagesAutomatically = true
 
         // configure service worker
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
-            val swController =  ServiceWorkerController.getInstance()
-            swController.setServiceWorkerClient(object : ServiceWorkerClient(){
-                override fun shouldInterceptRequest(request: WebResourceRequest?): WebResourceResponse? {
-                    if (request != null) {
-                        Log.d(TAG, "load service worker url "+request.url)
-                        runActivity.runOnUiThread {
-                            parseURLAndOpen(runActivity, bbsInfo, user, request.url.toString())
-                        }
+        val swController =  ServiceWorkerController.getInstance()
+        swController.setServiceWorkerClient(object : ServiceWorkerClient(){
+            override fun shouldInterceptRequest(request: WebResourceRequest?): WebResourceResponse? {
+                if (request != null) {
+                    Log.d(TAG, "load service worker url "+request.url)
+                    requireActivity().runOnUiThread {
+                        parseURLAndOpen(requireContext(), bbsInfo, user, request.url.toString())
                     }
-                    return super.shouldInterceptRequest(request)
                 }
-            })
+                return super.shouldInterceptRequest(request)
+            }
+        })
 
-        }
 
-
-        cookieClient = CookieWebViewClient()
+        cookieClient = CookieWebViewClient(requireContext())
         cookieClient.cookieManager.setAcceptThirdPartyCookies(binding.explorePageWebview, true)
         // set cookie
         val currentHttpUrl = exploreURL.toHttpUrlOrNull()
@@ -112,7 +109,8 @@ class ExplorePageFragment : Fragment() {
         binding.explorePageWebview.loadUrl(exploreURL)
     }
 
-    class CookieWebViewClient internal constructor() : WebViewClient() {
+    class CookieWebViewClient(val context: Context) : WebViewClient() {
+
         var cookieManager: CookieManager = CookieManager.getInstance()
 
 
@@ -120,7 +118,7 @@ class ExplorePageFragment : Fragment() {
 
             binding.explorePageProgressbar.visibility = View.VISIBLE
             Log.d(TAG,"GET new URL "+url)
-            parseURLAndOpen(runActivity, bbsInfo, user, url)
+            parseURLAndOpen(context, bbsInfo, user, url)
             super.onPageStarted(view, url, favicon)
         }
 
@@ -131,7 +129,7 @@ class ExplorePageFragment : Fragment() {
 
         override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
             Log.d(TAG,"request url "+request.url)
-            return parseURLAndOpen(runActivity, bbsInfo, user, request.url.toString())
+            return parseURLAndOpen(context, bbsInfo, user, request.url.toString())
 
         }
 
@@ -159,7 +157,6 @@ class ExplorePageFragment : Fragment() {
         private var user: User? = null
         private lateinit var client: OkHttpClient
         private lateinit var binding: FragmentExplorePageBinding
-        private lateinit var runActivity: Activity
         private val TAG = ExplorePageFragment::class.simpleName
         /**
          * Use this factory method to create a new instance of

@@ -2,6 +2,7 @@ package com.kidozh.discuzhub.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -115,10 +116,11 @@ open class BaseStatusActivity : AppCompatActivity(), BaseStatusInteract {
     }
 
     override fun setBaseResult(baseVariableResult: BaseResult, variableResults: VariableResults) {
-        if(user!= null && variableResults.member_uid == user!!.uid){
+        if(user!= null && variableResults.member_uid != user!!.uid){
+            Log.d(TAG,"Recv variable result ${variableResults.member_uid} , real name ${user!!.uid}")
             // launch a dialog
             val alertDialog = AlertDialog.Builder(this)
-                .setTitle(R.string.user_relogin)
+                .setTitle(getString(R.string.user_relogin, user!!.username))
                 .setMessage(getString(R.string.user_login_expired, user!!.username))
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     val intent = Intent(this, LoginActivity::class.java)

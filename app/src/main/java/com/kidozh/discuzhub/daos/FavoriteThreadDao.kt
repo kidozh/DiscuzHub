@@ -1,64 +1,65 @@
-package com.kidozh.discuzhub.daos;
+package com.kidozh.discuzhub.daos
 
-import androidx.lifecycle.LiveData;
-import androidx.paging.DataSource;
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
-
-import com.kidozh.discuzhub.entities.FavoriteThread;
-
-import java.util.List;
+import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
+import androidx.room.*
+import com.kidozh.discuzhub.entities.FavoriteThread
 
 @Dao
-public interface FavoriteThreadDao {
-    @Query("SELECT * FROM FavoriteThread ORDER BY favid")
-    DataSource.Factory<Integer, FavoriteThread> getAllFavoriteThreadDataSource();
+interface FavoriteThreadDao {
+    @get:Query("SELECT * FROM FavoriteThread ORDER BY favid")
+    val allFavoriteThreadDataSource: PagingSource<Int, FavoriteThread>
 
     @Query("SELECT * FROM FavoriteThread WHERE belongedBBSId=:bbsId AND userId=:userId AND idType=:idType ORDER BY favid")
-    DataSource.Factory<Integer, FavoriteThread> getFavoriteItemPageListByBBSId(int bbsId, int userId, String idType);
+    fun getFavoriteItemPageListByBBSId(
+        bbsId: Int,
+        userId: Int,
+        idType: String?
+    ): PagingSource<Int, FavoriteThread>
 
     @Query("SELECT COUNT(idKey) FROM FavoriteThread WHERE belongedBBSId=:bbsId AND userId=:userId AND idType=:idType")
-    LiveData<Integer> getFavoriteItemCountLiveData(int bbsId, int userId,String idType);
-
-
+    fun getFavoriteItemCountLiveData(bbsId: Int, userId: Int, idType: String?): LiveData<Int?>?
 
     @Query("DELETE FROM FavoriteThread WHERE belongedBBSId=:bbsId AND userId=:userId AND idKey=:tid AND idType=:idType")
-    void delete(int bbsId, int userId,int tid,String idType);
+    fun delete(bbsId: Int, userId: Int, tid: Int, idType: String?)
 
     @Query(" SELECT EXISTS (SELECT * FROM FavoriteThread WHERE belongedBBSId=:bbsId AND userId=:userId AND idKey=:tid AND idType=:idType) ")
-    LiveData<Boolean> isFavoriteItem(int bbsId, int userId, int tid,String idType);
+    fun isFavoriteItem(bbsId: Int, userId: Int, tid: Int, idType: String?): LiveData<Boolean>
 
     @Query("SELECT * FROM FavoriteThread WHERE belongedBBSId=:bbsId AND userId=:userId AND idKey=:tid AND idType=:idType")
-    LiveData<FavoriteThread> getFavoriteItemByTid(int bbsId, int userId, int tid, String idType);
+    fun getFavoriteItemByTid(
+        bbsId: Int,
+        userId: Int,
+        tid: Int,
+        idType: String?
+    ): LiveData<FavoriteThread?>
 
     @Query("SELECT * FROM FavoriteThread WHERE (belongedBBSId=:bbsId AND userId=:userId) AND idKey IN (:tids) AND idType=:idType")
-    List<FavoriteThread> queryFavoriteItemListByTids(int bbsId, int userId, List<Integer> tids, String idType);
+    fun queryFavoriteItemListByTids(
+        bbsId: Int,
+        userId: Int,
+        tids: List<Int?>?,
+        idType: String?
+    ): List<FavoriteThread?>?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public void insert(FavoriteThread... favoriteThreads);
+    fun insert(vararg favoriteThreads: FavoriteThread?)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public void insert(FavoriteThread favoriteThread);
+    fun insert(favoriteThread: FavoriteThread?)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public void insert(List<FavoriteThread> favoriteThreads);
+    fun insert(favoriteThreads: List<FavoriteThread?>?)
 
     @Query("DELETE FROM FavoriteThread WHERE belongedBBSId=:bbsId AND userId=:userId AND idType=:idType")
-    void clearFavoriteItemByBBSId(int bbsId, int userId,String idType);
+    fun clearFavoriteItemByBBSId(bbsId: Int, userId: Int, idType: String?)
 
     @Query("DELETE FROM FavoriteThread WHERE belongedBBSId=:bbsId AND userId=:userId AND idType=:idType AND favid != 0")
-    void clearSyncedFavoriteItemByBBSId(int bbsId, int userId,String idType);
+    fun clearSyncedFavoriteItemByBBSId(bbsId: Int, userId: Int, idType: String?)
 
     @Delete
-    void delete(FavoriteThread favoriteThread);
-
-
+    fun delete(favoriteThread: FavoriteThread?)
 
     @Delete
-    void delete(FavoriteThread... favoriteThreads);
-
-
+    fun delete(vararg favoriteThreads: FavoriteThread?)
 }

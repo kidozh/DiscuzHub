@@ -118,7 +118,7 @@ class HomeFragment : Fragment() {
         homeViewModel.bbsIndexResultMutableLiveData.observe(viewLifecycleOwner, { bbsIndexResult: DiscuzIndexResult? ->
             if (context is BaseStatusInteract) {
                 if (bbsIndexResult?.forumVariables != null) {
-                    (context as BaseStatusInteract?)!!.setBaseResult(bbsIndexResult, bbsIndexResult.forumVariables)
+                    (context as BaseStatusInteract).setBaseResult(bbsIndexResult, bbsIndexResult.forumVariables)
                 }
             }
         })

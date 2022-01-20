@@ -58,7 +58,7 @@ class NewThreadsFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(NewThreadsViewModel::class.java)
+        viewModel = ViewModelProvider(this)[NewThreadsViewModel::class.java]
         // TODO: Use the ViewModel
         bindViewModel()
         viewModel.setBBSInfo(bbsInfo, user)
