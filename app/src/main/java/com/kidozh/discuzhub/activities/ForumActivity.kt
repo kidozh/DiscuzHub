@@ -48,7 +48,7 @@ import java.io.Serializable
 import java.util.*
 import kotlin.collections.HashMap
 
-class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedListener {
+class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedListener, OnThreadAdmined {
     lateinit var forum: Forum
     lateinit var adapter: ThreadAdapter
     lateinit var subForumAdapter: SubForumAdapter
@@ -772,4 +772,14 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
     companion object {
         private val TAG = ForumActivity::class.java.simpleName
     }
+
+    override fun adminThread(thread: Thread) {
+        // trigger admin dialog ?
+    }
+
+
+}
+
+interface OnThreadAdmined{
+    fun adminThread(thread: Thread)
 }

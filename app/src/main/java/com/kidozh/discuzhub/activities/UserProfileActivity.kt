@@ -751,8 +751,8 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
         }
     }
 
-    fun insertViewHistory(viewHistory: ViewHistory){
-        if(viewHistory.name.isNullOrBlank()){
+    private fun insertViewHistory(viewHistory: ViewHistory){
+        if(viewHistory.name.isBlank()){
             Thread{
                 val dao: ViewHistoryDao = getInstance(applicationContext).dao
                 val viewHistories = dao
