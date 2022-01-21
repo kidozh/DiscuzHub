@@ -26,7 +26,7 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.imageview.ShapeableImageView
 import com.kidozh.discuzhub.R
-import com.kidozh.discuzhub.activities.ForumActivity
+import com.kidozh.discuzhub.activities.OnThreadAdmined
 import com.kidozh.discuzhub.activities.ThreadActivity
 import com.kidozh.discuzhub.activities.UserProfileActivity
 import com.kidozh.discuzhub.daos.ViewHistoryDao
@@ -469,8 +469,8 @@ class ThreadAdapter(var threadType: Map<String, String>?, var bbsInfo: Discuz, v
 
 
     fun onlongPressCard(position: Int){
-        if (context is ForumActivity.OnThreadAdmined){
-            val mlistener: ForumActivity.OnThreadAdmined = context as ForumActivity.OnThreadAdmined
+        if (context is OnThreadAdmined){
+            val mlistener: OnThreadAdmined = context as OnThreadAdmined
             mlistener.adminThread(threadList[position])
         }
     }
