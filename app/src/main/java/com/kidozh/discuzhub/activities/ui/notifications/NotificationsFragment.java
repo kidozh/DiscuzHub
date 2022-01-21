@@ -351,17 +351,29 @@ public class NotificationsFragment extends Fragment {
                 BadgeDrawable badgeDrawable = binding.notificationsTablayout.getTabAt(0).getOrCreateBadge();
                 badgeDrawable.setNumber(noticeNumInfo.pm);
             }
+            else{
+                binding.notificationsTablayout.getTabAt(0).removeBadge();
+            }
             if(noticeNumInfo.mypost!=0){
                 BadgeDrawable badgeDrawable = binding.notificationsTablayout.getTabAt(1).getOrCreateBadge();
                 badgeDrawable.setNumber(noticeNumInfo.mypost);
+            }
+            else{
+                binding.notificationsTablayout.getTabAt(1).removeBadge();
             }
             if(noticeNumInfo.prompt!=0){
                 BadgeDrawable badgeDrawable = binding.notificationsTablayout.getTabAt(3).getOrCreateBadge();
                 badgeDrawable.setNumber(noticeNumInfo.prompt);
             }
+            else{
+                binding.notificationsTablayout.getTabAt(3).removeBadge();
+            }
             if(noticeNumInfo.push!=0){
                 BadgeDrawable badgeDrawable = binding.notificationsTablayout.getTabAt(2).getOrCreateBadge();
                 badgeDrawable.setNumber(noticeNumInfo.push);
+            }
+            else{
+                binding.notificationsTablayout.getTabAt(2).removeBadge();
             }
         }
         catch (Exception e){
