@@ -28,8 +28,8 @@ open class BaseStatusActivity : AppCompatActivity(), BaseStatusInteract {
     public var user: User? = null
     @JvmField
     var client = OkHttpClient()
-    var baseVariableResult: BaseResult? = null
-    var variableResults: VariableResults? = null
+    var baseVariableResult: BaseResult = BaseResult()
+    var variableResults: VariableResults = VariableResults()
     private lateinit var baseStatusViewModel: BaseStatusViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,11 +40,11 @@ open class BaseStatusActivity : AppCompatActivity(), BaseStatusInteract {
         DynamicColors.applyToActivitiesIfAvailable(application)
     }
 
-    var themeIndex : Int = 0
+    private var themeIndex : Int = 0
 
-    val styleList = ThemeUtils.styleList
+    private val styleList = ThemeUtils.styleList
 
-    fun configureTheme(){
+    private fun configureTheme(){
         val position = UserPreferenceUtils.getThemeIndex(this)
         themeIndex = position
         if(position < styleList.size){

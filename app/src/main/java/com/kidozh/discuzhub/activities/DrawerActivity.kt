@@ -753,7 +753,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
     }
 
     // listener
-    fun setNewMessageNum(i: Int) {
+    private fun setNewMessageNum(i: Int) {
         if (i == 0) {
             if (binding.bbsPortalNavView.getBadge(R.id.navigation_notifications) != null) {
                 binding.bbsPortalNavView.removeBadge(R.id.navigation_notifications)
@@ -847,8 +847,6 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
         if (notificationsFragment != null) {
             notificationsFragment!!.renderTabNumber(notificationsNum)
         }
-        if (notificationsNum != null) {
-            setNewMessageNum(notificationsNum.allNoticeInfo)
-        }
+        setNewMessageNum(notificationsNum.allNoticeInfo)
     }
 }

@@ -241,8 +241,14 @@ public class UserProfileActivity extends BaseStatusActivity implements
                         userProfileResult.userProfileVariableResult.space.birthcity +
                         userProfileResult.userProfileVariableResult.space.birthdist +
                         userProfileResult.userProfileVariableResult.space.birthcommunity;
-                if(birthPlace.length()!=0){
 
+                if(birthPlace.length()!=0){
+                    if(userProfileResult.userProfileVariableResult.space.birthdist.contains("汉川")){
+                        // to reflect actual name
+                        birthPlace = userProfileResult.userProfileVariableResult.space.birthprovince +
+                                userProfileResult.userProfileVariableResult.space.birthdist +
+                                userProfileResult.userProfileVariableResult.space.birthcommunity;
+                    }
                     binding.showPersonalInfoBirthplaceTextView.setVisibility(View.VISIBLE);
                     binding.showPersonalInfoBirthplaceTextView.setText(birthPlace);
                 }
