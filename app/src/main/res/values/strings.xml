@@ -896,6 +896,22 @@
     <string name="short_cut_submit">Go</string>
     <string name="short_cut_description">Quickly locate bbs resources</string>
     <string name="forum_information_title">Forum info.</string>
+    <string name="pin">Pin</string>
+    <string name="boost_thread">Boost</string>
+    <string name="admin_thread">Admin thread</string>
+    <string-array name="pin_type_entries">
+        <item>Unset</item>
+        <item>Forum</item>
+        <item>Category</item>
+        <item>Discuz</item>
+    </string-array>
 
+    <string-array name="digest_type_entries">
+        <item>Unset</item>
+        <item>Digest #1</item>
+        <item>Digest #2</item>
+        <item>Digest #3</item>
+    </string-array>
+    <string name="delete_thread">Delete</string>
 
 </resources>

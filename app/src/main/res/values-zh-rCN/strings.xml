@@ -765,5 +765,23 @@
     <string name="short_cut_submit">跳转</string>
     <string name="short_cut_description">快速锁定论坛资源</string>
     <string name="forum_information_title">论坛详情</string>
+    <string name="pin">置顶</string>
+    <string name="boost_thread">提升</string>
+    <string name="admin_thread">管理帖子</string>
+
+    <string-array name="pin_type_entries">
+        <item>无</item>
+        <item>本版置顶</item>
+        <item>分类置顶</item>
+        <item>全局置顶</item>
+    </string-array>
+
+    <string-array name="digest_type_entries">
+        <item>解除</item>
+        <item>精华1</item>
+        <item>精华2</item>
+        <item>精华3</item>
+    </string-array>
+    <string name="delete_thread">删除帖子</string>
 
 </resources>

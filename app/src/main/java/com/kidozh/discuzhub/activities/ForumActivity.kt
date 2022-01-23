@@ -28,6 +28,7 @@ import com.kidozh.discuzhub.adapter.ThreadAdapter
 import com.kidozh.discuzhub.database.FavoriteForumDatabase
 import com.kidozh.discuzhub.database.ViewHistoryDatabase.Companion.getInstance
 import com.kidozh.discuzhub.databinding.ActivityBbsShowForumBinding
+import com.kidozh.discuzhub.dialogs.AdminThreadDialogFragment
 import com.kidozh.discuzhub.dialogs.ForumDisplayOptionFragment
 import com.kidozh.discuzhub.dialogs.ForumRuleFragment
 import com.kidozh.discuzhub.entities.*
@@ -775,6 +776,14 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
 
     override fun adminThread(thread: Thread) {
         // trigger admin dialog ?
+        Log.d(TAG,"Long press ${thread}, ${variableResults.moderator} ${forumViewModel.displayForumResultMutableLiveData.value?.forumVariables?.moderator}" )
+        if(forumViewModel.displayForumResultMutableLiveData.value?.forumVariables?.moderator?.equals(true) == true){
+
+
+            val adminThreadDialogFragment = AdminThreadDialogFragment(thread)
+            adminThreadDialogFragment.show(supportFragmentManager, adminThreadDialogFragment.tag)
+        }
+
     }
 
 

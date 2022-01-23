@@ -92,9 +92,9 @@ class ManageUserActivity : BaseStatusActivity(), onInteraction {
 
     private fun fetchUserList() {
         viewModel.loadUserList(discuz!!.id)
-        viewModel.bbsUserInfoLiveDataList.observe(this, { Users ->
-            userAdapter.userList = Users
-            if (Users == null || Users.size == 0) {
+        viewModel.bbsUserInfoLiveDataList?.observe(this, { Users ->
+            userAdapter.userList = Users as MutableList<User>
+            if (Users.size == 0) {
                 binding!!.emptyUserView.visibility = View.VISIBLE
             } else {
                 binding!!.emptyUserView.visibility = View.GONE
@@ -161,41 +161,37 @@ class ManageUserActivity : BaseStatusActivity(), onInteraction {
 
     override fun onRecyclerViewSwiped(position: Int, direction: Int) {
         val userBriefInfos = userAdapter.userList
-        if (userBriefInfos != null) {
-            val userBriefInfo = userBriefInfos[position]
-            Log.d(TAG, "Get direction $direction")
-            if (direction == ItemTouchHelper.START) {
-                val intent = Intent(this, LoginActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
-                startActivity(intent)
-                VibrateUtils.vibrateForNotice(this)
-                userAdapter.notifyDataSetChanged()
-            } else {
-                userAdapter.userList.removeAt(position)
-                userAdapter.notifyDataSetChanged()
-                showUndoSnackbar(userBriefInfo, position)
-            }
+        val userBriefInfo = userBriefInfos[position]
+        Log.d(TAG, "Get direction $direction")
+        if (direction == ItemTouchHelper.START) {
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
+            intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+            startActivity(intent)
+            VibrateUtils.vibrateForNotice(this)
+            userAdapter.notifyDataSetChanged()
+        } else {
+            userAdapter.userList.removeAt(position)
+            userAdapter.notifyDataSetChanged()
+            showUndoSnackbar(userBriefInfo, position)
         }
     }
 
     override fun onRecyclerViewMoved(fromPosition: Int, toPosition: Int) {
         val userBriefInfos = userAdapter.userList
-        if (userBriefInfos != null) {
-            if (fromPosition < toPosition) {
-                for (i in fromPosition until toPosition) {
-                    Collections.swap(userBriefInfos, i, i + 1)
-                }
-            } else {
-                for (i in fromPosition downTo toPosition + 1) {
-                    Collections.swap(userBriefInfos, i, i - 1)
-                }
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition) {
+                Collections.swap(userBriefInfos, i, i + 1)
             }
-            for (i in userBriefInfos.indices) {
-                userBriefInfos[i]!!.position = i
+        } else {
+            for (i in fromPosition downTo toPosition + 1) {
+                Collections.swap(userBriefInfos, i, i - 1)
             }
-            updateDiscuzUser(userBriefInfos)
         }
+        for (i in userBriefInfos.indices) {
+            userBriefInfos[i].position = i
+        }
+        updateDiscuzUser(userBriefInfos)
     }
     
     private fun deleteDiscuzUser(userBriefInfo: User){
