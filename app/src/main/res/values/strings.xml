@@ -915,7 +915,7 @@
     <string name="delete_thread">Delete</string>
     <string name="no_admin_rights">You are not moderator and can\'t admin the thread.</string>
     <string name="admin_thread_title">Admin thread %1$s</string>
-    <string name="admin_reason">Reason</string>
+    <string name="admin_reason">Reason(required if deleting a object)</string>
     <string name="warn_post">Warn</string>
     <string name="undo_warn_post">Undo warnning</string>
     <string name="block_post">Block</string>

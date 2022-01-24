@@ -202,6 +202,15 @@ class AdminThreadDialogFragment(var discuz: Discuz,
 
         })
 
+        viewModel.reasonMutableLiveData.observe(viewLifecycleOwner,{
+            if(it.isNullOrEmpty()){
+                binding.deleteThreadButton.visibility = View.GONE
+            }
+            else{
+                binding.deleteThreadButton.visibility = View.VISIBLE
+            }
+        })
+
 
 
     }
@@ -211,6 +220,10 @@ class AdminThreadDialogFragment(var discuz: Discuz,
         binding.adminThreadButton.setOnClickListener {
             VibrateUtils.vibrateForClick(requireContext())
             viewModel.adminThread()
+        }
+        binding.deleteThreadButton.setOnClickListener {
+            VibrateUtils.vibrateForClick(requireContext())
+            viewModel.deleteThread()
         }
     }
 }

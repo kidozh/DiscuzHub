@@ -93,4 +93,36 @@ class AdminThreadViewModel(application: Application) : AndroidViewModel(applicat
             }
         )
     }
+
+    public fun deleteThread(){
+        // collect operation
+        val moderateList: List<Int> = listOf(thread.tid)
+        val operationList : MutableList<String> = mutableListOf("delete")
+
+        loadingStatusMutableLiveData.postValue(true)
+        service.adminThread(formHash,fid, moderateList,operationList as List<String>, 0, 0,reasonMutableLiveData.value!!).enqueue(
+            object : Callback<ApiMessageActionResult>{
+                override fun onResponse(
+                    call: Call<ApiMessageActionResult>,
+                    response: Response<ApiMessageActionResult>
+                ) {
+                    val res = response.body()
+                    if(response.isSuccessful && res!=null){
+                        returnedMessage.postValue(res.message)
+                    }
+                    else{
+                        networkError.postValue(true);
+                    }
+                    loadingStatusMutableLiveData.postValue(false)
+                }
+
+                override fun onFailure(call: Call<ApiMessageActionResult>, t: Throwable) {
+                    networkError.postValue(true)
+                    t.printStackTrace()
+                    loadingStatusMutableLiveData.postValue(false)
+                }
+
+            }
+        )
+    }
 }

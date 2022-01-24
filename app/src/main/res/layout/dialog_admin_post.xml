@@ -42,18 +42,14 @@
                     style="@style/Widget.Material3.Button.ElevatedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/MaterialColorOrange"
-                    android:text="@string/warn_post"
-                    android:textColor="@color/colorPureBlack" />
+                    android:text="@string/warn_post" />
 
                 <Button
                     android:id="@+id/block_post_button"
                     style="@style/Widget.Material3.Button.ElevatedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="?attr/colorError"
-                    android:text="@string/block_post"
-                    android:textColor="?attr/colorOnError" />
+                    android:text="@string/block_post" />
 
                 <Button
                     android:id="@+id/stick_post_button"

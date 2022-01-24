@@ -219,12 +219,11 @@ interface DiscuzApiService {
     ): Call<ApiMessageActionResult>
 
     @FormUrlEncoded
-    @POST("$DISCUZ_API_PATH?version=4&module=topicadmin&action=delpost&modsubmit=yes&sendreasonpm=on&modclick=yes&handlekey=mods")
+    @POST("$DISCUZ_API_PATH?version=4&module=topicadmin&action=delpost&modsubmit=yes&sendreasonpm=on")
     fun deletePost(
         @Field("formhash") formhash: String,
         @Field("fid") fid: Int,
         @Field("tid") tid: Int,
-        @Field("page") page: Int,
         @Field("topiclist[]") pid: List<Int>,
         @Field("reason") reason: String,
     ): Call<ApiMessageActionResult>

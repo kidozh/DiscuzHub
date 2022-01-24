@@ -785,7 +785,7 @@
     <string name="delete_thread">删除帖子</string>
     <string name="no_admin_rights">您并不是管理员，无法管理这个帖子。</string>
     <string name="admin_thread_title">管理帖子%1$s</string>
-    <string name="admin_reason">原因</string>
+    <string name="admin_reason">原因（删除操作必填）</string>
     <string name="warn_post">警告</string>
     <string name="undo_warn_post">撤销警告</string>
     <string name="block_post">屏蔽</string>

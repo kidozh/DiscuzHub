@@ -124,6 +124,15 @@ class AdminPostDialogFragment(val discuz: Discuz, val user: User, val fid: Int, 
                 listener.onPostSuccessfullyAdmined(it)
             }
         })
+
+        viewModel.reasonMutableLiveData.observe(viewLifecycleOwner,{
+            if(it.isNullOrBlank()){
+                binding.deletePostButton.visibility = View.GONE
+            }
+            else{
+                binding.deletePostButton.visibility = View.VISIBLE
+            }
+        })
     }
 
     private fun bindButton(){

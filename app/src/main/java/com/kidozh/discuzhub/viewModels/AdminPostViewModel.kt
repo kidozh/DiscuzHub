@@ -165,7 +165,7 @@ class AdminPostViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun deleteStickRequest(){
         sendingDeleteRequest.postValue(true)
-        service.deletePost(formHash,fid,tid, 1, listOf(post.pid),reasonMutableLiveData.value!!).enqueue(object :Callback<ApiMessageActionResult>{
+        service.deletePost(formHash,fid,tid, listOf(post.pid),reasonMutableLiveData.value!!).enqueue(object :Callback<ApiMessageActionResult>{
             override fun onResponse(
                 call: Call<ApiMessageActionResult>,
                 response: Response<ApiMessageActionResult>
