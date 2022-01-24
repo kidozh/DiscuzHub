@@ -22,6 +22,7 @@ class AdminThreadViewModel(application: Application) : AndroidViewModel(applicat
     val loadingStatusMutableLiveData : MutableLiveData<Boolean> = MutableLiveData(false)
     val returnedMessage = MutableLiveData<MessageResult?>(null)
     val networkError = MutableLiveData<Boolean>(false)
+    val reasonMutableLiveData: MutableLiveData<String> = MutableLiveData<String>("")
 
     lateinit var discuz: Discuz
     lateinit var user: User
@@ -67,7 +68,7 @@ class AdminThreadViewModel(application: Application) : AndroidViewModel(applicat
             digestLevel = adminStatus.digestLevel
         }
         loadingStatusMutableLiveData.postValue(true)
-        service.adminThread(formHash,fid, moderateList,operationList as List<String>, stickLevel, digestLevel,"").enqueue(
+        service.adminThread(formHash,fid, moderateList,operationList as List<String>, stickLevel, digestLevel,reasonMutableLiveData.value!!).enqueue(
             object : Callback<ApiMessageActionResult>{
                 override fun onResponse(
                     call: Call<ApiMessageActionResult>,

@@ -74,7 +74,10 @@ import java.util.*
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 
-class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilterChanged, onAdapterReply, OnLinkClicked, bbsPollFragment.OnFragmentInteractionListener, OnThreadPropertyClicked, OnAdvanceOptionClicked, ReportDialogListener, OnRefreshBtnListener, OnRecommendBtnPressed {
+class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
+    onFilterChanged, onAdapterReply, OnLinkClicked, bbsPollFragment.OnFragmentInteractionListener,
+    OnThreadPropertyClicked, OnAdvanceOptionClicked, ReportDialogListener, OnRefreshBtnListener,
+    OnRecommendBtnPressed, OnPostAdmined {
     lateinit var binding: ActivityViewThreadBinding
     var subject: String? = null
     var tid = 0
@@ -1687,5 +1690,18 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         private val TAG = ThreadActivity::class.java.simpleName
     }
 
+    override fun adminPost(post: Post) {
+
+    }
+
+    override fun onPostSuccessfullyAdmined(newPost: Post) {
+        TODO("Not yet implemented")
+    }
+
 }
 
+
+interface OnPostAdmined{
+    fun adminPost(post: Post)
+    fun onPostSuccessfullyAdmined(newPost: Post)
+}

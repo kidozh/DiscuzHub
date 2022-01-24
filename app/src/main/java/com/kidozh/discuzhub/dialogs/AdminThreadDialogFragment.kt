@@ -2,6 +2,8 @@ package com.kidozh.discuzhub.dialogs
 
 import android.app.Dialog
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -191,11 +193,29 @@ class AdminThreadDialogFragment(discuz: Discuz, user: User, fid: Int, thread: Th
             }
         })
 
+        binding.adminThreadReason.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if(p0!=null){
+                    viewModel.reasonMutableLiveData.postValue(p0.toString())
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+
+        })
+
 
 
     }
 
     fun bindSubmitBotton(){
+        binding.dialogAdminTitle.setText(getString(R.string.admin_thread_title, thread.subject))
         binding.adminThreadButton.setOnClickListener {
             VibrateUtils.vibrateForClick(requireContext())
             viewModel.adminThread()

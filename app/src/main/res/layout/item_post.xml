@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/post_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -161,8 +162,8 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
-                        app:tint="@color/colorPrimary"
-                        app:srcCompat="@drawable/ic_post_status_edited_24px" />
+                        app:srcCompat="@drawable/ic_post_status_edited_24px"
+                        app:tint="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/bbs_post_status_edited_text"
@@ -214,7 +215,6 @@
                 tools:text="@tools:sample/lorem" />
 
 
-
             <TextView
                 android:id="@+id/bbs_thread_type"
                 android:layout_width="wrap_content"
@@ -254,10 +254,10 @@
                     android:id="@+id/comment_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:itemCount="2"
                     android:descendantFocusability="blocksDescendants"
                     android:focusable="false"
                     android:nestedScrollingEnabled="false"
+                    tools:itemCount="2"
                     tools:listitem="@layout/item_post_comment" />
 
             </LinearLayout>

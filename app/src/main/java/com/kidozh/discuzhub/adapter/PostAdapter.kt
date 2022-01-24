@@ -24,6 +24,7 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.graphics.drawable.DrawableWrapper
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -43,6 +44,7 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.activities.FullImageActivity
+import com.kidozh.discuzhub.activities.OnPostAdmined
 import com.kidozh.discuzhub.activities.UserProfileActivity
 import com.kidozh.discuzhub.adapter.PostAdapter.PostViewHolder
 import com.kidozh.discuzhub.entities.Discuz
@@ -82,9 +84,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
         val result = DiffUtil.calculateDiff(Post.Companion.DiffCallback(field, value))
         result.dispatchUpdatesTo(this)
     }
-//    get() {
-//        return field
-//    }
+
     private val postCommentList: MutableMap<String, List<ThreadResult.Comment>> = HashMap()
     private var client = OkHttpClient()
     private var viewThreadQueryStatus: ViewThreadQueryStatus
@@ -365,6 +365,14 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
         } else {
             holder.commentRecyclerview.visibility = View.GONE
         }
+        // admin post interface
+        if(context is OnPostAdmined){
+            val onPostAdmined: OnPostAdmined = context as OnPostAdmined
+            holder.postCard.setOnLongClickListener { it ->
+                onPostAdmined.adminPost(post)
+                true
+            }
+        }
     }
 
     fun mergeCommentMap(commentList: Map<String, List<ThreadResult.Comment>>?) {
@@ -424,41 +432,23 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
     }
 
     class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var mThreadPublisher: TextView
-        var mPublishDate: TextView
-        var mContent: TextView
-        var mThreadType: TextView
-        var mAvatarImageview: ImageView
-        var mRecyclerview: RecyclerView
-        var mReplyBtn: Button
-        var mFilterByAuthorIdBtn: Button
-        var mPostStatusMobileIcon: ImageView
-        var mPostStatusBlockedView: View
-        var mPostStatusWarnedView: View
-        var mPostStatusEditedView: View
-        var isAuthorLabel: TextView
-        var mPostQuoteContent: TextView
-        var mPostAdvanceOptionImageView: ImageView
-        var commentRecyclerview: RecyclerView
-
-        init {
-            mThreadPublisher = itemView.findViewById(R.id.bbs_post_publisher)
-            mPublishDate = itemView.findViewById(R.id.bbs_post_publish_date)
-            mContent = itemView.findViewById(R.id.bbs_thread_content)
-            mThreadType = itemView.findViewById(R.id.bbs_thread_type)
-            mAvatarImageview = itemView.findViewById(R.id.bbs_post_avatar_imageView)
-            mRecyclerview = itemView.findViewById(R.id.bbs_thread_attachment_recyclerview)
-            mReplyBtn = itemView.findViewById(R.id.bbs_thread_reply_button)
-            mFilterByAuthorIdBtn = itemView.findViewById(R.id.bbs_thread_only_see_him_button)
-            mPostStatusMobileIcon = itemView.findViewById(R.id.bbs_post_status_mobile)
-            mPostStatusBlockedView = itemView.findViewById(R.id.bbs_post_status_blocked_layout)
-            mPostStatusWarnedView = itemView.findViewById(R.id.bbs_post_status_warned_layout)
-            mPostStatusEditedView = itemView.findViewById(R.id.bbs_post_status_edited_layout)
-            isAuthorLabel = itemView.findViewById(R.id.bbs_post_is_author)
-            mPostQuoteContent = itemView.findViewById(R.id.bbs_thread_quote_content)
-            mPostAdvanceOptionImageView = itemView.findViewById(R.id.bbs_post_advance_option)
-            commentRecyclerview = itemView.findViewById(R.id.comment_recyclerview)
-        }
+        var mThreadPublisher: TextView = itemView.findViewById(R.id.bbs_post_publisher)
+        var mPublishDate: TextView = itemView.findViewById(R.id.bbs_post_publish_date)
+        var mContent: TextView = itemView.findViewById(R.id.bbs_thread_content)
+        var mThreadType: TextView = itemView.findViewById(R.id.bbs_thread_type)
+        var mAvatarImageview: ImageView = itemView.findViewById(R.id.bbs_post_avatar_imageView)
+        var mRecyclerview: RecyclerView = itemView.findViewById(R.id.bbs_thread_attachment_recyclerview)
+        var mReplyBtn: Button = itemView.findViewById(R.id.bbs_thread_reply_button)
+        var mFilterByAuthorIdBtn: Button = itemView.findViewById(R.id.bbs_thread_only_see_him_button)
+        var mPostStatusMobileIcon: ImageView = itemView.findViewById(R.id.bbs_post_status_mobile)
+        var mPostStatusBlockedView: View = itemView.findViewById(R.id.bbs_post_status_blocked_layout)
+        var mPostStatusWarnedView: View = itemView.findViewById(R.id.bbs_post_status_warned_layout)
+        var mPostStatusEditedView: View = itemView.findViewById(R.id.bbs_post_status_edited_layout)
+        var isAuthorLabel: TextView = itemView.findViewById(R.id.bbs_post_is_author)
+        var mPostQuoteContent: TextView = itemView.findViewById(R.id.bbs_thread_quote_content)
+        var mPostAdvanceOptionImageView: ImageView = itemView.findViewById(R.id.bbs_post_advance_option)
+        var commentRecyclerview: RecyclerView = itemView.findViewById(R.id.comment_recyclerview)
+        var postCard : CardView = itemView.findViewById(R.id.post_card)
     }
 
     interface onFilterChanged {

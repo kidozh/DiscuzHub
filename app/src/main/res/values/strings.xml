@@ -914,5 +914,7 @@
     </string-array>
     <string name="delete_thread">Delete</string>
     <string name="no_admin_rights">You are not moderator and can\'t admin the thread.</string>
+    <string name="admin_thread_title">Admin thread %1$s</string>
+    <string name="admin_reason">Reason</string>
 
 </resources>
