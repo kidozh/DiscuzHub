@@ -185,6 +185,50 @@ interface DiscuzApiService {
         @Field("reason") reason: String,
     ): Call<ApiMessageActionResult>
 
+    @FormUrlEncoded
+    @POST("$DISCUZ_API_PATH?version=4&module=topicadmin&action=warn&modsubmit=yes&sendreasonpm=on")
+    fun warnPost(
+        @Field("formhash") formhash: String,
+        @Field("fid") fid: Int,
+        @Field("tid") tid: Int,
+        @Field("topiclist[]") pids: List<Int>,
+        @Field("warned") warned: Int,
+        @Field("reason") reason: String,
+    ): Call<ApiMessageActionResult>
+
+    @FormUrlEncoded
+    @POST("$DISCUZ_API_PATH?version=4&module=topicadmin&action=banpost&modsubmit=yes&sendreasonpm=on")
+    fun banPost(
+        @Field("formhash") formhash: String,
+        @Field("fid") fid: Int,
+        @Field("tid") tid: Int,
+        @Field("topiclist[]") pids: List<Int>,
+        @Field("banned") warned: Int,
+        @Field("reason") reason: String,
+    ): Call<ApiMessageActionResult>
+
+    @FormUrlEncoded
+    @POST("$DISCUZ_API_PATH?version=4&module=topicadmin&action=stickreply&modsubmit=yes&sendreasonpm=on")
+    fun stickPost(
+        @Field("formhash") formhash: String,
+        @Field("fid") fid: Int,
+        @Field("tid") tid: Int,
+        @Field("topiclist[]") pids: List<Int>,
+        @Field("stickreply") warned: Int,
+        @Field("reason") reason: String,
+    ): Call<ApiMessageActionResult>
+
+    @FormUrlEncoded
+    @POST("$DISCUZ_API_PATH?version=4&module=topicadmin&action=delpost&modsubmit=yes&sendreasonpm=on&modclick=yes&handlekey=mods")
+    fun deletePost(
+        @Field("formhash") formhash: String,
+        @Field("fid") fid: Int,
+        @Field("tid") tid: Int,
+        @Field("page") page: Int,
+        @Field("topiclist[]") pid: List<Int>,
+        @Field("reason") reason: String,
+    ): Call<ApiMessageActionResult>
+
     companion object {
         const val DISCUZ_API_PATH = "/api/mobile/index.php"
     }

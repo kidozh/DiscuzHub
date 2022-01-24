@@ -22,22 +22,12 @@ import com.kidozh.discuzhub.utilities.VibrateUtils
 import com.kidozh.discuzhub.viewModels.AdminThreadViewModel
 import es.dmoral.toasty.Toasty
 
-class AdminThreadDialogFragment(discuz: Discuz, user: User, fid: Int, thread: Thread, formhash: String): BottomSheetDialogFragment() {
+class AdminThreadDialogFragment(var discuz: Discuz,
+                                var user: User, var fid: Int, var thread: Thread, var formhash: String
+): BottomSheetDialogFragment() {
     val TAG = AdminThreadDialogFragment::class.simpleName
     lateinit var binding: DialogAdminThreadBinding
     lateinit var viewModel: AdminThreadViewModel
-    var discuz: Discuz
-    var user: User
-    var thread: Thread
-    var formhash :String
-    var fid: Int
-    init {
-        this.discuz = discuz
-        this.user = user
-        this.thread = thread
-        this.formhash = formhash
-        this.fid = fid
-    }
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

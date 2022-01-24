@@ -79,13 +79,13 @@ class AdminThreadViewModel(application: Application) : AndroidViewModel(applicat
                         returnedMessage.postValue(res.message)
                     }
                     else{
-                        networkError.postValue(false);
+                        networkError.postValue(true);
                     }
                     loadingStatusMutableLiveData.postValue(false)
                 }
 
                 override fun onFailure(call: Call<ApiMessageActionResult>, t: Throwable) {
-                    networkError.postValue(false)
+                    networkError.postValue(true)
                     t.printStackTrace()
                     loadingStatusMutableLiveData.postValue(false)
                 }

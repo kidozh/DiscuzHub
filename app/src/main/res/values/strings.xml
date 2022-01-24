@@ -916,5 +916,14 @@
     <string name="no_admin_rights">You are not moderator and can\'t admin the thread.</string>
     <string name="admin_thread_title">Admin thread %1$s</string>
     <string name="admin_reason">Reason</string>
+    <string name="warn_post">Warn</string>
+    <string name="undo_warn_post">Undo warnning</string>
+    <string name="block_post">Block</string>
+    <string name="unblock_post">Unblock</string>
+    <string name="delete_post">Delete</string>
+    <string name="stick_post">Stick</string>
+    <string name="unstick_post">Unstick</string>
+    <string name="admin_post">Admin %1$s\'s post</string>
+    <string name="delete_post_description">Are you sure to delete this post?</string>
 
 </resources>

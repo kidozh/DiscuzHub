@@ -54,6 +54,7 @@ import com.kidozh.discuzhub.adapter.ThreadCountAdapter.OnRecommendBtnPressed
 import com.kidozh.discuzhub.adapter.ThreadPropertiesAdapter.OnThreadPropertyClicked
 import com.kidozh.discuzhub.database.ViewHistoryDatabase
 import com.kidozh.discuzhub.databinding.ActivityViewThreadBinding
+import com.kidozh.discuzhub.dialogs.AdminPostDialogFragment
 import com.kidozh.discuzhub.dialogs.ReportPostDialogFragment
 import com.kidozh.discuzhub.dialogs.ReportPostDialogFragment.ReportDialogListener
 import com.kidozh.discuzhub.entities.*
@@ -1691,11 +1692,26 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
     }
 
     override fun adminPost(post: Post) {
-
+        VibrateUtils.vibrateForError(this)
+        if(threadDetailViewModel.threadPostResultMutableLiveData.value?.threadPostVariables?.moderator?.equals(true) == true && user!= null){
+            val threadVariable = threadDetailViewModel.threadPostResultMutableLiveData.value!!.threadPostVariables
+            val adminThreadDialogFragment = AdminPostDialogFragment(discuz!!, user!!, threadVariable.fid,threadVariable.detailedThreadInfo.tid,post, threadDetailViewModel.threadPostResultMutableLiveData.value?.threadPostVariables!!.formHash)
+            adminThreadDialogFragment.show(supportFragmentManager, adminThreadDialogFragment.tag)
+        }
+        else{
+            Toasty.info(this,getString(R.string.no_admin_rights),Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onPostSuccessfullyAdmined(newPost: Post) {
-        TODO("Not yet implemented")
+        val newPostList = postAdapter.postList.toMutableList()
+        for((index, post) in postAdapter.postList.withIndex()){
+            if(newPost.pid == post.pid){
+                newPostList[index] = newPost
+                postAdapter.postList = newPostList
+                postAdapter.notifyItemChanged(index)
+            }
+        }
     }
 
 }

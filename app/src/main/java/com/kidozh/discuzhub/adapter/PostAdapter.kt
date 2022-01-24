@@ -77,7 +77,8 @@ val POST_REVISED = 4
 val POST_MOBILE = 8
 
 class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThreadQueryStatus: ViewThreadQueryStatus) : RecyclerView.Adapter<PostViewHolder>() {
-    private var postList: List<Post> = ArrayList()
+
+    var postList: MutableList<Post> = mutableListOf<Post>()
     set(value) {
         Log.d(TAG,"Value new size "+value.size+" old size "+field.size)
         field = value
@@ -105,7 +106,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
 
     }
 
-    fun getPosts(): List<Post>{
+    fun getPosts(): MutableList<Post>{
         return postList
     }
 
@@ -113,13 +114,13 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
         setHasStableIds(true)
     }
 
-    private fun updateList(newList: List<Post>?) {
+    private fun updateList(newList: MutableList<Post>?) {
         if(newList == null){
             return
         }
         Log.d(TAG,"Recv post list "+this.postList.size+" new list "+newList.size)
         val result = DiffUtil.calculateDiff(Post.Companion.DiffCallback(postList, newList))
-        this.postList = newList
+        this.postList = newList as MutableList<Post>
         result.dispatchUpdatesTo(this)
         notifyDataSetChanged()
     }
