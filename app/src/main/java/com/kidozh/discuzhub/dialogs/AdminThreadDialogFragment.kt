@@ -39,10 +39,12 @@ class AdminThreadDialogFragment(discuz: Discuz, user: User, fid: Int, thread: Th
         this.fid = fid
     }
 
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         binding = DialogAdminThreadBinding.inflate(layoutInflater)
         dialog.setContentView(binding.root)
+        dialog.setTitle(getString(R.string.admin_thread_title, thread.subject))
         Log.d(TAG,"Create dialog")
         return dialog
     }

@@ -17,7 +17,8 @@
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
                 android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                android:textSize="20sp"
                 tools:text="@tools:sample/full_names" />
 
             <ProgressBar
