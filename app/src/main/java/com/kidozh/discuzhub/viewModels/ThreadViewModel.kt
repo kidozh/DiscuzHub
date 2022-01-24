@@ -218,7 +218,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
     fun recommendThread(tid: Int, recommend: Boolean) {
         val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url, client)
         val service = retrofit.create(DiscuzApiService::class.java)
-        val formHashValue = formHash.value
+        val formHashValue: String = formHash.value!!
         if (TextUtils.isEmpty(formHashValue)) {
             return
         }
@@ -274,10 +274,10 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
         })
     }
 
-    fun reportPost(pid: Int, message: String?, isOtherReason: Boolean) {
+    fun reportPost(pid: Int, message: String, isOtherReason: Boolean) {
         val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url, client)
         val service = retrofit.create(DiscuzApiService::class.java)
-        val formHashValue = formHash.value
+        val formHashValue = formHash.value!!
         val reportPostCall: Call<ApiMessageActionResult> = if (isOtherReason) {
             service.reportPost(formHashValue, pid, getApplication<Application>().getString(R.string.report_option_others), message)
         } else {
@@ -307,7 +307,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
     fun buyThread(tid: Int) {
         val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url, client)
         val service = retrofit.create(DiscuzApiService::class.java)
-        val formHashValue = formHash.value
+        val formHashValue = formHash.value!!
         val buyThreadResultCall = service.buyThread(tid, formHashValue, "pay")
         buyThreadResultCall.enqueue(object : Callback<BuyThreadResult?> {
             override fun onResponse(call: Call<BuyThreadResult?>, response: Response<BuyThreadResult?>) {
@@ -329,7 +329,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
         })
     }
 
-    fun favoriteThread(favoriteThread: FavoriteThread, favorite: Boolean, description: String?){
+    fun favoriteThread(favoriteThread: FavoriteThread, favorite: Boolean, description: String){
         var favoriteThreadActionResultCall: Call<ApiMessageActionResult>? = null
         val retrofit = NetworkUtils.getRetrofitInstance(bbsInfo.base_url, client)
         val service = retrofit.create(DiscuzApiService::class.java)

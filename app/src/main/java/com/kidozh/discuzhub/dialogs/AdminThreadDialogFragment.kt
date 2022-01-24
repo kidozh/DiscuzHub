@@ -7,16 +7,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.kidozh.discuzhub.R
+import com.kidozh.discuzhub.activities.OnThreadAdmined
 import com.kidozh.discuzhub.databinding.DialogAdminThreadBinding
+import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.Thread
+import com.kidozh.discuzhub.entities.User
+import com.kidozh.discuzhub.utilities.VibrateUtils
 import com.kidozh.discuzhub.viewModels.AdminThreadViewModel
+import es.dmoral.toasty.Toasty
 
-class AdminThreadDialogFragment(thread: Thread): BottomSheetDialogFragment() {
+class AdminThreadDialogFragment(discuz: Discuz, user: User, fid: Int, thread: Thread, formhash: String): BottomSheetDialogFragment() {
     val TAG = AdminThreadDialogFragment::class.simpleName
     lateinit var binding: DialogAdminThreadBinding
     lateinit var viewModel: AdminThreadViewModel
+    var discuz: Discuz
+    var user: User
+    var thread: Thread
+    var formhash :String
+    var fid: Int
+    init {
+        this.discuz = discuz
+        this.user = user
+        this.thread = thread
+        this.formhash = formhash
+        this.fid = fid
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
@@ -40,13 +59,32 @@ class AdminThreadDialogFragment(thread: Thread): BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViewModel()
+        bindSubmitBotton()
     }
 
     fun bindViewModel(){
         Log.d(TAG,"Bind view model")
         viewModel = ViewModelProvider(this)[AdminThreadViewModel::class.java]
+        viewModel.initParameter(discuz, user, fid, thread, formhash)
+        viewModel.loadingStatusMutableLiveData.observe(viewLifecycleOwner,{
+            binding.adminThreadButton.isEnabled = !it
+            if(it){
+                binding.adminNetworkProgressbar.visibility = View.VISIBLE
+            }
+            else{
+                binding.adminNetworkProgressbar.visibility = View.GONE
+            }
+        })
+
         // bind data with model
         viewModel.adminStatusMutableLiveData.observe(viewLifecycleOwner, {
+            if(it.operateDigest || it.operatePin || it.promote){
+                binding.adminThreadButton.visibility = View.VISIBLE
+            }
+            else{
+                binding.adminThreadButton.visibility = View.GONE
+            }
+
             if(it.pinnedLevel in 0..3){
                 binding.pinSpinner.setSelection(it.pinnedLevel)
             }
@@ -130,11 +168,37 @@ class AdminThreadDialogFragment(thread: Thread): BottomSheetDialogFragment() {
             }
         }
 
+        viewModel.returnedMessage.observe(viewLifecycleOwner,{
+            if(it!= null){
+                if(it.key == "admin_succeed"){
+                    VibrateUtils.vibrateSlightly(requireContext())
+                    Toasty.success(requireContext(),getString(R.string.discuz_api_message_template, it.key, it.content), Toast.LENGTH_LONG).show()
+                    if (context is OnThreadAdmined && viewModel.adminStatusMutableLiveData.value!= null){
+                        val mlistener: OnThreadAdmined = context as OnThreadAdmined
+                        mlistener.onThreadSuccessfullyAdmined(thread, viewModel.adminStatusMutableLiveData.value!!)
+                    }
+                }
+                else{
+                    VibrateUtils.vibrateForError(requireContext())
+                    Toasty.error(requireContext(),getString(R.string.discuz_api_message_template, it.key, it.content), Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
+        viewModel.networkError.observe(viewLifecycleOwner,{
+            if(it == true){
+                Toasty.error(requireContext(),getString(R.string.network_failed), Toast.LENGTH_LONG).show()
+            }
+        })
+
 
 
     }
 
-    fun bindSpinnerAndCheckBox(){
-
+    fun bindSubmitBotton(){
+        binding.adminThreadButton.setOnClickListener {
+            VibrateUtils.vibrateForClick(requireContext())
+            viewModel.adminThread()
+        }
     }
 }

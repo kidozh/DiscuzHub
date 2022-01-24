@@ -783,5 +783,6 @@
         <item>精华3</item>
     </string-array>
     <string name="delete_thread">删除帖子</string>
+    <string name="no_admin_rights">您并不是管理员，无法管理这个帖子。</string>
 
 </resources>

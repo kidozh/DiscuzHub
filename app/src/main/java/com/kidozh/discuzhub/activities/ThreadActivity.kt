@@ -1476,7 +1476,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction, onFilte
         input.layoutParams = lp
         favoriteDialog.setView(input)
         favoriteDialog.setPositiveButton(android.R.string.ok) { _, _ ->
-            var description: String? = input.text.toString()
+            var description: String = input.text.toString()
             description = if (TextUtils.isEmpty(description)) "" else description
             threadDetailViewModel.favoriteThread(favoriteThread,true,description)
         }

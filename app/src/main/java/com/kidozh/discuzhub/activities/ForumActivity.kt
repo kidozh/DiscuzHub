@@ -41,6 +41,7 @@ import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
 import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils.syncInformation
 import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod.OnLinkClickedListener
+import com.kidozh.discuzhub.viewModels.AdminThreadViewModel
 import com.kidozh.discuzhub.viewModels.ForumViewModel
 import es.dmoral.toasty.Toasty
 import retrofit2.Call
@@ -570,25 +571,24 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
         input.layoutParams = lp
         favoriteDialog.setView(input)
         favoriteDialog.setPositiveButton(android.R.string.ok) { _, _ ->
-            var description: String? = input.text.toString()
+            var description: String = input.text.toString()
             description = if (TextUtils.isEmpty(description)) "" else description
             favoriteForum(favoriteForum, true, description)
         }
         favoriteDialog.show()
     }
 
-    fun favoriteForum(favoriteForum: FavoriteForum, favorite: Boolean, description: String?){
-        if(description != null){
-            favoriteForum.description = description
-        }
+    fun favoriteForum(favoriteForum: FavoriteForum, favorite: Boolean, description: String){
+        favoriteForum.description = description
 
-        var favoriteForumActionResultCall: Call<ApiMessageActionResult?>? = null
+
         var messageResult: MessageResult? = null
 
         val retrofit = NetworkUtils.getRetrofitInstance(discuz!!.base_url, forumViewModel.client)
         val service = retrofit.create(DiscuzApiService::class.java)
         val result = forumViewModel.displayForumResultMutableLiveData.value
         val dao = FavoriteForumDatabase.getInstance(applicationContext).dao
+        var favoriteForumActionResultCall: Call<ApiMessageActionResult>? = null
         if (result != null && favoriteForum.userId != 0 && syncInformation(
                 application
             )
@@ -613,7 +613,6 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
             }
         }
         var favoriteResult = true
-        var containError = true
         Thread{
             if (favoriteForumActionResultCall != null) {
                 try {
@@ -646,7 +645,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                             dao.delete(favoriteForum)
                             dao.delete(discuz!!.id, user!!.uid, favoriteForum.idKey)
                         } else {
-                            containError = true
+
                         }
                     } else {
                         messageResult = MessageResult()
@@ -675,7 +674,6 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
-                    containError = true
                     messageResult = MessageResult()
                     messageResult!!.content = e.message
                     messageResult!!.key = e.toString()
@@ -777,11 +775,31 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
     override fun adminThread(thread: Thread) {
         // trigger admin dialog ?
         Log.d(TAG,"Long press ${thread}, ${variableResults.moderator} ${forumViewModel.displayForumResultMutableLiveData.value?.forumVariables?.moderator}" )
-        if(forumViewModel.displayForumResultMutableLiveData.value?.forumVariables?.moderator?.equals(true) == true){
-
-
-            val adminThreadDialogFragment = AdminThreadDialogFragment(thread)
+        VibrateUtils.vibrateForError(this)
+        if(forumViewModel.displayForumResultMutableLiveData.value?.forumVariables?.moderator?.equals(true) == true && user!= null){
+            val adminThreadDialogFragment = AdminThreadDialogFragment(discuz!!, user!!, forumViewModel.displayForumResultMutableLiveData.value!!.forumVariables.forum.fid,thread, forumViewModel.displayForumResultMutableLiveData.value!!.forumVariables.formHash)
             adminThreadDialogFragment.show(supportFragmentManager, adminThreadDialogFragment.tag)
+        }
+        else{
+            Toasty.info(this,getString(R.string.no_admin_rights),Toast.LENGTH_LONG).show()
+        }
+
+    }
+
+    override fun onThreadSuccessfullyAdmined(thread: Thread, adminStatus: AdminThreadViewModel.AdminStatus) {
+        // deal with adapter
+        for((index, threadInList) in adapter.threadList.withIndex()){
+            if(thread.tid == threadInList.tid){
+                // modify this
+                if(adminStatus.operatePin){
+                    thread.displayOrder = adminStatus.pinnedLevel
+                }
+                if(adminStatus.operateDigest){
+                    thread.digest = adminStatus.digestLevel != 0
+                }
+                adapter.threadList[index] = thread
+                adapter.notifyItemChanged(index)
+            }
         }
 
     }
@@ -791,4 +809,5 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
 
 interface OnThreadAdmined{
     fun adminThread(thread: Thread)
+    fun onThreadSuccessfullyAdmined(thread: Thread, adminStatus: AdminThreadViewModel.AdminStatus)
 }

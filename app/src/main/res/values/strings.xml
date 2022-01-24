@@ -913,5 +913,6 @@
         <item>Digest #3</item>
     </string-array>
     <string name="delete_thread">Delete</string>
+    <string name="no_admin_rights">You are not moderator and can\'t admin the thread.</string>
 
 </resources>

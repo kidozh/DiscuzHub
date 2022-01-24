@@ -9,6 +9,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <ProgressBar
+                android:id="@+id/admin_network_progressbar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="gone" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/pin_constraint_layout"
                 android:layout_width="match_parent"
@@ -110,6 +118,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/delete_thread"
                 android:textColor="?attr/colorError"
+                android:visibility="gone"
                 app:rippleColor="?attr/colorError"
                 app:strokeColor="?attr/colorError"
                 app:strokeWidth="1dp" />
