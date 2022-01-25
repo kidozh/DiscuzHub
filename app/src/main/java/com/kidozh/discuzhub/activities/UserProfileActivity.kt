@@ -151,7 +151,8 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
                     val spaceVariables = userProfileResult.userProfileVariableResult.space
                     val username = userProfileResult.userProfileVariableResult.space.username
                     if (supportActionBar != null) {
-                        supportActionBar!!.subtitle = username
+                        supportActionBar!!.title = username
+                        supportActionBar!!.subtitle = spaceVariables.uid.toString()
                     }
                     setBaseResult(userProfileResult, userProfileResult.userProfileVariableResult)
 

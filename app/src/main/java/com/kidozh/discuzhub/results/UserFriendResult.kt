@@ -1,30 +1,29 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import java.util.List;
-
-public class UserFriendResult extends BaseResult {
+class UserFriendResult : BaseResult() {
     @JsonProperty("Variables")
-    public FriendVariables friendVariables;
+    var friendVariables: FriendVariables? = null
 
-    public static class FriendVariables extends VariableResults {
+    class FriendVariables : VariableResults() {
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int count = 0;
+        var count = 0
 
         @JsonProperty("list")
-        public List<UserFriend> friendList = null;
+        var friendList: List<UserFriend> = ArrayList()
     }
 
-    public static class UserFriend {
+    class UserFriend {
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int uid = 0;
-
-        public String username = "";
+        var uid = 0
+        @JvmField
+        var username = ""
     }
 
-    public boolean isError(){
-        return message !=null ;
+    override fun isError(): Boolean {
+        return message != null
     }
 }

@@ -93,25 +93,25 @@ class UserFriendViewModel(application: Application) : AndroidViewModel(applicati
 
                     if(friendsResult?.friendVariables != null){
                         userFriendResultMutableLiveData.postValue(friendsResult)
-                        val userFriendList = friendsResult.friendVariables.friendList
+                        val userFriendList = friendsResult.friendVariables!!.friendList
                         var currentFriendList = userFriendListMutableData.value
 
-                        if (userFriendList != null && currentFriendList !=null) {
+                        if (currentFriendList !=null) {
                             currentFriendList.addAll(userFriendList)
                             Log.d(TAG,"get new friend list size "+userFriendList.size);
-                            newFriendListMutableLiveData.postValue(userFriendList)
+                            newFriendListMutableLiveData.postValue(userFriendList as MutableList<UserFriend>)
                         }
                         else{
-                            currentFriendList = userFriendList?.toMutableList()
+                            currentFriendList = userFriendList.toMutableList()
                         }
                         userFriendListMutableData.postValue(currentFriendList)
                         isErrorMutableLiveData.postValue(false)
                         // judge load all
 
 
-                        var currentFriendNum  = currentFriendList?.size ?:0
-                        var totalFriendNum = max(friendsResult.friendVariables.count,friendCounts)
-                        Log.d(TAG,"total count "+currentFriendList?.size+" required "+totalFriendNum+" "+currentFriendNum);
+                        var currentFriendNum  = currentFriendList.size ?:0
+                        var totalFriendNum = max(friendsResult.friendVariables!!.count,friendCounts)
+                        Log.d(TAG,"total count "+ currentFriendList.size +" required "+totalFriendNum+" "+currentFriendNum);
                         if(totalFriendNum > currentFriendNum ){
                             loadAllMutableLiveData.postValue(false)
                             page += 1
