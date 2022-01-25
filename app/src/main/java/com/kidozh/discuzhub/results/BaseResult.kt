@@ -12,7 +12,7 @@ open class BaseResult {
     var apiVersion: Int = 4
 
     @JsonProperty("Charset")
-    lateinit var Charset: String
+    var Charset: String = "UTF-8"
 
     fun getCharsetType():Int{
         if (Charset == "GBK") {
