@@ -9,8 +9,8 @@ android {
         applicationId "com.kidozh.discuzhub"
         minSdkVersion 24
         targetSdkVersion 31
-        versionCode 45
-        versionName "5.2"
+        versionCode 46
+        versionName "5.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [
                 discuz_title: "NOT_IMPLEMENTED",
