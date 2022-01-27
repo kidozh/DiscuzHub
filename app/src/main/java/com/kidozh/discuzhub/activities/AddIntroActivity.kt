@@ -84,7 +84,7 @@ class AddIntroActivity : BaseStatusActivity(), OnClickSuggestionListener {
             }
         })
         viewModel.errorTextLiveData.observe(this, { s ->
-            if (s.length != 0) {
+            if (s.isNotEmpty()) {
                 Toasty.warning(application, s, Toast.LENGTH_SHORT).show()
             }
         })
