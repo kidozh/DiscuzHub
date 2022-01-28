@@ -58,7 +58,6 @@ import com.mikepenz.materialdrawer.util.updateItem
 import com.mikepenz.materialdrawer.widget.AccountHeaderView
 import es.dmoral.toasty.Toasty
 import java.io.InputStream
-import java.util.*
 
 class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMessageChangeListener, bbsPublicMessageFragment.OnNewMessageChangeListener, UserNotificationFragment.OnNewMessageChangeListener {
     lateinit var viewModel: MainDrawerViewModel
@@ -107,7 +106,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
     }
 
     private fun bindViewModel() {
-        viewModel.allBBSInformationMutableLiveData.observe(this, { Discuzs: List<Discuz>? ->
+        viewModel.allBBSInformationMutableLiveData.observe(this) { Discuzs: List<Discuz>? ->
             //binding.materialDrawerSliderView.getItemAdapter().clear();
             headerView.clear()
             //drawerAccountHeader.clear();
@@ -120,8 +119,9 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
 
             } else {
                 // bind to headview
-                    // show navbar
-                binding.toolbar.navigationIcon = ContextCompat.getDrawable(this,R.drawable.ic_menu_24px)
+                // show navbar
+                binding.toolbar.navigationIcon =
+                    ContextCompat.getDrawable(this, R.drawable.ic_menu_24px)
                 val accountProfiles: MutableList<IProfile> = ArrayList()
                 for (i in Discuzs.indices) {
                     val currentBBSInfo = Discuzs[i]
@@ -140,10 +140,11 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                     if (currentBBSInfo.apiVersion > 4) {
                         // marked as advanced
                         bbsProfile.badge = StringHolder(
-                                getString(R.string.bbs_api_advance)
+                            getString(R.string.bbs_api_advance)
                         )
                         val badgeStyle = BadgeStyle()
-                        badgeStyle.badgeBackground = ContextCompat.getDrawable(this,R.color.colorAPI5BadgeBackgroundColor)
+                        badgeStyle.badgeBackground =
+                            ContextCompat.getDrawable(this, R.color.colorAPI5BadgeBackgroundColor)
                         val colorHolder = ColorHolder.fromColorRes(R.color.colorPureWhite)
                         badgeStyle.textColor = colorHolder
                         bbsProfile.badgeStyle = badgeStyle
@@ -153,7 +154,8 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                 headerView.profiles = accountProfiles
                 // drawerAccountHeader.setProfiles(accountProfiles);
                 if (Discuzs.size > 0) {
-                    val activeIdentifier = UserPreferenceUtils.getLastSelectedDrawerItemIdentifier(this)
+                    val activeIdentifier =
+                        UserPreferenceUtils.getLastSelectedDrawerItemIdentifier(this)
                     if (activeIdentifier >= 0) {
                         headerView.setActiveProfile(activeIdentifier.toLong(), true)
                     } else {
@@ -184,8 +186,8 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                 }
                 headerView.addProfiles(manageBBSProfile)
             }
-        })
-        viewModel.forumUserListMutableLiveData.observe(this, { forumUserBriefInfos ->
+        }
+        viewModel.forumUserListMutableLiveData.observe(this) { forumUserBriefInfos ->
             // clear it first
             // drawerResult.removeAllItems();
             binding.materialDrawerSliderView.itemAdapter.clear()
@@ -205,10 +207,11 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                     val userProfile = ProfileDrawerItem().apply {
                         isSelectable = true
                         name = StringHolder(userBriefInfo.username)
-                        icon = ImageHolder(URLUtils.getDefaultAvatarUrlByUid(userBriefInfo.uid))
+                        icon = discuz?.let { ImageHolder(it.getAvatarUrl(userBriefInfo.uid)) }
                         isNameShown = true
                         identifier = userBriefInfo.id.toLong()
-                        description = StringHolder(getString(R.string.user_id_description, userBriefInfo.uid))
+                        description =
+                            StringHolder(getString(R.string.user_id_description, userBriefInfo.uid))
                     }
                     binding.materialDrawerSliderView.itemAdapter.add(userProfile)
                 }
@@ -282,7 +285,6 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                 }
 
 
-
                 // history
                 val viewHistory = PrimaryDrawerItem().apply {
                     name = StringHolder(R.string.view_history)
@@ -333,25 +335,28 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
 
 
                 binding.materialDrawerSliderView.itemAdapter.add(
-                        DividerDrawerItem(),
-                        addAccount,
-                        registerAccount,
-                        manageAccount,
-                        draftItem,
-                        viewHistory,
-                        shortCutItem,
-                        searchItem,
-                        DividerDrawerItem(),
-                        settingItem,
-                        aboutItem
-                        
+                    DividerDrawerItem(),
+                    addAccount,
+                    registerAccount,
+                    manageAccount,
+                    draftItem,
+                    viewHistory,
+                    shortCutItem,
+                    searchItem,
+                    DividerDrawerItem(),
+                    settingItem,
+                    aboutItem
+
                 )
                 if (forumUserBriefInfos == null || forumUserBriefInfos.size == 0) {
                     Log.d(TAG, "Trigger igcontive mode")
-                    binding.materialDrawerSliderView.setSelection(MODE_USER_IGCONGTIVE.toLong(), true)
+                    binding.materialDrawerSliderView.setSelection(
+                        MODE_USER_IGCONGTIVE.toLong(),
+                        true
+                    )
                 }
             }
-        })
+        }
         viewModel.currentBBSInformationMutableLiveData.observe(this, { Discuz: Discuz? ->
             discuz = Discuz
             if (Discuz != null) {

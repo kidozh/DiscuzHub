@@ -9,7 +9,10 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Html
 import android.text.SpannableString
 import android.text.TextUtils
@@ -73,7 +76,6 @@ import java.net.URLEncoder
 import java.text.DateFormat
 import java.util.*
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
 
 class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
     onFilterChanged, onAdapterReply, OnLinkClicked, bbsPollFragment.OnFragmentInteractionListener,
@@ -463,7 +465,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
                         if (recordHistory) {
                             discuz?.let {
                                 ViewHistory(
-                                    URLUtils.getDefaultAvatarUrlByUid(detailedThreadInfo.authorId),
+                                    discuz!!.getAvatarUrl(detailedThreadInfo.authorId),
                                     detailedThreadInfo.author,
                                     it.id,
                                     detailedThreadInfo.subject,

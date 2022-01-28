@@ -33,16 +33,18 @@ import java.util.List;
 
 import static com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClient;
 
+import okhttp3.Call;
+
 public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder> {
     private final static String TAG = FriendAdapter.class.getSimpleName();
     @NonNull
     private List<UserFriendResult.UserFriend> userFriendList = new ArrayList<>();
     Context context;
-    Discuz bbsInfo;
+    Discuz discuz;
     User curUser;
 
-    public FriendAdapter(Discuz bbsInfo, User curUser){
-        this.bbsInfo = bbsInfo;
+    public FriendAdapter(Discuz discuz, User curUser){
+        this.discuz = discuz;
         this.curUser = curUser;
     }
 
@@ -101,14 +103,14 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         UserFriendResult.UserFriend friend = userFriendList.get(position);
         holder.name.setText(friend.username);
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(getPreferredClient(context));
+        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory((Call.Factory) getPreferredClient(context));
         Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
         int avatar_num = position % 16;
         holder.idx.setText(String.valueOf(position+1));
         int avatarResource = context.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",context.getPackageName());
 
         Glide.with(context)
-                .load(URLUtils.getDefaultAvatarUrlByUid(String.valueOf(friend.uid)))
+                .load(discuz.getAvatarUrl(friend.uid))
                 .apply(RequestOptions.placeholderOf(avatarResource)
                         .error(avatarResource))
                 .into(holder.avatar);
@@ -117,7 +119,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
             public void onClick(View v) {
                 Log.d(TAG,"click friend cardview");
                 Intent intent = new Intent(context, UserProfileActivity.class);
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,bbsInfo);
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY,discuz);
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY,curUser);
                 intent.putExtra("UID",friend.uid);
                 VibrateUtils.vibrateForClick(context);

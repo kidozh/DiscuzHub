@@ -26,16 +26,15 @@ import com.kidozh.discuzhub.entities.FavoriteThread
 import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.TimeDisplayUtils.Companion.getLocalePastTimeString
-import com.kidozh.discuzhub.utilities.URLUtils
 import com.kidozh.discuzhub.utilities.VibrateUtils
 
 class FavoriteThreadAdapter :
     PagingDataAdapter<FavoriteThread, FavoriteThreadViewHolder>(FavoriteThread.DIFF_CALLBACK) {
-    var context: Context? = null
-    var bbsInfo: Discuz? = null
+    lateinit var context: Context
+    lateinit var discuz: Discuz
     var curUser: User? = null
-    fun setInformation(bbsInfo: Discuz?, userBriefInfo: User?) {
-        this.bbsInfo = bbsInfo
+    fun setInformation(discuz: Discuz, userBriefInfo: User?) {
+        this.discuz = discuz
         curUser = userBriefInfo
     }
 
@@ -65,13 +64,13 @@ class FavoriteThreadAdapter :
             holder.publishAt.text = getLocalePastTimeString(context!!, favoriteThread.date)
             Log.d(TAG, "get publish date " + favoriteThread.date)
             holder.replyNumber.text =
-                context!!.getString(R.string.bbs_thread_reply_number, favoriteThread.replies)
+                context.getString(R.string.bbs_thread_reply_number, favoriteThread.replies)
             if (favoriteThread.favid == 0) {
                 holder.syncStatus.visibility = View.GONE
             } else {
                 holder.syncStatus.visibility = View.VISIBLE
             }
-            val avatarURL = URLUtils.getDefaultAvatarUrlByUid(favoriteThread.uid)
+            val avatarURL = discuz.getAvatarUrl(favoriteThread.uid)
             var avatar_num = favoriteThread.uid
             avatar_num = avatar_num % 16
             if (avatar_num < 0) {
@@ -80,32 +79,30 @@ class FavoriteThreadAdapter :
             val avatarResource = context!!.resources.getIdentifier(
                 String.format("avatar_%s", avatar_num + 1),
                 "drawable",
-                context!!.packageName
+                context.packageName
             )
             val options = RequestOptions()
-                .placeholder(ContextCompat.getDrawable(context!!, avatarResource))
-                .error(ContextCompat.getDrawable(context!!, avatarResource))
-            Glide.with(context!!)
+                .placeholder(ContextCompat.getDrawable(context, avatarResource))
+                .error(ContextCompat.getDrawable(context, avatarResource))
+            Glide.with(context)
                 .load(avatarURL)
                 .apply(options)
                 .into(holder.userAvatar)
-            if (bbsInfo != null) {
-                holder.cardView.setOnClickListener {
-                    val intent = Intent(context, ThreadActivity::class.java)
-                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
-                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, curUser)
-                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, favoriteThread.toThread())
-                    intent.putExtra("FID", favoriteThread.favid)
-                    intent.putExtra("TID", favoriteThread.idKey)
-                    intent.putExtra("SUBJECT", favoriteThread.title)
-                    VibrateUtils.vibrateForClick(context)
-                    val options = ActivityOptions.makeSceneTransitionAnimation(
-                        context as Activity?,
-                        Pair.create(holder.title, "bbs_thread_subject")
-                    )
-                    val bundle = options.toBundle()
-                    context!!.startActivity(intent, bundle)
-                }
+            holder.cardView.setOnClickListener {
+                val intent = Intent(context, ThreadActivity::class.java)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
+                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, curUser)
+                intent.putExtra(ConstUtils.PASS_THREAD_KEY, favoriteThread.toThread())
+                intent.putExtra("FID", favoriteThread.favid)
+                intent.putExtra("TID", favoriteThread.idKey)
+                intent.putExtra("SUBJECT", favoriteThread.title)
+                VibrateUtils.vibrateForClick(context)
+                val options = ActivityOptions.makeSceneTransitionAnimation(
+                    context as Activity?,
+                    Pair.create(holder.title, "bbs_thread_subject")
+                )
+                val bundle = options.toBundle()
+                context.startActivity(intent, bundle)
             }
         } else {
         }

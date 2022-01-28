@@ -48,7 +48,6 @@ import retrofit2.Call
 import java.io.IOException
 import java.io.Serializable
 import java.util.*
-import kotlin.collections.HashMap
 
 class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedListener, OnThreadAdmined {
     lateinit var forum: Forum
@@ -311,7 +310,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
 //        binding.bbsForumSublist.setHasFixedSize(true)
 //        binding.bbsForumSublist.itemAnimator = getRecyclerviewAnimation(this)
 //        binding.bbsForumSublist.layoutManager = GridLayoutManager(this, 4)
-        subForumAdapter = SubForumAdapter(discuz, user)
+        subForumAdapter = SubForumAdapter(discuz!!, user)
 //        binding.bbsForumSublist.adapter = getAnimatedAdapter(this, subForumAdapter)
         binding.bbsForumThreadRecyclerview.setHasFixedSize(true)
         binding.bbsForumThreadRecyclerview.itemAnimator = getRecyclerviewAnimation(this)

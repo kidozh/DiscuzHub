@@ -2,7 +2,6 @@ package com.kidozh.discuzhub.adapter
 
 import android.content.Context
 import android.content.Intent
-import android.text.Html
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -22,10 +21,12 @@ import com.kidozh.discuzhub.activities.UserProfileActivity
 import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.PrivateMessage
 import com.kidozh.discuzhub.entities.User
-import com.kidozh.discuzhub.utilities.*
+import com.kidozh.discuzhub.utilities.ConstUtils
+import com.kidozh.discuzhub.utilities.MyImageGetter
+import com.kidozh.discuzhub.utilities.NetworkUtils
 import java.io.InputStream
 
-class PrivateDetailMessageAdapter(var curBBS: Discuz, var user: User?) : RecyclerView.Adapter<PrivateDetailMessageAdapter.ViewHolder>() {
+class PrivateDetailMessageAdapter(var discuz: Discuz, var user: User?) : RecyclerView.Adapter<PrivateDetailMessageAdapter.ViewHolder>() {
     var privateDetailMessageList: List<PrivateMessage> = ArrayList()
     set(value) {
         field = value
@@ -75,14 +76,14 @@ class PrivateDetailMessageAdapter(var curBBS: Discuz, var user: User?) : Recycle
         constraintSet.applyTo(holder.constraintLayout)
         holder.privateMessageDetailSenderAvatar.setOnClickListener {
             val intent = Intent(context, UserProfileActivity::class.java)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, curBBS)
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
             intent.putExtra("UID", java.lang.String.valueOf(curPrivateDetailMessage.msgFromId))
             context.startActivity(intent)
         }
         holder.privateMessageDetailRecvAvatar.setOnClickListener {
             val intent = Intent(context, UserProfileActivity::class.java)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, curBBS)
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
             intent.putExtra("UID", java.lang.String.valueOf(curPrivateDetailMessage.msgFromId))
             context.startActivity(intent)
@@ -91,7 +92,7 @@ class PrivateDetailMessageAdapter(var curBBS: Discuz, var user: User?) : Recycle
         val avatarResource = context.resources.getIdentifier(String.format("avatar_%s", avatar_num + 1), "drawable", context.packageName)
         if (curPrivateDetailMessage.self(user)) {
             Glide.with(context)
-                    .load(URLUtils.getSmallAvatarUrlByUid(java.lang.String.valueOf(curPrivateDetailMessage.msgFromId)))
+                    .load(discuz.getAvatarUrl(curPrivateDetailMessage.msgFromId))
                     .centerInside()
                     .placeholder(avatarResource)
                     .error(avatarResource)
@@ -102,7 +103,7 @@ class PrivateDetailMessageAdapter(var curBBS: Discuz, var user: User?) : Recycle
             holder.privateMessageDetailRecvAvatar.visibility = View.VISIBLE
         } else {
             Glide.with(context)
-                    .load(URLUtils.getSmallAvatarUrlByUid(java.lang.String.valueOf(curPrivateDetailMessage.msgFromId)))
+                    .load(discuz.getAvatarUrl(curPrivateDetailMessage.msgFromId))
                     .centerInside()
                     .placeholder(avatarResource)
                     .error(avatarResource)

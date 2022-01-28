@@ -143,4 +143,8 @@ class Discuz : Serializable {
     override fun hashCode(): Int {
         return Objects.hash(id, base_url, site_name, discuz_version, version, plugin_version, total_posts, total_members, default_fid, mysite_id, ucenter_url, register_name, charset, primaryColor, hideRegister, qqConnect, isSync, addedTime, updateTime, position)
     }
+
+    fun getAvatarUrl(uid: Int): String{
+        return String.format("%s/data/avatar/%03d/%02d/%02d/%02d_avatar_big.jpg", this.ucenter_url, uid / 1000000, uid / 10000 % 100, uid / 100 % 100, uid % 100)
+    }
 }

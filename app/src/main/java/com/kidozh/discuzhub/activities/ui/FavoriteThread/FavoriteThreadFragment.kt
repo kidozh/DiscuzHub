@@ -31,17 +31,16 @@ import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.*
 
 class FavoriteThreadFragment : Fragment() {
     private var mViewModel: FavoriteThreadViewModel? = null
-    private var bbsInfo: Discuz? = null
+    private lateinit var bbsInfo: Discuz
     private var userBriefInfo: User? = null
     private var idType: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            bbsInfo = requireArguments().getSerializable(ARG_BBS) as Discuz?
+            bbsInfo = requireArguments().getSerializable(ARG_BBS) as Discuz
             userBriefInfo = requireArguments().getSerializable(ARG_USER) as User?
             idType = requireArguments().getString(ARG_IDTYPE, "tid") as String
         }
@@ -76,7 +75,7 @@ class FavoriteThreadFragment : Fragment() {
         )
         binding.favoriteThreadRecyclerview.layoutManager = LinearLayoutManager(context)
         adapter = FavoriteThreadAdapter()
-        adapter.setInformation(bbsInfo, userBriefInfo)
+        adapter.setInformation(bbsInfo!!, userBriefInfo)
 
         binding.favoriteThreadRecyclerview.adapter = getAnimatedAdapter(
             requireContext(), adapter

@@ -4,9 +4,7 @@ import android.content.Context
 import android.text.Html
 import android.text.SpannableString
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -15,16 +13,13 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.request.RequestOptions
-import com.kidozh.discuzhub.R
 import com.kidozh.discuzhub.databinding.ItemPostCommentBinding
+import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.results.ThreadResult
 import com.kidozh.discuzhub.utilities.NetworkUtils
-import com.kidozh.discuzhub.utilities.TimeDisplayUtils
-import com.kidozh.discuzhub.utilities.URLUtils
 import java.io.InputStream
-import java.util.*
 
-class CommentAdapter : RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
+class CommentAdapter(val discuz : Discuz) : RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
     var commentList: List<ThreadResult.Comment> = ArrayList()
     lateinit var context: Context
 
@@ -52,7 +47,7 @@ class CommentAdapter : RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
         // download avatar not regarding data save mode
         val factory = OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context))
         Glide.get(context).registry.replace(GlideUrl::class.java, InputStream::class.java, factory)
-        val source: String = URLUtils.getSmallAvatarUrlByUid(comment.authorId)
+        val source: String = discuz.getAvatarUrl(comment.authorId)
         Glide.get(context).registry.replace(GlideUrl::class.java, InputStream::class.java, factory)
         val glideUrl = GlideUrl(source,
                 LazyHeaders.Builder().addHeader("referer", source).build()

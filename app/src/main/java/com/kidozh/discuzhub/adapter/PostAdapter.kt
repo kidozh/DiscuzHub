@@ -5,7 +5,10 @@ import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.PixelFormat
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -21,7 +24,10 @@ import android.text.style.ClickableSpan
 import android.text.style.ImageSpan
 import android.text.style.StrikethroughSpan
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.cardview.widget.CardView
@@ -55,7 +61,6 @@ import com.kidozh.discuzhub.results.ThreadResult
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.NetworkUtils
 import com.kidozh.discuzhub.utilities.TimeDisplayUtils.Companion.getLocalePastTimeString
-import com.kidozh.discuzhub.utilities.URLUtils
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils.conciseRecyclerView
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils.isJammerContentsRemoved
 import com.kidozh.discuzhub.utilities.bbsLinkMovementMethod
@@ -65,7 +70,6 @@ import org.xml.sax.XMLReader
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
-import java.util.*
 import java.util.function.BiConsumer
 import java.util.regex.Pattern
 
@@ -76,7 +80,7 @@ val POST_WARNED = 2
 val POST_REVISED = 4
 val POST_MOBILE = 8
 
-class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThreadQueryStatus: ViewThreadQueryStatus) : RecyclerView.Adapter<PostViewHolder>() {
+class PostAdapter(private val discuz: Discuz, private val user: User?, viewThreadQueryStatus: ViewThreadQueryStatus) : RecyclerView.Adapter<PostViewHolder>() {
 
     var postList: MutableList<Post> = mutableListOf<Post>()
     set(value) {
@@ -288,12 +292,12 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
         val avatarResource = context.resources.getIdentifier(String.format("avatar_%s", avatar_num + 1), "drawable", context.packageName)
         val factory = OkHttpUrlLoader.Factory(client)
         Glide.get(context).registry.replace(GlideUrl::class.java, InputStream::class.java, factory)
-        val source = URLUtils.getSmallAvatarUrlByUid(post.authorId)
+        val source = discuz.getAvatarUrl(post.authorId)
         val options = RequestOptions()
                 .placeholder(ContextCompat.getDrawable(context, avatarResource))
                 .error(ContextCompat.getDrawable(context, avatarResource))
         val glideUrl = GlideUrl(source,
-                LazyHeaders.Builder().addHeader("referer", bbsInfo.base_url).build()
+                LazyHeaders.Builder().addHeader("referer", discuz.base_url).build()
         )
         if (NetworkUtils.canDownloadImageOrFile(context)) {
             Glide.with(context)
@@ -309,7 +313,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
         }
         holder.mAvatarImageview.setOnClickListener {
             val intent = Intent(context, UserProfileActivity::class.java)
-            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+            intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
             intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, user)
             intent.putExtra("UID", post.authorId)
             val options = ActivityOptions
@@ -320,7 +324,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
         holder.mReplyBtn.setOnClickListener { replyListener!!.replyToSomeOne(post) }
 
         // advance option
-        if (bbsInfo.apiVersion > 4) {
+        if (discuz.apiVersion > 4) {
             holder.mPostAdvanceOptionImageView.visibility = View.VISIBLE
             // bind option
             holder.mPostAdvanceOptionImageView.setOnClickListener { v: View? -> showPopupMenu(holder.mPostAdvanceOptionImageView, post) }
@@ -357,7 +361,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
         if (postCommentList.containsKey(pidString)) {
             holder.commentRecyclerview.visibility = View.VISIBLE
             holder.commentRecyclerview.layoutManager = LinearLayoutManager(context)
-            val commentAdapter = CommentAdapter()
+            val commentAdapter = CommentAdapter(discuz)
             val comments = postCommentList.getOrDefault(pidString, ArrayList())
             commentAdapter.commentList = comments
             Log.d(TAG, "Get comments size " + comments.size)
@@ -493,7 +497,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
 
             // glide load
             val glideUrl = GlideUrl(source,
-                    LazyHeaders.Builder().addHeader("referer", bbsInfo.base_url).build()
+                    LazyHeaders.Builder().addHeader("referer", discuz.base_url).build()
             )
             if (NetworkUtils.canDownloadImageOrFile(context)) {
 
@@ -718,7 +722,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
                     val drawableTargetList: List<DrawableTarget>? = urlDrawableMapper[url]
                     // update all target
                     val glideUrl = GlideUrl(url,
-                            LazyHeaders.Builder().addHeader("referer", bbsInfo.base_url).build()
+                            LazyHeaders.Builder().addHeader("referer", discuz.base_url).build()
                     )
                     val firstDrawableTarget = drawableTargetList!![0]
                     Glide.with(context)
@@ -734,7 +738,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
                                     for (drawTarget in drawableTargetList) {
                                         handler.post {
                                             val glideUrl = GlideUrl(url,
-                                                    LazyHeaders.Builder().addHeader("referer", bbsInfo.base_url).build()
+                                                    LazyHeaders.Builder().addHeader("referer", discuz.base_url).build()
                                             )
                                             Glide.with(context)
                                                     .load(glideUrl)
@@ -777,7 +781,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
                 }
 //                else {
 //                    val glideUrl = GlideUrl(url,
-//                            LazyHeaders.Builder().addHeader("referer", bbsInfo.base_url).build()
+//                            LazyHeaders.Builder().addHeader("referer", discuz.base_url).build()
 //                    )
 //                    Glide.with(context)
 //                            .load(glideUrl)
@@ -789,7 +793,7 @@ class PostAdapter(private val bbsInfo: Discuz, private val user: User?, viewThre
 //                                    // load from network
 //                                    isLoading = false
 //                                    val glideUrl = GlideUrl(url,
-//                                            LazyHeaders.Builder().addHeader("referer", bbsInfo.base_url).build()
+//                                            LazyHeaders.Builder().addHeader("referer", discuz.base_url).build()
 //                                    )
 //                                    Glide.with(context)
 //                                            .load(glideUrl)

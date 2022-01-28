@@ -324,7 +324,7 @@ public class PublishActivity extends BaseStatusActivity implements View.OnClickL
                                         @Override
                                         public void run() {
 
-                                            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
+                                            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory((Call.Factory) client);
                                             Glide.get(getApplication()).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
 
                                             // forbid cache captcha

@@ -1,5 +1,6 @@
 package com.kidozh.discuzhub.entities
 
+import androidx.annotation.NonNull
 import androidx.recyclerview.widget.DiffUtil
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
@@ -9,7 +10,6 @@ import com.kidozh.discuzhub.results.ForumResult.ShortReply
 import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer
 import java.io.Serializable
 import java.util.*
-import kotlin.collections.ArrayList
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 class Thread : Serializable {
@@ -184,6 +184,7 @@ class Thread : Serializable {
 
     @JvmField
     @JsonProperty("reply")
+    @NonNull
     var shortReplyList: List<ShortReply> = ArrayList()
     var highlight: String? = null
     var folder: String? = null

@@ -79,7 +79,7 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
             packageName
         )
         Glide.with(this)
-            .load(URLUtils.getDefaultAvatarUrlByUid(userId))
+            .load(discuz!!.getAvatarUrl(userId))
             .error(avatarResource)
             .placeholder(avatarResource)
             .centerInside()
@@ -144,141 +144,149 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
 
     private fun bindViewModel() {
         viewModel!!.userProfileResultLiveData.observe(
-            this,
-            { userProfileResult: UserProfileResult? ->
-                Log.d(TAG, "User profile result $userProfileResult")
-                if (userProfileResult?.userProfileVariableResult != null && userProfileResult.userProfileVariableResult.space != null) {
-                    val spaceVariables = userProfileResult.userProfileVariableResult.space
-                    val username = userProfileResult.userProfileVariableResult.space.username
-                    if (supportActionBar != null) {
-                        supportActionBar!!.title = username
-                        supportActionBar!!.subtitle = spaceVariables.uid.toString()
-                    }
-                    setBaseResult(userProfileResult, userProfileResult.userProfileVariableResult)
+            this
+        ) { userProfileResult: UserProfileResult? ->
+            Log.d(TAG, "User profile result $userProfileResult")
+            if (userProfileResult?.userProfileVariableResult != null && userProfileResult.userProfileVariableResult.space != null) {
+                val spaceVariables = userProfileResult.userProfileVariableResult.space
+                val username = userProfileResult.userProfileVariableResult.space.username
+                if (supportActionBar != null) {
+                    supportActionBar!!.title = username
+                    supportActionBar!!.subtitle = spaceVariables.uid.toString()
+                }
+                setBaseResult(userProfileResult, userProfileResult.userProfileVariableResult)
 
 
-                    // for avatar rendering
-                    val factory =
-                        OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(application))
-                    Glide.get(applicationContext).registry.replace(
-                        GlideUrl::class.java, InputStream::class.java, factory
-                    )
-                    val uid = userProfileResult.userProfileVariableResult.space.uid
-                    var avatar_num = uid % 16
-                    if (avatar_num < 0) {
-                        avatar_num = -avatar_num
-                    }
-                    val avatarResource = resources.getIdentifier(
-                        String.format("avatar_%s", avatar_num + 1),
-                        "drawable",
-                        packageName
-                    )
-                    Glide.with(application)
-                        .load(URLUtils.getDefaultAvatarUrlByUid(uid))
-                        .error(avatarResource)
-                        .placeholder(avatarResource)
-                        .centerInside()
-                        .into(binding.showPersonalInfoAvatar)
-                    //check with verified status
-                    if (spaceVariables.emailStatus) {
-                        binding.userVerifiedIcon.visibility = View.VISIBLE
-                    } else {
-                        binding.userVerifiedIcon.visibility = View.GONE
-                    }
+                // for avatar rendering
+                val factory =
+                    OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(application))
+                Glide.get(applicationContext).registry.replace(
+                    GlideUrl::class.java, InputStream::class.java, factory
+                )
+                val uid = userProfileResult.userProfileVariableResult.space.uid
+                var avatar_num = uid % 16
+                if (avatar_num < 0) {
+                    avatar_num = -avatar_num
+                }
+                val avatarResource = resources.getIdentifier(
+                    String.format("avatar_%s", avatar_num + 1),
+                    "drawable",
+                    packageName
+                )
+                Glide.with(application)
+                    .load(discuz!!.getAvatarUrl(uid))
+                    .error(avatarResource)
+                    .placeholder(avatarResource)
+                    .centerInside()
+                    .into(binding.showPersonalInfoAvatar)
+                //check with verified status
+                if (spaceVariables.emailStatus) {
+                    binding.userVerifiedIcon.visibility = View.VISIBLE
+                } else {
+                    binding.userVerifiedIcon.visibility = View.GONE
+                }
 
-                    // signature
-                    val sigHtml = userProfileResult.userProfileVariableResult.space.sigatureHtml
-                    Log.d(TAG, "Signature html $sigHtml")
-                    val myTagHandler = MyTagHandler(
-                        application,
-                        binding.userSignatureTextview,
-                        binding.userSignatureTextview
-                    )
-                    val myImageGetter = MyImageGetter(
-                        application,
-                        binding.userSignatureTextview,
-                        binding.userSignatureTextview,
-                        true
-                    )
-                    val sp = Html.fromHtml(sigHtml, HtmlCompat.FROM_HTML_MODE_COMPACT, myImageGetter, myTagHandler)
-                    val spannableString = SpannableString(sp)
-                    binding.userSignatureTextview.setText(
-                        spannableString,
+                // signature
+                val sigHtml = userProfileResult.userProfileVariableResult.space.sigatureHtml
+                Log.d(TAG, "Signature html $sigHtml")
+                val myTagHandler = MyTagHandler(
+                    application,
+                    binding.userSignatureTextview,
+                    binding.userSignatureTextview
+                )
+                val myImageGetter = MyImageGetter(
+                    application,
+                    binding.userSignatureTextview,
+                    binding.userSignatureTextview,
+                    true
+                )
+                val sp = Html.fromHtml(
+                    sigHtml,
+                    HtmlCompat.FROM_HTML_MODE_COMPACT,
+                    myImageGetter,
+                    myTagHandler
+                )
+                val spannableString = SpannableString(sp)
+                binding.userSignatureTextview.setText(
+                    spannableString,
+                    TextView.BufferType.SPANNABLE
+                )
+                binding.userSignatureTextview.movementMethod =
+                    bbsLinkMovementMethod(this@UserProfileActivity)
+                if (userProfileResult.userProfileVariableResult.space.bio.isNotEmpty()) {
+                    binding.userBioTextview.text =
+                        userProfileResult.userProfileVariableResult.space.bio
+                } else {
+                    binding.userBioTextview.visibility = View.GONE
+                }
+                if (userProfileResult.userProfileVariableResult.space.interest.isNotEmpty()) {
+                    binding.showPersonalInfoInterestTextView.visibility = View.VISIBLE
+                    binding.showPersonalInfoInterestTextView.text =
+                        userProfileResult.userProfileVariableResult.space.interest
+                } else {
+                    binding.showPersonalInfoInterestTextView.visibility = View.GONE
+                    binding.showPersonalInfoInterestTextView.text =
+                        userProfileResult.userProfileVariableResult.space.interest
+                }
+                var birthPlace =
+                    userProfileResult.userProfileVariableResult.space.birthprovince +
+                            userProfileResult.userProfileVariableResult.space.birthcity +
+                            userProfileResult.userProfileVariableResult.space.birthdist +
+                            userProfileResult.userProfileVariableResult.space.birthcommunity
+                if (birthPlace.isNotEmpty()) {
+                    if (userProfileResult.userProfileVariableResult.space.birthdist.contains("汉川")) {
+                        // to reflect actual name
+                        birthPlace =
+                            userProfileResult.userProfileVariableResult.space.birthprovince +
+                                    userProfileResult.userProfileVariableResult.space.birthdist +
+                                    userProfileResult.userProfileVariableResult.space.birthcommunity
+                    }
+                    binding.showPersonalInfoBirthplaceTextView.visibility = View.VISIBLE
+                    binding.showPersonalInfoBirthplaceTextView.text = birthPlace
+                } else {
+                    binding.showPersonalInfoBirthplaceTextView.visibility = View.GONE
+                }
+                binding.showPersonalInfoRegdateTextView.text =
+                    userProfileResult.userProfileVariableResult.space.regdate
+                binding.showPersonalInfoLastActivityTime.text =
+                    userProfileResult.userProfileVariableResult.space.lastactivity
+                binding.showPersonalInfoRecentNoteTextView.text =
+                    userProfileResult.userProfileVariableResult.space.recentNote
+                if (userProfileResult.userProfileVariableResult.space.group != null && userProfileResult.userProfileVariableResult.space.group.groupTitle != null) {
+                    binding.showPersonalInfoGroupInfo.setText(
+                        Html.fromHtml(
+                            userProfileResult.userProfileVariableResult.space.group.groupTitle,
+                            HtmlCompat.FROM_HTML_MODE_COMPACT
+                        ),
                         TextView.BufferType.SPANNABLE
                     )
-                    binding.userSignatureTextview.movementMethod =
-                        bbsLinkMovementMethod(this@UserProfileActivity)
-                    if (userProfileResult.userProfileVariableResult.space.bio.isNotEmpty()) {
-                        binding.userBioTextview.text =
-                            userProfileResult.userProfileVariableResult.space.bio
-                    } else {
-                        binding.userBioTextview.visibility = View.GONE
-                    }
-                    if (userProfileResult.userProfileVariableResult.space.interest.isNotEmpty()) {
-                        binding.showPersonalInfoInterestTextView.visibility = View.VISIBLE
-                        binding.showPersonalInfoInterestTextView.text =
-                            userProfileResult.userProfileVariableResult.space.interest
-                    } else {
-                        binding.showPersonalInfoInterestTextView.visibility = View.GONE
-                        binding.showPersonalInfoInterestTextView.text =
-                            userProfileResult.userProfileVariableResult.space.interest
-                    }
-                    var birthPlace =
-                        userProfileResult.userProfileVariableResult.space.birthprovince +
-                                userProfileResult.userProfileVariableResult.space.birthcity +
-                                userProfileResult.userProfileVariableResult.space.birthdist +
-                                userProfileResult.userProfileVariableResult.space.birthcommunity
-                    if (birthPlace.isNotEmpty()) {
-                        if (userProfileResult.userProfileVariableResult.space.birthdist.contains("汉川")) {
-                            // to reflect actual name
-                            birthPlace =
-                                userProfileResult.userProfileVariableResult.space.birthprovince +
-                                        userProfileResult.userProfileVariableResult.space.birthdist +
-                                        userProfileResult.userProfileVariableResult.space.birthcommunity
-                        }
-                        binding.showPersonalInfoBirthplaceTextView.visibility = View.VISIBLE
-                        binding.showPersonalInfoBirthplaceTextView.text = birthPlace
-                    } else {
-                        binding.showPersonalInfoBirthplaceTextView.visibility = View.GONE
-                    }
-                    binding.showPersonalInfoRegdateTextView.text =
-                        userProfileResult.userProfileVariableResult.space.regdate
-                    binding.showPersonalInfoLastActivityTime.text =
-                        userProfileResult.userProfileVariableResult.space.lastactivity
-                    binding.showPersonalInfoRecentNoteTextView.text =
-                        userProfileResult.userProfileVariableResult.space.recentNote
-                    if (userProfileResult.userProfileVariableResult.space.group != null && userProfileResult.userProfileVariableResult.space.group.groupTitle != null) {
-                        binding.showPersonalInfoGroupInfo.setText(
-                            Html.fromHtml(userProfileResult.userProfileVariableResult.space.group.groupTitle,HtmlCompat.FROM_HTML_MODE_COMPACT),
-                            TextView.BufferType.SPANNABLE
-                        )
-                    } else {
-                        binding.showPersonalInfoGroupInfo.visibility = View.GONE
-                    }
-                    // for detailed information
-                    val prefs = PreferenceManager.getDefaultSharedPreferences(
-                        applicationContext
-                    )
-                    val recordHistory =
-                        prefs.getBoolean(getString(R.string.preference_key_record_history), false)
-                    if (recordHistory && discuz != null) {
-                        insertViewHistory(
-                            ViewHistory(
-                                URLUtils.getDefaultAvatarUrlByUid(uid),
-                                username,
-                                discuz!!.id,
-                                userProfileResult.userProfileVariableResult.space.sigatureHtml,
-                                ViewHistory.VIEW_TYPE_USER_PROFILE,
-                                uid,
-                                0,
-                                Date()
-                            )
-                        )
-                    }
+                } else {
+                    binding.showPersonalInfoGroupInfo.visibility = View.GONE
                 }
-                binding.showPersonalInfoViewpager.invalidate()
-                adapter!!.notifyDataSetChanged()
-            })
+                // for detailed information
+                val prefs = PreferenceManager.getDefaultSharedPreferences(
+                    applicationContext
+                )
+                val recordHistory =
+                    prefs.getBoolean(getString(R.string.preference_key_record_history), false)
+                if (recordHistory && discuz != null) {
+                    insertViewHistory(
+                        ViewHistory(
+                            discuz!!.getAvatarUrl(uid),
+                            username,
+                            discuz!!.id,
+                            userProfileResult.userProfileVariableResult.space.sigatureHtml,
+                            ViewHistory.VIEW_TYPE_USER_PROFILE,
+                            uid,
+                            0,
+                            Date()
+                        )
+                    )
+                }
+            }
+            binding.showPersonalInfoViewpager.invalidate()
+            adapter!!.notifyDataSetChanged()
+        }
         viewModel!!.isLoading.observe(this, { aBoolean ->
             if (aBoolean) {
                 binding.showPersonalInfoProgressbar.visibility = View.VISIBLE

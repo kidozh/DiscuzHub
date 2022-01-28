@@ -35,15 +35,16 @@ import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.Thread
 import com.kidozh.discuzhub.entities.Thread.Companion.ThreadDiffCallback
 import com.kidozh.discuzhub.entities.User
-import com.kidozh.discuzhub.results.ForumResult.ShortReply
-import com.kidozh.discuzhub.utilities.*
 import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
+import com.kidozh.discuzhub.utilities.ConstUtils
+import com.kidozh.discuzhub.utilities.NetworkUtils
 import com.kidozh.discuzhub.utilities.TimeDisplayUtils.Companion.getLocalePastTimeString
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils.conciseRecyclerView
+import com.kidozh.discuzhub.utilities.VibrateUtils
+import com.kidozh.discuzhub.utilities.numberFormatUtils
 import java.io.InputStream
-import java.util.*
 
-class ThreadAdapter(var threadType: Map<String, String>?, var bbsInfo: Discuz, var userBriefInfo: User?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ThreadAdapter(var threadType: Map<String, String>?, var discuz: Discuz, var userBriefInfo: User?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     @JvmField
     var threadList: MutableList<Thread> = ArrayList()
     @JvmField
@@ -140,7 +141,7 @@ class ThreadAdapter(var threadType: Map<String, String>?, var bbsInfo: Discuz, v
             }
             holder.mCardview.setOnClickListener {
                 val intent = Intent(context, ThreadActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
                 intent.putExtra(ConstUtils.PASS_THREAD_KEY, thread)
                 intent.putExtra("FID", thread.fid)
@@ -206,14 +207,14 @@ class ThreadAdapter(var threadType: Map<String, String>?, var bbsInfo: Discuz, v
             val avatarResource = context.resources.getIdentifier(String.format("avatar_%s", avatar_num + 1), "drawable", context.packageName)
             val factory = OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context))
             Glide.get(context).registry.replace(GlideUrl::class.java, InputStream::class.java, factory)
-            val source = URLUtils.getSmallAvatarUrlByUid(thread.authorId)
+            val source = discuz!!.getAvatarUrl(thread.authorId)
             val options = RequestOptions()
                     .placeholder(context.getDrawable(avatarResource))
                     .error(context.getDrawable(avatarResource))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .priority(Priority.HIGH)
             val glideUrl = GlideUrl(source,
-                    LazyHeaders.Builder().addHeader("referer", bbsInfo.base_url).build()
+                    LazyHeaders.Builder().addHeader("referer", discuz.base_url).build()
             )
             if (NetworkUtils.canDownloadImageOrFile(context)) {
                 Glide.with(context)
@@ -270,18 +271,18 @@ class ThreadAdapter(var threadType: Map<String, String>?, var bbsInfo: Discuz, v
                 holder.mReplyRecyclerview.isNestedScrollingEnabled = false
                 holder.mReplyRecyclerview.layoutManager = linearLayoutManager
                 holder.mReplyRecyclerview.isClickable = false
-                val adapter = ShortPostAdapter()
-                adapter.setShortReplyInfoList((thread.shortReplyList as List<ShortReply?>))
+                val adapter = ShortPostAdapter(discuz)
+                adapter.setShortReplyInfoList((thread.shortReplyList))
                 holder.mReplyRecyclerview.itemAnimator = getRecyclerviewAnimation(context)
                 holder.mReplyRecyclerview.adapter = adapter
                 holder.mReplyRecyclerview.isNestedScrollingEnabled = false
             } else {
                 // still flush it to avoid cache problem
-                holder.mReplyRecyclerview.adapter = ShortPostAdapter()
+                holder.mReplyRecyclerview.adapter = ShortPostAdapter(discuz)
             }
             holder.mCardview.setOnClickListener {
                 val intent = Intent(context, ThreadActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
                 intent.putExtra(ConstUtils.PASS_THREAD_KEY, thread)
                 intent.putExtra("FID", thread.fid)
@@ -301,7 +302,7 @@ class ThreadAdapter(var threadType: Map<String, String>?, var bbsInfo: Discuz, v
             }
             holder.mAvatarImageview.setOnClickListener {
                 val intent = Intent(context, UserProfileActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
                 intent.putExtra("UID", thread.authorId)
                 val options = ActivityOptions
@@ -350,13 +351,13 @@ class ThreadAdapter(var threadType: Map<String, String>?, var bbsInfo: Discuz, v
                 InputStream::class.java,
                 factory
             )
-            val source = URLUtils.getDefaultAvatarUrlByUid(thread.authorId)
+            val source = discuz.getAvatarUrl(thread.authorId)
             val options = RequestOptions()
                 .placeholder(context.getDrawable(avatarResource))
                 .error(context.getDrawable(avatarResource))
             val glideUrl = GlideUrl(
                 source,
-                LazyHeaders.Builder().addHeader("referer", bbsInfo.base_url).build()
+                LazyHeaders.Builder().addHeader("referer", discuz.base_url).build()
             )
             if (NetworkUtils.canDownloadImageOrFile(context)) {
                 Glide.with(context)
@@ -373,7 +374,7 @@ class ThreadAdapter(var threadType: Map<String, String>?, var bbsInfo: Discuz, v
             holderRaw.mThreadPublisher.text = thread.author
             holderRaw.mCardview.setOnClickListener {
                 val intent = Intent(context, ThreadActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, bbsInfo)
+                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
                 intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
                 intent.putExtra(ConstUtils.PASS_THREAD_KEY, thread)
                 intent.putExtra("FID", thread.fid)

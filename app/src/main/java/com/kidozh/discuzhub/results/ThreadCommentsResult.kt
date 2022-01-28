@@ -1,30 +1,26 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kidozh.discuzhub.entities.Thread;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.kidozh.discuzhub.entities.Thread
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ThreadCommentsResult extends BaseResult {
+class ThreadCommentsResult : BaseResult() {
     @JsonProperty("Variables")
-    public CommentsVariables commentsVariables;
+    var commentsVariables: CommentsVariables = CommentsVariables()
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class CommentsVariables extends VariableResults{
-
+    class CommentsVariables : VariableResults() {
         @JsonProperty("data")
-        public List<Thread> forumThreadList = new ArrayList<>();
+        var forumThreadList: List<Thread> = ArrayList()
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("perpage")
-        public int perPage;
-
+        var perPage = 0
     }
 
-    public boolean isError(){
-        return this.message == null;
+    override fun isError(): Boolean {
+        return message == null
     }
 }

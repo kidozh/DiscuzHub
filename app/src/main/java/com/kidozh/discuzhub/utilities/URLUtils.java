@@ -49,55 +49,32 @@ public class URLUtils {
     }
 
 
-    public static String getSmallAvatarUrlByUid(String uid){
-        return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=small",uid);
-    }
+//    public static String getSmallAvatarUrlByUid(String uid){
+//        return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=small",uid);
+//    }
+//
+//    public static String getSmallAvatarUrlByUid(int uid){
+//        return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=small",uid);
+//    }
+//
+//    public static String getDefaultAvatarUrlByUid(String uid){
+//        return UC_SERVER_URL+String.format("/avatar.php?uid=%s",uid);
+//    }
 
-    public static String getSmallAvatarUrlByUid(int uid){
-        return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=small",uid);
-    }
-
-    public static String getDefaultAvatarUrlByUid(String uid){
-        return UC_SERVER_URL+String.format("/avatar.php?uid=%s",uid);
-    }
-
-    public static String getDefaultAvatarUrlByUid(int uid){
-        return UC_SERVER_URL+String.format("/avatar.php?uid=%s",uid);
-    }
-
-    public static String getLargeAvatarUrlByUid(int uid){
-        return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=large",uid);
-    }
-
-    public static String getLargeAvatarUrlByUid(String uid){
-        return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=large",uid);
-    }
-
-    public static String getLoginUrl(){
-        Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
-                .appendQueryParameter("version","4")
-                .appendQueryParameter("module","login")
-                .appendQueryParameter("action","login")
-                .appendQueryParameter("loginsubmit","yes")
-                .appendQueryParameter("inajax","1")
-                //.appendQueryParameter("lssubmit","yes")
-                .build();
-        return uri.toString();
-    }
+//    public static String getDefaultAvatarUrlByUid(int uid){
+//        return UC_SERVER_URL+String.format("/avatar.php?uid=%s",uid);
+//    }
+//
+//    public static String getLargeAvatarUrlByUid(int uid){
+//        return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=large",uid);
+//    }
+//
+//    public static String getLargeAvatarUrlByUid(String uid){
+//        return UC_SERVER_URL+String.format("/avatar.php?uid=%s&size=large",uid);
+//    }
 
     public static String getLoginWebURL(@NonNull Discuz bbsInfo){
         return bbsInfo.base_url + "/member.php?mod=logging&action=login";
-    }
-
-    public static String getLoginSecondaryUrl(){
-        return BASE_URL + "/api/mobile/index.php?version=4&module=login&mod=logging&action=login";
-    }
-
-
-    // login
-
-    public static String getUserThreadUrl(int page){
-        return BASE_URL + String.format("/api/mobile/index.php?version=4&module=mythread&page=%s",page);
     }
 
 
@@ -232,18 +209,6 @@ public class URLUtils {
         return builtUri.toString();
     }
 
-    public static String getNoteListApiUrl(String view, String type,int page){
-        Uri builtUri = Uri.parse(BASE_URL+"/api/mobile/index.php")
-                .buildUpon()
-                .appendQueryParameter("version","4")
-                .appendQueryParameter("module","mynotelist")
-                .appendQueryParameter("view",view)
-                .appendQueryParameter("type",type)
-                .appendQueryParameter("page",String.valueOf(page))
-                .build();
-        return builtUri.toString();
-    }
-
     public static String getForumDisplayUrl(String fid,String pageString){
 
         Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
@@ -254,29 +219,12 @@ public class URLUtils {
         return uri.toString();
     }
 
-    public static String getForumImageUrl(int fid){
-
-        Uri uri = Uri.parse(BASE_URL+"/api/mobile/index.php").buildUpon()
-                .appendQueryParameter("version","4")
-                .appendQueryParameter("module","forumimage")
-                .appendQueryParameter("fid",String.valueOf(fid))
-                .build();
-        return uri.toString();
-    }
-
     public static String getViewThreadUrl(int tid,String pageString){
 
         Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
                 .appendQueryParameter("mod","viewthread")
                 .appendQueryParameter("tid",String.valueOf(tid))
                 .appendQueryParameter("page",pageString)
-                .build();
-        return uri.toString();
-    }
-
-    public static String getPortalPageUrl(){
-
-        Uri uri = Uri.parse(BASE_URL+"/forum.php").buildUpon()
                 .build();
         return uri.toString();
     }

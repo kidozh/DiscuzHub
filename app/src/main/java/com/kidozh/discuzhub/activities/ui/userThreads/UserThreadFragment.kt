@@ -1,9 +1,6 @@
 package com.kidozh.discuzhub.activities.ui.userThreads
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,15 +13,12 @@ import com.kidozh.discuzhub.databinding.ContentEmptyInformationBinding
 import com.kidozh.discuzhub.databinding.FragmentBbsMyThreadBinding
 import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.User
-import com.kidozh.discuzhub.interact.BaseStatusInteract
 import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
 import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.NetworkUtils
 import com.kidozh.discuzhub.utilities.URLUtils
-import com.kidozh.discuzhub.utilities.bbsParseUtils
-import okhttp3.*
-import java.io.IOException
+import okhttp3.OkHttpClient
 
 /**
  * A simple [Fragment] subclass.
@@ -45,7 +39,7 @@ class UserThreadFragment : Fragment() {
             bbsInfo = requireArguments().getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
             URLUtils.setBBS(bbsInfo)
             user = requireArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY) as User?
-            client = NetworkUtils.getPreferredClientWithCookieJarByUser(context, user)
+            client = NetworkUtils.getPreferredClientWithCookieJarByUser(requireContext(), user)
         }
     }
 

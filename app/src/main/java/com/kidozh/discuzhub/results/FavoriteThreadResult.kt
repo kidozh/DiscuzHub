@@ -1,31 +1,28 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import android.telecom.TelecomManager;
-import android.text.TextUtils;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kidozh.discuzhub.entities.FavoriteThread;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.kidozh.discuzhub.entities.FavoriteThread
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FavoriteThreadResult extends BaseResult {
+class FavoriteThreadResult : BaseResult() {
+    @JvmField
     @JsonProperty("Variables")
-    public FavoriteThreadVariable favoriteThreadVariable;
+    var favoriteThreadVariable: FavoriteThreadVariable = FavoriteThreadVariable()
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class FavoriteThreadVariable extends VariableResults{
+    class FavoriteThreadVariable : VariableResults() {
+        @JvmField
         @JsonProperty("list")
-        public List<FavoriteThread> favoriteThreadList;
+        var favoriteThreadList: List<FavoriteThread> = ArrayList()
+
         @JsonProperty("perpage")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int perpage;
+        var perpage = 0
+
         @JsonProperty("count")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int count;
-
+        var count = 0
     }
-
 }

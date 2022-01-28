@@ -53,6 +53,8 @@ import java.util.List;
 
 import static com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClient;
 
+import okhttp3.Call;
+
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
     private static final String TAG = NotificationAdapter.class.getSimpleName();
     private Context context;
@@ -154,7 +156,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         else {
             holder.bbsNotificationAuthor.setVisibility(View.VISIBLE);
             holder.bbsNotificationAuthor.setText(notificationDetailInfo.author);
-            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(getPreferredClient(context));
+            OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory((Call.Factory) getPreferredClient(context));
             Glide.get(context).getRegistry().replace(GlideUrl.class, InputStream.class,factory);
             // determine avatar placeholder
             int avatar_num = notificationDetailInfo.authorId % 16;
@@ -165,7 +167,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             int avatarResource = context.getResources().getIdentifier(String.format("avatar_%s",avatar_num+1),"drawable",context.getPackageName());
 
             Glide.with(context)
-                    .load(URLUtils.getDefaultAvatarUrlByUid(String.valueOf(notificationDetailInfo.authorId)))
+                    .load(bbsInfo.getAvatarUrl(notificationDetailInfo.authorId))
                     .apply(RequestOptions
                             .placeholderOf(avatarResource)
                             .error(avatarResource)

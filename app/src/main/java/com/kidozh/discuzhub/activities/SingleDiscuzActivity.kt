@@ -34,7 +34,6 @@ import com.kidozh.discuzhub.databinding.SingleDrawerNavigationHeaderBinding
 import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.utilities.ConstUtils
-import com.kidozh.discuzhub.utilities.URLUtils
 import com.kidozh.discuzhub.viewModels.SingleDiscuzViewModel
 import es.dmoral.toasty.Toasty
 
@@ -44,7 +43,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
     lateinit var headerBinding: SingleDrawerNavigationHeaderBinding
     lateinit var navHeaderBinding: NavHeaderMainBinding
     lateinit var viewModel: SingleDiscuzViewModel
-    private var userAdapter: UserSpinnerAdapter = UserSpinnerAdapter()
+    private lateinit var userAdapter: UserSpinnerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,8 +62,8 @@ class SingleDiscuzActivity : BaseStatusActivity() {
     }
 
     fun getIntentInfo(){
-        discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz?
-
+        discuz = intent.getSerializableExtra(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
+        userAdapter = UserSpinnerAdapter(discuz!!)
     }
 
     fun configureToolbar(){
@@ -209,7 +208,7 @@ class SingleDiscuzActivity : BaseStatusActivity() {
                     avatar_num = -avatar_num
                 }
                 val avatarResource: Int = getResources().getIdentifier(String.format("avatar_%s", avatar_num + 1), "drawable", packageName)
-                val source: String = URLUtils.getLargeAvatarUrlByUid(user.uid)
+                val source: String = discuz!!.getAvatarUrl(user.uid)
                 val glideUrl = GlideUrl(source,
                         LazyHeaders.Builder().addHeader("referer", source).build()
                 )

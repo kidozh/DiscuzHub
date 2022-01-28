@@ -49,7 +49,7 @@ class ExplorePageFragment : Fragment() {
 
             bbsInfo = it.getSerializable(ConstUtils.PASS_BBS_ENTITY_KEY) as Discuz
             user = it.getSerializable(ConstUtils.PASS_BBS_USER_KEY) as User?
-            client = NetworkUtils.getPreferredClientWithCookieJarByUser(context, user)
+            client = NetworkUtils.getPreferredClientWithCookieJarByUser(requireContext(), user)
             exploreURL = bbsInfo.base_url+"/forum.php?mod=guide&view=new"
         }
     }
