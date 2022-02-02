@@ -1,16 +1,15 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LoginResult extends BaseResult {
+class LoginResult : BaseResult() {
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonProperty("Variables")
-    public LoginVariableResult variables;
+    var variables: LoginVariableResult = LoginVariableResult()
 
-    public static class LoginVariableResult extends VariableResults{
-        public String loginUrl;
+    class LoginVariableResult : VariableResults() {
+        var loginUrl: String? = null
     }
 }

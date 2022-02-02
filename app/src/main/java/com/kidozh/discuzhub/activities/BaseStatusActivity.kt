@@ -60,12 +60,10 @@ open class BaseStatusActivity : AppCompatActivity(), BaseStatusInteract {
     // follow UTF8 default
     val charsetType: Int
         get() {
-            if (baseVariableResult != null) {
-                if (baseVariableResult!!.Charset == "GBK") {
-                    return CHARSET_GBK
-                } else if (baseVariableResult!!.Charset == "BIG5") {
-                    return CHARSET_BIG5
-                }
+            if (baseVariableResult.charset == "GBK") {
+                return CHARSET_GBK
+            } else if (baseVariableResult.charset == "BIG5") {
+                return CHARSET_BIG5
             }
             // follow UTF8 default
             return CHARSET_UTF8

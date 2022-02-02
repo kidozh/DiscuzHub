@@ -1,25 +1,22 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kidozh.discuzhub.entities.HotForum;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.kidozh.discuzhub.entities.HotForum
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class HotForumsResult extends BaseResult {
+class HotForumsResult : BaseResult() {
+    @JvmField
     @JsonProperty("Variables")
-    public HotForumVariables variables;
+    var variables: HotForumVariables = HotForumVariables()
 
-    public static class HotForumVariables extends VariableResults{
-
-
+    class HotForumVariables : VariableResults() {
+        @JvmField
         @JsonProperty("data")
-        public List<HotForum> hotForumList;
-
+        var hotForumList: List<HotForum> = ArrayList()
     }
 
-    public boolean isError(){
-        return this.message != null;
+    override fun isError(): Boolean {
+        return message != null
     }
 }

@@ -14,7 +14,10 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -238,7 +241,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
 
 
         // for secure reason
-        threadViewModel.secureInfo.observe(this, { secureInfoResult ->
+        threadViewModel.secureInfo.observe(this) { secureInfoResult ->
             if (secureInfoResult != null) {
                 if (secureInfoResult.secureVariables == null) {
                     // don't need a code
@@ -247,17 +250,23 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                 } else {
                     binding.captchaLayout.visibility = View.VISIBLE
 
-                    binding.captchaImageview.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_captcha_placeholder_24px))
+                    binding.captchaImageview.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            this,
+                            R.drawable.ic_captcha_placeholder_24px
+                        )
+                    )
                     // need a captcha
-                    val captchaURL = secureInfoResult.secureVariables.secCodeURL
-                    val captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash)
+                    val captchaURL = secureInfoResult.secureVariables!!.secCodeURL
+                    val captchaImageURL =
+                        URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables!!.secHash)
                     // load it
                     if (captchaURL == null) {
                         return@observe
                     }
                     val captchaRequest = Request.Builder()
-                            .url(captchaURL)
-                            .build()
+                        .url(captchaURL)
+                        .build()
                     // get first
                     client = threadViewModel.client
                     client.newCall(captchaRequest).enqueue(object : Callback {
@@ -269,23 +278,28 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                                 // get the session
                                 binding.captchaImageview.post {
                                     val factory = OkHttpUrlLoader.Factory(client)
-                                    Glide.get(application).registry.replace(GlideUrl::class.java, InputStream::class.java, factory)
+                                    Glide.get(application).registry.replace(
+                                        GlideUrl::class.java,
+                                        InputStream::class.java,
+                                        factory
+                                    )
 
                                     // forbid cache captcha
                                     val options = RequestOptions()
-                                            .fitCenter()
-                                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                            .placeholder(R.drawable.ic_captcha_placeholder_24px)
-                                            .error(R.drawable.ic_post_status_warned_24px)
-                                    val pictureGlideURL = GlideUrl(captchaImageURL,
-                                            LazyHeaders.Builder()
-                                                    .addHeader("Referer", captchaURL)
-                                                    .build()
+                                        .fitCenter()
+                                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                        .placeholder(R.drawable.ic_captcha_placeholder_24px)
+                                        .error(R.drawable.ic_post_status_warned_24px)
+                                    val pictureGlideURL = GlideUrl(
+                                        captchaImageURL,
+                                        LazyHeaders.Builder()
+                                            .addHeader("Referer", captchaURL)
+                                            .build()
                                     )
                                     Glide.with(application)
-                                            .load(pictureGlideURL)
-                                            .apply(options)
-                                            .into(binding.captchaImageview)
+                                        .load(pictureGlideURL)
+                                        .apply(options)
+                                        .into(binding.captchaImageview)
                                 }
                             }
                         }
@@ -295,7 +309,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                 // don't know the situation
                 binding.captchaLayout.visibility = View.GONE
             }
-        })
+        }
 
         smileyViewModel.smileyResultLiveData.observe(this, { it ->
             if (it != null) {

@@ -147,14 +147,14 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
             this
         ) { userProfileResult: UserProfileResult? ->
             Log.d(TAG, "User profile result $userProfileResult")
-            if (userProfileResult?.userProfileVariableResult != null && userProfileResult.userProfileVariableResult.space != null) {
-                val spaceVariables = userProfileResult.userProfileVariableResult.space
-                val username = userProfileResult.userProfileVariableResult.space.username
+            if (userProfileResult?.userProfileVariableResult != null) {
+                val spaceVariables = userProfileResult.userProfileVariableResult!!.space
+                val username = userProfileResult.userProfileVariableResult!!.space.username
                 if (supportActionBar != null) {
                     supportActionBar!!.title = username
                     supportActionBar!!.subtitle = spaceVariables.uid.toString()
                 }
-                setBaseResult(userProfileResult, userProfileResult.userProfileVariableResult)
+                setBaseResult(userProfileResult, userProfileResult.userProfileVariableResult!!)
 
 
                 // for avatar rendering
@@ -163,7 +163,7 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
                 Glide.get(applicationContext).registry.replace(
                     GlideUrl::class.java, InputStream::class.java, factory
                 )
-                val uid = userProfileResult.userProfileVariableResult.space.uid
+                val uid = userProfileResult.userProfileVariableResult!!.space.uid
                 var avatar_num = uid % 16
                 if (avatar_num < 0) {
                     avatar_num = -avatar_num
@@ -187,7 +187,7 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
                 }
 
                 // signature
-                val sigHtml = userProfileResult.userProfileVariableResult.space.sigatureHtml
+                val sigHtml = userProfileResult.userProfileVariableResult!!.space.sigatureHtml
                 Log.d(TAG, "Signature html $sigHtml")
                 val myTagHandler = MyTagHandler(
                     application,
@@ -213,33 +213,33 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
                 )
                 binding.userSignatureTextview.movementMethod =
                     bbsLinkMovementMethod(this@UserProfileActivity)
-                if (userProfileResult.userProfileVariableResult.space.bio.isNotEmpty()) {
+                if (userProfileResult.userProfileVariableResult!!.space.bio.isNotEmpty()) {
                     binding.userBioTextview.text =
-                        userProfileResult.userProfileVariableResult.space.bio
+                        userProfileResult.userProfileVariableResult!!.space.bio
                 } else {
                     binding.userBioTextview.visibility = View.GONE
                 }
-                if (userProfileResult.userProfileVariableResult.space.interest.isNotEmpty()) {
+                if (userProfileResult.userProfileVariableResult!!.space.interest.isNotEmpty()) {
                     binding.showPersonalInfoInterestTextView.visibility = View.VISIBLE
                     binding.showPersonalInfoInterestTextView.text =
-                        userProfileResult.userProfileVariableResult.space.interest
+                        userProfileResult.userProfileVariableResult!!.space.interest
                 } else {
                     binding.showPersonalInfoInterestTextView.visibility = View.GONE
                     binding.showPersonalInfoInterestTextView.text =
-                        userProfileResult.userProfileVariableResult.space.interest
+                        userProfileResult.userProfileVariableResult!!.space.interest
                 }
                 var birthPlace =
-                    userProfileResult.userProfileVariableResult.space.birthprovince +
-                            userProfileResult.userProfileVariableResult.space.birthcity +
-                            userProfileResult.userProfileVariableResult.space.birthdist +
-                            userProfileResult.userProfileVariableResult.space.birthcommunity
+                    userProfileResult.userProfileVariableResult!!.space.birthprovince +
+                            userProfileResult.userProfileVariableResult!!.space.birthcity +
+                            userProfileResult.userProfileVariableResult!!.space.birthdist +
+                            userProfileResult.userProfileVariableResult!!.space.birthcommunity
                 if (birthPlace.isNotEmpty()) {
-                    if (userProfileResult.userProfileVariableResult.space.birthdist.contains("汉川")) {
+                    if (userProfileResult.userProfileVariableResult!!.space.birthdist.contains("汉川")) {
                         // to reflect actual name
                         birthPlace =
-                            userProfileResult.userProfileVariableResult.space.birthprovince +
-                                    userProfileResult.userProfileVariableResult.space.birthdist +
-                                    userProfileResult.userProfileVariableResult.space.birthcommunity
+                            userProfileResult.userProfileVariableResult!!.space.birthprovince +
+                                    userProfileResult.userProfileVariableResult!!.space.birthdist +
+                                    userProfileResult.userProfileVariableResult!!.space.birthcommunity
                     }
                     binding.showPersonalInfoBirthplaceTextView.visibility = View.VISIBLE
                     binding.showPersonalInfoBirthplaceTextView.text = birthPlace
@@ -247,15 +247,15 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
                     binding.showPersonalInfoBirthplaceTextView.visibility = View.GONE
                 }
                 binding.showPersonalInfoRegdateTextView.text =
-                    userProfileResult.userProfileVariableResult.space.regdate
+                    userProfileResult.userProfileVariableResult!!.space.regdate
                 binding.showPersonalInfoLastActivityTime.text =
-                    userProfileResult.userProfileVariableResult.space.lastactivity
+                    userProfileResult.userProfileVariableResult!!.space.lastactivity
                 binding.showPersonalInfoRecentNoteTextView.text =
-                    userProfileResult.userProfileVariableResult.space.recentNote
-                if (userProfileResult.userProfileVariableResult.space.group != null && userProfileResult.userProfileVariableResult.space.group.groupTitle != null) {
+                    userProfileResult.userProfileVariableResult!!.space.recentNote
+                if (userProfileResult.userProfileVariableResult!!.space.group != null && userProfileResult.userProfileVariableResult!!.space.group!!.groupTitle != null) {
                     binding.showPersonalInfoGroupInfo.setText(
                         Html.fromHtml(
-                            userProfileResult.userProfileVariableResult.space.group.groupTitle,
+                            userProfileResult.userProfileVariableResult!!.space.group!!.groupTitle,
                             HtmlCompat.FROM_HTML_MODE_COMPACT
                         ),
                         TextView.BufferType.SPANNABLE
@@ -275,7 +275,7 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
                             discuz!!.getAvatarUrl(uid),
                             username,
                             discuz!!.id,
-                            userProfileResult.userProfileVariableResult.space.sigatureHtml,
+                            userProfileResult.userProfileVariableResult!!.space.sigatureHtml,
                             ViewHistory.VIEW_TYPE_USER_PROFILE,
                             uid,
                             0,
@@ -389,11 +389,11 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
     private val basicInfoList:
     // birthday
             List<UserProfileItem>
-        private get() {
+        get() {
             val userProfileResult = viewModel!!.userProfileResultLiveData.value
                 ?: return ArrayList()
             val userProfileItemList: MutableList<UserProfileItem> = ArrayList()
-            val spaceVariables = userProfileResult.userProfileVariableResult.space
+            val spaceVariables = userProfileResult.userProfileVariableResult!!.space
             val privacySetting = spaceVariables.privacySetting
             // gender
             val genderPrivate = privacySetting.profilePrivacySetting.gender
@@ -494,7 +494,7 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
             val userProfileResult = viewModel!!.userProfileResultLiveData.value
                 ?: return ArrayList()
             val userProfileItemList: MutableList<UserProfileItem> = ArrayList()
-            val spaceVariables = userProfileResult.userProfileVariableResult.space
+            val spaceVariables = userProfileResult.userProfileVariableResult!!.space
             val privacySetting = spaceVariables.privacySetting
             userProfileItemList.add(
                 generateUserProfileItem(
@@ -547,7 +547,7 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
                 return ArrayList()
             }
             val userProfileItemList: MutableList<UserProfileItem> = ArrayList()
-            val spaceVariables = userProfileResult.userProfileVariableResult.space
+            val spaceVariables = userProfileResult.userProfileVariableResult!!.space
             userProfileItemList.add(
                 generateUserProfileItem(
                     getString(R.string.bbs_credit), spaceVariables.credits.toString(),
@@ -556,16 +556,18 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
                 )
             )
             val privacySetting = spaceVariables.privacySetting
-            val extCredits = userProfileResult.userProfileVariableResult.extendCredits
+            val extCredits = userProfileResult.userProfileVariableResult!!.extendCredits
             for (i in extCredits.indices) {
                 val extendCredit = extCredits[i]
-                userProfileItemList.add(
-                    generateUserProfileItem(
-                        extendCredit.title, extendCredit.value.toString() + extendCredit.unit,
-                        R.drawable.ic_extend_credit_24px,
-                        0
+                if (extendCredit != null) {
+                    userProfileItemList.add(
+                        generateUserProfileItem(
+                            extendCredit.title, extendCredit.value.toString() + extendCredit.unit,
+                            R.drawable.ic_extend_credit_24px,
+                            0
+                        )
                     )
-                )
+                }
             }
             return userProfileItemList
         }
@@ -574,7 +576,7 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
             val userProfileResult = viewModel!!.userProfileResultLiveData.value
                 ?: return ArrayList()
             val userProfileItemList: MutableList<UserProfileItem> = ArrayList()
-            val spaceVariables = userProfileResult.userProfileVariableResult.space
+            val spaceVariables = userProfileResult.userProfileVariableResult!!.space
             val privacySetting = spaceVariables.privacySetting
             userProfileItemList.add(
                 generateUserProfileItem(
@@ -665,8 +667,8 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
         override fun getItem(position: Int): Fragment {
             val userProfileResult = viewModel!!.userProfileResultLiveData.value
             when (position) {
-                0 -> return if (userProfileResult?.userProfileVariableResult != null && userProfileResult.userProfileVariableResult.space != null) {
-                    MedalFragment.newInstance(userProfileResult.userProfileVariableResult.space.medals)
+                0 -> return if (userProfileResult?.userProfileVariableResult != null) {
+                    MedalFragment.newInstance(userProfileResult.userProfileVariableResult!!.space.medals)
                 } else {
                     MedalFragment.newInstance(null)
                 }
@@ -674,10 +676,10 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
                     getString(R.string.user_profile_extra_information),
                     creditList
                 )
-                2 -> return if (userProfileResult?.userProfileVariableResult != null && userProfileResult.userProfileVariableResult.space != null) {
+                2 -> return if (userProfileResult?.userProfileVariableResult != null) {
                     UserFriendFragment.newInstance(
                         userId,
-                        userProfileResult.userProfileVariableResult.space.friends
+                        userProfileResult.userProfileVariableResult!!.space.friends
                     )
                 } else {
                     UserFriendFragment.newInstance(userId, 0)
@@ -694,10 +696,10 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
                     getString(R.string.user_profile_extra_information),
                     extraInfoList
                 )
-                6 -> return if (userProfileResult?.userProfileVariableResult != null && userProfileResult.userProfileVariableResult.space != null) {
+                6 -> return if (userProfileResult?.userProfileVariableResult != null) {
                     UserGroupInfoFragment.newInstance(
-                        userProfileResult.userProfileVariableResult.space.group,
-                        userProfileResult.userProfileVariableResult.space.adminGroup
+                        userProfileResult.userProfileVariableResult!!.space.group,
+                        userProfileResult.userProfileVariableResult!!.space.adminGroup
                     )
                 } else {
                     UserGroupInfoFragment.newInstance(null, null)
@@ -709,20 +711,20 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
         override fun getPageTitle(position: Int): CharSequence? {
             val userProfileResult = viewModel!!.userProfileResultLiveData.value
             return when (position) {
-                0 -> if (userProfileResult?.userProfileVariableResult != null && userProfileResult.userProfileVariableResult.space != null && userProfileResult.userProfileVariableResult.space.medals != null
+                0 -> if (userProfileResult?.userProfileVariableResult != null
                 ) {
                     getString(
                         R.string.bbs_medals_num,
-                        userProfileResult.userProfileVariableResult.space.medals.size
+                        userProfileResult.userProfileVariableResult!!.space.medals.size
                     )
                 } else {
                     getString(R.string.user_profile_medal)
                 }
                 1 -> getString(R.string.bbs_credit)
-                2 -> if (userProfileResult?.userProfileVariableResult != null && userProfileResult.userProfileVariableResult.space != null) {
+                2 -> if (userProfileResult?.userProfileVariableResult != null) {
                     getString(
                         R.string.user_profile_friend_number_template,
-                        userProfileResult.userProfileVariableResult.space.friends
+                        userProfileResult.userProfileVariableResult!!.space.friends
                     )
                 } else {
                     getString(R.string.bbs_user_friend)

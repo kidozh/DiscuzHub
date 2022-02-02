@@ -1,382 +1,648 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import android.util.Log;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.deser.std.JsonNodeDeserializer;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer;
-import com.kidozh.discuzhub.utilities.URLUtils;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import android.util.Log
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.core.JsonToken
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.deser.std.JsonNodeDeserializer
+import com.fasterxml.jackson.databind.node.NullNode
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.kidozh.discuzhub.results.UserProfileResult
+import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer
+import com.kidozh.discuzhub.utilities.URLUtils
+import java.io.IOException
+import java.util.*
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-
-public class UserProfileResult extends BaseResult {
-    private static final String TAG = UserProfileResult.class.getSimpleName();
-
+class UserProfileResult : BaseResult() {
     @JsonProperty("Variables")
-    public UserProfileVariableResult userProfileVariableResult;
-
-
-
-
+    var userProfileVariableResult: UserProfileVariableResult? = null
 
     //@JsonIgnoreProperties(ignoreUnknown = true)
-    public static class UserProfileVariableResult extends VariableResults{
-
+    class UserProfileVariableResult : VariableResults() {
         @JsonProperty("space")
-        public SpaceVariables space;
+        var space: SpaceVariables = SpaceVariables()
 
         @JsonProperty("extcredits")
-        public Map<String,extendCredit> extendCreditMap = new HashMap<>();
-
-        public List<extendCredit> getExtendCredits(){
-            List<extendCredit> extendCreditList = new ArrayList<>();
-            Log.d(TAG,"GET extend credit hash map "+extendCreditMap+" "+space);
-            if(space !=null && extendCreditMap!=null){
-                Set<String> creditIndexKey = extendCreditMap.keySet();
-                for(String creditIndex : creditIndexKey){
-                    String extFieldName = "extcredits"+creditIndex;
-                    try{
-                        Field extField = SpaceVariables.class.getField(extFieldName);
-                        int fieldValue = (int) extField.get(space);
-                        extendCredit extCredit = extendCreditMap.get(creditIndex);
-                        extCredit.value = fieldValue;
-                        extendCreditList.add(extCredit);
-                    }
-                    catch (Exception ignored){
-
+        var extendCreditMap: Map<String, extendCredit>? = HashMap()
+        val extendCredits: List<extendCredit?>
+            get() {
+                val extendCreditList: MutableList<extendCredit?> = ArrayList()
+                Log.d(TAG, "GET extend credit hash map $extendCreditMap $space")
+                if (space != null && extendCreditMap != null) {
+                    val creditIndexKey = extendCreditMap!!.keys
+                    for (creditIndex in creditIndexKey) {
+                        val extFieldName = "extcredits$creditIndex"
+                        try {
+                            val extField = SpaceVariables::class.java.getField(extFieldName)
+                            val fieldValue = extField[space] as Int
+                            val extCredit = extendCreditMap!![creditIndex]
+                            extCredit!!.value = fieldValue
+                            extendCreditList.add(extCredit)
+                        } catch (ignored: Exception) {
+                        }
                     }
                 }
-
+                return extendCreditList
             }
-            return extendCreditList;
-        }
-
     }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class SpaceVariables{
+    class SpaceVariables {
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int uid,status, credits;
-        public String username;
+        var uid = 0
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
+        var status = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var credits = 0
+        var username: String = ""
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
         @JsonProperty("emailstatus")
-        public boolean emailStatus;
+        var emailStatus = false
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
         @JsonProperty("avatarstatus")
-        public boolean avatarStatus;
+        var avatarStatus = false
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
         @JsonProperty("videophotostatus")
-        public boolean videoPhotoStatus;
+        var videoPhotoStatus = false
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("adminid")
-        public int adminId;
+        var adminId = 0
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("groupid")
-        public int groupId;
-        public String groupexpiry, regdate;
+        var groupId = 0
+        var groupexpiry: String? = null
+        var regdate: String? = null
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("extgroupids")
-        public String extendGroup;
+        var extendGroup: String? = null
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
         @JsonProperty("notifysound")
-        public boolean notifySound;
+        var notifySound = false
+
         @JsonProperty("timeoffset")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int timeZone;
+        var timeZone = 0
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int newpm, newprompt;
+        var newpm = 0
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
+        var newprompt = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
         @JsonProperty("accessmasks")
-        public boolean accessMasks;
-        public String allowadmincp;
+        var accessMasks = false
+        var allowadmincp: String? = null
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
         @JsonProperty("onlyacceptfriendpm")
-        public boolean onlyAcceptFriendPM;
+        var onlyAcceptFriendPM = false
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
         @JsonProperty("conisbind")
-        public boolean connectBinded;
+        var connectBinded = false
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-        public boolean freeze;
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+        var freeze = false
+
         // need to rewrite
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int extcredits1,extcredits2,extcredits3,extcredits4,extcredits5,extcredits6,extcredits7,extcredits8;
+        var extcredits1 = 0
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int friends, posts, threads, digestposts, doings, blogs, albums, sharings,
-                views, feeds, follower, following, newfollower, blacklist;
+        var extcredits2 = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var extcredits3 = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var extcredits4 = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var extcredits5 = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var extcredits6 = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var extcredits7 = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var extcredits8 = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var friends = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var posts = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var threads = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var digestposts = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var doings = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var blogs = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var albums = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var sharings = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var views = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var feeds = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var follower = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var following = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var newfollower = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var blacklist = 0
+
         @JsonProperty("attachsize")
-        public String attachmentSize;
+        var attachmentSize: String? = null
+
         @JsonProperty("oltime")
-        public int onlineHours;
+        var onlineHours = 0
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int todayattachs ;
+        var todayattachs = 0
+
         @JsonProperty("todayattachsize")
-        public String todayAttachSize;
-        public String videophoto, spacename, spacedescription, domain,addsize,
-                addfriend,menunum,theme,spacecss, blockposition, feedfriend, magicgift;
+        var todayAttachSize: String? = null
+        var videophoto: String? = null
+        var spacename: String? = null
+        var spacedescription: String? = null
+        var domain: String? = null
+        var addsize: String? = null
+        var addfriend: String? = null
+        var menunum: String? = null
+        var theme: String? = null
+        var spacecss: String? = null
+        var blockposition: String? = null
+        var feedfriend: String? = null
+        var magicgift: String? = null
+
         @JsonProperty("recentnote")
-        public String recentNote= "";
+        var recentNote = ""
+
         @JsonProperty("spacenote")
-        public String spaceNotification;
+        var spaceNotification: String? = null
 
         @JsonProperty("sightml")
-        public String sigatureHtml = "";
-        public String publishfeed, authstr, groupterms, groups, attentiongroup;
-        @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int gender, birthyear, birthmonth, birthday;
+        var sigatureHtml = ""
+        var publishfeed: String? = null
+        var authstr: String? = null
+        var groupterms: String? = null
+        var groups: String? = null
+        var attentiongroup: String? = null
 
-        public String constellation= "", zodiac, nationality, birthprovince= "",
-                birthcity= "", birthdist= "", birthcommunity= "", resideprovince= "",
-                residecity= "", residedist= "", residecommunity= "", residesuite= "", graduateschool= "";
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var gender = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var birthyear = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var birthmonth = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var birthday = 0
+        var constellation = ""
+        var zodiac: String? = null
+        var nationality: String? = null
+        var birthprovince = ""
+        var birthcity = ""
+        var birthdist = ""
+        var birthcommunity = ""
+        var resideprovince = ""
+        var residecity = ""
+        var residedist = ""
+        var residecommunity = ""
+        var residesuite = ""
+        var graduateschool = ""
+
         @JsonProperty("position")
-        public String workPosition= "";
-        public String company= "", education= "", occupation= "", revenue= "", lookingfor= "", bloodtype= "";
+        var workPosition = ""
+        var company = ""
+        var education = ""
+        var occupation = ""
+        var revenue = ""
+        var lookingfor = ""
+        var bloodtype = ""
+
         @JsonProperty("affectivestatus")
-        public String marriedStatus= "";
-        public String height= "", weight= "", site= "", bio = "", interest= "";
+        var marriedStatus = ""
+        var height = ""
+        var weight = ""
+        var site = ""
+        var bio = ""
+        var interest = ""
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int port;
-        public String lastvisit, lastactivity= "",lastpost, lastsendmail;
-        public String field1,field2,field3,field4,field5,field6,field7,field8;
-        public String regipport,lastipport;
+        var port = 0
+        var lastvisit: String? = null
+        var lastactivity = ""
+        var lastpost: String? = null
+        var lastsendmail: String? = null
+        var field1: String? = null
+        var field2: String? = null
+        var field3: String? = null
+        var field4: String? = null
+        var field5: String? = null
+        var field6: String? = null
+        var field7: String? = null
+        var field8: String? = null
+        var regipport: String? = null
+        var lastipport: String? = null
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-        public boolean invisible;
-        public String buyercredit,sellercredit;
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+        var invisible = false
+        var buyercredit: String? = null
+        var sellercredit: String? = null
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int favtimes, sharetimes, profileprogress;
+        var favtimes = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var sharetimes = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var profileprogress = 0
+
         @JsonProperty("admingroup")
-        public AdminGroupVariables adminGroup;
+        var adminGroup: AdminGroupVariables? = null
+
         @JsonProperty("group")
-        public GroupVariables group;
+        var group: GroupVariables? = null
+
         @JsonProperty("lastactivitydb")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "s")
-        public Date lastActivityDate;
+        var lastActivityDate: Date? = null
+        var buyerrank: String? = null
+        var sellerrank: String? = null
+        var groupiconid: String? = null
+        var upgradecredit = 0
+        var upgradeprogress = 0
 
-        public String buyerrank, sellerrank, groupiconid;
-        public int upgradecredit, upgradeprogress;
-        @JsonDeserialize(using = MedalInfoJsonDeserializer.class)
-        public List<Medal> medals = new ArrayList<>();
+        @JsonDeserialize(using = MedalInfoJsonDeserializer::class)
+        var medals: List<Medal> = ArrayList()
 
         @JsonProperty("privacy")
         @JsonIgnoreProperties(ignoreUnknown = true)
         @JsonIgnore
-        public PrivacySetting privacySetting = new PrivacySetting();
-
-
-
+        var privacySetting = PrivacySetting()
     }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class PrivacySetting{
+    class PrivacySetting {
         @JsonProperty("feed")
-        public FeedPrivacySetting feedPrivacy = new FeedPrivacySetting();
+        var feedPrivacy = FeedPrivacySetting()
+
         @JsonProperty("view")
-        public ViewPrivacySetting viewPrivacySetting = new ViewPrivacySetting();
+        var viewPrivacySetting = ViewPrivacySetting()
+
         @JsonProperty("profile")
         @JsonIgnoreProperties(ignoreUnknown = true)
-        public ProfilePrivacySetting profilePrivacySetting =  new ProfilePrivacySetting();
+        var profilePrivacySetting = ProfilePrivacySetting()
     }
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class FeedPrivacySetting{
-        @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int doing, blog, upload, poll, newthread,
-                share, friend, comment, show, credit, invite, task, profile, click, newreply;
 
-    }
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class ViewPrivacySetting{
+    class FeedPrivacySetting {
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int friend = 2, wall = 2, home = 2, doing  = 2, blog = 2, album = 2, share = 2 ,index =2;
+        var doing = 0
 
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var blog = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var upload = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var poll = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var newthread = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var share = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var friend = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var comment = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var show = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var credit = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var invite = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var task = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var profile = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var click = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var newreply = 0
     }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    class ViewPrivacySetting {
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var friend = 2
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var wall = 2
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var home = 2
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var doing = 2
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var blog = 2
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var album = 2
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var share = 2
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var index = 2
+    }
+
     //@JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonDeserialize(using = ProfilePrivacyJsonDeserializer.class)
+    @JsonDeserialize(using = ProfilePrivacyJsonDeserializer::class)
     @JsonIgnoreProperties
-    public static class ProfilePrivacySetting{
-        public int realname ,gender ,birthday ,birthcity ,residecity ,affectivestatus ,lookingfor ,
-                bloodtype ,telephone ,mobile ,qq ,msn ,taobao ,graduateschool ,education ,company ,
-                occupation ,position ,revenue ,idcardtype ,idcard ,address ,zipcode ,site ,bio ,interest;
+    class ProfilePrivacySetting {
+        var realname = 0
+        var gender = 0
+        var birthday = 0
+        var birthcity = 0
+        var residecity = 0
+        var affectivestatus = 0
+        var lookingfor = 0
+        var bloodtype = 0
+        var telephone = 0
+        var mobile = 0
+        var qq = 0
+        var msn = 0
+        var taobao = 0
+        var graduateschool = 0
+        var education = 0
+        var company = 0
+        var occupation = 0
+        var position = 0
+        var revenue = 0
+        var idcardtype = 0
+        var idcard = 0
+        var address = 0
+        var zipcode = 0
+        var site = 0
+        var bio = 0
+        var interest = 0
     }
+
     //@JsonIgnoreProperties(ignoreUnknown = true)
-    public static class AdminGroupVariables{
-        public String type;
+    class AdminGroupVariables {
+        var type: String? = null
+
+        @JvmField
         @JsonProperty("grouptitle")
-        public String groupTitle = "";
+        var groupTitle = ""
+
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int stars;
-        public String color, icon;
+        var stars = 0
+        @JvmField
+        var color: String? = null
+        @JvmField
+        var icon: String? = null
+
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("readaccess")
-        public int readAccess;
+        var readAccess = 0
 
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("allowgetattach")
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-        public boolean allowGetAttach;
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+        var allowGetAttach = false
 
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("allowgetimage")
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-        public boolean allowGetImage;
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+        var allowGetImage = false
 
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("allowmediacode")
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-        public boolean allowMediaCode;
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+        var allowMediaCode = false
 
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("maxsigsize")
-        public int maxSignatureSize;
+        var maxSignatureSize = 0
 
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("allowbegincode")
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-        public boolean allowBeginCode;
-
-        public String userstatusby;
-
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+        var allowBeginCode = false
+        var userstatusby: String? = null
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class GroupVariables{
-        public String type;
+    class GroupVariables {
+        var type: String? = null
+
+        @JvmField
         @JsonProperty("grouptitle")
-        public String groupTitle;
+        var groupTitle: String? = null
+
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int stars;
+        var stars = 0
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("creditshigher")
-        public int upperBoundCredit = -1;
+        var upperBoundCredit = -1
+
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("creditslower")
-        public int lowerBoundCredit = -1;
+        var lowerBoundCredit = -1
+        @JvmField
+        var color: String? = null
+        @JvmField
+        var icon: String? = null
 
-        public String color, icon;
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("readaccess")
-        public int readAccess;
+        var readAccess = 0
 
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("allowgetattach")
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-        public boolean allowGetAttach;
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+        var allowGetAttach = false
 
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("allowgetimage")
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-        public boolean allowGetImage;
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+        var allowGetImage = false
 
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("allowmediacode")
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-        public boolean allowMediaCode;
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+        var allowMediaCode = false
 
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("maxsigsize")
-        public int maxSignatureSize;
+        var maxSignatureSize = 0
 
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         @JsonProperty("allowbegincode")
-        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer.class)
-        public boolean allowBeginCode;
-
-        public String userstatusby;
-
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+        var allowBeginCode = false
+        var userstatusby: String? = null
     }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class extendCredit{
-        public String img, title, unit, ratio,showinthread,allowexchangein,allowexchangeout;
-        @JsonIgnore
-        public int value = 0;
+    class extendCredit {
+        var img: String? = null
+        var title: String = ""
+        var unit: String = ""
+        var ratio: String = ""
+        var showinthread: String? = null
+        var allowexchangein: String? = null
+        var allowexchangeout: String? = null
 
+        @JsonIgnore
+        var value = 0
     }
 
-    public static class Medal{
-        public String name, image, description;
+    class Medal {
+        @JvmField
+        var name: String? = null
+        var image: String? = null
+        @JvmField
+        var description: String? = null
+
         @JsonProperty("medalid")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int medalId;
+        var medalId = 0
+        val medalImageURL: String
+            get() = URLUtils.getBBSMedalImageURL(image)
+    }
 
-        public String getMedalImageURL(){
-            return URLUtils.getBBSMedalImageURL(image);
+    class MedalInfoJsonDeserializer : JsonDeserializer<List<Medal>>() {
+        @Throws(IOException::class, JsonProcessingException::class)
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): List<Medal> {
+            val currentToken = p.currentToken
+            return if (currentToken == JsonToken.VALUE_STRING) {
+                ArrayList()
+            } else if (currentToken == JsonToken.START_ARRAY) {
+                val mapper = jacksonObjectMapper()
+
+                mapper.readValue<List<Medal>>(
+                    p,
+                    object :
+                        TypeReference<List<Medal>>() {})
+            } else {
+                ArrayList()
+            }
         }
     }
 
-    public static class MedalInfoJsonDeserializer extends JsonDeserializer<List<Medal>> {
-
-        @Override
-        public List<Medal> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-            JsonToken currentToken = p.getCurrentToken();
-            if(currentToken.equals(JsonToken.VALUE_STRING)){
-                return new ArrayList<>();
-            }
-            else if(currentToken.equals(JsonToken.START_ARRAY)) {
-                ObjectMapper mapper = new ObjectMapper();
-
-                return mapper.readValue(p,  new TypeReference<List<Medal>>(){});
-            }
-            else {
-                return new ArrayList<>();
-            }
-
+    inner class JsonNullAwareDeserializer : JsonNodeDeserializer() {
+        override fun getNullValue(ctxt: DeserializationContext): JsonNode {
+            return NullNode.getInstance()
         }
     }
 
-    public final class JsonNullAwareDeserializer extends JsonNodeDeserializer{
-        @Override
-        public JsonNode getNullValue(DeserializationContext ctxt) {
-            return NullNode.getInstance();
-        }
-    }
-
-    public static class ProfilePrivacyJsonDeserializer extends JsonDeserializer<ProfilePrivacySetting> {
-
-        @Override
-        public ProfilePrivacySetting deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-            JsonToken currentToken = p.getCurrentToken();
-            if(currentToken.equals(JsonToken.START_OBJECT)){
-                return new ProfilePrivacySetting();
-//                ObjectMapper mapper = new ObjectMapper();
+    class ProfilePrivacyJsonDeserializer : JsonDeserializer<ProfilePrivacySetting>() {
+        @Throws(IOException::class, JsonProcessingException::class)
+        override fun deserialize(
+            p: JsonParser,
+            ctxt: DeserializationContext
+        ): ProfilePrivacySetting {
+            val currentToken = p.currentToken
+            return if (currentToken == JsonToken.START_OBJECT) {
+                ProfilePrivacySetting()
+                //                ObjectMapper mapper = new ObjectMapper();
 //
 //                return mapper.readValue(p,  ProfilePrivacySetting.class);
+            } else {
+                ProfilePrivacySetting()
             }
-
-            else {
-                return new ProfilePrivacySetting();
-            }
-
         }
     }
 
-    public boolean isError(){
-        return this.message == null;
+    override fun isError(): Boolean {
+        return message == null
+    }
+
+    companion object {
+        private val TAG = UserProfileResult::class.java.simpleName
     }
 }

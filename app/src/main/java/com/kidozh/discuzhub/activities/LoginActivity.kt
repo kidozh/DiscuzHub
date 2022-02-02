@@ -145,66 +145,67 @@ class LoginActivity : BaseStatusActivity() {
             }
         })
         viewModel!!.secureInfoResultMutableLiveData.observe(
-            this,
-            { secureInfoResult: SecureInfoResult? ->
-                if (secureInfoResult != null) {
-                    if (secureInfoResult.secureVariables == null) {
-                        binding.loginBbsCaptchaInputLayout.visibility = View.GONE
-                        binding.loginBbsCaptchaImageView.visibility = View.GONE
-                    } else {
-                        // need further query
-                        binding.loginBbsCaptchaInputLayout.visibility = View.VISIBLE
-                        binding.loginBbsCaptchaImageView.visibility = View.VISIBLE
-                        binding.loginBbsCaptchaImageView.setImageDrawable(
-                            ContextCompat.getDrawable(
-                                this,
-                                R.drawable.ic_captcha_placeholder_24px
-                            )
+            this
+        ) { secureInfoResult: SecureInfoResult? ->
+            if (secureInfoResult != null) {
+                if (secureInfoResult.secureVariables == null) {
+                    binding.loginBbsCaptchaInputLayout.visibility = View.GONE
+                    binding.loginBbsCaptchaImageView.visibility = View.GONE
+                } else {
+                    // need further query
+                    binding.loginBbsCaptchaInputLayout.visibility = View.VISIBLE
+                    binding.loginBbsCaptchaImageView.visibility = View.VISIBLE
+                    binding.loginBbsCaptchaImageView.setImageDrawable(
+                        ContextCompat.getDrawable(
+                            this,
+                            R.drawable.ic_captcha_placeholder_24px
                         )
-                        val captchaURL = secureInfoResult.secureVariables.secCodeURL
-                        val captchaImageURL =
-                            URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash)
-                        val captchaRequest = Request.Builder()
-                            .url(captchaURL)
-                            .build()
-                        client.newCall(captchaRequest).enqueue(object : Callback {
-                            override fun onFailure(call: Call, e: IOException) {}
-                            @Throws(IOException::class)
-                            override fun onResponse(call: Call, response: Response) {
-                                if (response.isSuccessful && response.body != null) {
-                                    // get the session
-                                    binding.loginBbsCaptchaImageView.post {
-                                        val factory = OkHttpUrlLoader.Factory(
-                                            client
-                                        )
-                                        Glide.get(application).registry.replace(
-                                            GlideUrl::class.java, InputStream::class.java, factory
-                                        )
+                    )
+                    val captchaURL = secureInfoResult.secureVariables!!.secCodeURL
+                    val captchaImageURL =
+                        URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables!!.secHash)
+                    val captchaRequest = Request.Builder()
+                        .url(captchaURL)
+                        .build()
+                    client.newCall(captchaRequest).enqueue(object : Callback {
+                        override fun onFailure(call: Call, e: IOException) {}
 
-                                        // forbid cache captcha
-                                        val options = RequestOptions()
-                                            .fitCenter()
-                                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                            .placeholder(R.drawable.ic_captcha_placeholder_24px)
-                                            .error(R.drawable.ic_post_status_warned_24px)
-                                        val pictureGlideURL = GlideUrl(
-                                            captchaImageURL,
-                                            LazyHeaders.Builder()
-                                                .addHeader("Referer", captchaURL)
-                                                .build()
-                                        )
-                                        Glide.with(application)
-                                            .load(pictureGlideURL)
-                                            .apply(options)
-                                            .into(binding.loginBbsCaptchaImageView)
-                                    }
+                        @Throws(IOException::class)
+                        override fun onResponse(call: Call, response: Response) {
+                            if (response.isSuccessful && response.body != null) {
+                                // get the session
+                                binding.loginBbsCaptchaImageView.post {
+                                    val factory = OkHttpUrlLoader.Factory(
+                                        client
+                                    )
+                                    Glide.get(application).registry.replace(
+                                        GlideUrl::class.java, InputStream::class.java, factory
+                                    )
+
+                                    // forbid cache captcha
+                                    val options = RequestOptions()
+                                        .fitCenter()
+                                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                        .placeholder(R.drawable.ic_captcha_placeholder_24px)
+                                        .error(R.drawable.ic_post_status_warned_24px)
+                                    val pictureGlideURL = GlideUrl(
+                                        captchaImageURL,
+                                        LazyHeaders.Builder()
+                                            .addHeader("Referer", captchaURL)
+                                            .build()
+                                    )
+                                    Glide.with(application)
+                                        .load(pictureGlideURL)
+                                        .apply(options)
+                                        .into(binding.loginBbsCaptchaImageView)
                                 }
                             }
-                        })
-                    }
+                        }
+                    })
                 }
-            })
-        viewModel!!.loginResultMutableLiveData.observe(this, { loginResult: LoginResult? ->
+            }
+        }
+        viewModel!!.loginResultMutableLiveData.observe(this) { loginResult: LoginResult? ->
             if (loginResult != null) {
                 val loginMessage = loginResult.message
                 if (loginMessage != null) {
@@ -242,7 +243,7 @@ class LoginActivity : BaseStatusActivity() {
                     }
                 }
             }
-        })
+        }
     }
 
     private fun configureLoginBtn() {
@@ -254,7 +255,7 @@ class LoginActivity : BaseStatusActivity() {
                 var secureHash: String? = null
                 val secureInfoResult = viewModel!!.secureInfoResultMutableLiveData.value
                 if (secureInfoResult?.secureVariables != null) {
-                    secureHash = secureInfoResult.secureVariables.secHash
+                    secureHash = secureInfoResult.secureVariables!!.secHash
                 }
                 if (needCaptcha() && captchaText.isEmpty()) {
                     binding.loginBbsCaptchaInputLayout.error = getString(R.string.field_required)

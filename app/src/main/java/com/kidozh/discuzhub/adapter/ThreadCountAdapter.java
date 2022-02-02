@@ -12,7 +12,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment;
 import com.kidozh.discuzhub.entities.ThreadCount;
 
 import java.util.ArrayList;

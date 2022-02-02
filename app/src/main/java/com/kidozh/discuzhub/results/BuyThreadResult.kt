@@ -1,30 +1,31 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import androidx.annotation.NonNull;
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class BuyThreadResult extends BaseResult {
+class BuyThreadResult : BaseResult() {
     @JsonProperty("Variables")
-    @NonNull
-    public BuyThreadVariableResult variableResults;
+    var variableResults: BuyThreadVariableResult = BuyThreadVariableResult()
 
-    public static class BuyThreadVariableResult extends VariableResults{
+    class BuyThreadVariableResult : VariableResults() {
         @JsonProperty("authorid")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int authorId;
-        public String author;
-        @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int price, balance;
-        public Credit credit;
+        var authorId = 0
+        var author: String? = null
 
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var price = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var balance = 0
+        var credit: Credit = Credit()
     }
 
-    public static class Credit{
-        public String title = "";
+    class Credit {
+        var title = ""
+
         @JsonIgnoreProperties(ignoreUnknown = true)
-        public String unit = "";
+        var unit = ""
     }
 }

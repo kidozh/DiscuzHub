@@ -674,7 +674,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                 } catch (e: IOException) {
                     e.printStackTrace()
                     messageResult = MessageResult()
-                    messageResult!!.content = e.message
+                    messageResult!!.content = e.message!!
                     messageResult!!.key = e.toString()
                     // insert as local database
                     if (favorite) {

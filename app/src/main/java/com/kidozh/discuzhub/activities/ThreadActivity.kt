@@ -45,7 +45,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kidozh.discuzhub.R
-import com.kidozh.discuzhub.activities.ui.bbsPollFragment.bbsPollFragment
+import com.kidozh.discuzhub.activities.ui.bbsPollFragment.PollFragment
 import com.kidozh.discuzhub.activities.ui.smiley.SmileyFragment.OnSmileyPressedInteraction
 import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter
 import com.kidozh.discuzhub.adapter.NetworkIndicatorAdapter.OnRefreshBtnListener
@@ -63,6 +63,7 @@ import com.kidozh.discuzhub.dialogs.ReportPostDialogFragment.ReportDialogListene
 import com.kidozh.discuzhub.entities.*
 import com.kidozh.discuzhub.results.ApiMessageActionResult
 import com.kidozh.discuzhub.results.BuyThreadResult
+import com.kidozh.discuzhub.results.DetailedThreadInfo
 import com.kidozh.discuzhub.utilities.*
 import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
 import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
@@ -78,7 +79,7 @@ import java.util.*
 import java.util.regex.Pattern
 
 class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
-    onFilterChanged, onAdapterReply, OnLinkClicked, bbsPollFragment.OnFragmentInteractionListener,
+    onFilterChanged, onAdapterReply, OnLinkClicked, PollFragment.OnFragmentInteractionListener,
     OnThreadPropertyClicked, OnAdvanceOptionClicked, ReportDialogListener, OnRefreshBtnListener,
     OnRecommendBtnPressed, OnPostAdmined {
     lateinit var binding: ActivityViewThreadBinding
@@ -189,32 +190,36 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
 
     private fun bindViewModel() {
         // for personal info
-        threadDetailViewModel.bbsPersonInfoMutableLiveData.observe(this, { userBriefInfo ->
+        threadDetailViewModel.bbsPersonInfoMutableLiveData.observe(this) { userBriefInfo ->
             if (userBriefInfo?.auth == null) {
                 binding.bbsCommentConstraintLayout.visibility = View.GONE
             } else {
                 binding.bbsCommentConstraintLayout.visibility = View.VISIBLE
             }
-        })
+        }
 
-        threadDetailViewModel.totalPostListLiveData.observe(this,{
-            Log.d(TAG, "Update list "+postAdapter.itemCount+" new list "+it.size+" is equal "+(postAdapter.getPosts() == it).toString())
+        threadDetailViewModel.totalPostListLiveData.observe(this) {
+            Log.d(
+                TAG,
+                "Update list " + postAdapter.itemCount + " new list " + it.size + " is equal " + (postAdapter.getPosts() == it).toString()
+            )
             var authorid = 0
             val threadResult = threadDetailViewModel.threadPostResultMutableLiveData.value
-            val viewThreadQueryStatus : ViewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value as ViewThreadQueryStatus
+            val viewThreadQueryStatus: ViewThreadQueryStatus =
+                threadDetailViewModel.threadStatusMutableLiveData.value as ViewThreadQueryStatus
             if (threadResult?.threadPostVariables != null) {
                 authorid = threadResult.threadPostVariables.detailedThreadInfo.authorId
             }
             // update list
-            postAdapter.setPosts(it as MutableList<Post>,viewThreadQueryStatus,authorid)
+            postAdapter.setPosts(it as MutableList<Post>, viewThreadQueryStatus, authorid)
 
-            if(viewThreadQueryStatus.page == 1){
+            if (viewThreadQueryStatus.page == 1) {
                 binding.postsRecyclerview.scrollToPosition(0)
             }
-        })
+        }
 
 
-        threadDetailViewModel.networkStatus.observe(this, { integer: Int ->
+        threadDetailViewModel.networkStatus.observe(this) { integer: Int ->
             Log.d(TAG, "network changed $integer")
             when (integer) {
                 ConstUtils.NETWORK_STATUS_LOADING -> {
@@ -234,30 +239,38 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
                     binding.bbsThreadDetailSwipeRefreshLayout.isRefreshing = false
                 }
             }
-        })
-        threadDetailViewModel.errorMessageMutableLiveData.observe(this, { errorMessage: ErrorMessage? ->
+        }
+        threadDetailViewModel.errorMessageMutableLiveData.observe(this) { errorMessage: ErrorMessage? ->
             if (errorMessage != null) {
-                Toasty.error(application,
-                        getString(R.string.discuz_api_message_template, errorMessage.key, errorMessage.content),
-                        Toast.LENGTH_LONG).show()
+                Toasty.error(
+                    application,
+                    getString(
+                        R.string.discuz_api_message_template,
+                        errorMessage.key,
+                        errorMessage.content
+                    ),
+                    Toast.LENGTH_LONG
+                ).show()
                 networkIndicatorAdapter.setErrorStatus(errorMessage)
                 VibrateUtils.vibrateForError(application)
             }
-        })
-        threadDetailViewModel.pollLiveData.observe(this, { bbsPollInfo ->
+        }
+        threadDetailViewModel.pollLiveData.observe(this) { bbsPollInfo ->
             if (bbsPollInfo != null) {
                 Log.d(TAG, "get poll " + bbsPollInfo.votersCount)
                 val fragmentManager = supportFragmentManager
                 val fragmentTransaction = fragmentManager.beginTransaction()
-                fragmentTransaction.replace(R.id.bbs_thread_poll_fragment,
-                        bbsPollFragment.newInstance(bbsPollInfo, user, tid, formHash))
+                fragmentTransaction.replace(
+                    R.id.bbs_thread_poll_fragment,
+                    PollFragment.newInstance(bbsPollInfo, user, tid, formHash)
+                )
                 fragmentTransaction.commit()
             } else {
                 Log.d(TAG, "get poll is null")
             }
-        })
+        }
         threadDetailViewModel.formHash.observe(this, { s -> formHash = s })
-        threadDetailViewModel.threadStatusMutableLiveData.observe(this, { viewThreadQueryStatus ->
+        threadDetailViewModel.threadStatusMutableLiveData.observe(this) { viewThreadQueryStatus ->
             Log.d(TAG, "Livedata changed " + viewThreadQueryStatus.datelineAscend)
 //            if (supportActionBar != null) {
 //                if (viewThreadQueryStatus.datelineAscend) {
@@ -268,20 +281,25 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
 //
 //                }
 //            }
-        })
-        threadDetailViewModel.detailedThreadInfoMutableLiveData.observe(this, { detailedThreadInfo -> // closed situation
+        }
+        threadDetailViewModel.detailedThreadInfoMutableLiveData.observe(this) { detailedThreadInfo: DetailedThreadInfo -> // closed situation
             // prepare notification list
             val threadNotificationList: MutableList<ThreadCount> = ArrayList()
             binding.threadProperty.removeAllViews()
             if (detailedThreadInfo.price != 0) {
                 if (detailedThreadInfo.price > 0) {
-                    val chip = getPropertyChip(R.drawable.ic_price_outlined_24px,
-                            getString(R.string.thread_buy_price, detailedThreadInfo.price),
-                            getColor(R.color.colorPumpkin),
+                    val chip = getPropertyChip(
+                        R.drawable.ic_price_outlined_24px,
+                        getString(R.string.thread_buy_price, detailedThreadInfo.price),
+                        getColor(R.color.colorPumpkin),
                     )
                     chip.isClickable = true
-                    chip.setOnClickListener{ v->
-                        Toasty.info(this, getString(R.string.buy_thread_loading), Toast.LENGTH_SHORT).show()
+                    chip.setOnClickListener { v ->
+                        Toasty.info(
+                            this,
+                            getString(R.string.buy_thread_loading),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         threadDetailViewModel.getThreadPriceInfo(tid)
                     }
 
@@ -289,16 +307,17 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
                     binding.threadProperty.addView(chip)
                 } else {
                     binding.threadProperty.addView(
-                            getPropertyChip(R.drawable.ic_price_outlined_24px,
-                                    getString(R.string.thread_reward_price, detailedThreadInfo.price), getColor(R.color.colorPumpkin))
+                        getPropertyChip(
+                            R.drawable.ic_price_outlined_24px,
+                            getString(R.string.thread_reward_price, detailedThreadInfo.price),
+                            getColor(R.color.colorPumpkin)
+                        )
                     )
                 }
             }
-            if (detailedThreadInfo.subject != null) {
-                val sp = Html.fromHtml(detailedThreadInfo.subject)
-                val spannableString = SpannableString(sp)
-                binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
-            }
+            val sp = Html.fromHtml(detailedThreadInfo.subject)
+            val spannableString = SpannableString(sp)
+            binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
             if (detailedThreadInfo.closed != 0) {
                 binding.bbsThreadDetailCommentEditText.isEnabled = false
                 binding.bbsThreadDetailCommentButton.isEnabled = false
@@ -306,11 +325,14 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
                 binding.bbsThreadDetailEmoijButton.isClickable = false
                 binding.advancePostIcon.visibility = View.GONE
                 if (!UserPreferenceUtils.conciseRecyclerView(applicationContext)
-                        && detailedThreadInfo.closed == 1) {
+                    && detailedThreadInfo.closed == 1
+                ) {
 
                     binding.threadProperty.addView(
-                            getPropertyChip(R.drawable.ic_highlight_off_outlined_24px,
-                                    getString(R.string.thread_is_closed), getColor(R.color.colorPomegranate))
+                        getPropertyChip(
+                            R.drawable.ic_highlight_off_outlined_24px,
+                            getString(R.string.thread_is_closed), getColor(R.color.colorPomegranate)
+                        )
                     )
                 }
             } else {
@@ -330,80 +352,127 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
                     if (!UserPreferenceUtils.conciseRecyclerView(applicationContext)) {
                         // not to display in concise mode
                         binding.threadProperty.addView(
-                                getPropertyChip(R.drawable.ic_verified_user_outlined_24px,
-                                        getString(R.string.thread_readperm, detailedThreadInfo.readperm, user!!.readPerm), getColor(R.color.colorTurquoise))
+                            getPropertyChip(
+                                R.drawable.ic_verified_user_outlined_24px,
+                                getString(
+                                    R.string.thread_readperm,
+                                    detailedThreadInfo.readperm,
+                                    user!!.readPerm
+                                ), getColor(R.color.colorTurquoise)
+                            )
                         )
                     }
                 } else {
                     if (user == null) {
                         binding.threadProperty.addView(
-                                getPropertyChip(R.drawable.ic_read_perm_unsatisfied_24px,
-                                        getString(R.string.thread_anoymous_readperm, detailedThreadInfo.readperm), getColor(R.color.colorAsbestos))
+                            getPropertyChip(
+                                R.drawable.ic_read_perm_unsatisfied_24px,
+                                getString(
+                                    R.string.thread_anoymous_readperm,
+                                    detailedThreadInfo.readperm
+                                ), getColor(R.color.colorAsbestos)
+                            )
                         )
                     } else {
                         binding.threadProperty.addView(
-                                getPropertyChip(R.drawable.ic_read_perm_unsatisfied_24px,
-                                        getString(R.string.thread_readperm, detailedThreadInfo.readperm, user!!.readPerm), getColor(R.color.colorAlizarin))
+                            getPropertyChip(
+                                R.drawable.ic_read_perm_unsatisfied_24px,
+                                getString(
+                                    R.string.thread_readperm,
+                                    detailedThreadInfo.readperm,
+                                    user!!.readPerm
+                                ), getColor(R.color.colorAlizarin)
+                            )
                         )
                     }
                 }
             }
             if (detailedThreadInfo.hidden) {
                 binding.threadProperty.addView(
-                        getPropertyChip(R.drawable.ic_thread_visibility_off_24px,
-                                getString(R.string.thread_is_hidden), getColor(R.color.colorWisteria))
+                    getPropertyChip(
+                        R.drawable.ic_thread_visibility_off_24px,
+                        getString(R.string.thread_is_hidden), getColor(R.color.colorWisteria)
+                    )
                 )
             }
 
             // need another
             if (detailedThreadInfo.highlight != null && detailedThreadInfo.highlight != "0") {
                 binding.threadProperty.addView(
-                        getPropertyChip(R.drawable.ic_highlight_outlined_24px,
-                                getString(R.string.thread_is_highlighted), getColor(R.color.colorPrimary))
+                    getPropertyChip(
+                        R.drawable.ic_highlight_outlined_24px,
+                        getString(R.string.thread_is_highlighted), getColor(R.color.colorPrimary)
+                    )
                 )
             }
             if (detailedThreadInfo.digest != 0) {
                 binding.threadProperty.addView(
-                        getPropertyChip(R.drawable.ic_digest_outlined_24px,
-                                getString(R.string.thread_is_digested), getColor(R.color.colorGreensea))
+                    getPropertyChip(
+                        R.drawable.ic_digest_outlined_24px,
+                        getString(R.string.thread_is_digested), getColor(R.color.colorGreensea)
+                    )
                 )
             }
             if (detailedThreadInfo.is_archived) {
                 binding.threadProperty.addView(
-                        getPropertyChip(R.drawable.ic_archive_outlined_24px,
-                                getString(R.string.thread_is_archived), getColor(R.color.colorMidnightblue))
+                    getPropertyChip(
+                        R.drawable.ic_archive_outlined_24px,
+                        getString(R.string.thread_is_archived), getColor(R.color.colorMidnightblue)
+                    )
                 )
             }
             if (!UserPreferenceUtils.conciseRecyclerView(applicationContext)) {
                 // only see in not concise mode
                 if (detailedThreadInfo.moderated) {
                     binding.threadProperty.addView(
-                            getPropertyChip(R.drawable.ic_moderated_outlined_24px,
-                                    getString(R.string.thread_is_moderated), getColor(R.color.colorOrange))
+                        getPropertyChip(
+                            R.drawable.ic_moderated_outlined_24px,
+                            getString(R.string.thread_is_moderated), getColor(R.color.colorOrange)
+                        )
                     )
                 }
                 if (detailedThreadInfo.stickReply) {
                     binding.threadProperty.addView(
-                            getPropertyChip(R.drawable.vector_drawable_reply_24px,
-                                    getString(R.string.thread_stick_reply), getColor(R.color.colorWetasphalt))
+                        getPropertyChip(
+                            R.drawable.vector_drawable_reply_24px,
+                            getString(R.string.thread_stick_reply),
+                            getColor(R.color.colorWetasphalt)
+                        )
                     )
                 }
                 // recommend?
                 threadNotificationList.add(
-                        ThreadCount(R.drawable.ic_thumb_up_outlined_24px, detailedThreadInfo.recommend_add.toString())
+                    ThreadCount(
+                        R.drawable.ic_thumb_up_outlined_24px,
+                        detailedThreadInfo.recommend_add.toString()
+                    )
                 )
                 threadNotificationList.add(
-                        ThreadCount(R.drawable.ic_thumb_down_outlined_24px, detailedThreadInfo.recommend_sub.toString())
+                    ThreadCount(
+                        R.drawable.ic_thumb_down_outlined_24px,
+                        detailedThreadInfo.recommend_sub.toString()
+                    )
                 )
                 threadNotificationList.add(
-                        ThreadCount(R.drawable.ic_favorite_24px, detailedThreadInfo.favtimes.toString(), "FAVORITE")
+                    ThreadCount(
+                        R.drawable.ic_favorite_24px,
+                        detailedThreadInfo.favtimes.toString(),
+                        "FAVORITE"
+                    )
                 )
                 threadNotificationList.add(
-                        ThreadCount(R.drawable.ic_share_outlined_24px, detailedThreadInfo.sharedtimes.toString(), "SHARE")
+                    ThreadCount(
+                        R.drawable.ic_share_outlined_24px,
+                        detailedThreadInfo.sharetimes.toString(),
+                        "SHARE"
+                    )
                 )
                 if (detailedThreadInfo.heats != 0) {
                     threadNotificationList.add(
-                            ThreadCount(R.drawable.ic_whatshot_outlined_24px, detailedThreadInfo.heats.toString())
+                        ThreadCount(
+                            R.drawable.ic_whatshot_outlined_24px,
+                            detailedThreadInfo.heats.toString()
+                        )
                     )
                 }
             }
@@ -417,35 +486,47 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
             val STATUS_NOTIFY_AUTHOR = 32
             if (checkWithPerm(status, STATUS_CACHE_THREAD_LOCATION)) {
                 binding.threadProperty.addView(
-                        getPropertyChip(R.drawable.ic_cache_thread_location_24px,
-                                getString(R.string.thread_cache_location), getColor(R.color.colorMidnightblue))
+                    getPropertyChip(
+                        R.drawable.ic_cache_thread_location_24px,
+                        getString(R.string.thread_cache_location),
+                        getColor(R.color.colorMidnightblue)
+                    )
                 )
             }
             if (checkWithPerm(status, STATUS_ONLY_SEE_BY_POSTER)) {
                 binding.threadProperty.addView(
-                        getPropertyChip(R.drawable.ic_reply_only_see_by_poster_24px,
-                                getString(R.string.thread_reply_only_see_by_poster), getColor(R.color.colorNephritis))
+                    getPropertyChip(
+                        R.drawable.ic_reply_only_see_by_poster_24px,
+                        getString(R.string.thread_reply_only_see_by_poster),
+                        getColor(R.color.colorNephritis)
+                    )
                 )
             }
             if (checkWithPerm(status, STATUS_REWARD_LOTTO)) {
                 binding.threadProperty.addView(
-                        getPropertyChip(R.drawable.ic_thread_reward_lotto_24px,
-                                getString(R.string.thread_reward_lotto), getColor(R.color.colorSunflower))
+                    getPropertyChip(
+                        R.drawable.ic_thread_reward_lotto_24px,
+                        getString(R.string.thread_reward_lotto), getColor(R.color.colorSunflower)
+                    )
                 )
             }
             if (!UserPreferenceUtils.conciseRecyclerView(applicationContext)
-                    && checkWithPerm(status, STATUS_NOTIFY_AUTHOR)) {
+                && checkWithPerm(status, STATUS_NOTIFY_AUTHOR)
+            ) {
                 binding.threadProperty.addView(
-                        getPropertyChip(R.drawable.ic_thread_notify_author_24px,
-                                getString(R.string.thread_notify_author), getColor(R.color.colorPrimaryDark))
+                    getPropertyChip(
+                        R.drawable.ic_thread_notify_author_24px,
+                        getString(R.string.thread_notify_author), getColor(R.color.colorPrimaryDark)
+                    )
                 )
             }
             countAdapter.setThreadCountList(threadNotificationList)
 
             // for normal rendering
-            binding.bbsThreadCommentNumber.text = getString(R.string.bbs_thread_reply_number, detailedThreadInfo.replies)
+            binding.bbsThreadCommentNumber.text =
+                getString(R.string.bbs_thread_reply_number, detailedThreadInfo.replies)
             binding.bbsThreadViewNumber.text = detailedThreadInfo.views.toString()
-        })
+        }
 
         threadDetailViewModel.threadPostResultMutableLiveData.observe(this, { threadResult ->
             if (threadResult != null) {
@@ -503,8 +584,8 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
                     binding.bbsPostCaptchaImageview.visibility = View.VISIBLE
                     binding.bbsPostCaptchaImageview.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_captcha_placeholder_24px))
                     // need a captcha
-                    val captchaURL = secureInfoResult.secureVariables.secCodeURL
-                    val captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables.secHash)
+                    val captchaURL = secureInfoResult.secureVariables!!.secCodeURL
+                    val captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables!!.secHash)
                     // load it
                     if (captchaURL == null) {
                         return@Observer
@@ -550,46 +631,73 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
                 binding.bbsPostCaptchaImageview.visibility = View.GONE
             }
         })
-        threadDetailViewModel.favoriteThreadLiveData.observe(this, { favoriteThread ->
+        threadDetailViewModel.favoriteThreadLiveData.observe(this) { favoriteThread ->
             Log.d(TAG, "Get favorite thread in observer$favoriteThread")
             invalidateOptionsMenu()
-        })
-        threadDetailViewModel.recommendResultMutableLiveData.observe(this, { apiMessageActionResult: ApiMessageActionResult? ->
-            if (apiMessageActionResult != null && apiMessageActionResult.message != null) {
+        }
+        threadDetailViewModel.recommendResultMutableLiveData.observe(this) { apiMessageActionResult: ApiMessageActionResult? ->
+            if (apiMessageActionResult?.message != null) {
                 val messageResult = apiMessageActionResult.message
                 if (messageResult != null) {
                     if (messageResult.key == "recommend_succeed") {
-                        Toasty.success(applicationContext, getString(R.string.discuz_api_message_template, messageResult.key, messageResult.content), Toast.LENGTH_LONG).show()
+                        Toasty.success(
+                            applicationContext,
+                            getString(
+                                R.string.discuz_api_message_template,
+                                messageResult.key,
+                                messageResult.content
+                            ),
+                            Toast.LENGTH_LONG
+                        ).show()
                     } else {
-                        Toasty.error(applicationContext, getString(R.string.discuz_api_message_template, messageResult.key, messageResult.content), Toast.LENGTH_LONG).show()
+                        Toasty.error(
+                            applicationContext,
+                            getString(
+                                R.string.discuz_api_message_template,
+                                messageResult.key,
+                                messageResult.content
+                            ),
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             }
-        })
-        threadDetailViewModel.interactErrorMutableLiveData.observe(this, { errorMessage: ErrorMessage? ->
+        }
+        threadDetailViewModel.interactErrorMutableLiveData.observe(this) { errorMessage: ErrorMessage? ->
             if (errorMessage != null) {
                 networkIndicatorAdapter.setErrorStatus(errorMessage)
-                Toasty.error(applicationContext, getString(R.string.discuz_api_message_template, errorMessage.key, errorMessage.content), Toast.LENGTH_LONG).show()
+                Toasty.error(
+                    applicationContext,
+                    getString(
+                        R.string.discuz_api_message_template,
+                        errorMessage.key,
+                        errorMessage.content
+                    ),
+                    Toast.LENGTH_LONG
+                ).show()
             }
-        })
+        }
         val context: Context = this
-        threadDetailViewModel.threadPriceInfoMutableLiveData.observe(this, { buyThreadResult: BuyThreadResult? ->
+        threadDetailViewModel.threadPriceInfoMutableLiveData.observe(this) { buyThreadResult: BuyThreadResult? ->
             if (buyThreadResult != null) {
                 val variableResult = buyThreadResult.variableResults
                 val builder = MaterialAlertDialogBuilder(context)
-                        .setTitle(R.string.buy_thread_title)
-                        .setMessage(
-                                getString(R.string.buy_thread_dialog_message,
-                                        variableResult.author, variableResult.price.toString(),
-                                        if (variableResult.credit == null) "" else variableResult.credit.title, variableResult.balance.toString())
+                    .setTitle(R.string.buy_thread_title)
+                    .setMessage(
+                        getString(
+                            R.string.buy_thread_dialog_message,
+                            variableResult.author, variableResult.price.toString(),
+                            variableResult.credit.title, variableResult.balance.toString()
                         )
-                        .setPositiveButton(android.R.string.ok) { dialog: DialogInterface?, which: Int ->
-                            Toasty.info(this, getString(R.string.buy_thread_send), Toast.LENGTH_SHORT).show()
-                            threadDetailViewModel.buyThread(tid)
-                        }
+                    )
+                    .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
+                        Toasty.info(this, getString(R.string.buy_thread_send), Toast.LENGTH_SHORT)
+                            .show()
+                        threadDetailViewModel.buyThread(tid)
+                    }
                 builder.show()
             }
-        })
+        }
         threadDetailViewModel.buyThreadResultMutableLiveData.observe(this, { buyThreadResult: BuyThreadResult? ->
             if (buyThreadResult?.message != null) {
                 val key = buyThreadResult.message!!.key
@@ -1254,7 +1362,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
         }
         if (needCaptcha()) {
             val secureInfoResult = threadDetailViewModel.secureInfoResultMutableLiveData.value
-            formBodyBuilder.add("seccodehash", secureInfoResult!!.secureVariables.secHash)
+            formBodyBuilder.add("seccodehash", secureInfoResult!!.secureVariables!!.secHash)
                     .add("seccodemodid", "forum::viewthread")
             val captcha = binding.bbsPostCaptchaEditText.text.toString()
             when (charsetType) {
@@ -1396,7 +1504,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
         if (needCaptcha()) {
             val secureInfoResult = threadDetailViewModel.secureInfoResultMutableLiveData.value
             val captcha = binding.bbsPostCaptchaEditText.text.toString()
-            formBodyBuilder.add("seccodehash", secureInfoResult!!.secureVariables.secHash)
+            formBodyBuilder.add("seccodehash", secureInfoResult!!.secureVariables!!.secHash)
                     .add("seccodemodid", "forum::viewthread")
             when (charsetType) {
                 CHARSET_GBK -> {

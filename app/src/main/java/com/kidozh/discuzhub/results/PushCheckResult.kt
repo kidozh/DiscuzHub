@@ -1,23 +1,28 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class PushCheckResult {
-    public String result;
-    public MiPushInformation miPush;
+class PushCheckResult {
+    var result: String? = null
+    var miPush: MiPushInformation? = null
+
     @JsonProperty("firebase")
-    public FirebasePushInformation fcm;
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    public int uid,groupId;
-    public String groupTitle;
-    public boolean groupAllowed;
+    var fcm: FirebasePushInformation? = null
 
-    public static class MiPushInformation{
-        public boolean enabled;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    var uid = 0
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    var groupId = 0
+    var groupTitle: String = ""
+    var groupAllowed = false
+
+    class MiPushInformation {
+        var enabled = false
     }
 
-    public static class FirebasePushInformation{
-        public boolean enabled;
+    class FirebasePushInformation {
+        var enabled = false
     }
 }

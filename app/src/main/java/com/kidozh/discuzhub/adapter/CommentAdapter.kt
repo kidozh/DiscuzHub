@@ -15,15 +15,15 @@ import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.request.RequestOptions
 import com.kidozh.discuzhub.databinding.ItemPostCommentBinding
 import com.kidozh.discuzhub.entities.Discuz
-import com.kidozh.discuzhub.results.ThreadResult
+import com.kidozh.discuzhub.results.Comment
 import com.kidozh.discuzhub.utilities.NetworkUtils
 import java.io.InputStream
 
 class CommentAdapter(val discuz : Discuz) : RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
-    var commentList: List<ThreadResult.Comment> = ArrayList()
+    var commentList: List<Comment> = ArrayList()
     lateinit var context: Context
 
-    fun setComments(commentList: List<ThreadResult.Comment>) {
+    fun setComments(commentList: List<Comment>) {
         this.commentList = commentList
         notifyItemRangeInserted(0, commentList.size)
     }

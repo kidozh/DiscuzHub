@@ -1,36 +1,30 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kidozh.discuzhub.entities.FavoriteForum;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.kidozh.discuzhub.entities.FavoriteForum
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FavoriteForumResult extends BaseResult {
+class FavoriteForumResult : BaseResult() {
     @JsonProperty("Variables")
-    public FavoriteForumVariable favoriteForumVariable;
+    var favoriteForumVariable: FavoriteForumVariable = FavoriteForumVariable()
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class FavoriteForumVariable extends VariableResults{
+    class FavoriteForumVariable : VariableResults() {
         @JsonProperty("list")
-        public List<FavoriteForum> FavoriteForumList;
+        var FavoriteForumList: List<FavoriteForum> = ArrayList()
+
         @JsonProperty("perpage")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int perpage;
+        var perpage = 0
+
         @JsonProperty("count")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int count;
-
+        var count = 0
     }
 
-
-
-
-
-    public boolean isError(){
-        return this.message != null;
+    override fun isError(): Boolean {
+        return message != null
     }
-
 }

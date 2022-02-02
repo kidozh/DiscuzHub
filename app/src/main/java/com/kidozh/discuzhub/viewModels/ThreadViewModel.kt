@@ -18,7 +18,6 @@ import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.NetworkUtils
 import com.kidozh.discuzhub.utilities.URLUtils
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils
-import com.kidozh.discuzhub.utilities.bbsParseUtils.DetailedThreadInfo
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,8 +25,6 @@ import retrofit2.Response
 import java.net.URLEncoder
 import java.text.DateFormat
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class ThreadViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG = ThreadViewModel::class.java.simpleName
@@ -41,7 +38,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
     var formHash: MutableLiveData<String> = MutableLiveData("")
     var errorText: MutableLiveData<String>
     var pollLiveData: MutableLiveData<Poll?>
-    var bbsPersonInfoMutableLiveData: MutableLiveData<User>
+    var bbsPersonInfoMutableLiveData: MutableLiveData<User> = MutableLiveData()
     var totalPostListLiveData: MutableLiveData<List<Post>> = MutableLiveData(ArrayList())
     val threadStatusMutableLiveData: MutableLiveData<ViewThreadQueryStatus> = MutableLiveData(ViewThreadQueryStatus(0,1))
     var detailedThreadInfoMutableLiveData: MutableLiveData<DetailedThreadInfo>
@@ -126,19 +123,17 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                 if (response.isSuccessful && response.body() != null) {
                     var totalThreadSize = 0
                     val threadResult = response.body() as ThreadResult
-                    var detailedThreadInfo: DetailedThreadInfo? = null
+                    val detailedThreadInfo: DetailedThreadInfo = threadResult.threadPostVariables.detailedThreadInfo
                     threadPostResultMutableLiveData.postValue(threadResult)
                     // update formhash first
                     formHash.postValue(threadResult.threadPostVariables.formHash)
                     // update user
                     bbsPersonInfoMutableLiveData.postValue(threadResult.threadPostVariables.userBriefInfo)
-                    // parse detailed info
-                    detailedThreadInfo = threadResult.threadPostVariables.detailedThreadInfo
+
                     detailedThreadInfoMutableLiveData.postValue(threadResult.threadPostVariables.detailedThreadInfo)
                     val pollInfo = threadResult.threadPostVariables.pollInfo
-                    if (pollLiveData.value == null && pollInfo != null) {
-                        pollLiveData.postValue(pollInfo)
-                    }
+                    pollLiveData.postValue(pollInfo)
+
                     val postInfoList = threadResult.threadPostVariables.postList
                     // remove null object
                     if (postInfoList.isNotEmpty()) {
@@ -205,6 +200,8 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
             }
 
             override fun onFailure(call: Call<ThreadResult?>, t: Throwable) {
+
+                t.printStackTrace()
                 errorMessageMutableLiveData.postValue(ErrorMessage(
                         getApplication<Application>().getString(R.string.discuz_network_failure_template),
                         if (t.localizedMessage == null) t.toString() else t.localizedMessage
@@ -436,7 +433,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
         // captcha verification
         if (needCaptcha()) {
             val secureInfoResult = secureInfoResultMutableLiveData.value as SecureInfoResult
-            formBody["seccodehash"] = secureInfoResult.secureVariables.secHash
+            formBody["seccodehash"] = secureInfoResult.secureVariables!!.secHash
             if(replyPost==null){
                 // it's a post
                 formBody["seccodemodid"] = "forum::viewthread"
@@ -445,7 +442,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                 formBody["seccodemodid"] = "forum::post"
             }
 
-            Log.d(TAG,"Need captcha and the seccodeHash "+secureInfoResult.secureVariables.secHash)
+            Log.d(TAG,"Need captcha and the seccodeHash "+secureInfoResult.secureVariables!!.secHash)
 
 
             when (charsetType) {
@@ -533,7 +530,6 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     init {
-        bbsPersonInfoMutableLiveData = MutableLiveData()
         totalPostListLiveData = MutableLiveData()
         pollLiveData = MutableLiveData(null)
         errorText = MutableLiveData("")

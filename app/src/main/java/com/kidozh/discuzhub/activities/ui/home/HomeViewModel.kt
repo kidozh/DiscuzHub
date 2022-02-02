@@ -46,7 +46,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             errorMessageMutableLiveData.postValue(NetworkUtils.getOfflineErrorMessage(getApplication()))
             return
         }
-        var client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), userBriefInfo)
+        val client = NetworkUtils.getPreferredClientWithCookieJarByUser(getApplication(), userBriefInfo)
 
 
 
@@ -56,42 +56,23 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         isLoading.postValue(true)
         Log.d(TAG,"Send raw request to ${service.indexResultRaw().request()}")
 
-        bbsIndexResultCall.enqueue(object : Callback<DiscuzIndexResult?> {
+        bbsIndexResultCall.enqueue(object : Callback<DiscuzIndexResult> {
             override fun onResponse(
-                call: Call<DiscuzIndexResult?>,
+                call: Call<DiscuzIndexResult>,
                 response: Response<DiscuzIndexResult?>
             ) {
                 if (response.isSuccessful && response.body() != null) {
-                    val indexResult = response.body()
+                    val indexResult = response.body()!!
                     Log.d(TAG,"GET index response message ${response.message()} user ${userBriefInfo}")
                     bbsIndexResultMutableLiveData.postValue(indexResult)
-                    if (indexResult!!.forumVariables != null) {
-                        val serverReturnedUser = indexResult.forumVariables.userBriefInfo
-                        userBriefInfoMutableLiveData.postValue(serverReturnedUser)
-                        errorMessageMutableLiveData.postValue(null)
-                        // prepare to render index page
-                        val categoryList = indexResult.forumVariables.forumCategoryList
-                        Log.d(TAG,"GET category list size ${indexResult.forumVariables.forumCategoryList.size}")
-                        forumCategories!!.postValue(categoryList)
-                    } else {
-                        if (indexResult.message != null) {
-                            errorMessageMutableLiveData.postValue(indexResult.message!!.toErrorMessage())
-                        } else if (indexResult.error.length != 0) {
-                            errorMessageMutableLiveData.postValue(
-                                ErrorMessage(
-                                    getApplication<Application>().getString(R.string.discuz_api_error),
-                                    indexResult.error
-                                )
-                            )
-                        } else {
-                            errorMessageMutableLiveData.postValue(
-                                ErrorMessage(
-                                    getApplication<Application>().getString(R.string.empty_result),
-                                    getApplication<Application>().getString(R.string.discuz_network_result_null)
-                                )
-                            )
-                        }
-                    }
+
+                    val serverReturnedUser = indexResult.forumVariables.userBriefInfo
+                    userBriefInfoMutableLiveData.postValue(serverReturnedUser)
+                    errorMessageMutableLiveData.postValue(null)
+                    // prepare to render index page
+                    val categoryList :List<DiscuzIndexResult.ForumCategory> = indexResult.forumVariables.forumCategoryList
+                    Log.d(TAG,"GET category list size ${indexResult.forumVariables.forumCategoryList.size}")
+                    forumCategories!!.postValue(categoryList)
                 } else {
                     errorMessageMutableLiveData.postValue(
                         ErrorMessage(

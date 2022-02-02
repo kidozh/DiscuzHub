@@ -1,8 +1,8 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class ApiMessageActionResult extends BaseResult {
+class ApiMessageActionResult : BaseResult() {
     @JsonProperty("Variables")
-    public VariableResults variableResults;
+    var variableResults: VariableResults = VariableResults()
 }

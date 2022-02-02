@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.webkit.WebView
 import androidx.preference.PreferenceManager
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.franmontiel.persistentcookiejar.ClearableCookieJar
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
@@ -16,10 +17,8 @@ import com.kidozh.discuzhub.entities.User
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
-import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 object NetworkUtils {
@@ -38,7 +37,7 @@ object NetworkUtils {
         return getSafeOkHttpClient(context)
     }
 
-    fun getSafeOkHttpClient(context: Context): OkHttpClient {
+    private fun getSafeOkHttpClient(context: Context): OkHttpClient {
         val mBuilder = OkHttpClient.Builder()
         mBuilder.addInterceptor(LoggingInterceptor.Builder().build())
         mBuilder.readTimeout(READ_TIMEOUT.toLong(), TimeUnit.SECONDS)
@@ -47,7 +46,7 @@ object NetworkUtils {
         return addUserAgent(context, mBuilder)
     }
 
-    fun getSafeOkHttpClientWithCookieJar(context: Context): OkHttpClient {
+    private fun getSafeOkHttpClientWithCookieJar(context: Context): OkHttpClient {
         val cookieJar: ClearableCookieJar =
             PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(context))
         cookieJar.clearSession()
@@ -62,8 +61,6 @@ object NetworkUtils {
 
     @JvmStatic
     fun getPreferredClientWithCookieJarByUser(context: Context, briefInfo: User?): OkHttpClient {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val useSafeHttpClient = prefs.getBoolean(preferenceName, true)
         return if (briefInfo == null) {
             getPreferredClient(context)
         } else {
@@ -87,7 +84,7 @@ object NetworkUtils {
         return "CookiePersistence_U" + briefInfo.id
     }
 
-    fun addUserAgent(context: Context, mBuilder: OkHttpClient.Builder): OkHttpClient {
+    private fun addUserAgent(context: Context, mBuilder: OkHttpClient.Builder): OkHttpClient {
         // get preference
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val uaString =
@@ -96,16 +93,13 @@ object NetworkUtils {
             try {
                 val useragent = WebView(context).settings.userAgentString
                 // Log.d(TAG,"UA "+useragent);
-                mBuilder.addInterceptor(object : Interceptor {
-                    @Throws(IOException::class)
-                    override fun intercept(chain: Interceptor.Chain): Response {
-                        val original: Request = chain.request()
-                        val request = original.newBuilder()
-                            .header("User-Agent", useragent)
-                            .method(original.method, original.body)
-                            .build()
-                        return chain.proceed(request)
-                    }
+                mBuilder.addInterceptor(Interceptor { chain ->
+                    val original: Request = chain.request()
+                    val request = original.newBuilder()
+                        .header("User-Agent", useragent)
+                        .method(original.method, original.body)
+                        .build()
+                    chain.proceed(request)
                 })
                 mBuilder.build()
             } catch (e: Exception) {
@@ -113,23 +107,20 @@ object NetworkUtils {
                 val useragent =
                     "Mozilla/5.0 (Linux; U; Android 2.3.7; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"
                 // Log.d(TAG,"UA "+useragent);
-                mBuilder.addInterceptor(object : Interceptor {
-                    @Throws(IOException::class)
-                    override fun intercept(chain: Interceptor.Chain): Response {
-                        val original: Request = chain.request()
-                        val request = original.newBuilder()
-                            .header("User-Agent", useragent)
-                            .method(original.method, original.body)
-                            .build()
-                        return chain.proceed(request)
-                    }
+                mBuilder.addInterceptor(Interceptor { chain ->
+                    val original: Request = chain.request()
+                    val request = original.newBuilder()
+                        .header("User-Agent", useragent)
+                        .method(original.method, original.body)
+                        .build()
+                    chain.proceed(request)
                 })
                 mBuilder.build()
             }
         } else mBuilder.build()
     }
 
-    fun addUserAgentWithDefaultAndroidHeader(context: Context, mBuilder: OkHttpClient.Builder): OkHttpClient {
+    private fun addUserAgentWithDefaultAndroidHeader(context: Context, mBuilder: OkHttpClient.Builder): OkHttpClient {
         // get preference
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val uaString =
@@ -139,17 +130,14 @@ object NetworkUtils {
                 val useragent =
                     "Mozilla/5.0 (Linux; U; Android 2.3.7; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"
                 // Log.d(TAG,"UA "+useragent);
-                mBuilder.addInterceptor(object : Interceptor {
-                    @Throws(IOException::class)
-                    override fun intercept(chain: Interceptor.Chain): Response {
-                        val original: Request = chain.request()
-                        val request = original.newBuilder()
-                            .header("User-Agent", useragent)
-                            .header("Accept", "application/vnd.yourapi.v1.full+json")
-                            .method(original.method, original.body)
-                            .build()
-                        return chain.proceed(request)
-                    }
+                mBuilder.addInterceptor(Interceptor { chain ->
+                    val original: Request = chain.request()
+                    val request = original.newBuilder()
+                        .header("User-Agent", useragent)
+                        .header("Accept", "application/vnd.yourapi.v1.full+json")
+                        .method(original.method, original.body)
+                        .build()
+                    chain.proceed(request)
                 })
                 mBuilder.build()
             }
@@ -159,7 +147,7 @@ object NetworkUtils {
         }
     }
 
-    fun getSafeOkHttpClientWithCookieJarByUser(context: Context, briefInfo: User): OkHttpClient {
+    private fun getSafeOkHttpClientWithCookieJarByUser(context: Context, briefInfo: User): OkHttpClient {
         val cookieJar: ClearableCookieJar = PersistentCookieJar(
             SetCookieCache(),
             SharedPrefsCookiePersistor(
@@ -180,7 +168,7 @@ object NetworkUtils {
     }
 
     // default header
-    fun getSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(
+    private fun getSafeOkHttpClientWithCookieJarByUserWithDefaultHeader(
         context: Context,
         briefInfo: User
     ): OkHttpClient {
@@ -238,7 +226,7 @@ object NetworkUtils {
         )
     }
 
-    fun isWifiConnected(context: Context): Boolean {
+    private fun isWifiConnected(context: Context): Boolean {
         val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val capabilities = connMgr.getNetworkCapabilities(
             connMgr.activeNetwork
@@ -272,7 +260,7 @@ object NetworkUtils {
         }
         return Retrofit.Builder()
             .baseUrl(baseUrl)
-            .addConverterFactory(JacksonConverterFactory.create())
+            .addConverterFactory(JacksonConverterFactory.create(jacksonObjectMapper()))
             .client(client)
             .build()
     }

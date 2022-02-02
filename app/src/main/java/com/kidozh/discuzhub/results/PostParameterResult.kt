@@ -1,70 +1,103 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer;
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
-
-public class PostParameterResult extends BaseResult {
+class PostParameterResult : BaseResult() {
+    @JvmField
     @JsonProperty("Variables")
-    public PermissionVariablesResult permissionVariables;
+    var permissionVariables: PermissionVariablesResult = PermissionVariablesResult()
 
-    public static class PermissionVariablesResult extends VariableResults{
+    class PermissionVariablesResult : VariableResults() {
+        @JvmField
         @JsonProperty("allowperm")
-        public AllowPermission allowPerm;
-
-
+        var allowPerm: AllowPermission = AllowPermission()
     }
-    public static class AllowPermission{
+
+    class AllowPermission {
         @JsonProperty("allowpost")
-        @JsonDeserialize(using= OneZeroBooleanJsonDeserializer.class)
-        public boolean allowPost;
-        @JsonProperty("allowreply")
-        @JsonDeserialize(using= OneZeroBooleanJsonDeserializer.class)
-        public boolean allowReply;
-        @JsonProperty("allowupload")
-        public UploadSize uploadSize;
-        @JsonProperty("attachremain")
-        public RemainedAttachment remainedAttachment;
-        @JsonProperty("uploadhash")
-        public String uploadHash;
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+        var allowPost = false
 
+        @JsonProperty("allowreply")
+        @JsonDeserialize(using = OneZeroBooleanJsonDeserializer::class)
+        var allowReply = false
+
+        @JvmField
+        @JsonProperty("allowupload")
+        var uploadSize: UploadSize = UploadSize()
+
+        @JsonProperty("attachremain")
+        var remainedAttachment: RemainedAttachment? = null
+
+        @JvmField
+        @JsonProperty("uploadhash")
+        var uploadHash: String = ""
     }
 
-    public static class UploadSize{
+    class UploadSize {
         @JsonIgnoreProperties(ignoreUnknown = true)
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int jpg, jpeg, gif, png, mp3, txt, zip, rar, pdf;
+        var jpg = 0
 
-        public List<String> getAllowableFileSuffix() {
-            List<String> fileSuffixList = new ArrayList<>();
-            Field[] fields = getClass().getDeclaredFields();
-            try{
-                for (Field field : fields) {
-                    field.setAccessible(true);
-                    int value = field.getInt(this);
-                    if (value != 0) {
-                        fileSuffixList.add(field.getName());
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var jpeg = 0
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var gif = 0
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var png = 0
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var mp3 = 0
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var txt = 0
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var zip = 0
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var rar = 0
+
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var pdf = 0
+        val allowableFileSuffix: List<String>
+            get() {
+                val fileSuffixList: MutableList<String> = ArrayList()
+                val fields = javaClass.declaredFields
+                return try {
+                    for (field in fields) {
+                        field.isAccessible = true
+                        val value = field.getInt(this)
+                        if (value != 0) {
+                            fileSuffixList.add(field.name)
+                        }
                     }
+                    fileSuffixList
+                } catch (e: IllegalAccessException) {
+                    fileSuffixList
                 }
-                return fileSuffixList;
             }
-            catch (IllegalAccessException e){
-                return fileSuffixList;
-            }
-
-        }
     }
 
-    public static class RemainedAttachment{
+    class RemainedAttachment {
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int size, count;
+        var size = 0
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var count = 0
     }
 }

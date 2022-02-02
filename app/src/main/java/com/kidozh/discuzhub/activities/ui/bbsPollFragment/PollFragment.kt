@@ -1,335 +1,290 @@
-package com.kidozh.discuzhub.activities.ui.bbsPollFragment;
+package com.kidozh.discuzhub.activities.ui.bbsPollFragment
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.net.Uri;
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.google.android.material.chip.Chip;
-import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.adapter.PollOptionAdapter;
-import com.kidozh.discuzhub.databinding.FragmentBbsPollBinding;
-import com.kidozh.discuzhub.entities.Poll;
-import com.kidozh.discuzhub.entities.User;
-import com.kidozh.discuzhub.utilities.AnimationUtils;
-import com.kidozh.discuzhub.utilities.RecyclerItemClickListener;
-import com.kidozh.discuzhub.utilities.ConstUtils;
-import com.kidozh.discuzhub.utilities.bbsParseUtils;
-import com.kidozh.discuzhub.utilities.URLUtils;
-import com.kidozh.discuzhub.utilities.NetworkUtils;
-import com.kidozh.discuzhub.utilities.TimeDisplayUtils;
-
-import java.io.IOException;
-import java.util.List;
-
-
-import es.dmoral.toasty.Toasty;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import android.content.Context
+import android.net.Uri
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.chip.Chip
+import com.kidozh.discuzhub.R
+import com.kidozh.discuzhub.adapter.PollOptionAdapter
+import com.kidozh.discuzhub.databinding.FragmentBbsPollBinding
+import com.kidozh.discuzhub.entities.Poll
+import com.kidozh.discuzhub.entities.User
+import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
+import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
+import com.kidozh.discuzhub.utilities.ConstUtils
+import com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClientWithCookieJarByUser
+import com.kidozh.discuzhub.utilities.RecyclerItemClickListener
+import com.kidozh.discuzhub.utilities.TimeDisplayUtils.Companion.getLocalePastTimeString
+import com.kidozh.discuzhub.utilities.URLUtils
+import com.kidozh.discuzhub.utilities.bbsParseUtils
+import es.dmoral.toasty.Toasty
+import okhttp3.*
+import java.io.IOException
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * {@link bbsPollFragment.OnFragmentInteractionListener} interface
+ * [bbsPollFragment.OnFragmentInteractionListener] interface
  * to handle interaction events.
- * Use the {@link bbsPollFragment#newInstance} factory method to
+ * Use the [bbsPollFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-public class bbsPollFragment extends Fragment {
-    private static final String TAG = bbsPollFragment.class.getSimpleName();
-
+class PollFragment : Fragment() {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
-
     // TODO: Rename and change types of parameters
-    private Poll pollInfo;
-    private int tid;
-    private User userBriefInfo;
-    private String formhash;
-    private OnFragmentInteractionListener mListener;
-
-    public bbsPollFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-
-     * @return A new instance of fragment bbsPollFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static bbsPollFragment newInstance(Poll pollInfo, User userBriefInfo, int tid, String formhash) {
-        bbsPollFragment fragment = new bbsPollFragment();
-        Bundle args = new Bundle();
-        args.putSerializable(ConstUtils.PASS_POLL_KEY,pollInfo);
-        args.putInt(ConstUtils.PASS_TID_KEY,tid);
-        args.putSerializable(ConstUtils.PASS_BBS_USER_KEY,userBriefInfo);
-        args.putSerializable(ConstUtils.PASS_FORMHASH_KEY,formhash);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            pollInfo = (Poll) getArguments().getSerializable(ConstUtils.PASS_POLL_KEY);
-            userBriefInfo = (User)  getArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY);
-            tid = getArguments().getInt(ConstUtils.PASS_TID_KEY);
-            client = NetworkUtils.getPreferredClientWithCookieJarByUser(getContext(),userBriefInfo);
-            formhash = getArguments().getString(ConstUtils.PASS_FORMHASH_KEY);
+    private lateinit var pollInfo: Poll
+    private var tid = 0
+    private var userBriefInfo: User? = null
+    private var formhash: String = ""
+    private var mListener: OnFragmentInteractionListener? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (arguments != null) {
+            pollInfo = requireArguments().getSerializable(ConstUtils.PASS_POLL_KEY) as Poll
+            userBriefInfo = requireArguments().getSerializable(ConstUtils.PASS_BBS_USER_KEY) as User?
+            tid = requireArguments().getInt(ConstUtils.PASS_TID_KEY)
+            client = getPreferredClientWithCookieJarByUser(requireContext(), userBriefInfo)
+            formhash = requireArguments().getString(ConstUtils.PASS_FORMHASH_KEY) as String
         }
     }
 
-    FragmentBbsPollBinding binding;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    var binding: FragmentBbsPollBinding? = null
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentBbsPollBinding.inflate(inflater,container,false);
-        return binding.getRoot();
+        binding = FragmentBbsPollBinding.inflate(inflater, container, false)
+        return binding!!.root
     }
 
-
-
-    PollOptionAdapter adapter;
-    OkHttpClient client;
-
-    Context context;
-
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        Log.d(TAG,"Poll " + pollInfo);
-        configurePollInformation();
-
+    var adapter: PollOptionAdapter? = null
+    var client: OkHttpClient? = null
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "Poll $pollInfo")
+        configurePollInformation()
     }
 
-    void configurePollInformation(){
-        context = getActivity();
-
-        binding.bbsPollExpireTime.setText(
-                getString(R.string.poll_expire_at,
-                            TimeDisplayUtils.getLocalePastTimeString(context,pollInfo.expirations)
-                ));
-        Resources res = getResources();
-        String votersNumberString = res.getQuantityString(R.plurals.poll_voter_number, pollInfo.votersCount, pollInfo.votersCount);
-        binding.bbsPollVoterNumber.setText(votersNumberString);
+    fun configurePollInformation() {
+        
+        binding!!.bbsPollExpireTime.text = getString(
+            R.string.poll_expire_at,
+            getLocalePastTimeString(requireContext(), pollInfo.expirations!!)
+        )
+        val res = resources
+        val votersNumberString = res.getQuantityString(
+            R.plurals.poll_voter_number,
+            pollInfo.votersCount,
+            pollInfo.votersCount
+        )
+        binding!!.bbsPollVoterNumber.text = votersNumberString
         // add attributes
-        Chip chip = new Chip(context);
-        chip.setChipBackgroundColor(context.getColorStateList(R.color.chip_background_select_state));
-        chip.setTextColor(context.getColor(R.color.colorPrimary));
-        if(!pollInfo.multiple){
-            chip.setText(R.string.poll_single_choice);
-            chip.setChipIcon(context.getDrawable(R.drawable.vector_drawable_radio_button_checked_24px));
+        var chip = Chip(context)
+        chip.chipBackgroundColor = requireContext().getColorStateList(R.color.chip_background_select_state)
+        chip.setTextColor(requireContext().getColor(R.color.colorPrimary))
+        if (!pollInfo.multiple) {
+            chip.setText(R.string.poll_single_choice)
+            chip.chipIcon =
+                requireContext().getDrawable(R.drawable.vector_drawable_radio_button_checked_24px)
+        } else {
+            chip.setText(R.string.poll_multiple_choices)
+            chip.chipIcon =
+                requireContext().getDrawable(R.drawable.vector_drawable_format_list_bulleted_24px)
         }
-        else {
-            chip.setText(R.string.poll_multiple_choices);
-            chip.setChipIcon(context.getDrawable(R.drawable.vector_drawable_format_list_bulleted_24px));
+        binding!!.bbsPollChipGroup.addView(chip)
+        chip = Chip(context)
+        if (pollInfo.allowVote) {
+            chip.setText(R.string.poll_can_vote)
+            chip.chipIcon = requireContext().getDrawable(R.drawable.ic_check_24px)
+            chip.setChipBackgroundColorResource(R.color.colorSafeStatus)
+        } else {
+            chip.setText(R.string.poll_cannot_vote)
+            chip.chipIcon = requireContext().getDrawable(R.drawable.ic_block_white_24px)
+            chip.setChipBackgroundColorResource(R.color.colorUnSafeStatus)
         }
-        binding.bbsPollChipGroup.addView(chip);
-        chip = new Chip(context);
-
-
-        if(pollInfo.allowVote){
-            chip.setText(R.string.poll_can_vote);
-            chip.setChipIcon(context.getDrawable(R.drawable.ic_check_24px));
-            chip.setChipBackgroundColorResource(R.color.colorSafeStatus);
+        chip.setTextColor(requireContext().getColor(R.color.colorPureWhite))
+        binding!!.bbsPollChipGroup.addView(chip)
+        chip = Chip(context)
+        chip.chipBackgroundColor = requireContext().getColorStateList(R.color.chip_background_select_state)
+        chip.setTextColor(requireContext().getColor(R.color.colorPrimary))
+        if (pollInfo.resultVisible) {
+            chip.setText(R.string.poll_visible_after_vote)
+            chip.chipIcon = requireContext().getDrawable(R.drawable.vector_drawable_how_to_vote_24px)
+            binding!!.bbsPollChipGroup.addView(chip)
         }
-        else {
-            chip.setText(R.string.poll_cannot_vote);
-            chip.setChipIcon(context.getDrawable(R.drawable.ic_block_white_24px));
-            chip.setChipBackgroundColorResource(R.color.colorUnSafeStatus);
-        }
-        chip.setTextColor(context.getColor(R.color.colorPureWhite));
-        binding.bbsPollChipGroup.addView(chip);
-        chip = new Chip(context);
-        chip.setChipBackgroundColor(context.getColorStateList(R.color.chip_background_select_state));
-        chip.setTextColor(context.getColor(R.color.colorPrimary));
-        if(pollInfo.resultVisible){
-            chip.setText(R.string.poll_visible_after_vote);
-            chip.setChipIcon(context.getDrawable(R.drawable.vector_drawable_how_to_vote_24px));
-            binding.bbsPollChipGroup.addView(chip);
-        }
-        configurePollVoteBtn();
-        configureRecyclerview();
-
-
+        configurePollVoteBtn()
+        configureRecyclerview()
     }
 
-    void configurePollVoteBtn(){
-        if(!pollInfo.allowVote){
-            binding.bbsPollVoteBtn.setVisibility(View.GONE);
+    fun configurePollVoteBtn() {
+        if (!pollInfo.allowVote) {
+            binding!!.bbsPollVoteBtn.visibility = View.GONE
+        } else {
+            binding!!.bbsPollVoteBtn.visibility = View.VISIBLE
         }
-        else {
-            binding.bbsPollVoteBtn.setVisibility(View.VISIBLE);
-        }
-        binding.bbsPollVoteBtn.setEnabled(false);
-        binding.bbsPollVoteBtn.setText(getString(R.string.poll_vote_progress,0,pollInfo.maxChoices));
-        binding.bbsPollVoteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<Poll.option> options = adapter.getPollOptions();
-                int checkedNumber = pollInfo.getCheckedOptionNumber();
-
-                if(pollInfo.allowVote && checkedNumber > 0 && checkedNumber<=pollInfo.maxChoices && formhash!=null){
-                    Log.d(TAG,"VOTING "+formhash);
-                    binding.bbsPollVoteBtn.setEnabled(false);
-                    FormBody.Builder formBodyBuilder = new FormBody.Builder()
-                            .add("formhash",formhash);
-                    // append pollanswers[]: id accordingly
-                    for(int i=0;i<options.size();i++){
-                        Poll.option option = options.get(i);
-                        if(option.checked){
-                            Log.d(TAG,"Option id "+option.id);
-                            formBodyBuilder.add("pollanswers[]",option.id);
+        binding!!.bbsPollVoteBtn.isEnabled = false
+        binding!!.bbsPollVoteBtn.text =
+            getString(R.string.poll_vote_progress, 0, pollInfo.maxChoices)
+        binding!!.bbsPollVoteBtn.setOnClickListener {
+            val options = adapter!!.getPollOptions()
+            //val checkedNumber: Int = pollInfo.getCheckedOptionNumber()
+            val checkedNumber: Int = 0
+            if (pollInfo.allowVote && checkedNumber > 0 && checkedNumber <= pollInfo.maxChoices) {
+                Log.d(TAG, "VOTING $formhash")
+                binding!!.bbsPollVoteBtn.isEnabled = false
+                val formBodyBuilder: FormBody.Builder = FormBody.Builder()
+                    .add("formhash", formhash)
+                // append pollanswers[]: id accordingly
+                for (i in options.indices) {
+                    val option = options[i]
+                    if (option.checked) {
+                        Log.d(TAG, "Option id " + option.id)
+                        formBodyBuilder.add("pollanswers[]", option.id)
+                    }
+                }
+                val request: Request = Request.Builder()
+                    .url(URLUtils.getVotePollApiUrl(tid))
+                    .post(formBodyBuilder.build())
+                    .build()
+                val mHandler = Handler(Looper.getMainLooper())
+                client!!.newCall(request).enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        mHandler.post {
+                            Toasty.warning(
+                                requireContext(),
+                                requireContext().getString(R.string.network_failed),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
-                    Request request = new Request.Builder()
-                            .url(URLUtils.getVotePollApiUrl(tid))
-                            .post(formBodyBuilder.build())
-                            .build();
-                    Handler mHandler = new Handler(Looper.getMainLooper());
-                    client.newCall(request).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            mHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toasty.warning(context,context.getString(R.string.network_failed),Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
 
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            if(response.isSuccessful()&& response.body()!=null){
-                                String s = response.body().string();
-                                Log.d(TAG,"recv poll "+s);
-
-                                mHandler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        binding.bbsPollVoteBtn.setEnabled(true);
-                                        // need to notify the activity if success
-                                        bbsParseUtils.returnMessage message = bbsParseUtils.parseReturnMessage(s);
-                                        if(message!=null){
-                                            if(message.value.equals("thread_poll_succeed")){
-                                                // toast using
-                                                Toasty.success(context,message.string, Toast.LENGTH_SHORT).show();
-                                                binding.bbsPollVoteBtn.setEnabled(false);
-                                                binding.bbsPollVoteBtn.setText(message.string);
-                                            }
-                                            else {
-                                                Toasty.error(context,message.string,Toast.LENGTH_SHORT).show();
-                                            }
-                                            mListener.onPollResultFetched();
-                                        }
-                                        else {
-                                            Toasty.warning(context,context.getString(R.string.parse_failed),Toast.LENGTH_SHORT).show();
-                                        }
+                    @Throws(IOException::class)
+                    override fun onResponse(call: Call, response: Response) {
+                        if (response.isSuccessful && response.body != null) {
+                            val s = response.body!!.string()
+                            Log.d(TAG, "recv poll $s")
+                            mHandler.post {
+                                binding!!.bbsPollVoteBtn.isEnabled = true
+                                // need to notify the activity if success
+                                val message = bbsParseUtils.parseReturnMessage(s)
+                                if (message != null) {
+                                    if (message.value == "thread_poll_succeed") {
+                                        // toast using
+                                        Toasty.success(
+                                            requireContext(),
+                                            message.string,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        binding!!.bbsPollVoteBtn.isEnabled = false
+                                        binding!!.bbsPollVoteBtn.text = message.string
+                                    } else {
+                                        Toasty.error(requireContext(), message.string, Toast.LENGTH_SHORT)
+                                            .show()
                                     }
-                                });
+                                    mListener!!.onPollResultFetched()
+                                } else {
+                                    Toasty.warning(
+                                        requireContext(),
+                                        requireContext().getString(R.string.parse_failed),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                         }
-                    });
-
-                }
+                    }
+                })
             }
-        });
+        }
     }
 
-    void configureRecyclerview(){
-        binding.bbsPollOptionRecyclerview.setItemAnimator(AnimationUtils.INSTANCE.getRecyclerviewAnimation(getContext()));
+    fun configureRecyclerview() {
+        binding!!.bbsPollOptionRecyclerview.itemAnimator = getRecyclerviewAnimation(
+            requireContext()
+        )
         //binding.bbsPollOptionRecyclerview.setLayoutManager(new GridLayoutManager(getActivity(),2));
-        binding.bbsPollOptionRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new PollOptionAdapter();
-        binding.bbsPollOptionRecyclerview.setAdapter(AnimationUtils.INSTANCE.getAnimatedAdapter(getContext(),adapter));
-        List<Poll.option> options = pollInfo.options;
-        if(options!= null && options.size() > 0){
-            adapter.setPollOptions(options);
+        binding!!.bbsPollOptionRecyclerview.layoutManager = LinearLayoutManager(activity)
+        adapter = PollOptionAdapter()
+        binding!!.bbsPollOptionRecyclerview.adapter = getAnimatedAdapter(
+            requireContext(), adapter!!
+        )
+        val options = pollInfo.options
+        if (options.size > 0) {
+            adapter!!.setPollOptions(options)
         }
         // recyclerview check
-        binding.bbsPollOptionRecyclerview.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), binding.bbsPollOptionRecyclerview, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                // if check
-                if(pollInfo.allowVote){
-                    // trigger it
-                    adapter.pollOptions.get(position).checked = !adapter.pollOptions.get(position).checked;
-                    adapter.notifyItemChanged(position);
-                    int checkedNumber = pollInfo.getCheckedOptionNumber();
-
-                    if(checkedNumber <= pollInfo.maxChoices && checkedNumber >0){
-                        binding.bbsPollVoteBtn.setEnabled(true);
-                        binding.bbsPollVoteBtn.setText(getString(R.string.poll_vote_progress,checkedNumber,pollInfo.maxChoices));
+        binding!!.bbsPollOptionRecyclerview.addOnItemTouchListener(
+            RecyclerItemClickListener(
+                getContext(),
+                binding!!.bbsPollOptionRecyclerview,
+                object : RecyclerItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View, position: Int) {
+                        // if check
+                        if (pollInfo.allowVote) {
+                            // trigger it
+                            adapter!!.pollOptions[position].checked =
+                                !adapter!!.pollOptions[position].checked
+                            adapter!!.notifyItemChanged(position)
+                            //val checkedNumber: Int = pollInfo.getCheckedOptionNumber()
+                            val checkedNumber = 0
+                            if (checkedNumber <= pollInfo.maxChoices && checkedNumber > 0) {
+                                binding!!.bbsPollVoteBtn.isEnabled = true
+                                binding!!.bbsPollVoteBtn.text = getString(
+                                    R.string.poll_vote_progress,
+                                    checkedNumber,
+                                    pollInfo.maxChoices
+                                )
+                            } else {
+                                binding!!.bbsPollVoteBtn.isEnabled = false
+                                binding!!.bbsPollVoteBtn.text = getString(
+                                    R.string.poll_vote_progress,
+                                    checkedNumber,
+                                    pollInfo.maxChoices
+                                )
+                            }
+                        } else {
+                            binding!!.bbsPollVoteBtn.visibility = View.GONE
+                        }
                     }
-                    else {
-                        binding.bbsPollVoteBtn.setEnabled(false);
-                        binding.bbsPollVoteBtn.setText(getString(R.string.poll_vote_progress,checkedNumber,pollInfo.maxChoices));
-                    }
-                }
-                else {
-                    binding.bbsPollVoteBtn.setVisibility(View.GONE);
-                }
 
-            }
-
-            @Override
-            public void onItemLongClick(View view, int position) {
-
-            }
-        }));
-
+                    override fun onItemLongClick(view: View, position: Int) {}
+                })
+        )
     }
-
-
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    fun onButtonPressed(uri: Uri?) {
         if (mListener != null) {
-            mListener.onPollResultFetched();
+            mListener!!.onPollResultFetched()
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mListener =
+            if (context is OnFragmentInteractionListener) {
+                context
+            } else {
+                throw RuntimeException(
+                    context.toString()
+                            + " must implement OnFragmentInteractionListener"
+                )
+            }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    override fun onDetach() {
+        super.onDetach()
+        mListener = null
     }
 
     /**
@@ -337,13 +292,40 @@ public class bbsPollFragment extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     *
+     *
+     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
      */
-    public interface OnFragmentInteractionListener {
+    interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onPollResultFetched();
+        fun onPollResultFetched()
+    }
+
+    companion object {
+        private val TAG = PollFragment::class.java.simpleName
+
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment using the provided parameters.
+         *
+         *
+         * @return A new instance of fragment bbsPollFragment.
+         */
+        // TODO: Rename and change types and number of parameters
+        fun newInstance(
+            pollInfo: Poll?,
+            userBriefInfo: User?,
+            tid: Int,
+            formhash: String?
+        ): PollFragment {
+            val fragment = PollFragment()
+            val args = Bundle()
+            args.putSerializable(ConstUtils.PASS_POLL_KEY, pollInfo)
+            args.putInt(ConstUtils.PASS_TID_KEY, tid)
+            args.putSerializable(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+            args.putSerializable(ConstUtils.PASS_FORMHASH_KEY, formhash)
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

@@ -26,7 +26,6 @@ import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
 import com.kidozh.discuzhub.utilities.ConstUtils
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.*
 
 class HomeFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
@@ -87,20 +86,20 @@ class HomeFragment : Fragment() {
     }
 
     private fun bindLiveDataFromViewModel() {
-        homeViewModel.forumCategoryInfo.observe(viewLifecycleOwner, { forumCategories ->
-            if (homeViewModel.bbsIndexResultMutableLiveData.value != null &&
-                    homeViewModel.bbsIndexResultMutableLiveData.value!!.forumVariables != null) {
-                val allForum = homeViewModel.bbsIndexResultMutableLiveData.value!!.forumVariables.forumList
+        homeViewModel.forumCategoryInfo.observe(viewLifecycleOwner) { forumCategories ->
+            if (homeViewModel.bbsIndexResultMutableLiveData.value != null
+            ) {
+                val allForum =
+                    homeViewModel.bbsIndexResultMutableLiveData.value!!.forumVariables.forumList
                 adapter.setForumCategoryList(forumCategories!!, allForum)
             }
-        })
-        homeViewModel.errorMessageMutableLiveData.observe(viewLifecycleOwner, { errorMessage: ErrorMessage? ->
+        }
+        homeViewModel.errorMessageMutableLiveData.observe(viewLifecycleOwner) { errorMessage: ErrorMessage? ->
             if (errorMessage != null) {
                 activityBbsForumIndexBinding.errorView.visibility = View.VISIBLE
-                if(errorMessage.errorIconResource == 0){
+                if (errorMessage.errorIconResource == 0) {
                     activityBbsForumIndexBinding.errorIcon.setImageResource(R.drawable.ic_error_outline_24px)
-                }
-                else{
+                } else {
                     activityBbsForumIndexBinding.errorIcon.setImageResource(errorMessage.errorIconResource)
                 }
 
@@ -110,18 +109,21 @@ class HomeFragment : Fragment() {
                 activityBbsForumIndexBinding.errorView.visibility = View.GONE
                 adapter.setForumCategoryList(ArrayList(), ArrayList())
             }
-        })
-        
-        homeViewModel.isLoading.observe(viewLifecycleOwner, { aBoolean ->
+        }
+
+        homeViewModel.isLoading.observe(viewLifecycleOwner) { aBoolean ->
             activityBbsForumIndexBinding.swipeRefreshLayout.isRefreshing = aBoolean
-        })
-        homeViewModel.bbsIndexResultMutableLiveData.observe(viewLifecycleOwner, { bbsIndexResult: DiscuzIndexResult? ->
+        }
+        homeViewModel.bbsIndexResultMutableLiveData.observe(viewLifecycleOwner) { bbsIndexResult: DiscuzIndexResult? ->
             if (context is BaseStatusInteract) {
                 if (bbsIndexResult?.forumVariables != null) {
-                    (context as BaseStatusInteract).setBaseResult(bbsIndexResult, bbsIndexResult.forumVariables)
+                    (context as BaseStatusInteract).setBaseResult(
+                        bbsIndexResult,
+                        bbsIndexResult.forumVariables
+                    )
                 }
             }
-        })
+        }
 
     }
 

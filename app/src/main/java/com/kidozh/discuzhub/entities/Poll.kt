@@ -1,178 +1,196 @@
-package com.kidozh.discuzhub.entities;
+package com.kidozh.discuzhub.entities
 
-import android.provider.ContactsContract;
+import android.util.Log
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.core.JsonToken
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.kidozh.discuzhub.entities.Poll
+import java.io.IOException
+import java.io.Serializable
+import java.util.*
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.core.ObjectCodec;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-public class Poll implements Serializable {
-    @JsonFormat(shape= JsonFormat.Shape.STRING)
-    @JsonDeserialize(using= OneZeroBooleanDeserializer.class)
-    public boolean multiple;
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "s")
-    public Date expirations;
-    @JsonProperty("maxchoices")
-    @JsonFormat(shape=JsonFormat.Shape.STRING)
-    public int maxChoices;
-    @JsonProperty("voterscount")
-    @JsonFormat(shape=JsonFormat.Shape.STRING)
-    public int votersCount;
-    @JsonProperty("visiblepoll")
-    @JsonDeserialize(using= OneZeroBooleanDeserializer.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
+open class Poll : Serializable {
+    
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    public boolean resultVisible;
+    @JsonDeserialize(using = OneZeroBooleanDeserializer::class)
+    var multiple = false
 
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "s")
+    var expirations: Date? = null
+
+    
+    @JsonProperty("maxchoices")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    var maxChoices = 0
+
+    
+    @JsonProperty("voterscount")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    var votersCount = 0
+
+    
+    @JsonProperty("visiblepoll")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @JsonDeserialize(using = OneZeroBooleanDeserializer::class)
+    var resultVisible = false
+
+    
     @JsonProperty("allowvote")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @JsonDeserialize(using= OneZeroBooleanDeserializer.class)
-    public boolean allowVote;
+    @JsonDeserialize(using = OneZeroBooleanDeserializer::class)
+    var allowVote = false
+
+    
     @JsonProperty("polloptions")
-    @JsonDeserialize(using = optionsDeserializer.class)
-    public List<option> options;
+    @JsonDeserialize(using = OptionsDeserializer::class)
+    var options: List<Option> = ArrayList()
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonIgnore
-    public List<String> remaintime;
+    var remaintime: List<String>? = null
 
-    public int getCheckedOptionNumber(){
-        if(options == null){
-            return 0;
-        }
-        else {
-            int count = 0;
-            for(int i=0;i<options.size();i++){
-                if(options.get(i).checked){
-                    count +=1;
+    val checkedOptionNumber: Int
+        get() = run {
+            var count = 0
+            for (i in options.indices) {
+                if (options[i].checked) {
+                    count += 1
                 }
             }
-            return count;
-
+            count
         }
 
-    }
-
-    public static class option implements Serializable{
+    class Option : Serializable {
+        
         @JsonProperty("polloptionid")
-        public String id;
+        var id: String = ""
+
+        
         @JsonProperty("polloption")
-        public String name;
+        var name: String = ""
+
+        
         @JsonProperty("votes")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public int voteNumber;
-        public String width;
+        var voteNumber = 0
+        var width: String? = null
+
+        
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public float percent;
+        var percent = 0f
+
+        
         @JsonProperty("color")
-        public String colorName;
+        var colorName: String? = null
+
+        
         @JsonProperty("imginfo")
-        @JsonDeserialize(using = imageInfoDeserializer.class)
-        public imageInfo imageInfo;
-        @JsonIgnoreProperties(ignoreUnknown = true)
+        @JsonDeserialize(using = ImageInfoDeserializer::class)
+        var imageInfo: ImageInfo? = null
+
+
         @JsonIgnore
-        public boolean checked = false;
+        var checked = false
     }
 
-    public static class imageInfo implements Serializable{
-        public String aid,poid,tid,pid,uid,filename,filesize,attachment,remote,width,thumb;
+    class ImageInfo : Serializable {
+        var aid: String? = null
+        var poid: String? = null
+        var tid: String? = null
+        var pid: String? = null
+        var uid: String? = null
+        var filename: String? = null
+        var filesize: String? = null
+        var attachment: String? = null
+        var remote: String? = null
+        var width: String? = null
+        var thumb: String? = null
 
         @JsonProperty("dateline")
-        @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "s")
-        public Date updateAt;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "s")
+        var updateAt: Date? = null
+
         @JsonProperty("small")
-        public String smallURL;
+        var smallURL: String? = null
+
+        
         @JsonProperty("big")
-        public String bigURL;
+        var bigURL: String? = null
     }
 
-    public static class optionsDeserializer extends JsonDeserializer<List<option>>{
-
-        @Override
-        public List<option> deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-            JsonToken currentToken = p.getCurrentToken();
-            if(currentToken.equals(JsonToken.START_OBJECT)){
-                ObjectCodec codec = p.getCodec();
-                JsonNode optionMapperNode = codec.readTree(p);
-                int cnt = 1;
-                ObjectMapper objectMapper = new ObjectMapper();
-                List<option> options = new ArrayList<>();
-                while(true){
-                    String cntString = String.valueOf(cnt);
-                    if(optionMapperNode.has(cntString)){
-                        JsonNode optionObj = optionMapperNode.get(cntString);
-                        option parsedOption = objectMapper.treeToValue(optionObj,option.class);
-                        options.add(parsedOption);
+    class OptionsDeserializer : JsonDeserializer<List<Option>>() {
+        @Throws(IOException::class, JsonProcessingException::class)
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): List<Option> {
+            val currentToken = p.currentToken
+            Log.d(TAG, "Get json text " + p.text)
+            if (currentToken == JsonToken.START_OBJECT) {
+                val codec = p.codec
+                val optionMapperNode = codec.readTree<JsonNode>(p)
+                var cnt = 1
+                val objectMapper = ObjectMapper()
+                val options: MutableList<Option> = ArrayList()
+                while (true) {
+                    val cntString = cnt.toString()
+                    if (optionMapperNode.has(cntString)) {
+                        val optionObj = optionMapperNode[cntString]
+                        val parsedOption = objectMapper.treeToValue(optionObj, Option::class.java)
+                        options.add(parsedOption)
+                    } else {
+                        break
                     }
-                    else {
-                        break;
-                    }
-
-
-                    cnt +=1;
+                    cnt += 1
                 }
-                return options;
+                return options
             }
-            return null;
+            return ArrayList()
         }
     }
 
-    public static class imageInfoDeserializer extends JsonDeserializer<imageInfo>{
-
-        @Override
-        public imageInfo deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-            JsonToken currentToken = p.getCurrentToken();
-            if(currentToken.equals(JsonToken.START_ARRAY)){
-                return null;
+    class ImageInfoDeserializer : JsonDeserializer<ImageInfo?>() {
+        @Throws(IOException::class, JsonProcessingException::class)
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): ImageInfo? {
+            val currentToken = p.currentToken
+            if (currentToken == JsonToken.START_ARRAY) {
+                return null
+            } else if (currentToken == JsonToken.START_OBJECT) {
+                val codec = p.codec
+                return codec.readValue(p, ImageInfo::class.java)
             }
-            else if(currentToken.equals(JsonToken.START_OBJECT)){
-                ObjectCodec codec = p.getCodec();
-                return codec.readValue(p,imageInfo.class);
-            }
-
-            return null;
+            return null
         }
     }
 
-    public static class OneZeroBooleanDeserializer extends JsonDeserializer<Boolean> {
-
-        @Override
-        public Boolean deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-            JsonToken currentToken = jp.getCurrentToken();
-
-            if (currentToken.equals(JsonToken.VALUE_STRING)) {
-                String text = jp.getText();
-
-                if ("0".equals(text) ||("").equals(text)) {
-                    return Boolean.FALSE;
+    class OneZeroBooleanDeserializer : JsonDeserializer<Boolean>() {
+        @Throws(IOException::class)
+        override fun deserialize(jp: JsonParser, ctxt: DeserializationContext): Boolean {
+            val currentToken = jp.currentToken
+            if (currentToken == JsonToken.VALUE_STRING) {
+                val text = jp.text
+                return if ("0" == text || "" == text) {
+                    java.lang.Boolean.FALSE
                 } else {
-                    return Boolean.TRUE;
+                    java.lang.Boolean.TRUE
                 }
-
-            } else if (currentToken.equals(JsonToken.VALUE_NULL)) {
-                return Boolean.FALSE;
+            } else if (currentToken == JsonToken.VALUE_NULL) {
+                return java.lang.Boolean.FALSE
                 //return null
             }
-
-            throw ctxt.mappingException("Can't parse boolean value: " + jp.getText());
+            throw ctxt.mappingException("Can't parse boolean value: " + jp.text)
         }
+    }
+
+    companion object {
+        var TAG = Poll::class.java.simpleName
     }
 }

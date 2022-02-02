@@ -1,23 +1,25 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SecureInfoResult extends BaseResult {
+class SecureInfoResult : BaseResult() {
+    @JvmField
     @JsonProperty("Variables")
-    public SecureVariables secureVariables;
+    var secureVariables: SecureVariables? = null
 
-    public static class SecureVariables extends VariableResults{
-
+    class SecureVariables : VariableResults() {
+        @JvmField
         @JsonProperty("sechash")
-        public String secHash;
-        @JsonProperty("seccode")
-        public String secCodeURL;
+        var secHash: String = ""
 
+        @JvmField
+        @JsonProperty("seccode")
+        var secCodeURL: String = ""
     }
 
-    public boolean isError(){
-        return this.message == null;
+    override fun isError(): Boolean {
+        return message == null
     }
 }

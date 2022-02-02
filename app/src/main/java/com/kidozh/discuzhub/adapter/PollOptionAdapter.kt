@@ -1,145 +1,121 @@
-package com.kidozh.discuzhub.adapter;
+package com.kidozh.discuzhub.adapter
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.content.Context
+import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
+import com.kidozh.discuzhub.R
+import com.kidozh.discuzhub.activities.FullImageActivity
+import com.kidozh.discuzhub.entities.Poll
+import com.kidozh.discuzhub.utilities.URLUtils
+import java.lang.String
+import kotlin.Int
 
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.FullImageActivity;
-import com.kidozh.discuzhub.entities.Poll;
-import com.kidozh.discuzhub.utilities.URLUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
-
-
-public class PollOptionAdapter extends RecyclerView.Adapter<PollOptionAdapter.ViewHolder> {
-    private final String TAG = PollOptionAdapter.class.getSimpleName();
-
-    public List<Poll.option> pollOptions = new ArrayList<>();
-    private Context context;
-
-    public void setPollOptions(List<Poll.option> pollOptions) {
-        int oldSize = this.pollOptions.size();
-        this.pollOptions.clear();
-        notifyItemRangeRemoved(0,oldSize);
-        this.pollOptions.addAll(pollOptions);
-        notifyItemRangeInserted(0,pollOptions.size());
+class PollOptionAdapter : RecyclerView.Adapter<PollOptionAdapter.ViewHolder>() {
+    private val TAG = PollOptionAdapter::class.java.simpleName
+    var pollOptions: MutableList<Poll.Option> = ArrayList()
+    private var context: Context? = null
+    @JvmName("setPollOptions1")
+    fun setPollOptions(pollOptions: List<Poll.Option>) {
+        val oldSize = this.pollOptions.size
+        this.pollOptions.clear()
+        notifyItemRangeRemoved(0, oldSize)
+        this.pollOptions.addAll(pollOptions)
+        notifyItemRangeInserted(0, pollOptions.size)
     }
 
-    public void refreshOptionStatus(int position){
-        notifyItemChanged(position);
+    fun refreshOptionStatus(position: Int) {
+        notifyItemChanged(position)
     }
 
-    public List<Poll.option> getPollOptions() {
-        return pollOptions;
+    @JvmName("getPollOptions1")
+    fun getPollOptions(): List<Poll.Option> {
+        return pollOptions
     }
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        context = parent.getContext();
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_poll_option,parent,false));
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        context = parent.context
+        return ViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_poll_option, parent, false)
+        )
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Poll.option option = pollOptions.get(position);
-        holder.pollOptionName.setText(option.name);
-        holder.pollOptionProgressBar.setMax(100);
-        holder.pollOptionProgressBar.setProgress((int) option.percent);
-        holder.pollOptionPosition.setText(String.valueOf(position+1));
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val option = pollOptions[position]
+        holder.pollOptionName.text = option.name
+        holder.pollOptionProgressBar.max = 100
+        holder.pollOptionProgressBar.progress = option.percent.toInt()
+        holder.pollOptionPosition.text = (position + 1).toString()
         //Resources res = context.getResources();
         //String votersNumberString = res.getQuantityString(R.plurals.poll_voter_number, option.voteNumber, option.voteNumber);
-        holder.pollOptionVotePercent.setText(context.getString(R.string.bbs_poll_vote_percent,String.valueOf(option.percent)));
-        holder.pollOptionVoteNumber.setText(String.valueOf(option.voteNumber));
-        String colorString = option.colorName;
-        if(!colorString.startsWith("#")){
-            colorString = "#" + colorString;
+        holder.pollOptionVotePercent.text =
+            context!!.getString(R.string.bbs_poll_vote_percent, String.valueOf(option.percent))
+        holder.pollOptionVoteNumber.text = String.valueOf(option.voteNumber)
+        var colorString = option.colorName
+        if (!colorString!!.startsWith("#")) {
+            colorString = "#$colorString"
         }
-        Log.d(TAG,"color "+colorString);
-        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor(colorString));
-        holder.pollOptionProgressBar.setProgressTintList(ColorStateList.valueOf(colorDrawable.getColor()));
-        if(option.imageInfo == null){
+        Log.d(TAG, "color $colorString")
+        val colorDrawable = ColorDrawable(Color.parseColor(colorString))
+        holder.pollOptionProgressBar.progressTintList = ColorStateList.valueOf(colorDrawable.color)
+        if (option.imageInfo == null) {
 
             //holder.pollOptionImage.setImageDrawable(colorDrawable);
             // holder.pollOptionProgressBar.setProgressDrawable(colorDrawable);
-            holder.pollOptionWatchPicture.setVisibility(View.GONE);
-        }
-        else {
-            String imageUrl = URLUtils.getBaseUrl()+"/"+option.imageInfo.bigURL;
-            holder.pollOptionWatchPicture.setVisibility(View.VISIBLE);
-            holder.pollOptionWatchPicture.setClickable(true);
-            holder.pollOptionWatchPicture.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, FullImageActivity.class);
-                    intent.putExtra("URL",imageUrl);
-                    context.startActivity(intent);
-                }
-            });
+            holder.pollOptionWatchPicture.visibility = View.GONE
+        } else {
+            val imageUrl = URLUtils.getBaseUrl() + "/" + option.imageInfo!!.bigURL
+            holder.pollOptionWatchPicture.visibility = View.VISIBLE
+            holder.pollOptionWatchPicture.isClickable = true
+            holder.pollOptionWatchPicture.setOnClickListener {
+                val intent = Intent(context, FullImageActivity::class.java)
+                intent.putExtra("URL", imageUrl)
+                context!!.startActivity(intent)
+            }
         }
         // check the vote status
-        if(option.checked){
-            holder.pollOptionCheckIcon.setColorFilter(context.getColor(R.color.colorPrimary));
-            holder.pollOptionCheckIcon.setVisibility(View.VISIBLE);
-
+        if (option.checked) {
+            holder.pollOptionCheckIcon.setColorFilter(context!!.getColor(R.color.colorPrimary))
+            holder.pollOptionCheckIcon.visibility = View.VISIBLE
+        } else {
+            holder.pollOptionCheckIcon.visibility = View.GONE
         }
-        else {
-            holder.pollOptionCheckIcon.setVisibility(View.GONE);
-        }
-
-
-
     }
 
-    @Override
-    public int getItemCount() {
-        if(pollOptions == null){
-            return 0;
-        }
-        else {
-            return pollOptions.size();
-        }
-
+    override fun getItemCount(): Int {
+        return pollOptions.size
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
-        
-        CardView pollOptionCardview;
-        TextView pollOptionVoteNumber;
-        Button pollOptionWatchPicture;
-        TextView pollOptionName;
-        ProgressBar pollOptionProgressBar;
-        TextView pollOptionVotePercent;
-        ImageView pollOptionCheckIcon;
-        TextView pollOptionPosition;
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var pollOptionCardview: CardView
+        var pollOptionVoteNumber: TextView
+        var pollOptionWatchPicture: Button
+        var pollOptionName: TextView
+        var pollOptionProgressBar: ProgressBar
+        var pollOptionVotePercent: TextView
+        var pollOptionCheckIcon: ImageView
+        var pollOptionPosition: TextView
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            pollOptionCardview = itemView.findViewById(R.id.item_poll_option_cardview);
-            pollOptionVoteNumber = itemView.findViewById(R.id.item_poll_option_vote_number);
-            pollOptionWatchPicture = itemView.findViewById(R.id.item_poll_option_watch_picture);
-            pollOptionName = itemView.findViewById(R.id.item_poll_option_name);
-            pollOptionProgressBar = itemView.findViewById(R.id.item_poll_option_vote_progressBar);
-            pollOptionVotePercent = itemView.findViewById(R.id.item_poll_option_vote_percent);
-            pollOptionCheckIcon = itemView.findViewById(R.id.item_poll_option_check_icon);
-            pollOptionPosition = itemView.findViewById(R.id.item_poll_option_position);
+        init {
+            pollOptionCardview = itemView.findViewById(R.id.item_poll_option_cardview)
+            pollOptionVoteNumber = itemView.findViewById(R.id.item_poll_option_vote_number)
+            pollOptionWatchPicture = itemView.findViewById(R.id.item_poll_option_watch_picture)
+            pollOptionName = itemView.findViewById(R.id.item_poll_option_name)
+            pollOptionProgressBar = itemView.findViewById(R.id.item_poll_option_vote_progressBar)
+            pollOptionVotePercent = itemView.findViewById(R.id.item_poll_option_vote_percent)
+            pollOptionCheckIcon = itemView.findViewById(R.id.item_poll_option_check_icon)
+            pollOptionPosition = itemView.findViewById(R.id.item_poll_option_position)
         }
     }
 }

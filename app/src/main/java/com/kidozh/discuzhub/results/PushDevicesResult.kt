@@ -1,34 +1,38 @@
-package com.kidozh.discuzhub.results;
+package com.kidozh.discuzhub.results
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonProperty
 
-public class PushDevicesResult {
-    public String result;
-    public MiPushInformation miPush;
+class PushDevicesResult {
+    var result: String = ""
+    var miPush: MiPushInformation = MiPushInformation()
+
     @JsonProperty("firebase")
-    public FirebasePushInformation fcm;
+    var fcm: FirebasePushInformation? = null
+
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    public int uid,groupId;
-    public String groupTitle;
-    public boolean groupAllowed;
+    var uid = 0
 
-    public static class MiPushInformation{
-        public boolean enabled;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    var groupId = 0
+    var groupTitle: String? = null
+    var groupAllowed = false
+
+    class MiPushInformation {
+        var enabled = false
     }
 
-    public static class FirebasePushInformation{
-        public boolean enabled;
+    class FirebasePushInformation {
+        var enabled = false
     }
 
-    public static class Device{
-        public String pushProvider;
+    class Device {
+        var pushProvider: String? = null
 
         @JsonFormat(shape = JsonFormat.Shape.STRING)
-        public boolean forbidden;
-        public String token;
-        public String clientPackage;
-        public String dateline;
+        var forbidden = false
+        var token: String? = null
+        var clientPackage: String? = null
+        var dateline: String? = null
     }
 }
