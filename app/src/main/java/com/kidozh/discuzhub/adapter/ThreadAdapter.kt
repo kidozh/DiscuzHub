@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -102,297 +103,300 @@ class ThreadAdapter(var threadType: Map<String, String>?, var discuz: Discuz, va
 
     override fun onBindViewHolder(holderRaw: RecyclerView.ViewHolder, position: Int) {
         val thread = threadList[position]
-        if (holderRaw is PinnedViewHolder) {
-            val holder = holderRaw
-            val sp = Html.fromHtml(thread.subject)
-            val spannableString = SpannableString(sp)
-            holder.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE)
+        when (holderRaw) {
+            is PinnedViewHolder -> {
+                val holder = holderRaw
+                val sp = Html.fromHtml(thread.subject, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                val spannableString = SpannableString(sp)
+                holder.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE)
 
-            // thread type
-            if (thread.displayOrder != 0) {
-                var textResource = R.string.bbs_forum_pinned
-                textResource = when (thread.displayOrder) {
-                    3 -> R.string.display_order_3
-                    2 -> R.string.display_order_2
-                    1 -> R.string.display_order_1
-                    -1 -> R.string.display_order_n1
-                    -2 -> R.string.display_order_n2
-                    -3 -> R.string.display_order_n3
-                    -4 -> R.string.display_order_n4
-                    else -> R.string.bbs_forum_pinned
-                }
-                holder.mThreadType.setText(textResource)
-                //holder.mThreadType.setBackgroundColor(context.getColor(R.color.colorAccent));
-            } else {
-                if (threadType == null) {
-                    holder.mThreadType.visibility = View.GONE
+                // thread type
+                if (thread.displayOrder != 0) {
+                    val textResource: Int = when (thread.displayOrder) {
+                        3 -> R.string.display_order_3
+                        2 -> R.string.display_order_2
+                        1 -> R.string.display_order_1
+                        -1 -> R.string.display_order_n1
+                        -2 -> R.string.display_order_n2
+                        -3 -> R.string.display_order_n3
+                        -4 -> R.string.display_order_n4
+                        else -> R.string.bbs_forum_pinned
+                    }
+                    holder.mThreadType.setText(textResource)
+                    //holder.mThreadType.setBackgroundColor(context.getColor(R.color.colorAccent));
                 } else {
-                    // provided by label
-                    holder.mThreadType.visibility = View.VISIBLE
-                    val type = threadType!![java.lang.String.valueOf(thread.typeId)]
-                    if (type != null) {
-                        val threadSpanned = Html.fromHtml(type)
-                        val threadSpannableString = SpannableString(threadSpanned)
-                        holder.mThreadType.text = threadSpannableString
+                    if (threadType == null) {
+                        holder.mThreadType.visibility = View.GONE
                     } else {
-                        holder.mThreadType.setText(R.string.bbs_forum_pinned)
+                        // provided by label
+                        holder.mThreadType.visibility = View.VISIBLE
+                        val type = threadType!![java.lang.String.valueOf(thread.typeId)]
+                        if (type != null) {
+                            val threadSpanned = Html.fromHtml(type, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                            val threadSpannableString = SpannableString(threadSpanned)
+                            holder.mThreadType.text = threadSpannableString
+                        } else {
+                            holder.mThreadType.setText(R.string.bbs_forum_pinned)
+                        }
                     }
                 }
-            }
-            holder.mCardview.setOnClickListener {
-                val intent = Intent(context, ThreadActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
-                intent.putExtra(ConstUtils.PASS_THREAD_KEY, thread)
-                intent.putExtra("FID", thread.fid)
-                intent.putExtra("TID", thread.tid)
-                intent.putExtra("SUBJECT", thread.subject)
-                VibrateUtils.vibrateForClick(context)
-                val options = ActivityOptions.makeSceneTransitionAnimation(context as Activity?,
+                holder.mCardview.setOnClickListener {
+                    val intent = Intent(context, ThreadActivity::class.java)
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, thread)
+                    intent.putExtra("FID", thread.fid)
+                    intent.putExtra("TID", thread.tid)
+                    intent.putExtra("SUBJECT", thread.subject)
+                    VibrateUtils.vibrateForClick(context)
+                    val options = ActivityOptions.makeSceneTransitionAnimation(context as Activity?,
                         Pair.create(holder.mTitle, "bbs_thread_subject")
-                )
-                val bundle = options.toBundle()
-                context.startActivity(intent, bundle)
-            }
-            holder.mCardview.setOnLongClickListener {
-                VibrateUtils.vibrateForNotice(context)
-                this.onlongPressCard(position)
-                true
-            }
-        } else if (holderRaw is ThreadViewHolder) {
-            val holder = holderRaw
-            val sp = Html.fromHtml(thread.subject,Html.FROM_HTML_MODE_COMPACT)
-            val spannableString = SpannableString(sp)
-            holder.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE)
-            holder.mThreadViewNum.text = numberFormatUtils.getShortNumberText(thread.views)
-            holder.mThreadReplyNum.text = numberFormatUtils.getShortNumberText(thread.replies)
-            holder.mPublishDate.text = getLocalePastTimeString(context, thread.publishAt!!)
-            if (thread.displayOrder != 0) {
-                var textResource = R.string.bbs_forum_pinned
-                textResource = when (thread.displayOrder) {
-                    3 -> R.string.display_order_3
-                    2 -> R.string.display_order_2
-                    1 -> R.string.display_order_1
-                    -1 -> R.string.display_order_n1
-                    -2 -> R.string.display_order_n2
-                    -3 -> R.string.display_order_n3
-                    -4 -> R.string.display_order_n4
-                    else -> R.string.bbs_forum_pinned
+                    )
+                    val bundle = options.toBundle()
+                    context.startActivity(intent, bundle)
                 }
-                holder.mThreadType.setText(textResource)
-                //holder.mThreadType.setBackgroundColor(context.getColor(R.color.colorAccent));
-            } else {
-                if (threadType == null) {
-                    holder.mThreadType.visibility = View.GONE
-                } else {
-                    // provided by label
-                    holder.mThreadType.visibility = View.VISIBLE
-                    val type = threadType!![java.lang.String.valueOf(thread.typeId)]
-                    if (type != null) {
-                        val threadSpanned = Html.fromHtml(type)
-                        val threadSpannableString = SpannableString(threadSpanned)
-                        holder.mThreadType.text = threadSpannableString
-                    } else {
-                        holder.mThreadType.text = String.format("%s", position + 1)
+                holder.mCardview.setOnLongClickListener {
+                    VibrateUtils.vibrateForNotice(context)
+                    this.onlongPressCard(position)
+                    true
+                }
+            }
+            is ThreadViewHolder -> {
+                val holder = holderRaw
+                val sp = Html.fromHtml(thread.subject,Html.FROM_HTML_MODE_COMPACT)
+                val spannableString = SpannableString(sp)
+                holder.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE)
+                holder.mThreadViewNum.text = numberFormatUtils.getShortNumberText(thread.views)
+                holder.mThreadReplyNum.text = numberFormatUtils.getShortNumberText(thread.replies)
+                holder.mPublishDate.text = getLocalePastTimeString(context, thread.publishAt!!)
+                if (thread.displayOrder != 0) {
+                    var textResource = R.string.bbs_forum_pinned
+                    textResource = when (thread.displayOrder) {
+                        3 -> R.string.display_order_3
+                        2 -> R.string.display_order_2
+                        1 -> R.string.display_order_1
+                        -1 -> R.string.display_order_n1
+                        -2 -> R.string.display_order_n2
+                        -3 -> R.string.display_order_n3
+                        -4 -> R.string.display_order_n4
+                        else -> R.string.bbs_forum_pinned
                     }
-                }
+                    holder.mThreadType.setText(textResource)
+                    //holder.mThreadType.setBackgroundColor(context.getColor(R.color.colorAccent));
+                } else {
+                    if (threadType == null) {
+                        holder.mThreadType.visibility = View.GONE
+                    } else {
+                        // provided by label
+                        holder.mThreadType.visibility = View.VISIBLE
+                        val type = threadType!![java.lang.String.valueOf(thread.typeId)]
+                        if (type != null) {
+                            val threadSpanned = Html.fromHtml(type)
+                            val threadSpannableString = SpannableString(threadSpanned)
+                            holder.mThreadType.text = threadSpannableString
+                        } else {
+                            holder.mThreadType.text = String.format("%s", position + 1)
+                        }
+                    }
 
-                //holder.mThreadType.setBackgroundColor(context.getColor(R.color.ThreadTypeBackgroundColor));
-            }
-            holder.mThreadPublisher.text = thread.author
-            var avatar_num = thread.authorId % 16
-            if (avatar_num < 0) {
-                avatar_num = -avatar_num
-            }
-            val avatarResource = context.resources.getIdentifier(String.format("avatar_%s", avatar_num + 1), "drawable", context.packageName)
-            val factory = OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context))
-            Glide.get(context).registry.replace(GlideUrl::class.java, InputStream::class.java, factory)
-            val source = discuz!!.getAvatarUrl(thread.authorId)
-            val options = RequestOptions()
+                    //holder.mThreadType.setBackgroundColor(context.getColor(R.color.ThreadTypeBackgroundColor));
+                }
+                holder.mThreadPublisher.text = thread.author
+                var avatar_num = thread.authorId % 16
+                if (avatar_num < 0) {
+                    avatar_num = -avatar_num
+                }
+                val avatarResource = context.resources.getIdentifier(String.format("avatar_%s", avatar_num + 1), "drawable", context.packageName)
+                val factory = OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context))
+                Glide.get(context).registry.replace(GlideUrl::class.java, InputStream::class.java, factory)
+                val source = discuz.getAvatarUrl(thread.authorId)
+                val options = RequestOptions()
                     .placeholder(context.getDrawable(avatarResource))
                     .error(context.getDrawable(avatarResource))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .priority(Priority.HIGH)
-            val glideUrl = GlideUrl(source,
+                val glideUrl = GlideUrl(source,
                     LazyHeaders.Builder().addHeader("referer", discuz.base_url).build()
-            )
-            if (NetworkUtils.canDownloadImageOrFile(context)) {
-                Glide.with(context)
+                )
+                if (NetworkUtils.canDownloadImageOrFile(context)) {
+                    Glide.with(context)
                         .load(glideUrl)
                         .apply(options)
                         .into(holder.mAvatarImageview)
-            } else {
-                Glide.with(context)
+                } else {
+                    Glide.with(context)
                         .load(glideUrl)
                         .apply(options)
                         .onlyRetrieveFromCache(true)
                         .into(holder.mAvatarImageview)
-            }
-            // set short reply
-            if (thread.recommendNum != 0) {
-                holder.mRecommendationNumber.visibility = View.VISIBLE
-                holder.mRecommendationNumber.text = numberFormatUtils.getShortNumberText(thread.recommendNum)
-            } else {
-                holder.mRecommendationNumber.visibility = View.GONE
-            }
-            if (thread.readPerm == 0) {
-                holder.mReadPerm.visibility = View.GONE
-            } else {
-                holder.mReadPerm.visibility = View.VISIBLE
-                holder.mReadPerm.text = java.lang.String.valueOf(thread.readPerm)
-                //holder.mReadPerm.setText(numberFormatUtils.getShortNumberText(threadInfo.readPerm));
-                val readPermissionVal = thread.readPerm
-                if (userBriefInfo == null || userBriefInfo!!.readPerm < readPermissionVal) {
-                    holder.mReadPerm.setTextColor(context.getColor(R.color.colorWarn))
-                } else {
-                    holder.mReadPerm.setTextColor(context.getColor(R.color.colorTextDefault))
                 }
-            }
-            if (thread.attachment == 0) {
-                holder.mAttachmentIcon.visibility = View.GONE
-            } else {
-                holder.mAttachmentIcon.visibility = View.VISIBLE
-                if (thread.attachment == 1) {
-                    holder.mAttachmentIcon.setImageDrawable(context.getDrawable(R.drawable.ic_thread_attachment_24px))
+                // set short reply
+                if (thread.recommendNum != 0) {
+                    holder.mRecommendationNumber.visibility = View.VISIBLE
+                    holder.mRecommendationNumber.text = numberFormatUtils.getShortNumberText(thread.recommendNum)
                 } else {
-                    holder.mAttachmentIcon.setImageDrawable(context.getDrawable(R.drawable.ic_image_outlined_24px))
+                    holder.mRecommendationNumber.visibility = View.GONE
                 }
-            }
-            if (thread.price != 0) {
-                holder.mPriceNumber.text = java.lang.String.valueOf(thread.price)
-                holder.mPriceNumber.visibility = View.VISIBLE
-            } else {
-                // holder.mPriceNumber.setText(String.valueOf(threadInfo.price));
-                holder.mPriceNumber.visibility = View.GONE
-            }
-            if (thread.shortReplyList.isNotEmpty()) {
-                val linearLayoutManager = LinearLayoutManager(context)
-                holder.mReplyRecyclerview.isFocusable = false
-                holder.mReplyRecyclerview.isNestedScrollingEnabled = false
-                holder.mReplyRecyclerview.layoutManager = linearLayoutManager
-                holder.mReplyRecyclerview.isClickable = false
-                val adapter = ShortPostAdapter(discuz)
-                adapter.setShortReplyInfoList((thread.shortReplyList))
-                holder.mReplyRecyclerview.itemAnimator = getRecyclerviewAnimation(context)
-                holder.mReplyRecyclerview.adapter = adapter
-                holder.mReplyRecyclerview.isNestedScrollingEnabled = false
-            } else {
-                // still flush it to avoid cache problem
-                holder.mReplyRecyclerview.adapter = ShortPostAdapter(discuz)
-            }
-            holder.mCardview.setOnClickListener {
-                val intent = Intent(context, ThreadActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
-                intent.putExtra(ConstUtils.PASS_THREAD_KEY, thread)
-                intent.putExtra("FID", thread.fid)
-                intent.putExtra("TID", thread.tid)
-                intent.putExtra("SUBJECT", thread.subject)
-                VibrateUtils.vibrateForClick(context)
-                val options = ActivityOptions.makeSceneTransitionAnimation(context as Activity?,
+                if (thread.readPerm == 0) {
+                    holder.mReadPerm.visibility = View.GONE
+                } else {
+                    holder.mReadPerm.visibility = View.VISIBLE
+                    holder.mReadPerm.text = java.lang.String.valueOf(thread.readPerm)
+                    //holder.mReadPerm.setText(numberFormatUtils.getShortNumberText(threadInfo.readPerm));
+                    val readPermissionVal = thread.readPerm
+                    if (userBriefInfo == null || userBriefInfo!!.readPerm < readPermissionVal) {
+                        holder.mReadPerm.setTextColor(context.getColor(R.color.colorWarn))
+                    } else {
+                        holder.mReadPerm.setTextColor(context.getColor(R.color.colorTextDefault))
+                    }
+                }
+                if (thread.attachment == 0) {
+                    holder.mAttachmentIcon.visibility = View.GONE
+                } else {
+                    holder.mAttachmentIcon.visibility = View.VISIBLE
+                    if (thread.attachment == 1) {
+                        holder.mAttachmentIcon.setImageDrawable(context.getDrawable(R.drawable.ic_thread_attachment_24px))
+                    } else {
+                        holder.mAttachmentIcon.setImageDrawable(context.getDrawable(R.drawable.ic_image_outlined_24px))
+                    }
+                }
+                if (thread.price != 0) {
+                    holder.mPriceNumber.text = java.lang.String.valueOf(thread.price)
+                    holder.mPriceNumber.visibility = View.VISIBLE
+                } else {
+                    // holder.mPriceNumber.setText(String.valueOf(threadInfo.price));
+                    holder.mPriceNumber.visibility = View.GONE
+                }
+                if (thread.shortReplyList.isNotEmpty()) {
+                    val linearLayoutManager = LinearLayoutManager(context)
+                    holder.mReplyRecyclerview.isFocusable = false
+                    holder.mReplyRecyclerview.isNestedScrollingEnabled = false
+                    holder.mReplyRecyclerview.layoutManager = linearLayoutManager
+                    holder.mReplyRecyclerview.isClickable = false
+                    val adapter = ShortPostAdapter(discuz)
+                    adapter.setShortReplyInfoList((thread.shortReplyList))
+                    holder.mReplyRecyclerview.itemAnimator = getRecyclerviewAnimation(context)
+                    holder.mReplyRecyclerview.adapter = adapter
+                    holder.mReplyRecyclerview.isNestedScrollingEnabled = false
+                } else {
+                    // still flush it to avoid cache problem
+                    holder.mReplyRecyclerview.adapter = ShortPostAdapter(discuz)
+                }
+                holder.mCardview.setOnClickListener {
+                    val intent = Intent(context, ThreadActivity::class.java)
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, thread)
+                    intent.putExtra("FID", thread.fid)
+                    intent.putExtra("TID", thread.tid)
+                    intent.putExtra("SUBJECT", thread.subject)
+                    VibrateUtils.vibrateForClick(context)
+                    val options = ActivityOptions.makeSceneTransitionAnimation(context as Activity?,
                         Pair.create(holder.mTitle, "bbs_thread_subject")
-                )
-                val bundle = options.toBundle()
-                context.startActivity(intent, bundle)
-            }
-            holder.mCardview.setOnLongClickListener {
-                VibrateUtils.vibrateForNotice(context)
-                this.onlongPressCard(position)
-                true
-            }
-            holder.mAvatarImageview.setOnClickListener {
-                val intent = Intent(context, UserProfileActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
-                intent.putExtra("UID", thread.authorId)
-                val options = ActivityOptions
-                        .makeSceneTransitionAnimation(context as Activity?, holder.mAvatarImageview, "user_info_avatar")
-                val bundle = options.toBundle()
-                context.startActivity(intent, bundle)
-            }
-        } else if (holderRaw is ConciseThreadViewHolder) {
-            val sp = Html.fromHtml(thread.subject)
-            val spannableString = SpannableString(sp)
-            holderRaw.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE)
-            holderRaw.mThreadReplyNum.text = numberFormatUtils.getShortNumberText(thread.replies)
-            holderRaw.mPublishDate.text = getLocalePastTimeString(context, thread.publishAt!!)
-
-            //holder.mPublishDate.setText(df.format(threadInfo.publishAt));
-            if (thread.displayOrder != 0) {
-                var textResource = R.string.bbs_forum_pinned
-                textResource = when (thread.displayOrder) {
-                    3 -> R.string.display_order_3
-                    2 -> R.string.display_order_2
-                    1 -> R.string.display_order_1
-                    -1 -> R.string.display_order_n1
-                    -2 -> R.string.display_order_n2
-                    -3 -> R.string.display_order_n3
-                    -4 -> R.string.display_order_n4
-                    else -> R.string.bbs_forum_pinned
+                    )
+                    val bundle = options.toBundle()
+                    context.startActivity(intent, bundle)
                 }
-                holderRaw.mThreadType.setText(textResource)
-                holderRaw.mThreadType.setTextColor(context.getColor(R.color.colorAccent))
-                holderRaw.mThreadType.visibility = View.VISIBLE
-            } else {
-                holderRaw.mThreadType.visibility = View.GONE
+                holder.mCardview.setOnLongClickListener {
+                    VibrateUtils.vibrateForNotice(context)
+                    this.onlongPressCard(position)
+                    true
+                }
+                holder.mAvatarImageview.setOnClickListener {
+                    val intent = Intent(context, UserProfileActivity::class.java)
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                    intent.putExtra("UID", thread.authorId)
+                    val options = ActivityOptions
+                        .makeSceneTransitionAnimation(context as Activity?, holder.mAvatarImageview, "user_info_avatar")
+                    val bundle = options.toBundle()
+                    context.startActivity(intent, bundle)
+                }
             }
-            var avatar_num = thread.authorId % 16
-            if (avatar_num < 0) {
-                avatar_num = -avatar_num
-            }
-            val avatarResource = context.resources.getIdentifier(
-                String.format("avatar_%s", avatar_num + 1),
-                "drawable",
-                context.packageName
-            )
-            val factory = OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context))
-            Glide.get(context).registry.replace(
-                GlideUrl::class.java,
-                InputStream::class.java,
-                factory
-            )
-            val source = discuz.getAvatarUrl(thread.authorId)
-            val options = RequestOptions()
-                .placeholder(context.getDrawable(avatarResource))
-                .error(context.getDrawable(avatarResource))
-            val glideUrl = GlideUrl(
-                source,
-                LazyHeaders.Builder().addHeader("referer", discuz.base_url).build()
-            )
-            if (NetworkUtils.canDownloadImageOrFile(context)) {
-                Glide.with(context)
-                    .load(glideUrl)
-                    .apply(options)
-                    .into(holderRaw.mAvatarImageview)
-            } else {
-                Glide.with(context)
-                    .load(glideUrl)
-                    .apply(options)
-                    .onlyRetrieveFromCache(true)
-                    .into(holderRaw.mAvatarImageview)
-            }
-            holderRaw.mThreadPublisher.text = thread.author
-            holderRaw.mCardview.setOnClickListener {
-                val intent = Intent(context, ThreadActivity::class.java)
-                intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
-                intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
-                intent.putExtra(ConstUtils.PASS_THREAD_KEY, thread)
-                intent.putExtra("FID", thread.fid)
-                intent.putExtra("TID", thread.tid)
-                intent.putExtra("SUBJECT", thread.subject)
-                VibrateUtils.vibrateForClick(context)
-                val options = ActivityOptions.makeSceneTransitionAnimation(
-                    context as Activity?,
-                    Pair.create(holderRaw.mTitle, "bbs_thread_subject")
-                )
-                val bundle = options.toBundle()
-                context.startActivity(intent, bundle)
-            }
+            is ConciseThreadViewHolder -> {
+                val sp = Html.fromHtml(thread.subject)
+                val spannableString = SpannableString(sp)
+                holderRaw.mTitle.setText(spannableString, TextView.BufferType.SPANNABLE)
+                holderRaw.mThreadReplyNum.text = numberFormatUtils.getShortNumberText(thread.replies)
+                holderRaw.mPublishDate.text = getLocalePastTimeString(context, thread.publishAt!!)
 
-            holderRaw.mCardview.setOnLongClickListener {
-                VibrateUtils.vibrateForNotice(context)
-                this.onlongPressCard(position)
-                true
+                //holder.mPublishDate.setText(df.format(threadInfo.publishAt));
+                if (thread.displayOrder != 0) {
+                    var textResource = R.string.bbs_forum_pinned
+                    textResource = when (thread.displayOrder) {
+                        3 -> R.string.display_order_3
+                        2 -> R.string.display_order_2
+                        1 -> R.string.display_order_1
+                        -1 -> R.string.display_order_n1
+                        -2 -> R.string.display_order_n2
+                        -3 -> R.string.display_order_n3
+                        -4 -> R.string.display_order_n4
+                        else -> R.string.bbs_forum_pinned
+                    }
+                    holderRaw.mThreadType.setText(textResource)
+                    holderRaw.mThreadType.setTextColor(context.getColor(R.color.colorAccent))
+                    holderRaw.mThreadType.visibility = View.VISIBLE
+                } else {
+                    holderRaw.mThreadType.visibility = View.GONE
+                }
+                var avatar_num = thread.authorId % 16
+                if (avatar_num < 0) {
+                    avatar_num = -avatar_num
+                }
+                val avatarResource = context.resources.getIdentifier(
+                    String.format("avatar_%s", avatar_num + 1),
+                    "drawable",
+                    context.packageName
+                )
+                val factory = OkHttpUrlLoader.Factory(NetworkUtils.getPreferredClient(context))
+                Glide.get(context).registry.replace(
+                    GlideUrl::class.java,
+                    InputStream::class.java,
+                    factory
+                )
+                val source = discuz.getAvatarUrl(thread.authorId)
+                val options = RequestOptions()
+                    .placeholder(context.getDrawable(avatarResource))
+                    .error(context.getDrawable(avatarResource))
+                val glideUrl = GlideUrl(
+                    source,
+                    LazyHeaders.Builder().addHeader("referer", discuz.base_url).build()
+                )
+                if (NetworkUtils.canDownloadImageOrFile(context)) {
+                    Glide.with(context)
+                        .load(glideUrl)
+                        .apply(options)
+                        .into(holderRaw.mAvatarImageview)
+                } else {
+                    Glide.with(context)
+                        .load(glideUrl)
+                        .apply(options)
+                        .onlyRetrieveFromCache(true)
+                        .into(holderRaw.mAvatarImageview)
+                }
+                holderRaw.mThreadPublisher.text = thread.author
+                holderRaw.mCardview.setOnClickListener {
+                    val intent = Intent(context, ThreadActivity::class.java)
+                    intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, discuz)
+                    intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                    intent.putExtra(ConstUtils.PASS_THREAD_KEY, thread)
+                    intent.putExtra("FID", thread.fid)
+                    intent.putExtra("TID", thread.tid)
+                    intent.putExtra("SUBJECT", thread.subject)
+                    VibrateUtils.vibrateForClick(context)
+                    val options = ActivityOptions.makeSceneTransitionAnimation(
+                        context as Activity?,
+                        Pair.create(holderRaw.mTitle, "bbs_thread_subject")
+                    )
+                    val bundle = options.toBundle()
+                    context.startActivity(intent, bundle)
+                }
+
+                holderRaw.mCardview.setOnLongClickListener {
+                    VibrateUtils.vibrateForNotice(context)
+                    this.onlongPressCard(position)
+                    true
+                }
             }
         }
 

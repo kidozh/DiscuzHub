@@ -143,6 +143,9 @@ class ForumViewModel(application: Application) : AndroidViewModel(application) {
                         errorMessageMutableLiveData.postValue(forumResult.message!!.toErrorMessage())
                         networkState.postValue(ConstUtils.NETWORK_STATUS_FAILED)
                     }
+                    // repost to prevent redirect problem
+
+                    displayForumResultMutableLiveData.postValue(forumResult)
 
                 }
                 else {
