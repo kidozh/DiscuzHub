@@ -41,7 +41,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
     var bbsPersonInfoMutableLiveData: MutableLiveData<User> = MutableLiveData()
     var totalPostListLiveData: MutableLiveData<List<Post>> = MutableLiveData(ArrayList())
     val threadStatusMutableLiveData: MutableLiveData<ViewThreadQueryStatus> = MutableLiveData(ViewThreadQueryStatus(0,1))
-    var detailedThreadInfoMutableLiveData: MutableLiveData<DetailedThreadInfo>
+    var detailedThreadInfoMutableLiveData: MutableLiveData<ThreadResult.DetailedThreadInfo>
     var threadPostResultMutableLiveData: MutableLiveData<ThreadResult?> = MutableLiveData(null)
     var secureInfoResultMutableLiveData: MutableLiveData<SecureInfoResult?> = MutableLiveData(null)
     var recommendResultMutableLiveData = MutableLiveData<ApiMessageActionResult?>(null)
@@ -123,7 +123,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                 if (response.isSuccessful && response.body() != null) {
                     var totalThreadSize = 0
                     val threadResult = response.body() as ThreadResult
-                    val detailedThreadInfo: DetailedThreadInfo = threadResult.threadPostVariables.detailedThreadInfo
+                    val detailedThreadInfo: ThreadResult.DetailedThreadInfo = threadResult.threadPostVariables.detailedThreadInfo
                     threadPostResultMutableLiveData.postValue(threadResult)
                     // update formhash first
                     formHash.postValue(threadResult.threadPostVariables.formHash)
@@ -133,6 +133,9 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                     detailedThreadInfoMutableLiveData.postValue(threadResult.threadPostVariables.detailedThreadInfo)
                     val pollInfo = threadResult.threadPostVariables.poll
                     pollLiveData.postValue(pollInfo)
+                    if(threadResult.poll!=null){
+                        pollLiveData.postValue(threadResult.poll)
+                    }
 
                     val postInfoList = threadResult.threadPostVariables.postList
                     // remove null object

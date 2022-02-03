@@ -35,7 +35,7 @@ public class ViewThreadQueryStatus {
         options.put("tid",String.valueOf(this.tid));
         options.put("page",String.valueOf(this.page));
         options.put("ppp",String.valueOf(this.perPage));
-        options.put("pollsubmit","1");
+        //options.put("pollsubmit","1");
         if(this.authorId != -1){
             options.put("authorid",String.valueOf(this.authorId));
         }

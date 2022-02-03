@@ -19,7 +19,6 @@ import java.util.*
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.ALWAYS)
-@JsonDeserialize(using = PollJsonDeserializer::class)
 class Poll : Serializable {
     @JvmField
     @JsonFormat(shape = JsonFormat.Shape.STRING)
@@ -55,7 +54,6 @@ class Poll : Serializable {
     @JvmField
     @JsonProperty("polloptions")
     @JsonDeserialize(using = OptionsDeserializer::class)
-    @JsonIgnore
     var options: List<Option> = ArrayList()
 
     @JvmField

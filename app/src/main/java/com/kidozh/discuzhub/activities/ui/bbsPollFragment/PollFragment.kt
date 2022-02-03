@@ -130,7 +130,7 @@ class PollFragment : Fragment() {
         configureRecyclerview()
     }
 
-    fun configurePollVoteBtn() {
+    private fun configurePollVoteBtn() {
         if (!pollInfo.allowVote) {
             binding!!.bbsPollVoteBtn.visibility = View.GONE
         } else {
@@ -141,8 +141,8 @@ class PollFragment : Fragment() {
             getString(R.string.poll_vote_progress, 0, pollInfo.maxChoices)
         binding!!.bbsPollVoteBtn.setOnClickListener {
             val options = adapter!!.getPollOptions()
-            //val checkedNumber: Int = poll.getCheckedOptionNumber()
-            val checkedNumber: Int = 0
+            val checkedNumber: Int = pollInfo.checkedOptionNumber
+            //val checkedNumber: Int = 0
             if (pollInfo.allowVote && checkedNumber > 0 && checkedNumber <= pollInfo.maxChoices) {
                 Log.d(TAG, "VOTING $formhash")
                 binding!!.bbsPollVoteBtn.isEnabled = false
@@ -238,8 +238,8 @@ class PollFragment : Fragment() {
                             adapter!!.pollOptions[position].checked =
                                 !adapter!!.pollOptions[position].checked
                             adapter!!.notifyItemChanged(position)
-                            //val checkedNumber: Int = poll.getCheckedOptionNumber()
-                            val checkedNumber = 0
+                            val checkedNumber: Int = pollInfo.checkedOptionNumber
+                            //val checkedNumber = 0
                             if (checkedNumber <= pollInfo.maxChoices && checkedNumber > 0) {
                                 binding!!.bbsPollVoteBtn.isEnabled = true
                                 binding!!.bbsPollVoteBtn.text = getString(

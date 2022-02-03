@@ -210,7 +210,7 @@ dependencies {
         exclude group: 'org.json', module: 'json'
     }
     // okhttp
-    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.3'
+    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.4'
     // larger screen support
     implementation("androidx.window:window:1.0.0")
     implementation("androidx.startup:startup-runtime:1.1.0")

@@ -5,7 +5,9 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.webkit.WebView
 import androidx.preference.PreferenceManager
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
 import com.franmontiel.persistentcookiejar.ClearableCookieJar
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
@@ -258,9 +260,12 @@ object NetworkUtils {
         if (!baseUrl.endsWith("/")) {
             baseUrl = "$baseUrl/"
         }
+        val objectMapper: ObjectMapper = ObjectMapper()
+            .registerKotlinModule()
+            .registerModule(ParameterNamesModule())
         return Retrofit.Builder()
             .baseUrl(baseUrl)
-            .addConverterFactory(JacksonConverterFactory.create(jacksonObjectMapper()))
+            .addConverterFactory(JacksonConverterFactory.create(objectMapper))
             .client(client)
             .build()
     }

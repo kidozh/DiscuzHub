@@ -64,7 +64,7 @@ import com.kidozh.discuzhub.dialogs.ReportPostDialogFragment.ReportDialogListene
 import com.kidozh.discuzhub.entities.*
 import com.kidozh.discuzhub.results.ApiMessageActionResult
 import com.kidozh.discuzhub.results.BuyThreadResult
-import com.kidozh.discuzhub.results.DetailedThreadInfo
+import com.kidozh.discuzhub.results.ThreadResult
 import com.kidozh.discuzhub.utilities.*
 import com.kidozh.discuzhub.utilities.AnimationUtils.getAnimatedAdapter
 import com.kidozh.discuzhub.utilities.AnimationUtils.getRecyclerviewAnimation
@@ -271,7 +271,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
             }
         }
         threadDetailViewModel.formHash.observe(this) { s -> formHash = s }
-        threadDetailViewModel.detailedThreadInfoMutableLiveData.observe(this) { detailedThreadInfo: DetailedThreadInfo -> // closed situation
+        threadDetailViewModel.detailedThreadInfoMutableLiveData.observe(this) { detailedThreadInfo: ThreadResult.DetailedThreadInfo -> // closed situation
             // prepare notification list
             val threadNotificationList: MutableList<ThreadCount> = ArrayList()
             binding.threadProperty.removeAllViews()

@@ -11,17 +11,74 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.kidozh.discuzhub.entities.FavoriteThread
 import com.kidozh.discuzhub.entities.Poll
-import com.kidozh.discuzhub.entities.PollJsonDeserializer
 import com.kidozh.discuzhub.entities.Post
 import com.kidozh.discuzhub.utilities.bbsParseUtils.OneZeroDeserializer
 import java.io.IOException
 import java.util.*
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-open class ThreadResult : BaseResult() {
+//@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(value = ["commentcount","ppp","setting_rewriterule","setting_rewritestatus","forum_threadpay","cache_custominfo_postno","forum"])
+class ThreadResult : BaseResult() {
     @JsonProperty("Variables")
+    @JsonIgnoreProperties(ignoreUnknown = true)
     var threadPostVariables: ThreadVariable = ThreadVariable()
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    class ThreadVariable : VariableResults() {
+
+
+        @JsonProperty("special_poll")
+        //@JsonInclude(JsonInclude.Include.ALWAYS)
+        //@JsonDeserialize(using = PollJsonDeserializer::class)
+        var poll: Poll? = null
+
+        @JsonProperty("thread")
+//    @JsonIgnoreProperties(ignoreUnknown = true)
+        var detailedThreadInfo: DetailedThreadInfo = DetailedThreadInfo()
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var fid = 0
+
+        @JsonProperty("postlist")
+        var postList: List<Post> = ArrayList()
+
+
+
+//        @JsonProperty("allowpostcomment")
+//        var allowPostCommentList: List<String>? = ArrayList()
+
+        @JsonProperty("comments")
+        @JsonDeserialize(using = CommentListJsonDeserializer::class)
+        var commentList: Map<String, List<Comment>>? = HashMap()
+
+//        @JsonIgnore
+//        @JsonProperty("commentcount")
+//        @JsonDeserialize(using = CommentCountJsonDeserializer::class)
+//        var commentCount: Map<String, String> = HashMap()
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var ppp = 0
+
+        @JsonProperty("setting_rewriterule")
+        var rewriteRule: Map<String, String>? = HashMap()
+
+//        @JsonProperty("setting_rewritestatus")
+//        @JsonDeserialize(using = SettingRewriteStatusJsonDeserializer::class)
+//        var rewriteList: List<String>? = ArrayList()
+//
+//        @JsonProperty("forum_threadpay")
+//        var threadPay: String? = null
+//
+//        @JsonProperty("cache_custominfo_postno")
+//        var customPostNoList: List<String>? = ArrayList()
+
+
+    }
+
+    @JsonProperty("special_poll", required = false)
+    var poll: Poll? = null
 
 
     @JsonIgnore
@@ -33,228 +90,223 @@ open class ThreadResult : BaseResult() {
         val TAG = ThreadResult::class.simpleName
     }
 
-
-}
-
-class SettingRewriteStatusJsonDeserializer : JsonDeserializer<List<String>>() {
-    @Throws(IOException::class, JsonProcessingException::class)
-    override fun deserialize(p: JsonParser, ctxt: DeserializationContext): List<String> {
-        return when (p.currentToken) {
-            JsonToken.VALUE_STRING -> {
-                ArrayList()
-            }
-            JsonToken.START_ARRAY -> {
-                val mapper = ObjectMapper()
-                mapper.readValue<List<String>>(p, object : TypeReference<List<String>>() {})
-            }
-            else -> {
-                ArrayList()
+    class SettingRewriteStatusJsonDeserializer : JsonDeserializer<List<String>>() {
+        @Throws(IOException::class, JsonProcessingException::class)
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): List<String> {
+            return when (p.currentToken) {
+                JsonToken.VALUE_STRING -> {
+                    ArrayList()
+                }
+                JsonToken.START_ARRAY -> {
+                    val mapper = ObjectMapper()
+                    mapper.readValue<List<String>>(p, object : TypeReference<List<String>>() {})
+                }
+                else -> {
+                    ArrayList()
+                }
             }
         }
     }
-}
 
-
-
-class CommentListJsonDeserializer : JsonDeserializer<Map<String, List<Comment>>>() {
-    @Throws(IOException::class, JsonProcessingException::class)
-    override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Map<String, List<Comment>> {
-        val currentToken = p.currentToken
-        return if (currentToken == JsonToken.VALUE_STRING) {
-            HashMap()
-        } else if (currentToken == JsonToken.START_OBJECT) {
-            val mapper = ObjectMapper()
-            mapper.readValue<Map<String, List<Comment>>>(p, object : TypeReference<Map<String, List<Comment>>>() {})
-        } else {
-            HashMap()
-        }
-    }
-}
-
-class CommentCountJsonDeserializer : JsonDeserializer<Map<String, String>>() {
-    @Throws(IOException::class, JsonProcessingException::class)
-    override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Map<String, String> {
-        return when (p.currentToken) {
-            JsonToken.VALUE_STRING -> {
+    class CommentListJsonDeserializer : JsonDeserializer<Map<String, List<Comment>>>() {
+        @Throws(IOException::class, JsonProcessingException::class)
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Map<String, List<Comment>> {
+            val currentToken = p.currentToken
+            return if (currentToken == JsonToken.VALUE_STRING) {
                 HashMap()
-            }
-            JsonToken.START_OBJECT -> {
+            } else if (currentToken == JsonToken.START_OBJECT) {
                 val mapper = ObjectMapper()
-                mapper.readValue<Map<String, String>>(p, object : TypeReference<Map<String, String>>() {})
-            }
-            else -> {
+                mapper.readValue<Map<String, List<Comment>>>(p, object : TypeReference<Map<String, List<Comment>>>() {})
+            } else {
                 HashMap()
             }
         }
     }
-}
 
-class Comment {
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var id = 0
+    class CommentCountJsonDeserializer : JsonDeserializer<Map<String, String>>() {
+        @Throws(IOException::class, JsonProcessingException::class)
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Map<String, String> {
+            return when (p.currentToken) {
+                JsonToken.VALUE_STRING -> {
+                    HashMap()
+                }
+                JsonToken.START_OBJECT -> {
+                    val mapper = ObjectMapper()
+                    mapper.readValue<Map<String, String>>(p, object : TypeReference<Map<String, String>>() {})
+                }
+                else -> {
+                    HashMap()
+                }
+            }
+        }
+    }
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var tid = 0
+    class Comment {
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var id = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var pid = 0
-    var author: String = ""
-    var dateline: String = ""
-    var comment: String = ""
-    var avatar: String = ""
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var tid = 0
 
-    @JsonProperty("authorid")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var authorId = 0
-}
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var pid = 0
+        var author: String = ""
+        var dateline: String = ""
+        var comment: String = ""
+        var avatar: String = ""
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class DetailedThreadInfo {
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var tid = 0
+        @JsonProperty("authorid")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var authorId = 0
+    }
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var fid = 0
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    class DetailedThreadInfo {
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var tid = 0
 
-    @JsonProperty("posttableid")
-    var postableId = ""
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var fid = 0
 
-    @JsonProperty("typeid")
-    var typeId = ""
-    var author = ""
-    var subject = ""
+        @JsonProperty("posttableid")
+        var postableId = ""
 
-    @JsonProperty("authorid")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var authorId = 0
+        @JsonProperty("typeid")
+        var typeId = ""
+        var author = ""
+        var subject = ""
 
-    @JsonProperty("sortid")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var sortId = 0
+        @JsonProperty("authorid")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var authorId = 0
 
-    @JsonProperty("dateline")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "s")
-    var lastPostTime = Date()
+        @JsonProperty("sortid")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var sortId = 0
 
-    @JsonProperty("lastpost")
-    var lastPostTimeString: String? = null
-    var lastposter = ""
+        @JsonProperty("dateline")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "s")
+        var lastPostTime = Date()
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @JsonProperty("displayorder")
-    var displayOrder = 0
+        @JsonProperty("lastpost")
+        var lastPostTimeString: String? = null
+        var lastposter = ""
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var views: Long = 0
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        @JsonProperty("displayorder")
+        var displayOrder = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var replies: Long = 0
-    var highlight: String? = null
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var views: Long = 0
 
-    @JsonDeserialize(using = OneZeroDeserializer::class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var special = false
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var replies: Long = 0
+        var highlight: String? = null
 
-    @JsonDeserialize(using = OneZeroDeserializer::class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var moderated = false
+        @JsonDeserialize(using = OneZeroDeserializer::class)
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var special = false
 
-    @JsonDeserialize(using = OneZeroDeserializer::class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var is_archived = false
+        @JsonDeserialize(using = OneZeroDeserializer::class)
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var moderated = false
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var rate = 0
+        @JsonDeserialize(using = OneZeroDeserializer::class)
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var is_archived = false
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var status = 0
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var rate = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var readperm = 0
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var status = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var price = 0
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var readperm = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var digest = 0
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var price = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var closed = 0
-    var attachment: String? = null
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var digest = 0
 
-    @JsonDeserialize(using = OneZeroDeserializer::class)
-    @JsonProperty("stickreply")
-    var stickReply = false
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var closed = 0
+        var attachment: String? = null
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var recommends = 0
+        @JsonDeserialize(using = OneZeroDeserializer::class)
+        @JsonProperty("stickreply")
+        var stickReply = false
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var recommend_add = 0
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var recommends = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var recommend_sub = 0
-    var isgroup: String? = null
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var recommend_add = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var favtimes = 0
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var recommend_sub = 0
+        var isgroup: String? = null
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var sharetimes = 0
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var favtimes = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var heats = 0
-    var stamp: String? = null
-    var icon: String? = null
-    var pushedaid: String? = null
-    var cover: String? = null
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var sharetimes = 0
 
-    @JsonProperty("replycredit")
-    var replyCredit: String? = null
-    var relatebytag: String? = null
-    var bgcolor: String? = null
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var heats = 0
+        var stamp: String? = null
+        var icon: String? = null
+        var pushedaid: String? = null
+        var cover: String? = null
 
-    @JsonProperty("maxposition")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var maxPosition: Long = 0
+        @JsonProperty("replycredit")
+        var replyCredit: String? = null
+        var relatebytag: String? = null
+        var bgcolor: String? = null
 
-    @JsonProperty("comments")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var comments = 0
+        @JsonProperty("maxposition")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var maxPosition: Long = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @JsonDeserialize(using = OneZeroDeserializer::class)
-    var hidden = false
-    var threadtable: String? = null
-    var threadtableid: String? = null
-    var posttable: String? = null
+        @JsonProperty("comments")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var comments = 0
 
-    @JsonProperty("allreplies")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var allreplies = 0
-    var archiveid: String? = null
-    var subjectenc: String? = null
-    var short_subject: String? = null
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        @JsonDeserialize(using = OneZeroDeserializer::class)
+        var hidden = false
+        var threadtable: String? = null
+        var threadtableid: String? = null
+        var posttable: String? = null
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var relay = 0
+        @JsonProperty("allreplies")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var allreplies = 0
+        var archiveid: String? = null
+        var subjectenc: String? = null
+        var short_subject: String? = null
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var ordertype = 0
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var relay = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var recommend = 0
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var ordertype = 0
 
-    @JsonProperty("recommendlevel")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var recommendLevel = 0
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var recommend = 0
 
-    @JsonProperty("heatlevel")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var heatLevel = 0
+        @JsonProperty("recommendlevel")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var recommendLevel = 0
 
-    @JsonProperty("freemessage")
-    var freeMessage: String? = null
+        @JsonProperty("heatlevel")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var heatLevel = 0
+
+        @JsonProperty("freemessage")
+        var freeMessage: String? = null
 
 //    @JsonProperty("replycredit_rule")
 //    var creditRule: replyCreditRule? = null
@@ -267,97 +319,54 @@ class DetailedThreadInfo {
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "s")
 //    var remainTime = Date()
 
-    fun toFavoriteThread(bbsId: Int, userId: Int): FavoriteThread {
-        val favoriteThread = FavoriteThread()
-        favoriteThread.belongedBBSId = bbsId
-        favoriteThread.uid = authorId
-        favoriteThread.idKey = tid
-        favoriteThread.idType = "tid"
-        favoriteThread.title = subject
-        favoriteThread.description = if (freeMessage == null) "" else freeMessage!!
-        favoriteThread.author = author
-        favoriteThread.date = lastPostTime
-        favoriteThread.replies = replies.toInt()
-        favoriteThread.userId = userId
-        return favoriteThread
+        fun toFavoriteThread(bbsId: Int, userId: Int): FavoriteThread {
+            val favoriteThread = FavoriteThread()
+            favoriteThread.belongedBBSId = bbsId
+            favoriteThread.uid = authorId
+            favoriteThread.idKey = tid
+            favoriteThread.idType = "tid"
+            favoriteThread.title = subject
+            favoriteThread.description = if (freeMessage == null) "" else freeMessage!!
+            favoriteThread.author = author
+            favoriteThread.date = lastPostTime
+            favoriteThread.replies = replies.toInt()
+            favoriteThread.userId = userId
+            return favoriteThread
+        }
     }
-}
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-class ReplyCreditRule {
-    var tid: String? = null
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    class ReplyCreditRule {
+        var tid: String? = null
 
-    @JsonProperty("extcredits")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var extCredits = 0
+        @JsonProperty("extcredits")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var extCredits = 0
 
-    @JsonProperty("extcreditstype")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var extCreditsType = 0
+        @JsonProperty("extcreditstype")
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var extCreditsType = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var times = 0
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var times = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var membertimes = 0
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var membertimes = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var random = 0
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var random = 0
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var remaining = 0
-}
-
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.ALWAYS)
-class ThreadVariable : VariableResults() {
-
-
-    @JsonProperty("poll")
-    @JsonInclude(JsonInclude.Include.ALWAYS)
-    @JsonDeserialize(using = PollJsonDeserializer::class)
-    var poll: Poll? = null
-
-    @JsonProperty("thread")
-//    @JsonIgnoreProperties(ignoreUnknown = true)
-    var detailedThreadInfo: DetailedThreadInfo = DetailedThreadInfo()
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var fid = 0
-
-    @JsonProperty("postlist")
-    var postList: List<Post> = ArrayList()
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        var remaining = 0
+    }
 
 
 
-    @JsonProperty("allowpostcomment")
-    var allowPostCommentList: List<String>? = ArrayList()
-
-    @JsonProperty("comments")
-    @JsonDeserialize(using = CommentListJsonDeserializer::class)
-    var commentList: Map<String, List<Comment>>? = HashMap()
-
-    @JsonIgnore
-    @JsonProperty("commentcount")
-    @JsonDeserialize(using = CommentCountJsonDeserializer::class)
-    var commentCount: Map<String, String> = HashMap()
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    var ppp = 0
-
-    @JsonProperty("setting_rewriterule")
-    var rewriteRule: Map<String, String>? = HashMap()
-
-    @JsonProperty("setting_rewritestatus")
-    @JsonDeserialize(using = SettingRewriteStatusJsonDeserializer::class)
-    var rewriteList: List<String>? = ArrayList()
-
-    @JsonProperty("forum_threadpay")
-    var threadPay: String? = null
-
-    @JsonProperty("cache_custominfo_postno")
-    var customPostNoList: List<String>? = ArrayList()
 
 
 }
+
+
+
+
+

@@ -57,7 +57,7 @@ import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.entities.Post
 import com.kidozh.discuzhub.entities.User
 import com.kidozh.discuzhub.entities.ViewThreadQueryStatus
-import com.kidozh.discuzhub.results.Comment
+import com.kidozh.discuzhub.results.ThreadResult
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.NetworkUtils
 import com.kidozh.discuzhub.utilities.TimeDisplayUtils.Companion.getLocalePastTimeString
@@ -90,7 +90,7 @@ class PostAdapter(private val discuz: Discuz, private val user: User?, viewThrea
         result.dispatchUpdatesTo(this)
     }
 
-    private val postCommentList: MutableMap<String, List<Comment>> = HashMap()
+    private val postCommentList: MutableMap<String, List<ThreadResult.Comment>> = HashMap()
     private var client = OkHttpClient()
     private var viewThreadQueryStatus: ViewThreadQueryStatus
     private var mListener: onFilterChanged? = null
@@ -136,9 +136,9 @@ class PostAdapter(private val discuz: Discuz, private val user: User?, viewThrea
         while (iterator.hasNext()) {
             val post = iterator.next()
             // remove nullable message
-            if (post.message == "") {
-                iterator.remove()
-            }
+//            if (post.message == "") {
+//                iterator.remove()
+//            }
         }
         Log.d(TAG,"set post list "+this.postList.size+" new list "+newList.size)
         this.viewThreadQueryStatus = viewThreadQueryStatus
@@ -380,11 +380,11 @@ class PostAdapter(private val discuz: Discuz, private val user: User?, viewThrea
         }
     }
 
-    fun mergeCommentMap(commentList: Map<String, List<Comment>>?) {
+    fun mergeCommentMap(commentList: Map<String, List<ThreadResult.Comment>>?) {
         if (commentList != null) {
             postCommentList.putAll(commentList)
             commentList.forEach(
-                    BiConsumer { key: String, value: List<Comment> ->
+                    BiConsumer { key: String, value: List<ThreadResult.Comment> ->
                         Log.d(TAG, "get comment key $key value $value")
                         val pid = key.toInt()
                         // this.postCommentList.put(key,value);
