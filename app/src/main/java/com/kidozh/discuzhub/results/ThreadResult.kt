@@ -18,7 +18,7 @@ import java.util.*
 
 //@JsonIgnoreProperties(ignoreUnknown = true)
 //@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(value = ["commentcount","ppp","setting_rewriterule","setting_rewritestatus","forum_threadpay","cache_custominfo_postno","forum"])
+@JsonIgnoreProperties(ignoreUnknown = true)
 class ThreadResult : BaseResult() {
     @JsonProperty("Variables")
     @JsonIgnoreProperties(ignoreUnknown = true)

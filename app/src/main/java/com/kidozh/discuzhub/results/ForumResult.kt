@@ -1,30 +1,22 @@
 package com.kidozh.discuzhub.results
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.kidozh.discuzhub.results.BaseResult
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.kidozh.discuzhub.results.VariableResults
-import com.kidozh.discuzhub.entities.Forum
-import com.kidozh.discuzhub.results.ForumResult.SubForumInfo
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.kidozh.discuzhub.results.ForumResult.ThreadTypeInfo
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.kidozh.discuzhub.results.ForumResult.ForumThreadTypeDeserializer
-import com.fasterxml.jackson.databind.JsonDeserializer
-import kotlin.Throws
-import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.core.JsonToken
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.kidozh.discuzhub.entities.Forum
 import com.kidozh.discuzhub.entities.Thread
+import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer
 import java.io.IOException
 import java.io.Serializable
-import java.util.ArrayList
-import java.util.HashMap
 
 class ForumResult : BaseResult() {
 
@@ -40,8 +32,8 @@ class ForumResult : BaseResult() {
         @JsonProperty("group")
         var groupInfo: GroupInfo? = null
 
-        @JsonProperty("forum_threadlist")
-        lateinit var forumThreadList: List<Thread>
+        @JsonProperty("forum_threadlist", defaultValue = "[]")
+        var forumThreadList: List<Thread> = ArrayList()
 
         @JsonProperty("groupiconid")
         var groupIconId: Map<String, String>? = null

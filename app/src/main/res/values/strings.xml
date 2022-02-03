@@ -925,5 +925,7 @@
     <string name="unstick_post">Unstick</string>
     <string name="admin_post">Admin %1$s\'s post</string>
     <string name="delete_post_description">Are you sure to delete this post?</string>
+    <string name="forum_redirect_url">Forum is redirected to the URL: %1$s</string>
+    <string name="forum_redirect_title">Redirected forum</string>
 
 </resources>

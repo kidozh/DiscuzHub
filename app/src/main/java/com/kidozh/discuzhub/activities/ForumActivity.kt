@@ -167,20 +167,37 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
             }
         }
         forumViewModel.displayForumResultMutableLiveData.observe(
-            this,
-            { forumResult -> // deal with sublist
-                Log.d(TAG, "GET result $forumResult")
-                if (forumResult != null) {
-                    Log.d(TAG, "GET sublist size " + forumResult.forumVariables.subForumLists.size)
-                    subForumAdapter.setSubForumInfoList(forumResult.forumVariables.subForumLists)
-                    val forum = forumResult.forumVariables.forum
-                    this@ForumActivity.forum = forum
-                    binding.toolbar.title = forum.name
-                    binding.toolbar.subtitle = forum.fid.toString()
-                    this.setBaseResult(forumResult, forumResult.forumVariables)
-
+            this
+        ) { forumResult -> // deal with sublist
+            Log.d(TAG, "GET result $forumResult")
+            if(forumResult != null && forumResult.forumVariables.forum.redirectURL.isNotBlank()){
+                // redirect to this
+                    val redirectURL = forumResult.forumVariables.forum.redirectURL
+                Toasty.info(this,getString(R.string.forum_redirect_url,redirectURL),Toast.LENGTH_LONG).show()
+                networkIndicatorAdapter.setErrorStatus(ErrorMessage(getString(R.string.forum_redirect_title), getString(R.string.forum_redirect_url,redirectURL)))
+                // trigger intent
+                try{
+                    val i = Intent(Intent.ACTION_VIEW)
+                    i.data = Uri.parse(redirectURL)
+                    startActivity(i)
                 }
-            })
+                catch (e: Exception){
+                    e.printStackTrace()
+                }
+
+
+            }
+            if (forumResult != null) {
+                Log.d(TAG, "GET sublist size " + forumResult.forumVariables.subForumLists.size)
+                subForumAdapter.setSubForumInfoList(forumResult.forumVariables.subForumLists)
+                val forum = forumResult.forumVariables.forum
+                this@ForumActivity.forum = forum
+                binding.toolbar.title = forum.name
+                binding.toolbar.subtitle = forum.fid.toString()
+                this.setBaseResult(forumResult, forumResult.forumVariables)
+
+            }
+        }
         forumViewModel.favoriteForumLiveData!!.observe(this, { favoriteForum: FavoriteForum? ->
             Log.d(TAG, "Detecting change favorite forum $favoriteForum")
             if (favoriteForum != null) {

@@ -795,5 +795,7 @@
     <string name="unstick_post">取消置顶</string>
     <string name="admin_post">管理%1$s的内容</string>
     <string name="delete_post_description">是否确定移除此回复？</string>
+    <string name="forum_redirect_url">论坛被重定向到新的网址: %1$s</string>
+    <string name="forum_redirect_title">论坛已重定向</string>
 
 </resources>
