@@ -141,7 +141,7 @@ class PollFragment : Fragment() {
             getString(R.string.poll_vote_progress, 0, pollInfo.maxChoices)
         binding!!.bbsPollVoteBtn.setOnClickListener {
             val options = adapter!!.getPollOptions()
-            //val checkedNumber: Int = special_poll.getCheckedOptionNumber()
+            //val checkedNumber: Int = poll.getCheckedOptionNumber()
             val checkedNumber: Int = 0
             if (pollInfo.allowVote && checkedNumber > 0 && checkedNumber <= pollInfo.maxChoices) {
                 Log.d(TAG, "VOTING $formhash")
@@ -176,7 +176,7 @@ class PollFragment : Fragment() {
                     override fun onResponse(call: Call, response: Response) {
                         if (response.isSuccessful && response.body != null) {
                             val s = response.body!!.string()
-                            Log.d(TAG, "recv special_poll $s")
+                            Log.d(TAG, "recv poll $s")
                             mHandler.post {
                                 binding!!.bbsPollVoteBtn.isEnabled = true
                                 // need to notify the activity if success
@@ -238,7 +238,7 @@ class PollFragment : Fragment() {
                             adapter!!.pollOptions[position].checked =
                                 !adapter!!.pollOptions[position].checked
                             adapter!!.notifyItemChanged(position)
-                            //val checkedNumber: Int = special_poll.getCheckedOptionNumber()
+                            //val checkedNumber: Int = poll.getCheckedOptionNumber()
                             val checkedNumber = 0
                             if (checkedNumber <= pollInfo.maxChoices && checkedNumber > 0) {
                                 binding!!.bbsPollVoteBtn.isEnabled = true

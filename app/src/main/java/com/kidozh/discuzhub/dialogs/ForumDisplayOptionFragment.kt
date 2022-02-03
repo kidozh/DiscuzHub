@@ -62,7 +62,7 @@ class ForumDisplayOptionFragment : BottomSheetDialogFragment() {
                 }
             }
             when(status.specialType){
-                "special_poll" -> binding.typePoll.isChecked = true
+                "poll" -> binding.typePoll.isChecked = true
                 "reward" -> binding.typeReward.isChecked = true
                 "activity" -> binding.typeActivity.isChecked = true
                 "debate" -> binding.typeDebate.isChecked = true
@@ -170,7 +170,7 @@ class ForumDisplayOptionFragment : BottomSheetDialogFragment() {
             if(status != null){
                 when(checkedId){
                     // clear category option
-                    R.id.type_poll -> status.specialType = "special_poll"
+                    R.id.type_poll -> status.specialType = "poll"
                     R.id.type_reward -> status.specialType = "reward"
                     R.id.type_activity -> status.specialType = "activity"
                     R.id.type_debate -> status.specialType = "debate"

@@ -131,7 +131,7 @@ class ThreadViewModel(application: Application) : AndroidViewModel(application) 
                     bbsPersonInfoMutableLiveData.postValue(threadResult.threadPostVariables.userBriefInfo)
 
                     detailedThreadInfoMutableLiveData.postValue(threadResult.threadPostVariables.detailedThreadInfo)
-                    val pollInfo = threadResult.threadPostVariables.special_poll
+                    val pollInfo = threadResult.threadPostVariables.poll
                     pollLiveData.postValue(pollInfo)
 
                     val postInfoList = threadResult.threadPostVariables.postList

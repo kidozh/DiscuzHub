@@ -48,6 +48,7 @@
 
         <Button
             android:id="@+id/retry_button"
+            style="@style/Widget.Material3.Button.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

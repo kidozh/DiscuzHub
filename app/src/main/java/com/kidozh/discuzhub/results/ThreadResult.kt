@@ -1,10 +1,6 @@
 package com.kidozh.discuzhub.results
 
-import android.util.Log
-import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.core.JsonToken
@@ -13,18 +9,19 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.kidozh.discuzhub.entities.FavoriteThread
 import com.kidozh.discuzhub.entities.Poll
+import com.kidozh.discuzhub.entities.PollJsonDeserializer
 import com.kidozh.discuzhub.entities.Post
 import com.kidozh.discuzhub.utilities.bbsParseUtils.OneZeroDeserializer
 import java.io.IOException
 import java.util.*
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 open class ThreadResult : BaseResult() {
     @JsonProperty("Variables")
-    var threadPostVariables: ThreadPostVariable = ThreadPostVariable()
+    var threadPostVariables: ThreadVariable = ThreadVariable()
 
 
     @JsonIgnore
@@ -42,42 +39,22 @@ open class ThreadResult : BaseResult() {
 class SettingRewriteStatusJsonDeserializer : JsonDeserializer<List<String>>() {
     @Throws(IOException::class, JsonProcessingException::class)
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext): List<String> {
-        val currentToken = p.currentToken
-        return if (currentToken == JsonToken.VALUE_STRING) {
-            ArrayList()
-        } else if (currentToken == JsonToken.START_ARRAY) {
-            val mapper = ObjectMapper()
-            mapper.readValue<List<String>>(p, object : TypeReference<List<String>>() {})
-        } else {
-            ArrayList()
-        }
-    }
-}
-
-class PollJsonDeserializer : JsonDeserializer<Poll?>() {
-    companion object{
-        val TAG = PollJsonDeserializer::class.simpleName
-    }
-
-    @Throws(IOException::class, JsonProcessingException::class)
-    override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Poll? {
         return when (p.currentToken) {
-
-            JsonToken.START_OBJECT -> {
-                Log.d(TAG,"Poll start at ${p.text}")
-                val mapper = jacksonObjectMapper()
-                return mapper.readValue(p,object :TypeReference<Poll>(){})
-
+            JsonToken.VALUE_STRING -> {
+                ArrayList()
             }
             JsonToken.START_ARRAY -> {
-                null
+                val mapper = ObjectMapper()
+                mapper.readValue<List<String>>(p, object : TypeReference<List<String>>() {})
             }
             else -> {
-                null
+                ArrayList()
             }
         }
     }
 }
+
+
 
 class CommentListJsonDeserializer : JsonDeserializer<Map<String, List<Comment>>>() {
     @Throws(IOException::class, JsonProcessingException::class)
@@ -333,13 +310,14 @@ class ReplyCreditRule {
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class ThreadPostVariable : VariableResults() {
+@JsonInclude(JsonInclude.Include.ALWAYS)
+class ThreadVariable : VariableResults() {
 
-    // for special_poll
-    // @JsonProperty("special_poll", required = false, )
-    // @JsonDeserialize(using = PollJsonDeserializer::class)
-    @JvmField
-    var special_poll: Poll? = null
+
+    @JsonProperty("poll")
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    @JsonDeserialize(using = PollJsonDeserializer::class)
+    var poll: Poll? = null
 
     @JsonProperty("thread")
 //    @JsonIgnoreProperties(ignoreUnknown = true)

@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.kidozh.discuzhub"
         minSdkVersion 24
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 47
         versionName "5.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -175,6 +175,7 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-core:$jackson_version"
     implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
+    implementation("com.fasterxml.jackson.module:jackson-module-parameter-names:$jackson_version")
 
 
     implementation 'org.jsoup:jsoup:1.14.3'

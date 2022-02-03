@@ -52,65 +52,12 @@ public class bbsParseUtils {
         }
     }
 
-    public static Map<String, String> parseThreadType(String s) {
-        try {
-            Map<String, String> threadTypeMap = new HashMap<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONObject threadTypes = variables.getJSONObject("threadtypes");
-            JSONObject types = threadTypes.getJSONObject("types");
-            Iterator<String> stringIterator = types.keys();
-            while (stringIterator.hasNext()) {
-                String key = stringIterator.next();
-                String value = types.getString(key);
-                threadTypeMap.put(key, value);
-            }
-            return threadTypeMap;
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static String parseFormHash(String s) {
-        try {
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            return variables.getString("formhash");
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
 
     public static UserProfileResult parseUserProfileResult(String s){
         try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             return mapper.readValue(s, UserProfileResult.class);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static List<String> getThreadTypeList(String s) {
-        try {
-            List<String> numKeys = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONObject forumTypeInfo = variables.getJSONObject("threadtypes");
-            JSONObject forumTypes = forumTypeInfo.getJSONObject("types");
-            Iterator<String> iterator = forumTypes.keys();
-            while (iterator.hasNext()) {
-                String numKey = iterator.next();
-                String threadName = forumTypes.getString(numKey);
-                numKeys.add(numKey);
-            }
-            return numKeys;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -144,18 +91,6 @@ public class bbsParseUtils {
             JSONObject message = jsonObject.getJSONObject("Message");
             return message.getString("messagestr");
         } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public static DisplayThreadsResult getThreadListInfo(String s) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(s, DisplayThreadsResult.class);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }
@@ -316,60 +251,7 @@ public class bbsParseUtils {
         }
     }
 
-    public static int parsePrivateDetailMessagePerPage(String s) {
-        try {
-            List<privateDetailMessage> privateDetailMessageList = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
 
-            return Integer.parseInt(variables.getString("perpage"));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    public static String parsePrivateDetailMessagePmid(String s) {
-        try {
-            List<privateDetailMessage> privateDetailMessageList = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-
-            return variables.getString("pmid");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static int parsePrivateDetailMessagePage(String s) {
-        try {
-            List<privateDetailMessage> privateDetailMessageList = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-
-            return Integer.parseInt(variables.getString("page"));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-
-
-
-    public static class userFriend {
-        public int uid;
-        public String username;
-
-        public userFriend(int uid, String username) {
-            this.uid = uid;
-            this.username = username;
-        }
-    }
 
 
     public static UserFriendResult parseUserFriendsResult(String s) {
@@ -412,110 +294,6 @@ public class bbsParseUtils {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }
-    }
-
-    public static class notificationDetailInfo {
-        public int id, uid;
-        public String type;
-        public Boolean isNew;
-        public int authorId;
-        public String author, note;
-        public Date date;
-        public int fromId;
-        public String fromIdType;
-        public int from_num;
-        public Map<String, String> noteVariables;
-
-        public notificationDetailInfo(int id, int uid, String type, Boolean isNew, int authorId, String author, String note, Date date, int fromId, String fromIdType, int from_num, Map<String, String> noteVariables) {
-            this.id = id;
-            this.uid = uid;
-            this.type = type;
-            this.isNew = isNew;
-            this.authorId = authorId;
-            this.author = author;
-            this.note = note;
-            this.date = date;
-            this.fromId = fromId;
-            this.fromIdType = fromIdType;
-            this.from_num = from_num;
-            this.noteVariables = noteVariables;
-        }
-    }
-
-    public static UserNoteListResult getUserNoteListResult(String s) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(s, UserNoteListResult.class);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static Map<String, String> parseNotificationVariable(JSONObject noteVar) {
-
-        try {
-            Map<String, String> info = new HashMap<>();
-
-            JSONObject spaceInfo = noteVar.getJSONObject("notevar");
-            Iterator<String> sIterator = spaceInfo.keys();
-            while (sIterator.hasNext()) {
-                String key = sIterator.next();
-                if (spaceInfo.get(key) instanceof String) {
-                    String val = spaceInfo.getString(key);
-                    info.put(key, val);
-                }
-            }
-            return info;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    
-
-    public static List<Smiley> parseSmiley(String s) {
-        try {
-            List<Smiley> SmileyList = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONArray smileyCateList = variables.getJSONArray("smilies");
-            for (int i = 0; i < smileyCateList.length(); i++) {
-                JSONArray smileyCates = smileyCateList.getJSONArray(i);
-                for (int j = 0; j < smileyCates.length(); j++) {
-                    JSONObject smiley = smileyCates.getJSONObject(j);
-                    SmileyList.add(new Smiley(0,
-                            smiley.getString("code"),
-                            smiley.getString("image"),
-                            i
-                    ));
-                }
-            }
-            return SmileyList;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static int parseSmileyCateNum(String s) {
-        try {
-            List<Smiley> SmileyList = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(s);
-            JSONObject variables = jsonObject.getJSONObject("Variables");
-            JSONArray smileyCateList = variables.getJSONArray("smilies");
-            return smileyCateList.length();
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
         }
     }
 

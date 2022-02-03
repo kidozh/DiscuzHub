@@ -8,7 +8,7 @@ import com.kidozh.discuzhub.entities.Discuz
 
 object UserPreferenceUtils {
     private val TAG = UserPreferenceUtils::class.java.simpleName
-    fun getRewriteRulePreferenceName(context: Context, bbsInfo: Discuz, rewriteKey: String): String {
+    private fun getRewriteRulePreferenceName(context: Context, bbsInfo: Discuz, rewriteKey: String): String {
         return context.getString(R.string.bbs_rewrite_rule_preference, rewriteKey, bbsInfo.id)
     }
 

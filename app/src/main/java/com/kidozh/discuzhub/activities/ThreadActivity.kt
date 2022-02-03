@@ -1,6 +1,7 @@
 package com.kidozh.discuzhub.activities
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityOptions
 import android.app.AlertDialog
@@ -257,7 +258,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
         }
         threadDetailViewModel.pollLiveData.observe(this) { bbsPollInfo ->
             if (bbsPollInfo != null) {
-                Log.d(TAG, "get special_poll " + bbsPollInfo.votersCount)
+                Log.d(TAG, "get poll " + bbsPollInfo.votersCount)
                 val fragmentManager = supportFragmentManager
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 fragmentTransaction.replace(
@@ -266,22 +267,10 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
                 )
                 fragmentTransaction.commit()
             } else {
-                Log.d(TAG, "get special_poll is null")
+                Log.d(TAG, "get poll is null")
             }
         }
-        threadDetailViewModel.formHash.observe(this, { s -> formHash = s })
-        threadDetailViewModel.threadStatusMutableLiveData.observe(this) { viewThreadQueryStatus ->
-            Log.d(TAG, "Livedata changed " + viewThreadQueryStatus.datelineAscend)
-//            if (supportActionBar != null) {
-//                if (viewThreadQueryStatus.datelineAscend) {
-//                    binding.toolbarSubtitle.setText(getString(R.string.bbs_thread_status_ascend))
-//
-//                } else {
-//                    binding.toolbarSubtitle.setText(getString(R.string.bbs_thread_status_descend))
-//
-//                }
-//            }
-        }
+        threadDetailViewModel.formHash.observe(this) { s -> formHash = s }
         threadDetailViewModel.detailedThreadInfoMutableLiveData.observe(this) { detailedThreadInfo: DetailedThreadInfo -> // closed situation
             // prepare notification list
             val threadNotificationList: MutableList<ThreadCount> = ArrayList()
@@ -901,7 +890,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
     }
 
     override fun onPollResultFetched() {
-        // reset special_poll to get realtime result
+        // reset poll to get realtime result
         Log.d(TAG, "POLL is voted")
         poll = null
         threadDetailViewModel.pollLiveData.value = null
@@ -1778,6 +1767,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
         return true
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         val ViewThreadQueryStatus = threadDetailViewModel.threadStatusMutableLiveData.value
         if (ViewThreadQueryStatus != null) {
