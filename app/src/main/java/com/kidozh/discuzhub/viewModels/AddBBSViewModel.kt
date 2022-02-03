@@ -1,6 +1,7 @@
 package com.kidozh.discuzhub.viewModels
 
 import android.app.Application
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -42,10 +43,12 @@ class AddBBSViewModel(application: Application) : AndroidViewModel(application) 
             }
             isLoadingLiveData.postValue(true)
             URLUtils.setBaseUrl(base_url)
+
             val client = NetworkUtils.getPreferredClient(getApplication())
             val retrofit = NetworkUtils.getRetrofitInstance(base_url,client)
             val service = retrofit.create(DiscuzApiService::class.java)
             val checkCall = service.checkResult
+            Log.d(TAG,"Get base url ${base_url} , ${checkCall.request().url}")
             checkCall.enqueue(object : Callback<AddCheckResult> {
                 override fun onResponse(call: Call<AddCheckResult>, response: Response<AddCheckResult>) {
                     if (response.isSuccessful && response.body() != null) {

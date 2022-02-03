@@ -27,7 +27,6 @@ import com.kidozh.discuzhub.viewModels.AddBBSViewModel
 import es.dmoral.toasty.Toasty
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.*
 
 class AddIntroActivity : BaseStatusActivity(), OnClickSuggestionListener {
     var adapter: UrlSuggestionAdapter = UrlSuggestionAdapter()
@@ -72,22 +71,22 @@ class AddIntroActivity : BaseStatusActivity(), OnClickSuggestionListener {
     }
 
     private fun bindViewModel() {
-        viewModel.currentURLLiveData.observe(this, { s -> // need to analyze the URL
+        viewModel.currentURLLiveData.observe(this) { s -> // need to analyze the URL
             val suggestURLInfos = getSuggestedURLList(s)
             adapter.setSuggestURLInfoList(suggestURLInfos)
-        })
-        viewModel.isLoadingLiveData.observe(this, { aBoolean ->
+        }
+        viewModel.isLoadingLiveData.observe(this) { aBoolean ->
             if (aBoolean) {
                 binding!!.bbsAddIntroProgressBar.visibility = View.VISIBLE
             } else {
                 binding!!.bbsAddIntroProgressBar.visibility = View.GONE
             }
-        })
-        viewModel.errorTextLiveData.observe(this, { s ->
+        }
+        viewModel.errorTextLiveData.observe(this) { s ->
             if (s.isNotEmpty()) {
                 Toasty.warning(application, s, Toast.LENGTH_SHORT).show()
             }
-        })
+        }
         viewModel.verifiedBBS.observe(this, Observer { bbsInformation: Discuz? ->
             if (bbsInformation != null) {
                 Thread {
@@ -101,12 +100,16 @@ class AddIntroActivity : BaseStatusActivity(), OnClickSuggestionListener {
                 finishAfterTransition()
             }
         })
-        viewModel.errorMessageMutableLiveData.observe(this, { it ->
-            if(it != null){
-                Toasty.error(this,getString(R.string.discuz_api_message_template,it.key,it.content),Toast.LENGTH_SHORT).show()
+        viewModel.errorMessageMutableLiveData.observe(this) { it ->
+            if (it != null) {
+                Toasty.error(
+                    this,
+                    getString(R.string.discuz_api_message_template, it.key, it.content),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
-        })
+        }
     }
 
     private fun getSuggestedURLList(urlString: String): List<SuggestURLInfo> {

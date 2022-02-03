@@ -3,7 +3,6 @@ package com.kidozh.discuzhub.services
 import com.kidozh.discuzhub.results.*
 import retrofit2.Call
 import retrofit2.http.*
-import java.util.*
 
 interface DiscuzApiService {
     @GET("$DISCUZ_API_PATH?version=4&module=myfavthread")
@@ -229,6 +228,6 @@ interface DiscuzApiService {
     ): Call<ApiMessageActionResult>
 
     companion object {
-        const val DISCUZ_API_PATH = "/api/mobile/index.php"
+        const val DISCUZ_API_PATH = "api/mobile/index.php"
     }
 }
