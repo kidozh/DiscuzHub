@@ -146,7 +146,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
     }
 
     fun bindViewModel(){
-        threadViewModel.networkStatus.observe(this, { integer: Int ->
+        threadViewModel.networkStatus.observe(this) { integer: Int ->
             Log.d(TAG, "network changed $integer")
             when (integer) {
                 ConstUtils.NETWORK_STATUS_LOADING -> {
@@ -168,19 +168,25 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                     binding.postsSwipeRefreshLayout.isRefreshing = false
                 }
             }
-        })
+        }
 
-        threadViewModel.errorMessageMutableLiveData.observe(this, { errorMessage: ErrorMessage? ->
+        threadViewModel.errorMessageMutableLiveData.observe(this) { errorMessage: ErrorMessage? ->
             if (errorMessage != null) {
-                Toasty.error(application,
-                        getString(R.string.discuz_api_message_template, errorMessage.key, errorMessage.content),
-                        Toast.LENGTH_LONG).show()
+                Toasty.error(
+                    application,
+                    getString(
+                        R.string.discuz_api_message_template,
+                        errorMessage.key,
+                        errorMessage.content
+                    ),
+                    Toast.LENGTH_LONG
+                ).show()
                 networkIndicatorAdapter.setErrorStatus(errorMessage)
                 VibrateUtils.vibrateForError(application)
             }
-        })
+        }
 
-        threadViewModel.threadPostResultMutableLiveData.observe(this, {
+        threadViewModel.threadPostResultMutableLiveData.observe(this) {
             if (it != null) {
                 this.setBaseResult(it, it.threadPostVariables)
                 // rendering subject
@@ -190,9 +196,13 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                 binding.toolbar.title = threadInfo.subject
                 // rendering list
                 val posts = it.threadPostVariables.postList
-                val status = threadViewModel.threadStatusMutableLiveData.value as ViewThreadQueryStatus
+                val status =
+                    threadViewModel.threadStatusMutableLiveData.value as ViewThreadQueryStatus
                 postAdapter.setPosts(posts as MutableList<Post>, status, status.authorId)
-                Log.d(TAG, "GET page post " + posts.size + " returned ppp " + it.threadPostVariables.ppp)
+                Log.d(
+                    TAG,
+                    "GET page post " + posts.size + " returned ppp " + it.threadPostVariables.ppp
+                )
                 // deal with page
                 val allReplies = it.threadPostVariables.detailedThreadInfo.replies
                 // hardcoded for stable performance
@@ -201,13 +211,19 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                 if (cntPerpage == 0) {
                     cntPerpage = 15
                 }
-                Log.d(TAG, "Get all replies " + allReplies + " spinner pages " + allReplies / cntPerpage)
+                Log.d(
+                    TAG,
+                    "Get all replies " + allReplies + " spinner pages " + allReplies / cntPerpage
+                )
                 // divide by 0 check
                 val spinnerPages = allReplies / cntPerpage + 1
                 // scroll if position is given
-                if(jumpedPosition != 0){
+                if (jumpedPosition != 0) {
                     val destinationLayer = jumpedPosition % cntPerpage
-                    Toasty.info(this,getString(R.string.scroll_to_pid_successfully,jumpedPosition)).show()
+                    Toasty.info(
+                        this,
+                        getString(R.string.scroll_to_pid_successfully, jumpedPosition)
+                    ).show()
                     binding.postsRecyclerview.smoothScrollToPosition(destinationLayer)
 
                     jumpedPosition = 0
@@ -222,7 +238,8 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                     for (i in 0 until spinnerPages) {
                         pageList.add(getString(R.string.per_page, i + 1))
                     }
-                    binding.pageSpinner.adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, pageList)
+                    binding.pageSpinner.adapter =
+                        ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, pageList)
                 }
 
                 binding.pageSpinner.setSelection(status.page - 1)
@@ -237,7 +254,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
             } else {
                 binding.pageSpinner.visibility = View.GONE
             }
-        })
+        }
 
 
         // for secure reason
@@ -261,9 +278,6 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
                     val captchaImageURL =
                         URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables!!.secHash)
                     // load it
-                    if (captchaURL == null) {
-                        return@observe
-                    }
                     val captchaRequest = Request.Builder()
                         .url(captchaURL)
                         .build()
@@ -311,62 +325,76 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
             }
         }
 
-        smileyViewModel.smileyResultLiveData.observe(this, { it ->
+        smileyViewModel.smileyResultLiveData.observe(this) {
             if (it != null) {
                 val smileyList = it.variables.smileyList
                 val smileyCategoryCnt = smileyList.size
                 binding.smileyTablayout.removeAllTabs()
                 for (i in 0 until smileyCategoryCnt) {
                     binding.smileyTablayout.addTab(
-                            binding.smileyTablayout.newTab().setText((i + 1).toString())
+                        binding.smileyTablayout.newTab().setText((i + 1).toString())
                     )
                 }
 
                 smileyViewPagerAdapter.smileyList = smileyList
-                binding.smileyTablayout.getTabAt(0)?.icon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_history_24)
+                binding.smileyTablayout.getTabAt(0)?.icon =
+                    ContextCompat.getDrawable(this, R.drawable.ic_baseline_history_24)
 
             }
-        })
+        }
 
-        threadViewModel.replyPostMutableLiveData.observe(this,{
-            if(it == null){
+        threadViewModel.replyPostMutableLiveData.observe(this) {
+            if (it == null) {
                 binding.replyPersonContent.visibility = View.GONE
-            }
-            else{
+            } else {
                 binding.replyPersonContent.visibility = View.VISIBLE
                 binding.replyPostAuthorChip.text = it.author
                 binding.replyPostContent.text = it.message
             }
-        })
+        }
 
-        threadViewModel.interactErrorMutableLiveData.observe(this,{
-            if(it != null){
-                Toasty.error(this,
-                        getString(R.string.discuz_api_message_template, it.key, it.content),
-                        Toast.LENGTH_LONG).show()
+        threadViewModel.interactErrorMutableLiveData.observe(this) {
+            if (it != null) {
+                Toasty.error(
+                    this,
+                    getString(R.string.discuz_api_message_template, it.key, it.content),
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
-        })
+        }
 
 
 
-        threadViewModel.replyResultMutableLiveData.observe(this,{
-            if(it?.message != null){
+        threadViewModel.replyResultMutableLiveData.observe(this) {
+            if (it?.message != null) {
                 if (it.message!!.key == "post_reply_succeed") {
-                    Toasty.success(this,
-                            getString(R.string.discuz_api_message_template, it.message!!.key, it.message!!.content),
-                            Toast.LENGTH_LONG).show()
+                    Toasty.success(
+                        this,
+                        getString(
+                            R.string.discuz_api_message_template,
+                            it.message!!.key,
+                            it.message!!.content
+                        ),
+                        Toast.LENGTH_LONG
+                    ).show()
                     // clear the status
                     threadViewModel.replyPostMutableLiveData.postValue(null)
                     binding.replyEdittext.text.clear()
                 } else {
-                    Toasty.error(this,
-                            getString(R.string.discuz_api_message_template, it.message!!.key, it.message!!.content),
-                            Toast.LENGTH_LONG).show()
+                    Toasty.error(
+                        this,
+                        getString(
+                            R.string.discuz_api_message_template,
+                            it.message!!.key,
+                            it.message!!.content
+                        ),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
 
-        })
+        }
     }
 
     private fun configureSpinner(){
@@ -437,7 +465,7 @@ class ThreadPageActivity : BaseStatusActivity() , SmileyFragment.OnSmileyPressed
             }
 
             override fun afterTextChanged(s: Editable?) {
-                val inputString = s.toString();
+                val inputString = s.toString()
                 binding.replyButton.isEnabled = inputString.isNotEmpty()
             }
 

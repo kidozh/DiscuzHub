@@ -47,7 +47,7 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
     private var userId = 0
     var username: String? = null
     private var viewModel: UserProfileViewModel? = null
-    var adapter: personalInfoViewPagerAdapter? = null
+    var adapter: PersonalInfoViewPagerAdapter? = null
     lateinit var binding: ActivityShowPersonalInfoBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -147,7 +147,25 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
             this
         ) { userProfileResult: UserProfileResult? ->
             Log.d(TAG, "User profile result $userProfileResult")
+            if (userProfileResult?.message != null){
+                // check with error
+                binding.errorConstraintLayout.visibility = View.VISIBLE
+                binding.showPersonalInfoViewpager.visibility = View.GONE
+                binding.showPersonalInfoLayout.visibility = View.GONE
+
+                binding.errorMessageKey.text = userProfileResult.message!!.content
+                binding.errorMessageContent.text = userProfileResult.message!!.key
+            }
+            else{
+                binding.errorConstraintLayout.visibility = View.GONE
+                binding.showPersonalInfoViewpager.visibility = View.VISIBLE
+                binding.showPersonalInfoLayout.visibility = View.VISIBLE
+            }
+
             if (userProfileResult?.userProfileVariableResult != null) {
+
+
+
                 val spaceVariables = userProfileResult.userProfileVariableResult!!.space
                 val username = userProfileResult.userProfileVariableResult!!.space.username
                 if (supportActionBar != null) {
@@ -287,13 +305,13 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
             binding.showPersonalInfoViewpager.invalidate()
             adapter!!.notifyDataSetChanged()
         }
-        viewModel!!.isLoading.observe(this, { aBoolean ->
+        viewModel!!.isLoading.observe(this) { aBoolean ->
             if (aBoolean) {
                 binding.showPersonalInfoProgressbar.visibility = View.VISIBLE
             } else {
                 binding.showPersonalInfoProgressbar.visibility = View.GONE
             }
-        })
+        }
     }
 
     private fun generateUserProfileItem(
@@ -643,7 +661,7 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
         Log.d(TAG, "Configuring friend fragment")
 
         binding.showPersonalInfoTabLayout.setupWithViewPager(binding.showPersonalInfoViewpager)
-        adapter = personalInfoViewPagerAdapter(
+        adapter = PersonalInfoViewPagerAdapter(
             supportFragmentManager,
             FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT
         )
@@ -662,7 +680,7 @@ class UserProfileActivity : BaseStatusActivity(), UserFriendFragment.OnFragmentI
         return true
     }
 
-    inner class personalInfoViewPagerAdapter(fm: FragmentManager, behavior: Int) :
+    inner class PersonalInfoViewPagerAdapter(fm: FragmentManager, behavior: Int) :
         FragmentStatePagerAdapter(fm, behavior) {
         override fun getItem(position: Int): Fragment {
             val userProfileResult = viewModel!!.userProfileResultLiveData.value

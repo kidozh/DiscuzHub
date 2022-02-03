@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
@@ -76,12 +77,14 @@ class PollFragment : Fragment() {
         configurePollInformation()
     }
 
-    fun configurePollInformation() {
-        
-        binding!!.bbsPollExpireTime.text = getString(
-            R.string.poll_expire_at,
-            getLocalePastTimeString(requireContext(), pollInfo.expirations!!)
-        )
+    private fun configurePollInformation() {
+        if(pollInfo.expirations!=null){
+            binding!!.bbsPollExpireTime.text = getString(
+                R.string.poll_expire_at,
+                getLocalePastTimeString(requireContext(), pollInfo.expirations!!)
+            )
+        }
+
         val res = resources
         val votersNumberString = res.getQuantityString(
             R.plurals.poll_voter_number,
@@ -96,21 +99,21 @@ class PollFragment : Fragment() {
         if (!pollInfo.multiple) {
             chip.setText(R.string.poll_single_choice)
             chip.chipIcon =
-                requireContext().getDrawable(R.drawable.vector_drawable_radio_button_checked_24px)
+                AppCompatResources.getDrawable(requireContext(),R.drawable.vector_drawable_radio_button_checked_24px)
         } else {
             chip.setText(R.string.poll_multiple_choices)
             chip.chipIcon =
-                requireContext().getDrawable(R.drawable.vector_drawable_format_list_bulleted_24px)
+                AppCompatResources.getDrawable(requireContext(),R.drawable.vector_drawable_format_list_bulleted_24px)
         }
         binding!!.bbsPollChipGroup.addView(chip)
         chip = Chip(context)
         if (pollInfo.allowVote) {
             chip.setText(R.string.poll_can_vote)
-            chip.chipIcon = requireContext().getDrawable(R.drawable.ic_check_24px)
+            chip.chipIcon = AppCompatResources.getDrawable(requireContext(),R.drawable.ic_check_24px)
             chip.setChipBackgroundColorResource(R.color.colorSafeStatus)
         } else {
             chip.setText(R.string.poll_cannot_vote)
-            chip.chipIcon = requireContext().getDrawable(R.drawable.ic_block_white_24px)
+            chip.chipIcon = AppCompatResources.getDrawable(requireContext(),R.drawable.ic_block_white_24px)
             chip.setChipBackgroundColorResource(R.color.colorUnSafeStatus)
         }
         chip.setTextColor(requireContext().getColor(R.color.colorPureWhite))
@@ -120,7 +123,7 @@ class PollFragment : Fragment() {
         chip.setTextColor(requireContext().getColor(R.color.colorPrimary))
         if (pollInfo.resultVisible) {
             chip.setText(R.string.poll_visible_after_vote)
-            chip.chipIcon = requireContext().getDrawable(R.drawable.vector_drawable_how_to_vote_24px)
+            chip.chipIcon = AppCompatResources.getDrawable(requireContext(),R.drawable.vector_drawable_how_to_vote_24px)
             binding!!.bbsPollChipGroup.addView(chip)
         }
         configurePollVoteBtn()
@@ -138,7 +141,7 @@ class PollFragment : Fragment() {
             getString(R.string.poll_vote_progress, 0, pollInfo.maxChoices)
         binding!!.bbsPollVoteBtn.setOnClickListener {
             val options = adapter!!.getPollOptions()
-            //val checkedNumber: Int = pollInfo.getCheckedOptionNumber()
+            //val checkedNumber: Int = special_poll.getCheckedOptionNumber()
             val checkedNumber: Int = 0
             if (pollInfo.allowVote && checkedNumber > 0 && checkedNumber <= pollInfo.maxChoices) {
                 Log.d(TAG, "VOTING $formhash")
@@ -173,7 +176,7 @@ class PollFragment : Fragment() {
                     override fun onResponse(call: Call, response: Response) {
                         if (response.isSuccessful && response.body != null) {
                             val s = response.body!!.string()
-                            Log.d(TAG, "recv poll $s")
+                            Log.d(TAG, "recv special_poll $s")
                             mHandler.post {
                                 binding!!.bbsPollVoteBtn.isEnabled = true
                                 // need to notify the activity if success
@@ -235,7 +238,7 @@ class PollFragment : Fragment() {
                             adapter!!.pollOptions[position].checked =
                                 !adapter!!.pollOptions[position].checked
                             adapter!!.notifyItemChanged(position)
-                            //val checkedNumber: Int = pollInfo.getCheckedOptionNumber()
+                            //val checkedNumber: Int = special_poll.getCheckedOptionNumber()
                             val checkedNumber = 0
                             if (checkedNumber <= pollInfo.maxChoices && checkedNumber > 0) {
                                 binding!!.bbsPollVoteBtn.isEnabled = true

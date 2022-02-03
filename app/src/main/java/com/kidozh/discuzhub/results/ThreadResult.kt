@@ -33,7 +33,7 @@ open class ThreadResult : BaseResult() {
     }
 
     companion object{
-        final val TAG = ThreadResult::class.simpleName
+        val TAG = ThreadResult::class.simpleName
     }
 
 
@@ -56,7 +56,7 @@ class SettingRewriteStatusJsonDeserializer : JsonDeserializer<List<String>>() {
 
 class PollJsonDeserializer : JsonDeserializer<Poll?>() {
     companion object{
-        final val TAG = PollJsonDeserializer::class.simpleName
+        val TAG = PollJsonDeserializer::class.simpleName
     }
 
     @Throws(IOException::class, JsonProcessingException::class)
@@ -307,7 +307,7 @@ class DetailedThreadInfo {
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class replyCreditRule {
+class ReplyCreditRule {
     var tid: String? = null
 
     @JsonProperty("extcredits")
@@ -333,7 +333,14 @@ class replyCreditRule {
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class ThreadPostVariable : VariableResults() {
+class ThreadPostVariable : VariableResults() {
+
+    // for special_poll
+    // @JsonProperty("special_poll", required = false, )
+    // @JsonDeserialize(using = PollJsonDeserializer::class)
+    @JvmField
+    var special_poll: Poll? = null
+
     @JsonProperty("thread")
 //    @JsonIgnoreProperties(ignoreUnknown = true)
     var detailedThreadInfo: DetailedThreadInfo = DetailedThreadInfo()
@@ -343,6 +350,8 @@ open class ThreadPostVariable : VariableResults() {
 
     @JsonProperty("postlist")
     var postList: List<Post> = ArrayList()
+
+
 
     @JsonProperty("allowpostcomment")
     var allowPostCommentList: List<String>? = ArrayList()
@@ -372,8 +381,5 @@ open class ThreadPostVariable : VariableResults() {
     @JsonProperty("cache_custominfo_postno")
     var customPostNoList: List<String>? = ArrayList()
 
-    // for poll
-    @JsonProperty("special_poll11111")
-    @JsonDeserialize(using = PollJsonDeserializer::class)
-    var pollInfo: Poll? = null
+
 }

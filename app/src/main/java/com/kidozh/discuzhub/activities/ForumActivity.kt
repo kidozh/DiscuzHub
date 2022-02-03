@@ -95,7 +95,7 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
     }
 
     private fun bindViewModel() {
-        forumViewModel.totalThreadListMutableLiveData.observe(this, {
+        forumViewModel.totalThreadListMutableLiveData.observe(this) {
             var threadTypeMap: HashMap<String, String> = HashMap()
             if (forumViewModel.displayForumResultMutableLiveData.value != null &&
                 forumViewModel.displayForumResultMutableLiveData.value!!.forumVariables.threadTypeInfo != null
@@ -111,8 +111,8 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                     binding.bbsForumThreadRecyclerview.smoothScrollToPosition(0)
                 }
             }
-        })
-        forumViewModel.networkState.observe(this, { integer: Int ->
+        }
+        forumViewModel.networkState.observe(this) { integer: Int ->
             Log.d(TAG, "Network state changed $integer")
             when (integer) {
                 ConstUtils.NETWORK_STATUS_LOADING -> {
@@ -147,25 +147,25 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                     binding.bbsForumInfoSwipeRefreshLayout.isRefreshing = false
                 }
             }
-        })
+        }
         forumViewModel.errorMessageMutableLiveData.observe(
-            this,
-            { errorMessage: ErrorMessage? ->
-                Log.d(TAG, "recv error message $errorMessage")
-                if (errorMessage != null) {
-                    Toasty.error(
-                        applicationContext,
-                        getString(
-                            R.string.discuz_api_message_template,
-                            errorMessage.key,
-                            errorMessage.content
-                        ),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    networkIndicatorAdapter.setErrorStatus(errorMessage)
-                    VibrateUtils.vibrateForError(application)
-                }
-            })
+            this
+        ) { errorMessage: ErrorMessage? ->
+            Log.d(TAG, "recv error message $errorMessage")
+            if (errorMessage != null) {
+                Toasty.error(
+                    applicationContext,
+                    getString(
+                        R.string.discuz_api_message_template,
+                        errorMessage.key,
+                        errorMessage.content
+                    ),
+                    Toast.LENGTH_LONG
+                ).show()
+                networkIndicatorAdapter.setErrorStatus(errorMessage)
+                VibrateUtils.vibrateForError(application)
+            }
+        }
         forumViewModel.displayForumResultMutableLiveData.observe(
             this,
             { forumResult -> // deal with sublist

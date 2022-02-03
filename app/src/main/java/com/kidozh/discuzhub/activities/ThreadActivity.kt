@@ -257,7 +257,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
         }
         threadDetailViewModel.pollLiveData.observe(this) { bbsPollInfo ->
             if (bbsPollInfo != null) {
-                Log.d(TAG, "get poll " + bbsPollInfo.votersCount)
+                Log.d(TAG, "get special_poll " + bbsPollInfo.votersCount)
                 val fragmentManager = supportFragmentManager
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 fragmentTransaction.replace(
@@ -266,7 +266,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
                 )
                 fragmentTransaction.commit()
             } else {
-                Log.d(TAG, "get poll is null")
+                Log.d(TAG, "get special_poll is null")
             }
         }
         threadDetailViewModel.formHash.observe(this, { s -> formHash = s })
@@ -315,7 +315,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
                     )
                 }
             }
-            val sp = Html.fromHtml(detailedThreadInfo.subject)
+            val sp = Html.fromHtml(detailedThreadInfo.subject, HtmlCompat.FROM_HTML_MODE_COMPACT)
             val spannableString = SpannableString(sp)
             binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
             if (detailedThreadInfo.closed != 0) {
@@ -528,11 +528,14 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
             binding.bbsThreadViewNumber.text = detailedThreadInfo.views.toString()
         }
 
-        threadDetailViewModel.threadPostResultMutableLiveData.observe(this, { threadResult ->
+        threadDetailViewModel.threadPostResultMutableLiveData.observe(this) { threadResult ->
             if (threadResult != null) {
                 this.setBaseResult(threadResult, threadResult.threadPostVariables)
                 if (threadResult.threadPostVariables.detailedThreadInfo.subject != null) {
-                    val sp = Html.fromHtml(threadResult.threadPostVariables.detailedThreadInfo.subject,HtmlCompat.FROM_HTML_MODE_COMPACT)
+                    val sp = Html.fromHtml(
+                        threadResult.threadPostVariables.detailedThreadInfo.subject,
+                        HtmlCompat.FROM_HTML_MODE_COMPACT
+                    )
                     val spannableString = SpannableString(sp)
                     binding.bbsThreadSubject.setText(spannableString, TextView.BufferType.SPANNABLE)
 
@@ -562,14 +565,14 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
 
                 //Log.d(TAG,"Thread post result error "+ threadResult.isError()+" "+ threadResult.threadPostVariables.message);
                 val rewriteRule = threadResult.threadPostVariables.rewriteRule
-                if(rewriteRule != null){
+                if (rewriteRule != null) {
                     getAndSaveRewriteRule(rewriteRule, UserPreferenceUtils.REWRITE_FORM_DISPLAY_KEY)
                     getAndSaveRewriteRule(rewriteRule, UserPreferenceUtils.REWRITE_VIEW_THREAD_KEY)
                     getAndSaveRewriteRule(rewriteRule, UserPreferenceUtils.REWRITE_HOME_SPACE)
                 }
 
             }
-        })
+        }
 
         // for secure reason
         threadDetailViewModel.secureInfo.observe(this, Observer { secureInfoResult ->
@@ -587,9 +590,6 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
                     val captchaURL = secureInfoResult.secureVariables!!.secCodeURL
                     val captchaImageURL = URLUtils.getSecCodeImageURL(secureInfoResult.secureVariables!!.secHash)
                     // load it
-                    if (captchaURL == null) {
-                        return@Observer
-                    }
                     val captchaRequest = Request.Builder()
                             .url(captchaURL)
                             .build()
@@ -698,40 +698,62 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
                 builder.show()
             }
         }
-        threadDetailViewModel.buyThreadResultMutableLiveData.observe(this, { buyThreadResult: BuyThreadResult? ->
+        threadDetailViewModel.buyThreadResultMutableLiveData.observe(this) { buyThreadResult: BuyThreadResult? ->
             if (buyThreadResult?.message != null) {
                 val key = buyThreadResult.message!!.key
                 if (key == "thread_pay_succeed") {
-                    Toasty.success(this, getString(R.string.discuz_api_message_template,
+                    Toasty.success(
+                        this, getString(
+                            R.string.discuz_api_message_template,
                             buyThreadResult.message!!.key,
-                            buyThreadResult.message!!.content)).show()
+                            buyThreadResult.message!!.content
+                        )
+                    ).show()
                     reloadThePage()
                 } else {
-                    Toasty.warning(this, getString(R.string.discuz_api_message_template,
+                    Toasty.warning(
+                        this, getString(
+                            R.string.discuz_api_message_template,
                             buyThreadResult.message!!.key,
-                            buyThreadResult.message!!.content)).show()
+                            buyThreadResult.message!!.content
+                        )
+                    ).show()
                 }
             }
-        })
-        threadDetailViewModel.reportResultMutableLiveData.observe(this, { apiMessageActionResult: ApiMessageActionResult? ->
+        }
+        threadDetailViewModel.reportResultMutableLiveData.observe(this) { apiMessageActionResult: ApiMessageActionResult? ->
             if (apiMessageActionResult != null) {
                 if (apiMessageActionResult.message != null) {
                     if (apiMessageActionResult.message!!.key == "report_succeed") {
-                        Toasty.success(this,
-                                getString(R.string.discuz_api_message_template, apiMessageActionResult.message!!.key, apiMessageActionResult.message!!.content),
-                                Toast.LENGTH_LONG).show()
+                        Toasty.success(
+                            this,
+                            getString(
+                                R.string.discuz_api_message_template,
+                                apiMessageActionResult.message!!.key,
+                                apiMessageActionResult.message!!.content
+                            ),
+                            Toast.LENGTH_LONG
+                        ).show()
                     } else {
-                        Toasty.error(this,
-                                getString(R.string.discuz_api_message_template, apiMessageActionResult.message!!.key, apiMessageActionResult.message!!.content),
-                                Toast.LENGTH_LONG).show()
+                        Toasty.error(
+                            this,
+                            getString(
+                                R.string.discuz_api_message_template,
+                                apiMessageActionResult.message!!.key,
+                                apiMessageActionResult.message!!.content
+                            ),
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 } else {
-                    Toasty.error(this,
-                            getString(R.string.api_message_return_null),
-                            Toast.LENGTH_LONG).show()
+                    Toasty.error(
+                        this,
+                        getString(R.string.api_message_return_null),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
-        })
+        }
 
 
         smileyViewModel.smileyResultLiveData.observe(this, Observer { it->
@@ -879,7 +901,7 @@ class ThreadActivity : BaseStatusActivity(), OnSmileyPressedInteraction,
     }
 
     override fun onPollResultFetched() {
-        // reset poll to get realtime result
+        // reset special_poll to get realtime result
         Log.d(TAG, "POLL is voted")
         poll = null
         threadDetailViewModel.pollLiveData.value = null

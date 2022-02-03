@@ -19,43 +19,45 @@ import java.io.Serializable
 import java.util.*
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-open class Poll : Serializable {
-    
+class Poll : Serializable {
+    @JvmField
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonDeserialize(using = OneZeroBooleanDeserializer::class)
     var multiple = false
 
-    
+    @JvmField
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "s")
     var expirations: Date? = null
 
-    
+    @JvmField
     @JsonProperty("maxchoices")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     var maxChoices = 0
 
-    
+    @JvmField
     @JsonProperty("voterscount")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     var votersCount = 0
 
-    
+    @JvmField
     @JsonProperty("visiblepoll")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonDeserialize(using = OneZeroBooleanDeserializer::class)
     var resultVisible = false
 
-    
+    @JvmField
     @JsonProperty("allowvote")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @JsonDeserialize(using = OneZeroBooleanDeserializer::class)
     var allowVote = false
 
-    
+    @JvmField
     @JsonProperty("polloptions")
     @JsonDeserialize(using = OptionsDeserializer::class)
+    @JsonIgnore
     var options: List<Option> = ArrayList()
 
+    @JvmField
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonIgnore
     var remaintime: List<String>? = null
@@ -71,32 +73,35 @@ open class Poll : Serializable {
             count
         }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     class Option : Serializable {
-        
+        @JvmField
         @JsonProperty("polloptionid")
         var id: String = ""
 
-        
+        @JvmField
         @JsonProperty("polloption")
         var name: String = ""
 
-        
+        @JvmField
         @JsonProperty("votes")
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         var voteNumber = 0
+        @JvmField
         var width: String? = null
 
-        
+        @JvmField
         @JsonFormat(shape = JsonFormat.Shape.STRING)
         var percent = 0f
 
-        
+        @JvmField
         @JsonProperty("color")
         var colorName: String? = null
 
-        
+        @JvmField
         @JsonProperty("imginfo")
         @JsonDeserialize(using = ImageInfoDeserializer::class)
+        @JsonIgnore
         var imageInfo: ImageInfo? = null
 
 
