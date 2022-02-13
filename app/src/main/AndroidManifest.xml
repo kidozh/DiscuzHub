@@ -13,6 +13,29 @@
         android:maxSdkVersion="20" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+
+            <data android:scheme="http" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+
+            <data android:scheme="tel" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+
+            <data android:mimeType="*/*" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/logo"
@@ -23,9 +46,12 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
         <activity
-            android:name=".activities.ShortcutActivity"
-            android:label="@string/short_cut_activity_title"
+            android:name=".activities.PushTokenActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.ShortcutActivity"
+            android:exported="false"
+            android:label="@string/short_cut_activity_title" />
         <activity
             android:name=".activities.PortalActivity"
             android:exported="true">
@@ -44,7 +70,9 @@
         <activity android:name=".activities.AddIntroActivity" />
         <activity android:name=".activities.AboutAppActivity" />
         <activity android:name=".activities.InternalWebViewActivity" />
-        <activity android:name=".activities.ThreadDraftActivity" android:label="@string/bbs_draft_box"/>
+        <activity
+            android:name=".activities.ThreadDraftActivity"
+            android:label="@string/bbs_draft_box" />
         <activity android:name=".activities.UserProfileActivity" />
         <activity android:name=".activities.PrivateMessageActivity" />
         <activity
@@ -69,7 +97,9 @@
                     android:scheme="http" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.LoginActivity" android:label="@string/bbs_login"/>
+        <activity
+            android:name=".activities.LoginActivity"
+            android:label="@string/bbs_login" />
         <activity
             android:name=".activities.FullImageActivity"
             android:colorMode="wideColorGamut"
@@ -97,37 +127,16 @@
         <meta-data
             android:name="discuz_title"
             android:value="${discuz_title}" />
-        
+
         <provider
-            android:authorities="${applicationId}.androidx-startup"
             android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
-            tools:node="merge"
-            >
-            <meta-data android:name="com.kidozh.discuzhub.embedding.TabletWindowInitializer"
-                android:value="androidx.startup"/>
+            tools:node="merge">
+            <meta-data
+                android:name="com.kidozh.discuzhub.embedding.TabletWindowInitializer"
+                android:value="androidx.startup" />
         </provider>
     </application>
-
-    <queries>
-        <intent>
-            <action android:name="android.intent.action.VIEW" />
-            <data android:scheme="https" />
-        </intent>
-        <intent>
-            <action android:name="android.intent.action.VIEW" />
-            <data android:scheme="http" />
-        </intent>
-        <intent>
-            <action android:name="android.intent.action.DIAL" />
-            <data android:scheme="tel" />
-        </intent>
-        <intent>
-            <action android:name="android.intent.action.SEND" />
-            <data android:mimeType="*/*" />
-        </intent>
-    </queries>
-    
-    
 
 </manifest>

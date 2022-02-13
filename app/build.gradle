@@ -22,6 +22,23 @@ android {
                                       "$projectDir/schemas".toString()]
             }
         }
+        // add compose support
+        buildFeatures{
+            compose true
+        }
+
+        // Set both the Java and Kotlin compilers to target Java 8.
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+
+        composeOptions {
+            kotlinCompilerExtensionVersion '1.0.5'
+        }
     }
     buildTypes {
 
@@ -104,8 +121,8 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.annotation:annotation:1.3.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.4.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.4.1'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     // For control over item selection of both touch and mouse driven selection
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
@@ -120,7 +137,7 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide_version"
 
 
-    def lifecycle_version = '2.4.0'
+    def lifecycle_version = '2.4.1'
     // ViewModel and LiveData
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
@@ -184,7 +201,7 @@ dependencies {
 
     api 'com.google.guava:guava:31.0.1-jre'
     implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // for material drawer
@@ -213,7 +230,22 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.4'
     // larger screen support
     implementation("androidx.window:window:1.0.0")
-    implementation("androidx.startup:startup-runtime:1.1.0")
+    implementation("androidx.startup:startup-runtime:1.1.1")
+    // compose
+    // Integration with activities
+    implementation 'androidx.activity:activity-compose:1.4.0'
+    // Compose Material Design
+    implementation 'androidx.compose.material:material:1.1.0'
+    // Animations
+    implementation 'androidx.compose.animation:animation:1.1.0'
+    // Tooling support (Previews, etc.)
+    implementation 'androidx.compose.ui:ui-tooling:1.1.0'
+    // Integration with ViewModels
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.0-alpha02'
+    // UI Tests
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.1.0'
+    // optional - Jetpack Compose integration
+    implementation "androidx.paging:paging-compose:1.0.0-alpha14"
 
 
 
