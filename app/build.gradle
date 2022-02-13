@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'  // Google Services plugin
+
 
 android {
     compileSdkVersion 32
@@ -37,7 +39,7 @@ android {
         }
 
         composeOptions {
-            kotlinCompilerExtensionVersion '1.0.5'
+            kotlinCompilerExtensionVersion '1.2.0-alpha02'
         }
     }
     buildTypes {
@@ -247,6 +249,11 @@ dependencies {
     // optional - Jetpack Compose integration
     implementation "androidx.paging:paging-compose:1.0.0-alpha14"
 
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:29.0.4')
+    // Firebase Messaging
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-analytics'
 
 
 
