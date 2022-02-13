@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "7909980581",
+    "project_id": "discuz-hub",
+    "storage_bucket": "discuz-hub.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7909980581:android:b1ca062c195a5c6ec5904c",
+        "android_client_info": {
+          "package_name": "com.kidozh.discuzhub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "7909980581-klr4dgum5bv45kum7fl3nrcqencjg531.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbbdA8cssVh67IxupJk76ueGaIxpTPtHo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "7909980581-klr4dgum5bv45kum7fl3nrcqencjg531.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7909980581:android:5e454873e5c5932fc5904c",
+        "android_client_info": {
+          "package_name": "com.kidozh.discuzhub.keylol.bbs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "7909980581-klr4dgum5bv45kum7fl3nrcqencjg531.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbbdA8cssVh67IxupJk76ueGaIxpTPtHo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "7909980581-klr4dgum5bv45kum7fl3nrcqencjg531.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
