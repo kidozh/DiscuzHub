@@ -21,13 +21,15 @@ import com.kidozh.discuzhub.results.UserNoteListResult.UserNotification
 import com.kidozh.discuzhub.services.DiscuzApiService
 import com.kidozh.discuzhub.utilities.ConstUtils
 import com.kidozh.discuzhub.utilities.NetworkUtils
+import com.kidozh.discuzhub.utilities.NotificationUtils
 import com.kidozh.discuzhub.utilities.URLUtils
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils.dontDisturbAtNight
 import com.kidozh.discuzhub.utilities.UserPreferenceUtils.syncInformation
-import com.kidozh.discuzhub.utilities.notificationUtils
-import com.kidozh.discuzhub.works.PushUserNotificationWork
 import java.lang.String
-import java.util.*
+import kotlin.Boolean
+import kotlin.Exception
+import kotlin.Int
+import kotlin.apply
 
 class PushUserNotificationWork(private val context: Context, workerParams: WorkerParameters) :
     Worker(
@@ -40,7 +42,7 @@ class PushUserNotificationWork(private val context: Context, workerParams: Worke
 
     override fun doWork(): Result {
         // register notification channel
-        notificationUtils.createUsersUpdateChannel(context)
+        NotificationUtils.createUsersUpdateChannel(context)
         Log.d(TAG, "WORK HAS BEEN STARTED")
         // check if settings allow sync
         val allowSync = syncInformation(context)
@@ -138,7 +140,7 @@ class PushUserNotificationWork(private val context: Context, workerParams: Worke
 
     private fun pushNewUserNotification(notification: UserNotification) {
         val notificationId = userBriefInfo!!.id
-        notificationUtils.createUsersUpdateChannel(context)
+        NotificationUtils.createUsersUpdateChannel(context)
         var notificationContent = notification.note
         val notificationTag = String.valueOf(notification.id)
         notificationContent = notificationContent.replace("<.*?>".toRegex(), "")
@@ -164,7 +166,7 @@ class PushUserNotificationWork(private val context: Context, workerParams: Worke
         }
 
         val newUpdateNotification = NotificationCompat.Builder(
-            context, notificationUtils.userUpdateNotificationId
+            context, NotificationUtils.userUpdateNotificationId
         )
             .setSmallIcon(R.drawable.ic_account_box_24px)
             .setContentTitle(
@@ -175,7 +177,7 @@ class PushUserNotificationWork(private val context: Context, workerParams: Worke
                 )
             )
             .setContentText(notificationContent) //.setLargeIcon()
-            .setGroup(notificationUtils.NOTIFICATION_GROUP_KEY_USER_GROUP_UPDATE)
+            .setGroup(NotificationUtils.NOTIFICATION_GROUP_KEY_USER_GROUP_UPDATE)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .build()
@@ -190,9 +192,9 @@ class PushUserNotificationWork(private val context: Context, workerParams: Worke
             return
         }
         val notificationId = userBriefInfo!!.id
-        notificationUtils.createUsersUpdateChannel(context)
+        NotificationUtils.createUsersUpdateChannel(context)
         val newUpdateNotification = NotificationCompat.Builder(
-            context, notificationUtils.userUpdateNotificationId
+            context, NotificationUtils.userUpdateNotificationId
         )
             .setSmallIcon(R.drawable.ic_account_box_24px)
             .setContentTitle(
@@ -209,7 +211,7 @@ class PushUserNotificationWork(private val context: Context, workerParams: Worke
                     totalNum
                 )
             ) //.setLargeIcon()
-            .setGroup(notificationUtils.NOTIFICATION_GROUP_KEY_USER_GROUP_UPDATE)
+            .setGroup(NotificationUtils.NOTIFICATION_GROUP_KEY_USER_GROUP_UPDATE)
             .setAutoCancel(true)
             .setGroupSummary(true)
             .build()

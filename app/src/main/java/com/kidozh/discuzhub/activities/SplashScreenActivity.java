@@ -25,7 +25,7 @@ import com.kidozh.discuzhub.utilities.UserPreferenceUtils;
 import com.kidozh.discuzhub.works.AutoClearHistoriesWork;
 import com.kidozh.discuzhub.works.PushUserNotificationWork;
 import com.kidozh.discuzhub.utilities.ConstUtils;
-import com.kidozh.discuzhub.utilities.notificationUtils;
+import com.kidozh.discuzhub.utilities.NotificationUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -54,8 +54,8 @@ public class SplashScreenActivity extends BaseStatusActivity {
     // register notification
     private void registerNotification(){
         // splashScreenNotification.setText(R.string.action_register_notification_channel);
-        notificationUtils.createUpdateProgressNotificationChannel(this);
-        notificationUtils.createUsersUpdateChannel(this);
+        NotificationUtils.createUpdateProgressNotificationChannel(this);
+        NotificationUtils.createUsersUpdateChannel(this);
     }
 
 

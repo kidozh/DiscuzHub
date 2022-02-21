@@ -40,7 +40,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import java.util.*
 
 class WebViewLoginActivity : BaseStatusActivity() {
     lateinit var cookieWebViewClientInstance: CookieWebViewClient
@@ -265,7 +264,7 @@ class WebViewLoginActivity : BaseStatusActivity() {
                         "SAVE Cookie to " + httpUrl.toString() + " cookie list " + cookieList.size + " SET COOKIE" + cookie
                     )
                     if (discuz != null) {
-                        saveUserToDatabase(parsedUserInfo,client,httpUrl,null)
+                        saveUserToDatabase(parsedUserInfo,client,httpUrl,"")
                         //saveUserToDatabaseAsyncTask(parsedUserInfo, client, httpUrl).execute()
                     } else {
                         var baseURL = retrofit.baseUrl().toString()
@@ -321,7 +320,7 @@ class WebViewLoginActivity : BaseStatusActivity() {
         cookieWebViewClientInstance!!.cookieString.removeAllCookies { }
     }
 
-    fun saveUserToDatabase(userBriefInfo: User, client: OkHttpClient, httpUrl: HttpUrl, redirectURL: String?){
+    fun saveUserToDatabase(userBriefInfo: User, client: OkHttpClient, httpUrl: HttpUrl, redirectURL: String){
         var insertUserIdList: MutableList<Long> = ArrayList()
         var discuzList: MutableList<Discuz> = ArrayList()
         if (discuz != null) {
@@ -332,7 +331,7 @@ class WebViewLoginActivity : BaseStatusActivity() {
                 // search it
                 discuzList = DiscuzDatabase.getInstance(applicationContext)
                     .forumInformationDao
-                    .getBBSInformationsByBaseURL(redirectURL)
+                    .getBBSInformationsByBaseURL(redirectURL).toMutableList()
                 // insert them by bbs
                 for (i in discuzList.indices) {
                     val discuz = discuzList[i]

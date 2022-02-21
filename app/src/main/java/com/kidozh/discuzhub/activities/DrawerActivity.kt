@@ -73,6 +73,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
     val FUNC_SHORT_CUT:Long = -856421554
     val FUNC_DRFAT_BOX :Long = -85642414
     val FUNC_SEARCH :Long = -85647
+    val FUNC_PUSH_SERVICE:Long = -5454245458
     var savedInstanceState: Bundle? = null
     lateinit var headerView: AccountHeaderView
     lateinit var binding: ActivityNewMainDrawerBinding
@@ -125,7 +126,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                 val accountProfiles: MutableList<IProfile> = ArrayList()
                 for (i in Discuzs.indices) {
                     val currentBBSInfo = Discuzs[i]
-                    notificationUtils.createUsersUpdateChannel(applicationContext)
+                    NotificationUtils.createUsersUpdateChannel(applicationContext)
                     //URLUtils.setBBS(currentBBSInfo);
                     Log.d(TAG, "Load url " + URLUtils.getBBSLogoUrl(currentBBSInfo.base_url))
                     val bbsProfile = ProfileDrawerItem().apply {
@@ -294,6 +295,15 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                     description = StringHolder(R.string.preference_summary_on_record_history)
                     badgeStyle = badgeStyle
                 }
+                // push services
+                val pushNotification = PrimaryDrawerItem().apply {
+                    name = StringHolder(R.string.dh_push_title)
+                    isSelectable = false
+                    icon = ImageHolder(R.drawable.ic_baseline_public_24)
+                    identifier = FUNC_PUSH_SERVICE
+                    description = StringHolder(R.string.dh_push_description)
+                    badgeStyle = badgeStyle
+                }
 
                 // short cut
                 val shortCutItem = PrimaryDrawerItem().apply {
@@ -343,6 +353,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                     viewHistory,
                     shortCutItem,
                     searchItem,
+                    pushNotification,
                     DividerDrawerItem(),
                     settingItem,
                     aboutItem
@@ -357,7 +368,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                 }
             }
         }
-        viewModel.currentBBSInformationMutableLiveData.observe(this, { Discuz: Discuz? ->
+        viewModel.currentBBSInformationMutableLiveData.observe(this) { Discuz: Discuz? ->
             discuz = Discuz
             if (Discuz != null) {
                 binding.toolbar.title = Discuz.site_name
@@ -367,16 +378,17 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                 }
                 val id = Discuz.id
                 val allUsersInCurrentBBSLiveData = UserDatabase.getInstance(application)
-                        .getforumUserBriefInfoDao()
-                        .getAllUserByBBSID(id)
-                allUsersInCurrentBBSLiveData.observe(this, { Users: List<User?> ->
+                    .getforumUserBriefInfoDao()
+                    .getAllUserByBBSID(id)
+                allUsersInCurrentBBSLiveData.observe(this) { Users: List<User?> ->
                     Log.d(TAG, "Updating " + id + " users information " + Users.size)
                     viewModel.forumUserListMutableLiveData.postValue(Users)
-                })
+                }
                 // updating history number
-                Thread{
-                    val historyCount = ViewHistoryDatabase.getInstance(application).dao.getViewHistoryCount(id)
-                    Log.d(TAG,"GET History count "+historyCount)
+                Thread {
+                    val historyCount =
+                        ViewHistoryDatabase.getInstance(application).dao.getViewHistoryCount(id)
+                    Log.d(TAG, "GET History count " + historyCount)
 
 
                     runOnUiThread {
@@ -385,21 +397,21 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                             isSelectable = false
                             icon = ImageHolder(R.drawable.ic_baseline_history_24)
                             identifier = FUNC_VIEW_HISTORY
-                            description = StringHolder(R.string.preference_summary_on_record_history)
+                            description =
+                                StringHolder(R.string.preference_summary_on_record_history)
                             badgeStyle = badgeStyle
                             badge = StringHolder(historyCount.toString())
                         }
 
                         binding.materialDrawerSliderView.updateBadge(
-                                FUNC_VIEW_HISTORY,
-                                StringHolder(historyCount.toString())
+                            FUNC_VIEW_HISTORY,
+                            StringHolder(historyCount.toString())
                         )
                         binding.materialDrawerSliderView.adapter.notifyAdapterDataSetChanged()
                         binding.materialDrawerSliderView.adapterWrapper?.notifyDataSetChanged()
                         binding.materialDrawerSliderView.itemAdapter.fastAdapter?.notifyDataSetChanged()
                         binding.materialDrawerSliderView.updateItem(viewHistory)
                     }
-
 
 
                 }.start()
@@ -409,8 +421,8 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                 binding.toolbar.title = getString(R.string.no_bbs_found_in_db)
                 //binding.toolbarTitle.setText(R.string.no_bbs_found_in_db)
             }
-        })
-        viewModel.currentForumUserBriefInfoMutableLiveData.observe(this, { User: User? ->
+        }
+        viewModel.currentForumUserBriefInfoMutableLiveData.observe(this) { User: User? ->
             if (User == null) {
                 binding.toolbar.subtitle = getString(R.string.bbs_anonymous)
                 // binding.toolbarSubtitle.setText(R.string.bbs_anonymous)
@@ -420,7 +432,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
             }
             user = User
             renderViewPageAndBtmView()
-        })
+        }
     }
 
     private fun initBBSDrawer() {
@@ -557,6 +569,15 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                         val forumInfo = viewModel.currentBBSInformationMutableLiveData.value
                         val userBriefInfo = viewModel.currentForumUserBriefInfoMutableLiveData.value
                         val intent = Intent(activity, ViewHistoryActivity::class.java)
+                        intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, forumInfo)
+                        intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
+                        startActivity(intent)
+                        return@label true
+                    }
+                    FUNC_PUSH_SERVICE -> {
+                        val forumInfo = viewModel.currentBBSInformationMutableLiveData.value
+                        val userBriefInfo = viewModel.currentForumUserBriefInfoMutableLiveData.value
+                        val intent = Intent(activity, PushTokenActivity::class.java)
                         intent.putExtra(ConstUtils.PASS_BBS_ENTITY_KEY, forumInfo)
                         intent.putExtra(ConstUtils.PASS_BBS_USER_KEY, userBriefInfo)
                         startActivity(intent)

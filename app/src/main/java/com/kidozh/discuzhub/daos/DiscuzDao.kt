@@ -1,57 +1,50 @@
-package com.kidozh.discuzhub.daos;
+package com.kidozh.discuzhub.daos
 
-import androidx.lifecycle.LiveData;
-import androidx.paging.DataSource;
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import com.kidozh.discuzhub.entities.Discuz;
-
-import java.util.List;
+import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
+import androidx.room.*
+import com.kidozh.discuzhub.entities.Discuz
 
 @Dao
-public interface DiscuzDao {
+interface DiscuzDao {
+    @get:Query("SELECT * FROM Discuz ORDER BY position,id ASC")
+    val allForumInformations: LiveData<List<Discuz>>
 
-    @Query("SELECT * FROM Discuz ORDER BY position,id ASC")
-    LiveData<List<Discuz>> getAllForumInformations();
-
-    @Query("SELECT * FROM Discuz ORDER BY position,id ASC")
-    DataSource.Factory<Integer, Discuz> getBBSPageList();
-
-    @Query("SELECT * FROM Discuz WHERE id=:id")
-    LiveData<Discuz> getForumInformationLiveDataById(int id);
+    @get:Query("SELECT * FROM Discuz ORDER BY position,id ASC")
+    val bBSPageList: DataSource.Factory<Int, Discuz>
 
     @Query("SELECT * FROM Discuz WHERE id=:id")
-    Discuz getForumInformationById(int id);
+    fun getForumInformationLiveDataById(id: Int): LiveData<Discuz>
+
+    @Query("SELECT * FROM Discuz WHERE id=:id")
+    fun getForumInformationById(id: Int): Discuz
 
     @Query("SELECT * FROM Discuz WHERE base_url LIKE '%' || :baseURL || '%' ")
-    List<Discuz> getBBSInformationsByBaseURL(String baseURL);
+    fun getBBSInformationsByBaseURL(baseURL: String): List<Discuz>
 
     @Query("SELECT * FROM Discuz WHERE base_url LIKE '%' || :baseURL || '%' LIMIT 1")
-    LiveData<Discuz> getBBSInformationLiveDataByBaseURL(String baseURL);
+    fun getBBSInformationLiveDataByBaseURL(baseURL: String): LiveData<Discuz>
 
     @Query("SELECT * FROM Discuz WHERE base_url LIKE '%' || :baseURL || '%' LIMIT 1")
-    Discuz getBBSInformationByBaseURL(String baseURL);
+    fun getBBSInformationByBaseURL(baseURL: String): Discuz?
+
 
 
     @Insert
-    void insert(Discuz... Discuzs);
+    fun insert(vararg Discuzs: Discuz)
 
     @Insert
-    void insert(Discuz Discuz);
+    fun insert(Discuz: Discuz)
 
     @Update
-    void update(Discuz... Discuzs);
+    fun update(vararg Discuzs: Discuz)
 
     @Update
-    void update(List<Discuz> Discuzs);
+    fun update(Discuzs: List<Discuz>)
 
     @Delete
-    void delete(Discuz... Discuzs);
+    fun delete(vararg Discuzs: Discuz)
 
     @Query("DELETE FROM Discuz")
-    void deleteAllForumInformation();
+    fun deleteAllForumInformation()
 }

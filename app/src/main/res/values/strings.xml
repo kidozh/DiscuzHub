@@ -927,5 +927,22 @@
     <string name="delete_post_description">Are you sure to delete this post?</string>
     <string name="forum_redirect_url">Forum is redirected to the URL: %1$s</string>
     <string name="forum_redirect_title">Redirected forum</string>
+    <string name="unsupported_dhpush_discuz">The Discuz doesn\'t support DHPush services.</string>
+    <string name="dh_push_title">Notification Push Service</string>
+    <string name="dh_push_description">DH Push Services allows you to recieve up-to-date notification from Discuz.</string>
+    <string name="device_not_support_push_service">No supported push services found in your device(%1$s).</string>
+    <string name="fcm_token_registration_failed">Failed to register FCM token for your device.</string>
+    <string name="user_login_required">Required a verified user.</string>
+    <string name="dhpush_connect_failed">Connected failed when requesting the API.</string>
+    <string name="dhpush_not_supported">Push service is not installed on the discuz.</string>
+    <string name="dhpush_max_token_description">The Discuz allows you to keep %1$s devices pushed altogether.</string>
+    <string name="dhpush_channel_fcm">Firebase</string>
+    <string name="dhpush_channel_mi">Xiaomi</string>
+    <string name="dhpush_channel_apns">APNs</string>
+    <string name="dhpush_channel_unknown">Unknown channel</string>
+    <string name="dhpush_channel_huawei">HMS</string>
+    <string name="dhpush_discuz_reply_thread_channel_name">Reply thread</string>
+    <string name="dhpush_discuz_reply_thread_channel_description">Receive update from replied message</string>
+    <string name="dhpush_reply_thread">%1$s replies to your thread %2$s</string>
 
 </resources>

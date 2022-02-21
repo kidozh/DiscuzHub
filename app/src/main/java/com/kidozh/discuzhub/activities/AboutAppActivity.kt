@@ -49,7 +49,10 @@ class AboutAppActivity : BaseStatusActivity() {
         val dao = DiscuzDatabase.getMainUIDatabase(this).forumInformationDao
         // looking for thread
         val metadata = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA).metaData
-        val baseURL = metadata.getString("discuz_base_url")
+        var baseURL = metadata.getString("discuz_base_url")
+        if(baseURL == null){
+            baseURL = ""
+        }
         val discuzTitle = metadata.getString("discuz_title")
         val bbs = dao.getBBSInformationByBaseURL(baseURL)
 
@@ -61,7 +64,7 @@ class AboutAppActivity : BaseStatusActivity() {
                 .placeholder(R.drawable.ic_baseline_public_24)
                 .into(binding.aboutAppLogo)
         binding.aboutFootNote.setText(R.string.discuz_single_copyright)
-        binding.checkLoadingText.setText(getString(R.string.check_discuz_successfully, bbs.site_name))
+        binding.checkLoadingText.setText(getString(R.string.check_discuz_successfully, bbs!!.site_name))
         binding.discuzInfoCardview.setOnClickListener {
             val fragment = DiscuzDetailDialogFragment(bbs)
             fragment.show(supportFragmentManager, DiscuzDetailDialogFragment::class.simpleName)

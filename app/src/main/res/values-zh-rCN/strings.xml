@@ -797,5 +797,22 @@
     <string name="delete_post_description">是否确定移除此回复？</string>
     <string name="forum_redirect_url">论坛被重定向到新的网址: %1$s</string>
     <string name="forum_redirect_title">论坛已重定向</string>
+    <string name="unsupported_dhpush_discuz">此论谈并不支持DHPush推送服务。</string>
+    <string name="dh_push_title">通知推送服务</string>
+    <string name="dh_push_description">你可以通过推送服务获得实时的论坛消息。</string>
+    <string name="device_not_support_push_service">你的%1$s设备上没有一个可推送的方式。（我们目前仅支持Firebase、小米推送和苹果APNs推送）</string>
+    <string name="fcm_token_registration_failed">无法向Firebase服务器注册您的设备。</string>
+    <string name="user_login_required">您必须登录用户后才能接收推送服务。</string>
+    <string name="dhpush_connect_failed">服务器请求错误，可能是此论坛并未安装推送插件。</string>
+    <string name="dhpush_not_supported">解析失败，可能是此论坛并未安装推送插件。</string>
+    <string name="dhpush_max_token_description">此论坛允许您保持%1$s个设备同时接受消息推送。</string>
+    <string name="dhpush_channel_fcm">FCM云消息传递</string>
+    <string name="dhpush_channel_mi">小米服务框架</string>
+    <string name="dhpush_channel_apns">Apple推送通知服务</string>
+    <string name="dhpush_channel_unknown">未知的推送</string>
+    <string name="dhpush_channel_huawei">华为消息推送</string>
+    <string name="dhpush_discuz_reply_thread_channel_name">回帖更新</string>
+    <string name="dhpush_discuz_reply_thread_channel_description">获得回复帖子的消息通知</string>
+    <string name="dhpush_reply_thread">%1$s 回帖了 %2$s</string>
 
 </resources>
