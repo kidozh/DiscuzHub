@@ -8,6 +8,12 @@ For detailed information, update and policy, please visit [our homepage](https:/
 
 [简体中文](./README_ZH.md)
 
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=com.kidozh.discuzhub)
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/com.kidozh.discuzhub.fdroid/)
 
 # Features
 
