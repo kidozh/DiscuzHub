@@ -16,10 +16,10 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.bumptech.glide.load.model.GlideUrl
@@ -61,20 +61,20 @@ import java.io.InputStream
 
 class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMessageChangeListener, bbsPublicMessageFragment.OnNewMessageChangeListener, UserNotificationFragment.OnNewMessageChangeListener {
     lateinit var viewModel: MainDrawerViewModel
-    val MODE_USER_IGCONGTIVE:Long = -18510478
-    val FUNC_ADD_A_BBS:Long = -2
-    val FUNC_MANAGE_BBS:Long = -3
-    val FUNC_ADD_AN_ACCOUNT:Long = -4
-    val FUNC_MANAGE_ACCOUNT:Long = -5
-    val FUNC_REGISTER_ACCOUNT:Long = -6
-    val FOOTER_SETTINGS:Long = -955415674
-    val FOOTER_ABOUT:Long = -964245451
-    val FUNC_VIEW_HISTORY:Long = -85642154
-    val FUNC_SHORT_CUT:Long = -856421554
-    val FUNC_DRFAT_BOX :Long = -85642414
-    val FUNC_SEARCH :Long = -85647
-    val FUNC_PUSH_SERVICE:Long = -5454245458
-    var savedInstanceState: Bundle? = null
+    private val MODE_USER_IGCONGTIVE:Long = -18510478
+    private val FUNC_ADD_A_BBS:Long = -2
+    private val FUNC_MANAGE_BBS:Long = -3
+    private val FUNC_ADD_AN_ACCOUNT:Long = -4
+    private val FUNC_MANAGE_ACCOUNT:Long = -5
+    private val FUNC_REGISTER_ACCOUNT:Long = -6
+    private val FOOTER_SETTINGS:Long = -955415674
+    private val FOOTER_ABOUT:Long = -964245451
+    private val FUNC_VIEW_HISTORY:Long = -85642154
+    private val FUNC_SHORT_CUT:Long = -856421554
+    private val FUNC_DRFAT_BOX :Long = -85642414
+    private val FUNC_SEARCH :Long = -85647
+    private val FUNC_PUSH_SERVICE:Long = -5454245458
+    private var savedInstanceState: Bundle? = null
     lateinit var headerView: AccountHeaderView
     lateinit var binding: ActivityNewMainDrawerBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,7 +99,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
     private fun configureToolbar() {
         setSupportActionBar(binding.toolbar)
         if (supportActionBar != null) {
-            supportActionBar!!.setDisplayShowTitleEnabled(true);
+            supportActionBar!!.setDisplayShowTitleEnabled(true)
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
             supportActionBar!!.setHomeButtonEnabled(true)
         }
@@ -111,7 +111,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
             //binding.materialDrawerSliderView.getItemAdapter().clear();
             headerView.clear()
             //drawerAccountHeader.clear();
-            if (Discuzs == null || Discuzs.size == 0) {
+            if (Discuzs == null || Discuzs.isEmpty()) {
                 // hide the navIcon
                 // show bbs page
                 binding.toolbar.navigationIcon = null
@@ -168,7 +168,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
             // add bbs
             val addBBSProfile = ProfileSettingDrawerItem().apply {
                 name = StringHolder(getString(R.string.add_a_bbs))
-                identifier = FUNC_ADD_A_BBS.toLong()
+                identifier = FUNC_ADD_A_BBS
                 description = StringHolder(getString(R.string.title_add_a_forum_by_url))
                 isSelectable = false
                 icon = ImageHolder(R.drawable.ic_add_24px)
@@ -180,7 +180,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
             if (Discuzs != null && Discuzs.isNotEmpty()) {
                 val manageBBSProfile = ProfileSettingDrawerItem().apply {
                     name = StringHolder(getString(R.string.manage_bbs))
-                    identifier = FUNC_MANAGE_BBS.toLong()
+                    identifier = FUNC_MANAGE_BBS
                     description = StringHolder(getString(R.string.manage_bbs_description))
                     isSelectable = false
                     icon = ImageHolder(R.drawable.ic_manage_bbs_24px)
@@ -197,7 +197,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                 for (i in forumUserBriefInfos.indices) {
                     val userBriefInfo = forumUserBriefInfos[i]
                     Log.d(TAG, "Getting user brief info " + userBriefInfo.username)
-                    val uid = userBriefInfo.uid.toInt()
+                    val uid = userBriefInfo.uid
                     var avatar_num = uid % 16
                     if (avatar_num < 0) {
                         avatar_num = -avatar_num
@@ -362,7 +362,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                 if (forumUserBriefInfos == null || forumUserBriefInfos.size == 0) {
                     Log.d(TAG, "Trigger igcontive mode")
                     binding.materialDrawerSliderView.setSelection(
-                        MODE_USER_IGCONGTIVE.toLong(),
+                        MODE_USER_IGCONGTIVE,
                         true
                     )
                 }
@@ -633,38 +633,38 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
     }
 
     // fragment adapter
-    inner class anonymousViewPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
-        override fun getItem(position: Int): Fragment {
+    inner class AnonymousViewPagerAdapter(fm: FragmentActivity) : FragmentStateAdapter(fm) {
+        override fun createFragment(position: Int): Fragment {
             val bbsInfo = viewModel.currentBBSInformationMutableLiveData.value
             user = viewModel.currentForumUserBriefInfoMutableLiveData.value
             when (position) {
                 0 -> {
                     homeFragment = HomeFragment.newInstance(bbsInfo, user)
-                    return (homeFragment as HomeFragment?)!!
+                    return homeFragment!!
                 }
                 1 -> return DashBoardFragment.newInstance(bbsInfo, user)
             }
             return HomeFragment.newInstance(bbsInfo, user)
         }
 
-        override fun getCount(): Int {
+        override fun getItemCount(): Int {
             return 2
         }
     }
 
     // fragment adapter
-    inner class EmptyViewPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
-        override fun getItem(position: Int): Fragment {
+    inner class EmptyViewPagerAdapter(fm: FragmentActivity) : FragmentStateAdapter(fm) {
+        override fun createFragment(position: Int): Fragment {
             return BlankBBSFragment.newInstance()
         }
 
-        override fun getCount(): Int {
+        override fun getItemCount(): Int {
             return 2
         }
     }
 
-    inner class userViewPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
-        override fun getItem(position: Int): Fragment {
+    inner class UserViewPagerAdapter(fm: FragmentActivity) : FragmentStateAdapter(fm) {
+        override fun createFragment(position: Int): Fragment {
             val bbsInfo = viewModel.currentBBSInformationMutableLiveData.value
             val userBriefInfo = viewModel.currentForumUserBriefInfoMutableLiveData.value
             when (position) {
@@ -681,7 +681,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
             return HomeFragment.newInstance(bbsInfo, userBriefInfo)
         }
 
-        override fun getCount(): Int {
+        override fun getItemCount(): Int {
             return 3
         }
     }
@@ -701,7 +701,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
         discuz = viewModel.currentBBSInformationMutableLiveData.value
         if (discuz == null) {
             // judge the
-            binding.bbsPortalNavViewpager.adapter = EmptyViewPagerAdapter(supportFragmentManager, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
+            binding.bbsPortalNavViewpager.adapter = EmptyViewPagerAdapter(this)
             binding.bbsPortalNavView.menu.clear()
             binding.bbsPortalNavView.inflateMenu(R.menu.bottom_incognitive_nav_menu)
             return
@@ -709,17 +709,17 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
         user = viewModel.currentForumUserBriefInfoMutableLiveData.value
         if (user == null) {
             Log.d(TAG, "Current incognitive user $user")
-            binding.bbsPortalNavViewpager.adapter = anonymousViewPagerAdapter(supportFragmentManager, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
+            binding.bbsPortalNavViewpager.adapter = AnonymousViewPagerAdapter(this)
             binding.bbsPortalNavView.menu.clear()
             binding.bbsPortalNavView.inflateMenu(R.menu.bottom_incognitive_nav_menu)
         } else {
             // use fragment transaction instead
             Log.d(TAG, "Current incognitive user " + user!!.username)
-            binding.bbsPortalNavViewpager.adapter = userViewPagerAdapter(supportFragmentManager, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT)
+            binding.bbsPortalNavViewpager.adapter = UserViewPagerAdapter(this)
             binding.bbsPortalNavView.menu.clear()
             binding.bbsPortalNavView.inflateMenu(R.menu.bottom_nav_menu)
         }
-        binding.bbsPortalNavView.setOnNavigationItemSelectedListener { item ->
+        binding.bbsPortalNavView.setOnItemSelectedListener { item->
             val id = item.itemId
             if (id == R.id.navigation_home) {
                 binding.bbsPortalNavViewpager.currentItem = 0
@@ -730,8 +730,8 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
             }
             false
         }
-        binding.bbsPortalNavViewpager.addOnPageChangeListener(object : OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+        binding.bbsPortalNavViewpager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback(){
             override fun onPageSelected(position: Int) {
                 when (position) {
                     0 -> binding.bbsPortalNavView.menu.findItem(R.id.navigation_home).isChecked = true
@@ -739,8 +739,6 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
                     2 -> binding.bbsPortalNavView.menu.findItem(R.id.navigation_notifications).isChecked = true
                 }
             }
-
-            override fun onPageScrollStateChanged(state: Int) {}
         })
     }
 
@@ -768,7 +766,7 @@ class DrawerActivity : BaseStatusActivity(), bbsPrivateMessageFragment.OnNewMess
     }
 
     override fun onAttachFragment(fragment: Fragment) {
-        super.onAttachFragment(fragment)
+
         if (homeFragment == null && fragment is HomeFragment) {
             homeFragment = fragment
         } else if (hotThreadsFragment == null && fragment is HotThreadsFragment) {
