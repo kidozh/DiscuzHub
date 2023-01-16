@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableWrapper;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
@@ -23,8 +24,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.graphics.drawable.DrawableWrapper;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.DataSource;
@@ -54,13 +53,13 @@ import okhttp3.OkHttpClient;
 public class GlideImageGetter implements Html.ImageGetter {
     private final static String TAG = GlideImageGetter.class.getSimpleName();
     @NonNull
-    private TextView textView;
+    private final TextView textView;
     @NonNull
-    private Context context;
+    private final Context context;
     private static OkHttpClient client = new OkHttpClient();
     @NonNull
     private static Discuz bbsInfo;
-    private User userBriefInfo;
+    private final User userBriefInfo;
 
 
     public GlideImageGetter(@NonNull TextView textView, User userBriefInfo){

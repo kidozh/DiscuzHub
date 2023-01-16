@@ -11,6 +11,7 @@ import android.graphics.Canvas
 import android.graphics.PixelFormat
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.DrawableWrapper
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -29,7 +30,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
@@ -462,10 +462,11 @@ class PostAdapter(private val discuz: Discuz, private val user: User?, viewThrea
 
 
     @SuppressLint("RestrictedApi")
-    class PostDrawableWrapper(var drawable: Drawable?) : DrawableWrapper(drawable) {
+    class PostDrawableWrapper(var originalDrawable: Drawable?) : DrawableWrapper(originalDrawable) {
 
         override fun draw(canvas: Canvas) {
-            if (drawable != null) drawable!!.draw(canvas)
+            drawable = originalDrawable
+            if (originalDrawable != null) originalDrawable!!.draw(canvas)
         }
     }
 
