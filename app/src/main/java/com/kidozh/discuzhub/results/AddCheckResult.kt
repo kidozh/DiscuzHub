@@ -1,11 +1,14 @@
 package com.kidozh.discuzhub.results
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.kidozh.discuzhub.entities.Discuz
 import com.kidozh.discuzhub.utilities.OneZeroBooleanJsonDeserializer
 
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 class AddCheckResult() {
     @JsonProperty("discuzversion")
     var discuz_version: String = ""

@@ -105,7 +105,7 @@ class FirebasePushService : FirebaseMessagingService() {
         val newUpdateNotification = NotificationCompat.Builder(
             applicationContext, NotificationUtils.getReplyNotificationChannelGroupId(discuz)
         )
-            .setSmallIcon(R.mipmap.logo)
+            //.setSmallIcon(R.mipmap.logo)
             .setContentTitle(getString(R.string.dhpush_reply_thread, replyThreadPush.senderName, replyThreadPush.title))
             .setContentText(replyThreadPush.message) //.setLargeIcon()
             .setGroup(NotificationUtils.getChannelGroupId(discuz))

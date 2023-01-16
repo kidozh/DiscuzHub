@@ -104,6 +104,7 @@ android {
         dataBinding = true
         viewBinding = true
     }
+    namespace 'com.kidozh.discuzhub'
 }
 
 dependencies {
