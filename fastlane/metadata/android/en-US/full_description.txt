@@ -1,0 +1,64 @@
+<h3>Features</h3>
+
+<ul>
+<li>App
+<ul>
+<li>Two basic login types: password and webpage</li>
+<li>Multiple forums</li>
+<li>Multiple accounts</li>
+<li>Dark mode support</li>
+<li>Notification overview</li>
+<li>Hot thread and popular trend</li>
+</ul>
+</li>
+<li>Forum
+<ul>
+<li>Browse and read description</li>
+<li>Filter by tag and category</li>
+<li>See quick replies</li>
+</ul>
+</li>
+<li>Thread
+<ul>
+<li>Browse</li>
+<li>Filter by author</li>
+<li>Sort by time</li>
+<li>Quick reply</li>
+<li>Reply to author</li>
+<li>Rich text support</li>
+<li>Inline image render support</li>
+<li>Data saver mode for image</li>
+<li>Review images and download attachments</li>
+</ul>
+</li>
+<li>Post
+<ul>
+<li>Category type support</li>
+<li>Image support</li>
+<li>Meme support</li>
+<li>Rich text support</li>
+<li>Draft box auto-backup</li>
+<li>Failure backup</li>
+<li>Rich text support</li>
+<li>Add, delete, clear or modify drafts</li>
+</ul>
+</li>
+<li>Notification
+<ul>
+<li>System push</li>
+<li>Thread and post update</li>
+<li>Public and private message view and reply</li>
+</ul>
+</li>
+<li>User
+<ul>
+<li>Basic information</li>
+<li>HTML bio render</li>
+<li>View friend, posts and thread</li>
+<li>GIF avatar support</li>
+<li>Inline webview</li>
+<li>Auth freely</li>
+<li>Full support for mobile BBS</li>
+</ul>
+</li>
+</ul>

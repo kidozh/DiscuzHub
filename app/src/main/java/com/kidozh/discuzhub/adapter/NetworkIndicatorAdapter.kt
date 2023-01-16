@@ -18,7 +18,7 @@ class NetworkIndicatorAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     private var context: Context? = null
     private var errorMessage: ErrorMessage? = null
     private var mListener: OnRefreshBtnListener? = null
-    public var successPageShown = true
+    var successPageShown = true
     override fun getItemId(position: Int): Long {
         return networkStatus.toLong()
     }
@@ -120,7 +120,7 @@ class NetworkIndicatorAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
             } else {
                 holder.binding.errorIcon.setImageResource(ErrorMessage.getDefaultErrorIconResource())
             }
-            holder.binding.retryButton.setOnClickListener { v: View? ->
+            holder.binding.retryButton.setOnClickListener {
                 if (mListener != null) {
                     mListener!!.onRefreshBtnClicked()
                 }

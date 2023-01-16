@@ -56,7 +56,7 @@ class AboutAppActivity : BaseStatusActivity() {
         val discuzTitle = metadata.getString("discuz_title")
         val bbs = dao.getBBSInformationByBaseURL(baseURL)
 
-        binding.aboutAppTitle.setText(discuzTitle)
+        binding.aboutAppTitle.text = discuzTitle
         val logoURL = URLUtils.getBBSLogoUrl(baseURL)
         Glide.with(this)
                 .load(logoURL)
@@ -64,7 +64,7 @@ class AboutAppActivity : BaseStatusActivity() {
                 .placeholder(R.drawable.ic_baseline_public_24)
                 .into(binding.aboutAppLogo)
         binding.aboutFootNote.setText(R.string.discuz_single_copyright)
-        binding.checkLoadingText.setText(getString(R.string.check_discuz_successfully, bbs!!.site_name))
+        binding.checkLoadingText.text = getString(R.string.check_discuz_successfully, bbs!!.site_name)
         binding.discuzInfoCardview.setOnClickListener {
             val fragment = DiscuzDetailDialogFragment(bbs)
             fragment.show(supportFragmentManager, DiscuzDetailDialogFragment::class.simpleName)

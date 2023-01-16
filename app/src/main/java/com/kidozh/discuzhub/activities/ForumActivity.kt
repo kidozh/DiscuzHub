@@ -660,8 +660,6 @@ class ForumActivity : BaseStatusActivity(), OnRefreshBtnListener, OnLinkClickedL
                         } else if (!favorite && key == "do_success") {
                             dao.delete(favoriteForum)
                             dao.delete(discuz!!.id, user!!.uid, favoriteForum.idKey)
-                        } else {
-
                         }
                     } else {
                         messageResult = MessageResult()
