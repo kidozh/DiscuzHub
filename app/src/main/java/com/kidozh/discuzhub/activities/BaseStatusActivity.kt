@@ -25,7 +25,7 @@ open class BaseStatusActivity : AppCompatActivity(), BaseStatusInteract {
     @JvmField
     var discuz: Discuz? = null
     @JvmField
-    public var user: User? = null
+    var user: User? = null
     @JvmField
     var client = OkHttpClient()
     var baseVariableResult: BaseResult = BaseResult()

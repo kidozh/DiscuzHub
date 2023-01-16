@@ -1,379 +1,331 @@
-package com.kidozh.discuzhub.utilities;
+package com.kidozh.discuzhub.utilities
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableWrapper;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Editable;
-import android.text.Html;
-import android.text.Spanned;
-import android.text.style.ClickableSpan;
-import android.text.style.ImageSpan;
-import android.text.style.StrikethroughSpan;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.PixelFormat
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.DrawableWrapper
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.Html.ImageGetter
+import android.text.Html.TagHandler
+import android.text.Spanned
+import android.text.style.ClickableSpan
+import android.text.style.ImageSpan
+import android.text.style.StrikethroughSpan
+import android.util.Log
+import android.view.View
+import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
+import com.kidozh.discuzhub.R
+import com.kidozh.discuzhub.activities.FullImageActivity
+import com.kidozh.discuzhub.entities.User
+import com.kidozh.discuzhub.utilities.GlideImageGetter
+import com.kidozh.discuzhub.utilities.NetworkUtils.canDownloadImageOrFile
+import com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClient
+import com.kidozh.discuzhub.utilities.NetworkUtils.getPreferredClientWithCookieJarByUserWithDefaultHeader
+import okhttp3.OkHttpClient
+import org.xml.sax.XMLReader
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
-import com.kidozh.discuzhub.R;
-import com.kidozh.discuzhub.activities.FullImageActivity;
-import com.kidozh.discuzhub.entities.Discuz;
-import com.kidozh.discuzhub.entities.User;
+class GlideImageGetter(textView: TextView, userBriefInfo: User?) : ImageGetter {
+    private val textView: TextView
+    private val context: Context
+    private val userBriefInfo: User?
 
-import org.xml.sax.XMLReader;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import okhttp3.OkHttpClient;
-
-public class GlideImageGetter implements Html.ImageGetter {
-    private final static String TAG = GlideImageGetter.class.getSimpleName();
-    @NonNull
-    private final TextView textView;
-    @NonNull
-    private final Context context;
-    private static OkHttpClient client = new OkHttpClient();
-    @NonNull
-    private static Discuz bbsInfo;
-    private final User userBriefInfo;
-
-
-    public GlideImageGetter(@NonNull TextView textView, User userBriefInfo){
-        context = textView.getContext();
-        this.textView = textView;
-        this.userBriefInfo = userBriefInfo;
+    init {
+        context = textView.context
+        this.textView = textView
+        this.userBriefInfo = userBriefInfo
     }
 
-    static Map<String, List<GlideDrawableTarget>> urlDrawableMapper = new HashMap<>();
-
-
-    @Override
-    public Drawable getDrawable(String source) {
-        Drawable drawable = context.getDrawable(R.drawable.vector_drawable_image_wider_placeholder_stroke);
-        GlideDrawableWrapper glideDrawableWrapper = new GlideDrawableWrapper(drawable);
+    override fun getDrawable(source: String): Drawable {
+        val drawable =
+            context.getDrawable(R.drawable.vector_drawable_image_wider_placeholder_stroke)
+        val glideDrawableWrapper = GlideDrawableWrapper(drawable)
         // myDrawable.setDrawable(drawable);
-        client = NetworkUtils.getPreferredClientWithCookieJarByUserWithDefaultHeader(context,userBriefInfo);
-        OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
+        client = getPreferredClientWithCookieJarByUserWithDefaultHeader(context, userBriefInfo)
+        val factory = OkHttpUrlLoader.Factory(client)
         Glide.get(context)
-                .getRegistry()
-                .replace(GlideUrl.class, InputStream.class,factory);
-        GlideDrawableTarget currentDrawable = new GlideDrawableTarget(glideDrawableWrapper,textView);
+            .registry
+            .replace(GlideUrl::class.java, InputStream::class.java, factory)
+        val currentDrawable = GlideDrawableTarget(glideDrawableWrapper, textView)
         // put image source in the key
-        if(urlDrawableMapper.containsKey(source)){
-            List<GlideDrawableTarget> targetList = urlDrawableMapper.get(source);
-            targetList.add(currentDrawable);
-            urlDrawableMapper.put(source, targetList);
-        }
-        else {
-            List<GlideDrawableTarget> targetList = new ArrayList<>();
-            targetList.add(currentDrawable);
-            urlDrawableMapper.put(source, targetList);
+        if (urlDrawableMapper.containsKey(source)) {
+            val targetList = urlDrawableMapper[source]
+            targetList!!.add(currentDrawable)
+            urlDrawableMapper[source] = targetList
+        } else {
+            val targetList: MutableList<GlideDrawableTarget> = ArrayList()
+            targetList.add(currentDrawable)
+            urlDrawableMapper[source] = targetList
         }
         // judge network status
-        if(NetworkUtils.canDownloadImageOrFile(context)){
-            Log.d(TAG,"load the picture from network "+source);
-            GlideUrl glideUrl = new GlideUrl(source);
+        if (canDownloadImageOrFile(context)) {
+            Log.d(TAG, "load the picture from network $source")
+            val glideUrl = GlideUrl(source)
             Glide.with(context)
-                    .load(glideUrl)
-                    .error(R.drawable.vector_drawable_image_crash)
-                    .placeholder(R.drawable.ic_loading_picture)
-                    .into(currentDrawable);
-        }
-        else {
-            Log.d(TAG,"load the picture from cache "+source);
-            GlideUrl glideUrl = new GlideUrl(source);
+                .load(glideUrl)
+                .error(R.drawable.vector_drawable_image_crash)
+                .placeholder(R.drawable.ic_loading_picture)
+                .into(currentDrawable)
+        } else {
+            Log.d(TAG, "load the picture from cache $source")
+            val glideUrl = GlideUrl(source)
             Glide.with(context)
-                    .load(glideUrl)
-                    .error(R.drawable.vector_drawable_image_wider_placeholder)
-                    .placeholder(R.drawable.ic_loading_picture)
-                    .onlyRetrieveFromCache(true)
-                    .into(currentDrawable);
+                .load(glideUrl)
+                .error(R.drawable.vector_drawable_image_wider_placeholder)
+                .placeholder(R.drawable.ic_loading_picture)
+                .onlyRetrieveFromCache(true)
+                .into(currentDrawable)
         }
-        return glideDrawableWrapper;
+        return glideDrawableWrapper
     }
 
     @SuppressLint("RestrictedApi")
-    private static class GlideDrawableWrapper extends DrawableWrapper {
-        private Drawable drawable;
-
-        public GlideDrawableWrapper(Drawable drawable) {
-            super(drawable);
+    class GlideDrawableWrapper(drawable: Drawable?) : DrawableWrapper(drawable) {
+        private var drawable: Drawable? = null
+        override fun draw(canvas: Canvas) {
+            if (drawable != null) drawable!!.draw(canvas)
         }
 
+        override fun getDrawable(): Drawable? {
+            return drawable
+        }
 
-        @Override
-        public void draw(Canvas canvas) {
-            if (drawable != null)
-                drawable.draw(canvas);
-        }
-        public Drawable getDrawable() {
-            return drawable;
-        }
-        public void setDrawable(Drawable drawable) {
-            this.drawable = drawable;
+        override fun setDrawable(drawable: Drawable?) {
+            this.drawable = drawable
         }
     }
 
-    class GlideDrawableTarget extends CustomTarget<Drawable> {
-        private final GlideDrawableWrapper myDrawable;
-        TextView textView;
-        public GlideDrawableTarget(GlideDrawableWrapper myDrawable, TextView textView) {
-            this.myDrawable = myDrawable;
-            this.textView = textView;
+    inner class GlideDrawableTarget(
+        private val myDrawable: GlideDrawableWrapper,
+        var textView: TextView
+    ) : CustomTarget<Drawable?>() {
+        override fun onLoadFailed(errorDrawable: Drawable?) {
+            super.onLoadFailed(errorDrawable)
+            val width = errorDrawable!!.intrinsicWidth
+            val height = errorDrawable.intrinsicHeight
+            Log.d(TAG, "Unable to get the image $errorDrawable W $width H $height")
+            myDrawable.setBounds(0, 0, width, height)
+            errorDrawable.setBounds(0, 0, width, height)
+            myDrawable.drawable = errorDrawable
+            textView.text = textView.text
+            textView.invalidate()
         }
 
-
-        @Override
-        public void onLoadFailed(@Nullable Drawable errorDrawable) {
-            super.onLoadFailed(errorDrawable);
-
-
-            int width=errorDrawable.getIntrinsicWidth() ;
-            int height=errorDrawable.getIntrinsicHeight();
-            Log.d(TAG,"Unable to get the image "+errorDrawable+" W "+width+" H "+height);
-            myDrawable.setBounds(0,0,width,height);
-            errorDrawable.setBounds(0,0,width,height);
-            myDrawable.setDrawable(errorDrawable);
-            textView.setText(textView.getText());
-            textView.invalidate();
-
-        }
-
-        public Bitmap DrawableToBitmap(Drawable drawable) {
+        fun DrawableToBitmap(drawable: Drawable): Bitmap {
 
             // 获取 drawable 长宽
-            int width = drawable.getIntrinsicWidth();
-            int heigh = drawable.getIntrinsicHeight();
-
-            drawable.setBounds(0, 0, width, heigh);
+            val width = drawable.intrinsicWidth
+            val heigh = drawable.intrinsicHeight
+            drawable.setBounds(0, 0, width, heigh)
 
             // 获取drawable的颜色格式
-            Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
-                    : Bitmap.Config.RGB_565;
+            val config =
+                if (drawable.opacity != PixelFormat.OPAQUE) Bitmap.Config.ARGB_8888 else Bitmap.Config.RGB_565
             // 创建bitmap
-            Bitmap bitmap = Bitmap.createBitmap(width, heigh, config);
+            val bitmap = Bitmap.createBitmap(width, heigh, config)
             // 创建bitmap画布
-            Canvas canvas = new Canvas(bitmap);
+            val canvas = Canvas(bitmap)
             // 将drawable 内容画到画布中
-            drawable.draw(canvas);
-            return bitmap;
+            drawable.draw(canvas)
+            return bitmap
         }
 
-        @Override
-        public void onResourceReady(final Drawable resource, Transition<? super Drawable> transition) {
+        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable?>?) {
 
             //获取原图大小
-            textView.post(new Runnable() {
-                @Override
-                public void run() {
-                    Drawable drawable = resource;
-                    int width=drawable.getIntrinsicWidth() ;
-                    int height=drawable.getIntrinsicHeight();
-                    final int DRAWABLE_COMPRESS_THRESHOLD = 250000;
-                    final int DRAWABLE_SIMLEY_THRESHOLD = 10000;
-                    // Rescale to image
-                    int screenWidth = textView.getMeasuredWidth();
-                    Log.d(TAG,"Screen width "+screenWidth+" image width "+width);
-
-
-                    if (screenWidth !=0 && width * height > DRAWABLE_SIMLEY_THRESHOLD){
-                        double rescaleFactor = ((double) screenWidth) / width;
-                        int newHeight = (int) (height * rescaleFactor);
-                        Log.d(TAG,"rescaleFactor "+rescaleFactor+" image new height "+newHeight);
-                        if(width * height > DRAWABLE_COMPRESS_THRESHOLD){
-                            // compress it for swift display
-                            Bitmap bitmap = DrawableToBitmap(drawable);
-                            // scale it first
-                            bitmap = Bitmap.createScaledBitmap(bitmap,screenWidth, newHeight, true);
-                            ByteArrayOutputStream out = new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.JPEG,80, out);
-                            Bitmap compressedBitmap = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
-                            drawable =  new BitmapDrawable(context.getResources(), compressedBitmap);
-
-                        }
-
-                        myDrawable.setBounds(0,0,screenWidth,newHeight);
-                        drawable.setBounds(0,0,screenWidth,newHeight);
-                        resource.setBounds(0,0,screenWidth,newHeight);
-
+            textView.post {
+                var drawable = resource
+                val width = drawable.intrinsicWidth
+                val height = drawable.intrinsicHeight
+                val DRAWABLE_COMPRESS_THRESHOLD = 250000
+                val DRAWABLE_SIMLEY_THRESHOLD = 10000
+                // Rescale to image
+                val screenWidth = textView.measuredWidth
+                Log.d(TAG, "Screen width $screenWidth image width $width")
+                if (screenWidth != 0 && width * height > DRAWABLE_SIMLEY_THRESHOLD) {
+                    val rescaleFactor = screenWidth.toDouble() / width
+                    val newHeight = (height * rescaleFactor).toInt()
+                    Log.d(TAG, "rescaleFactor $rescaleFactor image new height $newHeight")
+                    if (width * height > DRAWABLE_COMPRESS_THRESHOLD) {
+                        // compress it for swift display
+                        var bitmap = DrawableToBitmap(drawable)
+                        // scale it first
+                        bitmap = Bitmap.createScaledBitmap(bitmap, screenWidth, newHeight, true)
+                        val out = ByteArrayOutputStream()
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, out)
+                        val compressedBitmap =
+                            BitmapFactory.decodeStream(ByteArrayInputStream(out.toByteArray()))
+                        drawable = BitmapDrawable(context.resources, compressedBitmap)
                     }
-                    else if(screenWidth == 0){
-                        Log.d(TAG, "Get textview width : 0");
-                        myDrawable.setBounds(0,0,width,height);
-                        drawable.setBounds(0,0,width,height);
-                        resource.setBounds(0,0,width,height);
-                    }
-                    else {
-                        myDrawable.setBounds(0,0,width*2,height*2);
-                        drawable.setBounds(0,0,width*2,height*2);
-                        resource.setBounds(0,0,width*2,height*2);
-                    }
-
-                    myDrawable.setDrawable(drawable);
-                    TextView tv = textView;
-                    tv.setText(tv.getText());
-                    tv.invalidate();
+                    myDrawable.setBounds(0, 0, screenWidth, newHeight)
+                    drawable.setBounds(0, 0, screenWidth, newHeight)
+                    resource.setBounds(0, 0, screenWidth, newHeight)
+                } else if (screenWidth == 0) {
+                    Log.d(TAG, "Get textview width : 0")
+                    myDrawable.setBounds(0, 0, width, height)
+                    drawable.setBounds(0, 0, width, height)
+                    resource.setBounds(0, 0, width, height)
+                } else {
+                    myDrawable.setBounds(0, 0, width * 2, height * 2)
+                    drawable.setBounds(0, 0, width * 2, height * 2)
+                    resource.setBounds(0, 0, width * 2, height * 2)
                 }
-            });
-
-
+                myDrawable.drawable = drawable
+                val tv = textView
+                tv.text = tv.text
+                tv.invalidate()
+            }
         }
 
-        @Override
-        public void onLoadCleared(@Nullable Drawable placeholder) {
-
-        }
+        override fun onLoadCleared(placeholder: Drawable?) {}
     }
 
-    public static class HtmlTagHandler implements Html.TagHandler {
+    class HtmlTagHandler(context: Context, textView: TextView) : TagHandler {
+        private val mContext: Context
+        var textView: TextView
 
-        private Context mContext;
-        TextView textView;
-
-        public HtmlTagHandler(Context context, TextView textView) {
-            mContext = context.getApplicationContext();
-            this.textView = textView;
+        init {
+            mContext = context.applicationContext
+            this.textView = textView
         }
 
-        @Override
-        public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
+        override fun handleTag(
+            opening: Boolean,
+            tag: String,
+            output: Editable,
+            xmlReader: XMLReader
+        ) {
 
             // 处理标签<img>
-            if (tag.equalsIgnoreCase("img")) {
+            if (tag.equals("img", ignoreCase = true)) {
                 // 获取长度
-                int len = output.length();
+                val len = output.length
                 // 获取图片地址
-                ImageSpan[] images = output.getSpans(len - 1, len, ImageSpan.class);
-                String imgURL = images[0].getSource();
+                val images = output.getSpans(len - 1, len, ImageSpan::class.java)
+                val imgURL = images[0].source
 
                 // 使图片可点击并监听点击事件
-                output.setSpan(new ClickableImage(mContext, imgURL), len - 1, len, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            else if (tag.equalsIgnoreCase("del")){
-                int startTag = 0, endTag = 0;
-                if(opening){
-                    startTag = output.length();
-                }else{
-                    endTag = output.length();
-                    output.setSpan(new StrikethroughSpan(),startTag,endTag, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                output.setSpan(
+                    imgURL?.let { ClickableImage(mContext, it) },
+                    len - 1,
+                    len,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            } else if (tag.equals("del", ignoreCase = true)) {
+                var startTag = 0
+                var endTag = 0
+                if (opening) {
+                    startTag = output.length
+                } else {
+                    endTag = output.length
+                    output.setSpan(
+                        StrikethroughSpan(),
+                        startTag,
+                        endTag,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
                 }
             }
-
         }
 
-        private class ClickableImage extends ClickableSpan {
-
-            private String url;
-            private Context context;
-            private boolean isLoaded = false, isLoading = false;
-            //private MyDrawableWrapper myDrawable;
-
-            public ClickableImage(Context context, String url) {
-                this.context = context;
-                this.url = url;
-            }
-
-            @Override
-            public void onClick(View widget) {
+        private inner class ClickableImage     //private MyDrawableWrapper myDrawable;
+            (private val context: Context, private val url: String) : ClickableSpan() {
+            private val isLoaded = false
+            private var isLoading = false
+            override fun onClick(widget: View) {
                 // 进行图片点击之后的处理
-                if(isLoading){
-                    return;
+                if (isLoading) {
+                    return
                 }
-                isLoading = true;
-                Log.d(TAG,"You pressed image URL "+url);
-                client = NetworkUtils.getPreferredClient(mContext);
-                OkHttpUrlLoader.Factory factory = new OkHttpUrlLoader.Factory(client);
-
+                isLoading = true
+                Log.d(TAG, "You pressed image URL $url")
+                client = getPreferredClient(mContext)
+                val factory = OkHttpUrlLoader.Factory(client)
                 Glide.get(mContext)
-                        .getRegistry()
-                        .replace(GlideUrl.class,InputStream.class,factory);
+                    .registry
+                    .replace(GlideUrl::class.java, InputStream::class.java, factory)
                 // need to judge whether the image is cached or not
                 // find from imageGetter!
-                Log.d(TAG,"You press the image ");
-                if(urlDrawableMapper.containsKey(url) && urlDrawableMapper.get(url)!=null){
-                    List<GlideDrawableTarget> drawableTargetList = urlDrawableMapper.get(url);
+                Log.d(TAG, "You press the image ")
+                if (urlDrawableMapper.containsKey(url) && urlDrawableMapper[url] != null) {
+                    val drawableTargetList: List<GlideDrawableTarget>? = urlDrawableMapper[url]
                     // update all target
-                    GlideUrl glideUrl = new GlideUrl(url);
+                    val glideUrl = GlideUrl(url)
                     Glide.with(mContext)
-                            .load(glideUrl)
-                            .error(R.drawable.vector_drawable_image_failed)
-                            .placeholder(R.drawable.vector_drawable_loading_image)
-                            .onlyRetrieveFromCache(true)
-                            .listener(new RequestListener<Drawable>() {
-                                @Override
-                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                    Log.d(TAG,"Can't find the image! ");
-                                    isLoading = false;
-                                    Handler handler = new Handler(Looper.getMainLooper());
-                                    // update all drawable target
-                                    for(GlideDrawableTarget drawTarget: drawableTargetList){
-                                        handler.post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                GlideUrl glideUrl = new GlideUrl(url);
-                                                Glide.with(mContext)
-                                                        .load(glideUrl)
-                                                        .error(R.drawable.vector_drawable_image_failed)
-                                                        .placeholder(R.drawable.vector_drawable_loading_image)
-                                                        .into(drawTarget);
-
-                                            }
-                                        });
-
+                        .load(glideUrl)
+                        .error(R.drawable.vector_drawable_image_failed)
+                        .placeholder(R.drawable.vector_drawable_loading_image)
+                        .onlyRetrieveFromCache(true)
+                        .listener(object : RequestListener<Drawable?> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any,
+                                target: Target<Drawable?>,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                Log.d(TAG, "Can't find the image! ")
+                                isLoading = false
+                                val handler = Handler(Looper.getMainLooper())
+                                // update all drawable target
+                                for (drawTarget in drawableTargetList!!) {
+                                    handler.post {
+                                        val glideUrl = GlideUrl(url)
+                                        Glide.with(mContext)
+                                            .load(glideUrl)
+                                            .error(R.drawable.vector_drawable_image_failed)
+                                            .placeholder(R.drawable.vector_drawable_loading_image)
+                                            .into(drawTarget)
                                     }
-
-
-                                    return false;
                                 }
+                                return false
+                            }
 
-                                @Override
-                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                    Log.d(TAG,"Find the image! Goes to other activity");
-                                    isLoading = false;
-                                    Intent intent = new Intent(mContext, FullImageActivity.class);
-                                    intent.putExtra("URL",url);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                                    mContext.startActivity(intent);
-                                    return false;
-                                }
-                            })
-                            .submit();
-
-
+                            override fun onResourceReady(
+                                resource: Drawable?,
+                                model: Any,
+                                target: Target<Drawable?>,
+                                dataSource: DataSource,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                Log.d(TAG, "Find the image! Goes to other activity")
+                                isLoading = false
+                                val intent = Intent(mContext, FullImageActivity::class.java)
+                                intent.putExtra("URL", url)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                mContext.startActivity(intent)
+                                return false
+                            }
+                        })
+                        .submit()
+                } else {
+                    Log.d(TAG, "Can not find the drawable via URL $url")
                 }
-                else {
-                    Log.d(TAG,"Can not find the drawable via URL "+url);
-                }
-
-
             }
         }
     }
 
-
+    companion object {
+        private val TAG = GlideImageGetter::class.java.simpleName
+        private var client = OkHttpClient()
+        var urlDrawableMapper: MutableMap<String, MutableList<GlideDrawableTarget>?> = HashMap()
+    }
 }

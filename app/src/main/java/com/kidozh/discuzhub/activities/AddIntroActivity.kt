@@ -61,12 +61,9 @@ class AddIntroActivity : BaseStatusActivity(), OnClickSuggestionListener {
         binding!!.bbsAddIntroRecyclerview.itemAnimator = getRecyclerviewAnimation(this)
         // add examples
         val suggestURLInfoList: MutableList<SuggestURLInfo> = ArrayList()
-        suggestURLInfoList.add(SuggestURLInfo("https://bbs.nwpu.edu.cn", getString(R.string.bbs_url_example_npubbs), true))
-        suggestURLInfoList.add(SuggestURLInfo("https://bbs.comsenz-service.com", getString(R.string.bbs_url_example_discuz_support), true))
-        suggestURLInfoList.add(SuggestURLInfo("https://www.mcbbs.net", getString(R.string.bbs_url_example_mcbbs), true))
+        suggestURLInfoList.add(SuggestURLInfo("https://www.dismall.com", getString(R.string.bbs_url_example_discuz_support), true))
         suggestURLInfoList.add(SuggestURLInfo("https://keylol.com", getString(R.string.bbs_url_example_keylol), true))
         suggestURLInfoList.add(SuggestURLInfo("https://bbs.qzzn.com", getString(R.string.bbs_url_example_qzzn), true))
-        suggestURLInfoList.add(SuggestURLInfo("https://www.right.com.cn/forum", getString(R.string.bbs_url_example_right_com), true))
         adapter.setSuggestURLInfoList(suggestURLInfoList)
     }
 
@@ -115,12 +112,9 @@ class AddIntroActivity : BaseStatusActivity(), OnClickSuggestionListener {
     private fun getSuggestedURLList(urlString: String): List<SuggestURLInfo> {
         val suggestURLInfoList: MutableList<SuggestURLInfo> = ArrayList()
         if (urlString == "") {
-            suggestURLInfoList.add(SuggestURLInfo("https://bbs.nwpu.edu.cn", getString(R.string.bbs_url_example_npubbs), true))
-            suggestURLInfoList.add(SuggestURLInfo("https://bbs.comsenz-service.com", getString(R.string.bbs_url_example_discuz_support), true))
-            suggestURLInfoList.add(SuggestURLInfo("https://www.mcbbs.net", getString(R.string.bbs_url_example_mcbbs), true))
+            suggestURLInfoList.add(SuggestURLInfo("https://www.dismall.com", getString(R.string.bbs_url_example_discuz_support), true))
             suggestURLInfoList.add(SuggestURLInfo("https://keylol.com", getString(R.string.bbs_url_example_keylol), true))
             suggestURLInfoList.add(SuggestURLInfo("https://bbs.qzzn.com", getString(R.string.bbs_url_example_qzzn), true))
-            suggestURLInfoList.add(SuggestURLInfo("https://www.right.com.cn/forum", getString(R.string.bbs_url_example_right_com), true))
         } else {
             // add url
             try {
@@ -136,12 +130,9 @@ class AddIntroActivity : BaseStatusActivity(), OnClickSuggestionListener {
                     }
                 }
             } catch (e: Exception) {
-                suggestURLInfoList.add(SuggestURLInfo("https://bbs.nwpu.edu.cn", getString(R.string.bbs_url_example_npubbs), true))
-                suggestURLInfoList.add(SuggestURLInfo("https://bbs.comsenz-service.com", getString(R.string.bbs_url_example_discuz_support), true))
-                suggestURLInfoList.add(SuggestURLInfo("https://www.mcbbs.net", getString(R.string.bbs_url_example_mcbbs), true))
+                suggestURLInfoList.add(SuggestURLInfo("https://www.dismall.com", getString(R.string.bbs_url_example_discuz_support), true))
                 suggestURLInfoList.add(SuggestURLInfo("https://keylol.com", getString(R.string.bbs_url_example_keylol), true))
-                suggestURLInfoList.add(SuggestURLInfo("https://www.1point3acres.com/bbs", getString(R.string.bbs_url_example_1point3acres), true))
-                suggestURLInfoList.add(SuggestURLInfo("https://www.right.com.cn/forum", getString(R.string.bbs_url_example_right_com), true))
+                suggestURLInfoList.add(SuggestURLInfo("https://bbs.qzzn.com", getString(R.string.bbs_url_example_qzzn), true))
             }
         }
         return suggestURLInfoList
